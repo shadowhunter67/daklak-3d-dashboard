@@ -24,17 +24,14 @@ Phần bản đồ được tách theo trách nhiệm: bề mặt terrain, các 
 
 ## Chạy dự án
 
-Yêu cầu Node.js 22 và Python 3.12 (cùng phiên bản với CI).
+Yêu cầu Node.js 22. Các artifact GIS đã được commit, vì vậy developer chỉ sửa frontend không cần cài Python hoặc xây lại dữ liệu:
 
 ```bash
-npm install
-python -m pip install -r scripts/requirements.txt
-npm run prepare:gis-source
-npm run build:gis
-npm run build:terrain
-npm run validate:data
+npm ci
 npm run dev
 ```
+
+Python 3.12 chỉ cần khi kiểm định hoặc tái tạo GIS. Xem phần **Xây lại GIS** và `scripts/README.md`; `.nvmrc` và `.python-version` khớp với CI.
 
 Build production và quality gates:
 
