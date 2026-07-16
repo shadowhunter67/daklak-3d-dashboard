@@ -2,6 +2,12 @@
 
 Dashboard WebGL thể hiện 102 xã/phường của tỉnh Đắk Lắk sau sắp xếp năm 2025, từ cao nguyên Đắk Lắk cũ đến duyên hải Phú Yên cũ. Mỗi đơn vị là một mesh tương tác độc lập với hover, click, selected state, tooltip hồ sơ, nhãn và số liệu minh họa.
 
+## Demo
+
+[![Đắk Lắk 3D Dashboard](docs/images/dashboard-demo.png)](https://shadowhunter67.github.io/daklak-3d-dashboard/)
+
+**Live demo:** https://shadowhunter67.github.io/daklak-3d-dashboard/
+
 > **Disclaimer:** sản phẩm trực quan tham khảo, không dùng cho đất đai, đo đạc, quy hoạch pháp lý hoặc xác lập địa giới chính thức. Số liệu dashboard là mock data deterministic, không phải thống kê nhà nước.
 
 ## Stack và kiến trúc
