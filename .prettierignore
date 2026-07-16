@@ -2,3 +2,4 @@ dist
 node_modules
 src/assets/maps/**/*.geojson
 src/assets/maps/**/*.json
+reports/*.json
