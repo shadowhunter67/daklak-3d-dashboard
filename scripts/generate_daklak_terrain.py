@@ -3,16 +3,17 @@ from __future__ import annotations
 import io, json, math, urllib.request
 from pathlib import Path
 import numpy as np
-from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageOps
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter
 from shapely.ops import unary_union
 from gis_common import OUTPUT, read_source, write_json
 
 ZOOM = 9
+IMAGERY_ZOOM = 10
 SIZE = 1024
 CACHE = Path(__file__).resolve().parents[1] / "downloads" / "terrain"
 
-def lonlat_to_pixel(lon: float, lat: float) -> tuple[float, float]:
-    scale = 256 * 2**ZOOM
+def lonlat_to_pixel(lon: float, lat: float, zoom: int = ZOOM) -> tuple[float, float]:
+    scale = 256 * 2**zoom
     x = (lon + 180) / 360 * scale
     sin_lat = math.sin(math.radians(lat))
     y = (0.5 - math.log((1 + sin_lat) / (1 - sin_lat)) / (4 * math.pi)) * scale
@@ -27,6 +28,33 @@ def tile(x: int, y: int) -> Image.Image:
         with urllib.request.urlopen(request, timeout=45) as response:
             path.write_bytes(response.read())
     return Image.open(path).convert("RGB")
+
+def imagery_tile(x: int, y: int) -> Image.Image:
+    CACHE.mkdir(parents=True, exist_ok=True)
+    path = CACHE / f"sentinel-2016-{IMAGERY_ZOOM}-{x}-{y}.jpg"
+    if not path.exists():
+        url = (
+            "https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/"
+            f"default/g/{IMAGERY_ZOOM}/{y}/{x}.jpg"
+        )
+        request = urllib.request.Request(url, headers={"User-Agent": "daklak-3d-dashboard/1.0"})
+        with urllib.request.urlopen(request, timeout=45) as response:
+            path.write_bytes(response.read())
+    return Image.open(path).convert("RGB")
+
+def satellite_crop(bounds: tuple[float, float, float, float]) -> Image.Image:
+    min_lon, min_lat, max_lon, max_lat = bounds
+    left, bottom = lonlat_to_pixel(min_lon, min_lat, IMAGERY_ZOOM)
+    right, top = lonlat_to_pixel(max_lon, max_lat, IMAGERY_ZOOM)
+    x0, x1 = math.floor(left / 256), math.floor(right / 256)
+    y0, y1 = math.floor(top / 256), math.floor(bottom / 256)
+    mosaic = Image.new("RGB", ((x1-x0+1)*256, (y1-y0+1)*256))
+    for x in range(x0, x1+1):
+        for y in range(y0, y1+1):
+            mosaic.paste(imagery_tile(x,y), ((x-x0)*256,(y-y0)*256))
+    return mosaic.crop(
+        (left-x0*256, top-y0*256, right-x0*256, bottom-y0*256)
+    ).resize((SIZE,SIZE), Image.Resampling.LANCZOS)
 
 def polygon_rings(geometry):
     if geometry.geom_type == "Polygon": return [geometry]
@@ -56,7 +84,7 @@ def main() -> None:
     )
     normalized = np.asarray(height_image, dtype=np.float32) / 255
     height_image.save(OUTPUT/"daklak-terrain-height.png",optimize=True)
-    gy,gx=np.gradient(normalized); strength=8
+    gy,gx=np.gradient(normalized); strength=5
     normals=np.dstack((-gx*strength,-gy*strength,np.ones_like(normalized)))
     normals/=np.linalg.norm(normals,axis=2,keepdims=True)
     Image.fromarray(((normals*.5+.5)*255).astype(np.uint8)).save(OUTPUT/"daklak-terrain-normal.png",optimize=True)
@@ -70,14 +98,14 @@ def main() -> None:
     north_west = np.clip(.76-broad_gx*5.6-broad_gy*6.4, .22, 1.18)
     south_east = np.clip(.78+broad_gx*2.4+broad_gy*2.0, .42, 1.08)
     relief = np.clip(north_west*.72+south_east*.28+fine*2.8, .24, 1.16)
-    low_color=np.array([17,77,55]); middle_color=np.array([63,116,62]); high_color=np.array([187,157,82])
-    lower=np.clip(normalized*2,0,1)[:,:,None]
-    upper=np.clip((normalized-.5)*2,0,1)[:,:,None]
-    color=low_color[None,None,:]*(1-lower)+middle_color[None,None,:]*lower
-    color=color*(1-upper)+high_color[None,None,:]*upper
-    color=np.clip(color*relief[:,:,None],0,255).astype(np.uint8)
+    satellite = satellite_crop((min_lon, min_lat, max_lon, max_lat))
+    satellite = ImageEnhance.Color(satellite).enhance(.92)
+    satellite = ImageEnhance.Contrast(satellite).enhance(1.08)
+    color = np.asarray(satellite, dtype=np.float32)
+    # Preserve real land-cover detail; relief only modulates light by about 20%.
+    relief_mix = np.clip(.82 + relief*.24, .72, 1.08)
+    color=np.clip(color*relief_mix[:,:,None],0,255).astype(np.uint8)
     terrain_base = Image.fromarray(color)
-    terrain_base = ImageEnhance.Contrast(ImageOps.autocontrast(terrain_base, cutoff=1)).enhance(1.12)
     mask=Image.new("L",(SIZE,SIZE),0); draw=ImageDraw.Draw(mask)
     def point(coord):
         px,py=lonlat_to_pixel(coord[0],coord[1]); return ((px-left)/(right-left)*SIZE,(py-top)/(bottom-top)*SIZE)
@@ -94,7 +122,7 @@ def main() -> None:
         border_draw.line([point(c) for c in polygon.exterior.coords], fill=(226, 187, 85), width=4, joint="curve")
     terrain_image.save(OUTPUT/"daklak-terrain-color.png",quality=90,optimize=True)
     mask.save(OUTPUT/"daklak-terrain-mask.png",optimize=True)
-    write_json(OUTPUT/"daklak-terrain-metadata.json",{"source":"Mapzen Terrain Tiles / AWS Open Data","sourceUrl":"https://registry.opendata.aws/terrain-tiles/","primaryElevationSource":"NASA SRTM","rendering":"multi-scale multidirectional shaded relief","zoom":ZOOM,"width":SIZE,"height":SIZE,"bbox":[min_lon,min_lat,max_lon,max_lat],"elevationMinMeters":round(low,1),"elevationMaxMeters":round(high,1)})
+    write_json(OUTPUT/"daklak-terrain-metadata.json",{"source":"Mapzen Terrain Tiles / AWS Open Data","sourceUrl":"https://registry.opendata.aws/terrain-tiles/","primaryElevationSource":"NASA SRTM","surfaceImagery":"Sentinel-2 cloudless 2016 by EOX IT Services GmbH","surfaceImageryUrl":"https://s2maps.eu/","surfaceImageryLicense":"CC BY-SA 4.0","rendering":"satellite albedo with multi-scale multidirectional shaded relief","zoom":ZOOM,"imageryZoom":IMAGERY_ZOOM,"width":SIZE,"height":SIZE,"bbox":[min_lon,min_lat,max_lon,max_lat],"elevationMinMeters":round(low,1),"elevationMaxMeters":round(high,1)})
     print(f"Terrain generated: {low:.0f}–{high:.0f} m")
 
 if __name__ == "__main__": main()

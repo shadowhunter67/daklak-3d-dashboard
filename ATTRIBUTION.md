@@ -1,5 +1,11 @@
 # Attribution
 
+## Surface imagery
+
+Terrain surface imagery uses [Sentinel-2 cloudless](https://s2maps.eu/) by
+[EOX IT Services GmbH](https://eox.at/) (contains modified Copernicus Sentinel
+data 2016), licensed under CC BY-SA 4.0.
+
 ## Dữ liệu hành chính và GIS
 
 - **Geometry, tên, mã, diện tích:** [thanglequoc/vietnamese-provinces-database](https://github.com/thanglequoc/vietnamese-provinces-database), snapshot `1253e2ad7933bcc59a5b68a03a81b532cd939e3e` ngày 12/07/2026, MIT License, © 2021 Thang Le Quoc. Các output trong `src/assets/maps/daklak/` là dữ liệu đã lọc/chuẩn hóa/derived từ nguồn này.

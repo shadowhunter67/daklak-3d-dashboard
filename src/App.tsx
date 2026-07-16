@@ -41,7 +41,7 @@ export default function App() {
       <StatPanel />
       <DetailPanel />
       <footer>
-        <span>WGS84 · EPSG:4326</span>
+        <span title="Contains modified Copernicus Sentinel data 2016">SENTINEL-2 · EOX</span>
         <p>Dữ liệu trực quan tham khảo — không dùng cho mục đích địa chính, đo đạc hoặc pháp lý.</p>
         <span>SNAPSHOT 12.07.2026</span>
       </footer>

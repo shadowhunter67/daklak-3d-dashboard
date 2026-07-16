@@ -129,7 +129,7 @@ function SelectedTerrainOverlay() {
         emissive="#a66a12"
         emissiveIntensity={0.55}
         displacementMap={heightMap}
-        displacementScale={0.3}
+        displacementScale={0.2}
         displacementBias={0.02}
         alphaMap={selectionTexture}
         alphaTest={0.08}
@@ -187,7 +187,7 @@ function TerrainSurface() {
         map={colorMap}
         normalMap={normalMap}
         displacementMap={heightMap}
-        displacementScale={0.3}
+        displacementScale={0.2}
         displacementBias={0.02}
         alphaMap={alphaMap}
         alphaTest={0.25}
