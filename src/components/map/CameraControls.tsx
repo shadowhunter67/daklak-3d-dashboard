@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { useMapStore } from '../../stores/mapStore';
+import { shouldHandleCameraKey } from './cameraKeyboard';
 
 export function CameraControls() {
   const controls = useRef<OrbitControlsImpl>(null);
@@ -10,9 +11,7 @@ export function CameraControls() {
   const autoRotate = useMapStore((state) => state.autoRotate);
   useEffect(() => {
     const down = (event: KeyboardEvent) => {
-      if (
-        ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'a', 'd', 'w', 's'].includes(event.key)
-      ) {
+      if (shouldHandleCameraKey(event.key, event.target)) {
         event.preventDefault();
         pressed.current.add(event.key.toLowerCase());
       }

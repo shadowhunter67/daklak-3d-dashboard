@@ -59,6 +59,18 @@ test.describe('dashboard smoke tests', () => {
     await expect(page.getByRole('button', { name: 'Đã giảm chuyển động' })).toBeDisabled();
   });
 
+  test('preserves native arrow-key behavior on interactive controls', async ({ page }) => {
+    await page.goto('./');
+    await expect(page.locator('canvas')).toBeVisible();
+    const switchView = page.getByRole('button', { name: 'Danh sách 2D' });
+    const controlEventWasNotCancelled = await switchView.evaluate((element) =>
+      element.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }),
+      ),
+    );
+    expect(controlEventWasNotCancelled).toBe(true);
+  });
+
   test('shows a recovery path after WebGL context loss', async ({ page }) => {
     await page.goto('./');
     const canvas = page.locator('canvas');
