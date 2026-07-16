@@ -1,6 +1,9 @@
 import { Canvas } from '@react-three/fiber';
-import { Html, MapControls, useTexture } from '@react-three/drei';
+import { Html, OrbitControls, useTexture } from '@react-three/drei';
 import type { ThreeEvent } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
+import { useEffect, useRef } from 'react';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import wards from '../../assets/maps/daklak/daklak-wards-render.json';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
 import terrainColorUrl from '../../assets/maps/daklak/daklak-terrain-color.png';
@@ -49,7 +52,7 @@ function TerrainSurface() {
         map={colorMap}
         normalMap={normalMap}
         displacementMap={heightMap}
-        displacementScale={1.08}
+        displacementScale={0.58}
         displacementBias={0.02}
         alphaMap={alphaMap}
         alphaTest={0.25}
@@ -112,7 +115,7 @@ function MapContent() {
                   roughness={0.72}
                   metalness={0.04}
                   transparent
-                  opacity={active ? 0.72 : hot ? 0.5 : 0.1}
+                  opacity={active ? 0.34 : hot ? 0.2 : 0}
                   depthWrite={false}
                 />
                 <meshStandardMaterial
@@ -120,7 +123,7 @@ function MapContent() {
                   color={active ? '#8e6120' : hot ? '#317d68' : '#0a4d42'}
                   roughness={0.9}
                   transparent
-                  opacity={active ? 0.8 : 0.16}
+                  opacity={active ? 0.38 : hot ? 0.16 : 0}
                   depthWrite={false}
                 />
               </mesh>
@@ -139,8 +142,56 @@ function MapContent() {
     </group>
   );
 }
-export function AdministrativeMap() {
+
+function CameraControls() {
+  const controls = useRef<OrbitControlsImpl>(null);
+  const pressed = useRef(new Set<string>());
   const autoRotate = useMapStore((state) => state.autoRotate);
+  useEffect(() => {
+    const down = (event: KeyboardEvent) => {
+      if (
+        ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'a', 'd', 'w', 's'].includes(event.key)
+      ) {
+        event.preventDefault();
+        pressed.current.add(event.key.toLowerCase());
+      }
+    };
+    const up = (event: KeyboardEvent) => pressed.current.delete(event.key.toLowerCase());
+    window.addEventListener('keydown', down);
+    window.addEventListener('keyup', up);
+    return () => {
+      window.removeEventListener('keydown', down);
+      window.removeEventListener('keyup', up);
+    };
+  }, []);
+  useFrame((_, delta) => {
+    const control = controls.current;
+    if (!control) return;
+    const speed = delta * 1.25;
+    if (pressed.current.has('arrowleft') || pressed.current.has('a'))
+      control.setAzimuthalAngle(control.getAzimuthalAngle() - speed);
+    if (pressed.current.has('arrowright') || pressed.current.has('d'))
+      control.setAzimuthalAngle(control.getAzimuthalAngle() + speed);
+    if (pressed.current.has('arrowup') || pressed.current.has('w'))
+      control.setPolarAngle(Math.max(Math.PI / 7, control.getPolarAngle() - speed));
+    if (pressed.current.has('arrowdown') || pressed.current.has('s'))
+      control.setPolarAngle(Math.min(Math.PI / 2.15, control.getPolarAngle() + speed));
+  });
+  return (
+    <OrbitControls
+      ref={controls}
+      makeDefault
+      enableRotate
+      autoRotate={autoRotate}
+      autoRotateSpeed={0.7}
+      minZoom={60}
+      maxZoom={340}
+      minPolarAngle={Math.PI / 7}
+      maxPolarAngle={Math.PI / 2.15}
+    />
+  );
+}
+export function AdministrativeMap() {
   return (
     <Canvas
       dpr={[1, 1.35]}
@@ -153,15 +204,7 @@ export function AdministrativeMap() {
       <hemisphereLight args={['#b9f0dd', '#031b19', 1.35]} />
       <directionalLight position={[-6, 9, 7]} intensity={3.8} color="#fff0c2" />
       <MapContent />
-      <MapControls
-        enableRotate
-        autoRotate={autoRotate}
-        autoRotateSpeed={0.7}
-        minZoom={60}
-        maxZoom={340}
-        minPolarAngle={Math.PI / 7}
-        maxPolarAngle={Math.PI / 2.15}
-      />
+      <CameraControls />
     </Canvas>
   );
 }

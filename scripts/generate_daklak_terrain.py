@@ -4,6 +4,7 @@ import io, json, math, urllib.request
 from pathlib import Path
 import numpy as np
 from PIL import Image, ImageDraw
+from shapely.ops import unary_union
 from gis_common import OUTPUT, read_source, write_json
 
 ZOOM = 9
@@ -59,7 +60,6 @@ def main() -> None:
     low_color=np.array([18,91,70]); high_color=np.array([203,176,92])
     color=low_color[None,None,:]*(1-normalized[:,:,None])+high_color[None,None,:]*normalized[:,:,None]
     color=np.clip(color*shade[:,:,None],0,255).astype(np.uint8)
-    Image.fromarray(color).save(OUTPUT/"daklak-terrain-color.png",quality=90,optimize=True)
     mask=Image.new("L",(SIZE,SIZE),0); draw=ImageDraw.Draw(mask)
     def point(coord):
         px,py=lonlat_to_pixel(coord[0],coord[1]); return ((px-left)/(right-left)*SIZE,(py-top)/(bottom-top)*SIZE)
@@ -67,6 +67,14 @@ def main() -> None:
         for polygon in polygon_rings(geometry):
             draw.polygon([point(c) for c in polygon.exterior.coords],fill=255)
             for interior in polygon.interiors: draw.polygon([point(c) for c in interior.coords],fill=0)
+    terrain_image = Image.fromarray(color)
+    border_draw = ImageDraw.Draw(terrain_image)
+    for geometry in data.geometry:
+        for polygon in polygon_rings(geometry):
+            border_draw.line([point(c) for c in polygon.exterior.coords], fill=(86, 190, 151), width=1, joint="curve")
+    for polygon in polygon_rings(unary_union(list(data.geometry))):
+        border_draw.line([point(c) for c in polygon.exterior.coords], fill=(226, 187, 85), width=4, joint="curve")
+    terrain_image.save(OUTPUT/"daklak-terrain-color.png",quality=90,optimize=True)
     mask.save(OUTPUT/"daklak-terrain-mask.png",optimize=True)
     write_json(OUTPUT/"daklak-terrain-metadata.json",{"source":"Mapzen Terrain Tiles / AWS Open Data","sourceUrl":"https://registry.opendata.aws/terrain-tiles/","primaryElevationSource":"NASA SRTM","zoom":ZOOM,"width":SIZE,"height":SIZE,"bbox":[min_lon,min_lat,max_lon,max_lat],"elevationMinMeters":round(low,1),"elevationMaxMeters":round(high,1)})
     print(f"Terrain generated: {low:.0f}–{high:.0f} m")
