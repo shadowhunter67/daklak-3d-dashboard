@@ -5,7 +5,8 @@ from pathlib import Path
 import geopandas as gpd
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = ROOT.parent / "references" / "vietnamese-provinces-database" / "json" / "geojson" / "66_dak_lak"
+SOURCE_CONFIG = json.loads((ROOT / "scripts" / "gis-source.json").read_text(encoding="utf-8"))
+SOURCE = ROOT / ".cache" / "gis-source" / "repository" / SOURCE_CONFIG["sourcePath"]
 OUTPUT = ROOT / "src" / "assets" / "maps" / "daklak"
 REPORTS = ROOT / "reports"
 

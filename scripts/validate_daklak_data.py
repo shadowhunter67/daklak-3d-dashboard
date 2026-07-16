@@ -56,6 +56,9 @@ def main() -> None:
     snapshot=source.get("sourceSnapshot","")
     if len(snapshot)!=40 or any(char not in "0123456789abcdef" for char in snapshot.lower()):
         errors.append("Source snapshot must be a 40-character git commit")
+    source_checksum=source.get("sourceChecksum","")
+    if len(source_checksum)!=64 or any(char not in "0123456789abcdef" for char in source_checksum.lower()):
+        errors.append("Source checksum must be a SHA-256 digest")
     minx,miny,maxx,maxy=data.total_bounds
     if not (107<minx<110 and 11<miny<14 and 107<maxx<110 and 11<maxy<14): errors.append("Bounding box outside plausible Đắk Lắk extent")
     overlaps=0
