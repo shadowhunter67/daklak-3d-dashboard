@@ -103,7 +103,7 @@ function MapContent() {
       {showLabels &&
         visibleLabels.map(([code, label, p]) => {
           return (
-            <Html key={code} position={[p[0], -p[1], 0.78]} transform sprite distanceFactor={7}>
+            <Html key={code} position={[p[0], -p[1], 0.78]} transform sprite distanceFactor={2.4}>
               <span className="map-label">{label.name}</span>
             </Html>
           );
@@ -117,14 +117,14 @@ export function AdministrativeMap() {
       dpr={[1, 1.35]}
       gl={{ antialias: true, powerPreference: 'high-performance' }}
       orthographic
-      camera={{ position: [0, 8.2, 15.5], zoom: 82, near: 0.1, far: 100 }}
+      camera={{ position: [0, 8.2, 15.5], zoom: 246, near: 0.1, far: 100 }}
       onPointerMissed={() => useMapStore.getState().select(null)}
     >
       <color attach="background" args={['#071918']} />
       <hemisphereLight args={['#b9f0dd', '#031b19', 1.35]} />
       <directionalLight position={[-6, 9, 7]} intensity={3.8} color="#fff0c2" />
       <MapContent />
-      <MapControls enableRotate minZoom={28} maxZoom={110} maxPolarAngle={Math.PI / 2.25} />
+      <MapControls enableRotate minZoom={60} maxZoom={340} maxPolarAngle={Math.PI / 2.25} />
     </Canvas>
   );
 }
