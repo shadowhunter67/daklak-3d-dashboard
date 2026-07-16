@@ -50,7 +50,7 @@ export function StatPanel() {
       <div className="chart-title">Chỉ số tiếp cận dịch vụ</div>
       <ReactECharts option={option} style={{ height: 105 }} opts={{ renderer: 'svg' }} />
       <p className="mock-note">
-        Số liệu dashboard là dữ liệu giả lập, không phải thống kê chính thức.
+        Số liệu và chiều cao khối là giả lập, không biểu thị cao độ địa hình thực tế.
       </p>
     </aside>
   );
