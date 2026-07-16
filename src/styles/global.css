@@ -346,6 +346,10 @@ footer {
 footer p {
   letter-spacing: 0.04em;
 }
+footer a {
+  color: #cdb66f;
+  text-underline-offset: 2px;
+}
 @media (max-width: 900px) {
   .mode-tabs {
     margin-left: 20px;

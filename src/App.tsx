@@ -35,12 +35,12 @@ export default function App() {
           ))}
         </nav>
         <div className="header-meta">
-          <span>102 miền đất</span>
+          <span>102 xã/phường</span>
           <button onClick={toggleAutoRotate} aria-pressed={autoRotate} title="Xoay bản đồ 360 độ">
             {autoRotate ? 'Dừng xoay' : 'Xoay 360°'}
           </button>
           <button onClick={toggle} aria-pressed={visible}>
-            {visible ? 'Ẩn' : 'Hiện'} nhãn
+            {visible ? 'Ẩn' : 'Hiện'} nhãn trung tâm
           </button>
         </div>
       </header>
@@ -60,9 +60,21 @@ export default function App() {
       <footer>
         <span title="Contains modified Copernicus Sentinel data 2016">SENTINEL-2 · EOX</span>
         <p>
-          {dataMode === 'overview'
-            ? 'Chỉ tiêu cấp tỉnh: nguồn công bố 2025 · Chỉ tiêu cấp xã: dữ liệu minh họa.'
-            : 'Lớp chuyên đề đang dùng dữ liệu minh họa có seed cố định.'}
+          {dataMode === 'overview' ? (
+            <>
+              Chỉ tiêu cấp tỉnh:{' '}
+              <a
+                href="https://daklak.gov.vn/vi/-/hop-bao-cong-bo-so-lieu-thong-ke-kinh-te-xa-hoi-tinh-ak-lak-nam-2025"
+                target="_blank"
+                rel="noreferrer"
+              >
+                nguồn công bố 2025
+              </a>{' '}
+              · Chỉ tiêu cấp xã: dữ liệu minh họa.
+            </>
+          ) : (
+            'Lớp chuyên đề đang dùng dữ liệu minh họa có seed cố định.'
+          )}
         </p>
         <span>SNAPSHOT 12.07.2026</span>
       </footer>
