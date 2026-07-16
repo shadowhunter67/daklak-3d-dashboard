@@ -4,7 +4,7 @@ import type { WardCollection, Metric } from '../../types/map';
 import { formatNumber, formatUnitType } from '../../utils/geo';
 import { useMapStore } from '../../stores/mapStore';
 const data = wards as WardCollection;
-const metricMap = metrics as Record<string, Metric>;
+const metricMap = metrics as Partial<Record<string, Metric>>;
 export function DetailPanel() {
   const selected = useMapStore((s) => s.selectedCode),
     hovered = useMapStore((s) => s.hoveredCode);
@@ -19,6 +19,13 @@ export function DetailPanel() {
       </aside>
     );
   const m = metricMap[f.properties.code];
+  if (!m)
+    return (
+      <aside className="detail-panel glass empty" role="alert">
+        <h2>Thiếu dữ liệu chi tiết</h2>
+        <p>Không tìm thấy chỉ số tương ứng với đơn vị đã chọn.</p>
+      </aside>
+    );
   return (
     <aside className="detail-panel glass">
       <p className="eyebrow">{selected ? 'ĐANG CHỌN' : 'ĐANG KHÁM PHÁ'}</p>
