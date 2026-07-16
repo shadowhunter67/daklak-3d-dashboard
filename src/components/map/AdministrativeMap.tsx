@@ -4,6 +4,7 @@ import type { ThreeEvent } from '@react-three/fiber';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import type { Geometry, Position } from 'geojson';
 import wards from '../../assets/maps/daklak/daklak-wards-render.json';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
 import terrainColorUrl from '../../assets/maps/daklak/daklak-terrain-color.png';
@@ -12,7 +13,7 @@ import terrainMaskUrl from '../../assets/maps/daklak/daklak-terrain-mask.png';
 import terrainNormalUrl from '../../assets/maps/daklak/daklak-terrain-normal.png';
 import terrainMetadata from '../../assets/maps/daklak/daklak-terrain-metadata.json';
 import type { WardCollection } from '../../types/map';
-import { geometryToShapes, projection } from '../../utils/geo';
+import { projection } from '../../utils/geo';
 import { useMapStore } from '../../stores/mapStore';
 
 const data = wards as WardCollection;
@@ -33,6 +34,36 @@ const visibleLabels = Object.entries(labels as LabelMap).reduce<
   return accepted;
 }, []);
 
+function ringContains([longitude, latitude]: [number, number], ring: Position[]) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const [xi, yi] = ring[i];
+    const [xj, yj] = ring[j];
+    if (
+      yi > latitude !== yj > latitude &&
+      longitude < ((xj - xi) * (latitude - yi)) / (yj - yi) + xi
+    )
+      inside = !inside;
+  }
+  return inside;
+}
+
+function geometryContains(point: [number, number], geometry: Geometry): boolean {
+  if (geometry.type === 'GeometryCollection')
+    return geometry.geometries.some((part) => geometryContains(point, part));
+  if (geometry.type !== 'Polygon' && geometry.type !== 'MultiPolygon') return false;
+  const polygons = geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates;
+  return polygons.some(
+    (polygon) =>
+      Boolean(polygon[0]) &&
+      ringContains(point, polygon[0]) &&
+      !polygon.slice(1).some((hole) => ringContains(point, hole)),
+  );
+}
+
+const featureAt = (point: [number, number]) =>
+  data.features.find((feature) => geometryContains(point, feature.geometry));
+
 function TerrainSurface() {
   const [colorMap, heightMap, normalMap, alphaMap] = useTexture([
     terrainColorUrl,
@@ -45,8 +76,34 @@ function TerrainSurface() {
   const southEast = projection([maxLon, minLat])!;
   const width = southEast[0] - northWest[0];
   const height = southEast[1] - northWest[1];
+  const setHovered = useMapStore((state) => state.setHovered);
+  const select = useMapStore((state) => state.select);
+  const codeFromEvent = (event: ThreeEvent<PointerEvent> | ThreeEvent<MouseEvent>) => {
+    if (!event.uv || !projection.invert) return null;
+    const projectedX = northWest[0] + event.uv.x * width;
+    const projectedY = southEast[1] - event.uv.y * height;
+    const coordinate = projection.invert([projectedX, projectedY]);
+    return coordinate ? (featureAt(coordinate)?.properties.code ?? null) : null;
+  };
   return (
-    <mesh position={[(northWest[0] + southEast[0]) / 2, -(northWest[1] + southEast[1]) / 2, 0]}>
+    <mesh
+      position={[(northWest[0] + southEast[0]) / 2, -(northWest[1] + southEast[1]) / 2, 0]}
+      onPointerMove={(event) => {
+        event.stopPropagation();
+        const code = codeFromEvent(event);
+        if (useMapStore.getState().hoveredCode !== code) setHovered(code);
+        document.body.style.cursor = code ? 'pointer' : 'default';
+      }}
+      onPointerOut={() => {
+        setHovered(null);
+        document.body.style.cursor = 'default';
+      }}
+      onClick={(event) => {
+        event.stopPropagation();
+        const code = codeFromEvent(event);
+        if (code) select(useMapStore.getState().selectedCode === code ? null : code);
+      }}
+    >
       <planeGeometry args={[width, height, 192, 160]} />
       <meshStandardMaterial
         map={colorMap}
@@ -64,75 +121,10 @@ function TerrainSurface() {
 }
 
 function MapContent() {
-  const hovered = useMapStore((s) => s.hoveredCode),
-    selected = useMapStore((s) => s.selectedCode),
-    setHovered = useMapStore((s) => s.setHovered),
-    select = useMapStore((s) => s.select),
-    showLabels = useMapStore((s) => s.labelsVisible);
+  const showLabels = useMapStore((s) => s.labelsVisible);
   return (
     <group rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
       <TerrainSurface />
-      {data.features.map((feature) => {
-        const code = feature.properties.code;
-        const active = selected === code,
-          hot = hovered === code;
-        return (
-          <group key={code}>
-            {geometryToShapes(feature.geometry).map((shape, i) => (
-              <mesh
-                key={i}
-                onPointerOver={(e: ThreeEvent<PointerEvent>) => {
-                  e.stopPropagation();
-                  setHovered(code);
-                }}
-                onPointerOut={() => setHovered(null)}
-                onClick={(e: ThreeEvent<MouseEvent>) => {
-                  e.stopPropagation();
-                  select(active ? null : code);
-                }}
-                position={[0, 0, 0.32]}
-              >
-                <extrudeGeometry
-                  args={[
-                    shape,
-                    {
-                      depth: 0.002,
-                      bevelEnabled: false,
-                    },
-                  ]}
-                />
-                <meshStandardMaterial
-                  attach="material-0"
-                  color={
-                    active
-                      ? '#ffbb54'
-                      : hot
-                        ? '#86e6c1'
-                        : feature.properties.type === 'phuong'
-                          ? '#d3a33f'
-                          : '#56d3a5'
-                  }
-                  roughness={0.72}
-                  metalness={0.04}
-                  transparent
-                  opacity={0}
-                  depthWrite={false}
-                  colorWrite={false}
-                />
-                <meshStandardMaterial
-                  attach="material-1"
-                  color={active ? '#8e6120' : hot ? '#317d68' : '#0a4d42'}
-                  roughness={0.9}
-                  transparent
-                  opacity={0}
-                  depthWrite={false}
-                  colorWrite={false}
-                />
-              </mesh>
-            ))}
-          </group>
-        );
-      })}
       {showLabels &&
         visibleLabels.map(([code, label, p]) => {
           return (
