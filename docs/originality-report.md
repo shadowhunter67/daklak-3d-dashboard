@@ -1,6 +1,6 @@
 # Báo cáo tính nguyên bản
 
-Tự triển khai: kiến trúc frontend, nhận diện thị giác, layout responsive, projection adapter, chuyển Polygon/MultiPolygon/hole sang Three Shape, mesh interaction, state store, tooltip/detail, labels, dashboard, mock metric generator, pipeline dissolve/border/label/metadata và validation.
+Tự triển khai: kiến trúc frontend, nhận diện thị giác, layout responsive, projection adapter, chuyển Polygon/MultiPolygon/hole sang Three Shape, terrain grid displacement, pipeline tạo height/normal/hillshade/mask từ DEM, mesh interaction, state store, tooltip/detail, labels, dashboard, mock metric generator, pipeline dissolve/border/label/metadata và validation.
 
 Không có mã reused/adapted từ repo tham khảo. Các thư viện bên thứ ba chỉ được dùng qua public API. Geometry và derived artifacts dùng nguồn `thanglequoc/vietnamese-provinces-database` MIT; nguồn/phạm vi/file tương ứng được ghi trong `ATTRIBUTION.md`.
 

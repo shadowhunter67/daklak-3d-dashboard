@@ -1,13 +1,1 @@
-{
-  "status": "passed",
-  "featureCount": 102,
-  "communeCount": 88,
-  "wardCount": 14,
-  "crs": "EPSG:4326",
-  "bbox": [107.484181, 12.160547, 109.458875, 13.695296],
-  "invalidGeometries": 0,
-  "overlapPairs": 0,
-  "errors": [],
-  "warnings": [],
-  "validationMs": 1963.61
-}
+{"status":"passed","featureCount":102,"communeCount":88,"wardCount":14,"crs":"EPSG:4326","bbox":[107.484181,12.160547,109.458875,13.695296],"invalidGeometries":0,"overlapPairs":0,"errors":[],"warnings":[],"validationMs":1624.92}

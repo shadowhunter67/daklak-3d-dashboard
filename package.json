@@ -12,7 +12,8 @@
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run",
     "validate:data": "python scripts/validate_daklak_data.py",
-    "build:gis": "python scripts/build_daklak_geojson.py"
+    "build:gis": "python scripts/build_daklak_geojson.py",
+    "build:terrain": "python scripts/generate_daklak_terrain.py"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.0",

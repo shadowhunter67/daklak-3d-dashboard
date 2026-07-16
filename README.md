@@ -18,6 +18,7 @@ Yêu cầu Node.js 20+ và Python 3.11+.
 npm install
 python -m pip install -r scripts/requirements.txt
 npm run build:gis
+npm run build:terrain
 npm run validate:data
 npm run dev
 ```
@@ -41,6 +42,7 @@ Clone `thanglequoc/vietnamese-provinces-database` ngang project vào `../referen
 - `daklak-wards.geojson`: 102 geometry chuẩn; `daklak-wards.json` là bản byte-identical và `daklak-wards-render.json` là LOD nhẹ dành cho WebGL.
 - `daklak-outline.geojson`, `daklak-borders.geojson`: dissolve và unique linework.
 - `daklak-labels.json`, `daklak-label-overrides.json`: point-on-surface và override.
+- `daklak-terrain-height.png`, `normal.png`, `color.png`, `mask.png`: terrain SRTM dẫn xuất cho displacement mesh.
 - `daklak-metadata.json`, `daklak-source-summary.json`, `daklak-metrics.json`.
 - `reports/validation-report.json`: bằng chứng validation máy đọc được.
 

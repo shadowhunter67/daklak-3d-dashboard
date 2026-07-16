@@ -49,9 +49,7 @@ export function StatPanel() {
       </div>
       <div className="chart-title">Chỉ số tiếp cận dịch vụ</div>
       <ReactECharts option={option} style={{ height: 105 }} opts={{ renderer: 'svg' }} />
-      <p className="mock-note">
-        Số liệu và chiều cao khối là giả lập, không biểu thị cao độ địa hình thực tế.
-      </p>
+      <p className="mock-note">Địa hình từ DEM SRTM; số liệu dashboard vẫn là dữ liệu giả lập.</p>
     </aside>
   );
 }
