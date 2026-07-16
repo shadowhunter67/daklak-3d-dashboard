@@ -7,7 +7,6 @@ export default defineConfig({
     target: 'es2022',
     rollupOptions: {
       output: {
-        onlyExplicitManualChunks: true,
         manualChunks(id) {
           if (id.includes('/node_modules/three/') || id.includes('\\node_modules\\three\\')) {
             return 'three-vendor';

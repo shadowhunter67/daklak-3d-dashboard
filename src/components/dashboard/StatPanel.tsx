@@ -1,4 +1,4 @@
-import ReactEChartsCore from 'echarts-for-react/lib/core';
+import ReactEChartsCoreImport from 'echarts-for-react/lib/core';
 import { BarChart, type BarSeriesOption } from 'echarts/charts';
 import { GridComponent, type GridComponentOption } from 'echarts/components';
 import * as echarts from 'echarts/core';
@@ -11,6 +11,12 @@ import dashboardData from '../../assets/data/dashboard-sources.json';
 import { useMapStore } from '../../stores/mapStore';
 
 echarts.use([BarChart, GridComponent, SVGRenderer]);
+
+// Vite 8/Rolldown preserves the CommonJS default wrapper from echarts-for-react.
+const ReactEChartsCore =
+  typeof ReactEChartsCoreImport === 'function'
+    ? ReactEChartsCoreImport
+    : (ReactEChartsCoreImport as unknown as { default: typeof ReactEChartsCoreImport }).default;
 
 type ChartOption = ComposeOption<BarSeriesOption | GridComponentOption>;
 

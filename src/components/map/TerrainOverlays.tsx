@@ -107,32 +107,26 @@ export function HeatmapOverlay() {
 export function SelectionOverlay() {
   const selectedCode = useMapStore((state) => state.selectedCode);
   const heightMap = useTexture(terrainHeightUrl);
-  const canvas = useMemo(() => {
+  const texture = useMemo(() => {
     const element = document.createElement('canvas');
     element.width = terrainMetadata.width;
     element.height = terrainMetadata.height;
-    return element;
-  }, []);
-  const texture = useMemo(() => new CanvasTexture(canvas), [canvas]);
-  useEffect(() => {
-    const context = canvas.getContext('2d');
-    if (!context) return;
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    const context = element.getContext('2d');
     const feature = wardData.features.find((item) => item.properties.code === selectedCode);
-    if (feature) {
+    if (context && feature) {
       context.beginPath();
       drawGeometryPath(context, feature.geometry, (position) => {
         const point = projection([position[0], position[1]])!;
         return [
-          ((point[0] - terrainNorthWest[0]) / terrainWidth) * canvas.width,
-          ((point[1] - terrainNorthWest[1]) / terrainHeight) * canvas.height,
+          ((point[0] - terrainNorthWest[0]) / terrainWidth) * element.width,
+          ((point[1] - terrainNorthWest[1]) / terrainHeight) * element.height,
         ];
       });
       context.fillStyle = '#ffffff';
       context.fill('evenodd');
     }
-    texture.needsUpdate = true;
-  }, [canvas, selectedCode, texture]);
+    return new CanvasTexture(element);
+  }, [selectedCode]);
   useEffect(() => () => texture.dispose(), [texture]);
   if (!selectedCode) return null;
   return (
