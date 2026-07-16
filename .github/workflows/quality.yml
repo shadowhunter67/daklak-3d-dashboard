@@ -13,15 +13,60 @@ jobs:
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with: { node-version: 22, cache: npm }
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
-        with: { python-version: '3.12' }
-      - run: npm ci
-      - run: npx playwright install --with-deps chromium webkit
-      - run: python -m pip install -r scripts/requirements.txt
-      - run: npm run security:audit
-      - run: npm run quality
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: scripts/requirements.txt
+      - name: Install npm dependencies
+        run: npm ci
+      - name: Install GIS validators
+        run: python -m pip install -r scripts/requirements.txt
+      - name: Install tested browsers
+        run: npx playwright install --with-deps chromium webkit
+      - name: Lint
+        run: npm run lint
+      - name: Check formatting
+        run: npm run format:check
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Unit tests
+        run: npm test
+      - name: Validate committed GIS artifacts
+        run: npm run validate:data
+      - name: Production build
+        run: npm run build
+      - name: Enforce performance budget
+        run: npm run check:budget
+      - name: Generate build metrics
+        run: npm run build:metrics
+      - name: Production E2E
+        run: npm run test:e2e:prod:built
+      - name: Dependency audit
+        run: npm run security:audit
+      - name: Secret pattern scan
+        run: npm run security:secrets
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: quality-reports-${{ github.run_attempt }}
+          path: |
+            reports/validation-report.json
+            reports/performance-budget.json
+            reports/build-metrics.json
+            reports/build-metrics.md
+          if-no-files-found: error
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          name: production-dist
+          path: dist/
+          if-no-files-found: error
+          retention-days: 3
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: failure()
         with:
-          name: playwright-test-results
-          path: test-results/
+          name: playwright-failure-${{ github.run_attempt }}
+          path: |
+            test-results/
+            playwright-report/
           if-no-files-found: ignore

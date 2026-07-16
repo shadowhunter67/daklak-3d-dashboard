@@ -40,7 +40,9 @@ export function AccessibleDirectory() {
       <div className="directory-heading">
         <div>
           <p className="eyebrow">CHẾ ĐỘ TRUY CẬP 2D</p>
-          <h2 id="directory-title">Danh sách xã, phường</h2>
+          <h2 id="directory-title" tabIndex={-1}>
+            Danh sách xã, phường
+          </h2>
         </div>
         <label>
           <span>Tìm theo tên hoặc mã</span>

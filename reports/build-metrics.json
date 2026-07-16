@@ -1,1 +1,66 @@
-{ "parseAndBuildMs": 8415.66, "features": 102 }
+{
+  "generatedAt": "2026-07-16T13:26:18.413Z",
+  "javascript": {
+    "rawBytes": 2120625,
+    "gzipBytes": 607953,
+    "chunkCount": 6
+  },
+  "css": {
+    "rawBytes": 9137,
+    "gzipBytes": 2846
+  },
+  "images": {
+    "transferBytes": 2813884,
+    "count": 4
+  },
+  "largestAsset": {
+    "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
+    "bytes": 1829459,
+    "gzipBytes": null
+  },
+  "threeChunk": {
+    "file": "assets/three-vendor-DEtWXlOg.js",
+    "bytes": 724618,
+    "gzipBytes": 183282
+  },
+  "echartsChunk": {
+    "file": "assets/StatPanel-kmd3i375.js",
+    "bytes": 503267,
+    "gzipBytes": 170528
+  },
+  "geometry": {
+    "canonical": {
+      "file": "daklak-wards.geojson",
+      "bytes": 10906132
+    },
+    "render": {
+      "file": "daklak-wards-render.json",
+      "bytes": 553838
+    }
+  },
+  "budget": {
+    "status": "passed",
+    "limits": {
+      "totalJavaScriptBytes": 2200000,
+      "totalJavaScriptGzipBytes": 650000,
+      "largestJavaScriptGzipBytes": 250000,
+      "totalTextureBytes": 3000000,
+      "largestAssetBytes": 1900000,
+      "totalBuildBytes": 5500000
+    },
+    "actual": {
+      "totalJavaScriptBytes": 2120625,
+      "totalJavaScriptGzipBytes": 607953,
+      "largestJavaScriptGzipBytes": 183282,
+      "totalTextureBytes": 2813884,
+      "largestAssetBytes": 1829459,
+      "totalBuildBytes": 4944838
+    },
+    "failures": []
+  },
+  "unavailableInCi": [
+    "fps",
+    "gpuMemory",
+    "reliableLcp"
+  ]
+}

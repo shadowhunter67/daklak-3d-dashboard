@@ -1,11 +1,10 @@
 """Build static frontend artifacts from the licensed upstream ward files."""
 from __future__ import annotations
-from datetime import date
 import time
 from shapely import get_parts, make_valid
 from shapely.geometry import MultiPolygon, Polygon
 from shapely.ops import unary_union
-from gis_common import OUTPUT, REPORTS, read_source, write_json, geo_mapping
+from gis_common import OUTPUT, REPORTS, SOURCE_CONFIG, read_source, write_json, geo_mapping
 
 def main() -> None:
     started = time.perf_counter()
@@ -18,8 +17,6 @@ def main() -> None:
     output_data = data[columns].copy()
     OUTPUT.mkdir(parents=True, exist_ok=True)
     output_data.to_file(OUTPUT / "daklak-wards.geojson", driver="GeoJSON", coordinate_precision=6)
-    # Vite imports JSON natively; retain the canonical .geojson and a byte-identical module copy.
-    (OUTPUT / "daklak-wards.json").write_bytes((OUTPUT / "daklak-wards.geojson").read_bytes())
     # Visual-only LOD: canonical GIS above remains unchanged and is what validation checks.
     render_data = output_data.copy()
     def render_geometry(geometry):
@@ -43,13 +40,13 @@ def main() -> None:
     minx, miny, maxx, maxy = output_data.total_bounds
     commune_count = int((output_data["type"] == "xa").sum())
     ward_count = int((output_data["type"] == "phuong").sum())
-    metadata = {"provinceCode":"66","provinceName":"Đắk Lắk","totalUnits":len(output_data),"communeCount":commune_count,"wardCount":ward_count,"bbox":[round(x,6) for x in [minx,miny,maxx,maxy]],"center":[round((minx+maxx)/2,6),round((miny+maxy)/2,6)],"coordinateSystem":"EPSG:4326","generatedAt":date.today().isoformat(),"disclaimer":"Dữ liệu trực quan tham khảo; không dùng để xác lập địa giới pháp lý."}
+    metadata = {"provinceCode":"66","provinceName":"Đắk Lắk","totalUnits":len(output_data),"communeCount":commune_count,"wardCount":ward_count,"bbox":[round(x,6) for x in [minx,miny,maxx,maxy]],"center":[round((minx+maxx)/2,6),round((miny+maxy)/2,6)],"coordinateSystem":"EPSG:4326","generatedAt":SOURCE_CONFIG["snapshotDate"],"disclaimer":"Dữ liệu trực quan tham khảo; không dùng để xác lập địa giới pháp lý."}
     write_json(OUTPUT / "daklak-metadata.json", metadata)
-    write_json(OUTPUT / "daklak-source-summary.json", {"geometrySource":"thanglequoc/vietnamese-provinces-database","geometryLicense":"MIT","legalNames":"Nghị quyết 1660/NQ-UBTVQH15","unitCodes":"Quyết định 19/2025/QĐ-TTg","sourceSnapshot":"1253e2ad7933bcc59a5b68a03a81b532cd939e3e"})
+    write_json(OUTPUT / "daklak-source-summary.json", {"geometrySource":SOURCE_CONFIG["repositoryUrl"],"geometryLicense":"MIT","legalNames":"Nghị quyết 1660/NQ-UBTVQH15","unitCodes":"Quyết định 19/2025/QĐ-TTg","sourceSnapshot":SOURCE_CONFIG["commit"],"sourceChecksum":SOURCE_CONFIG["sha256"]})
     metrics = {row.code:{"population":int(6500+(int(row.code)*791)%61500),"coverage":round(45+(int(row.code)*17)%510/10,1),"growth":round(-1.5+(int(row.code)*13)%80/10,1)} for row in output_data.itertuples()}
     write_json(OUTPUT / "daklak-metrics.json", metrics)
     REPORTS.mkdir(exist_ok=True)
-    write_json(REPORTS / "build-metrics.json", {"parseAndBuildMs":round((time.perf_counter()-started)*1000,2),"features":len(output_data)})
+    write_json(REPORTS / "gis-build-metrics.json", {"parseAndBuildMs":round((time.perf_counter()-started)*1000,2),"features":len(output_data)})
     print(f"Built {len(output_data)} units in {time.perf_counter()-started:.2f}s")
 
 if __name__ == "__main__": main()

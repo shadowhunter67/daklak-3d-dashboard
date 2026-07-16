@@ -290,6 +290,8 @@ h1 i {
 }
 .directory-heading input:focus-visible,
 .directory-row:focus-visible,
+.map-stage:focus-visible,
+#directory-title:focus-visible,
 button:focus-visible,
 a:focus-visible {
   outline: 2px solid #f0cf7a;

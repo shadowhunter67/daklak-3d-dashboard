@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import labels from '../assets/maps/daklak/daklak-labels.json';
+import { parseDashboardUrl, type DashboardUrlState } from '../utils/dashboardUrl';
 
 const validAdministrativeCodes = new Set(Object.keys(labels));
-const initialViewMode =
-  typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === '2d'
-    ? 'table'
-    : '3d';
-interface MapState {
+const initialUrlState = parseDashboardUrl(
+  typeof window === 'undefined' ? '' : window.location.search,
+  validAdministrativeCodes,
+);
+export interface MapState {
   dataMode: 'overview' | 'energy' | 'heatmap';
   viewMode: '3d' | 'table';
   hoveredCode: string | null;
@@ -21,12 +22,13 @@ interface MapState {
   setReducedMotion: (reduced: boolean) => void;
   changeDataMode: (mode: MapState['dataMode']) => void;
   setViewMode: (mode: MapState['viewMode']) => void;
+  applyUrlState: (state: DashboardUrlState) => void;
 }
 export const useMapStore = create<MapState>((set) => ({
-  dataMode: 'overview',
-  viewMode: initialViewMode,
+  dataMode: initialUrlState.dataMode,
+  viewMode: initialUrlState.viewMode,
   hoveredCode: null,
-  selectedCode: null,
+  selectedCode: initialUrlState.selectedCode,
   labelsVisible: true,
   autoRotate: false,
   reducedMotion: false,
@@ -43,4 +45,6 @@ export const useMapStore = create<MapState>((set) => ({
     set((state) => ({ reducedMotion, autoRotate: reducedMotion ? false : state.autoRotate })),
   changeDataMode: (dataMode) => set({ dataMode, hoveredCode: null }),
   setViewMode: (viewMode) => set({ viewMode, hoveredCode: null, autoRotate: false }),
+  applyUrlState: ({ viewMode, dataMode, selectedCode }) =>
+    set({ viewMode, dataMode, selectedCode, hoveredCode: null, autoRotate: false }),
 }));
