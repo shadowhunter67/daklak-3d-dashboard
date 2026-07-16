@@ -3,7 +3,7 @@ from __future__ import annotations
 import io, json, math, urllib.request
 from pathlib import Path
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageOps
 from shapely.ops import unary_union
 from gis_common import OUTPUT, read_source, write_json
 
@@ -60,10 +60,24 @@ def main() -> None:
     normals=np.dstack((-gx*strength,-gy*strength,np.ones_like(normalized)))
     normals/=np.linalg.norm(normals,axis=2,keepdims=True)
     Image.fromarray(((normals*.5+.5)*255).astype(np.uint8)).save(OUTPUT/"daklak-terrain-normal.png",optimize=True)
-    shade=np.clip(.62-gx*2.2-gy*2.8,.28,1)
-    low_color=np.array([18,91,70]); high_color=np.array([203,176,92])
-    color=low_color[None,None,:]*(1-normalized[:,:,None])+high_color[None,None,:]*normalized[:,:,None]
-    color=np.clip(color*shade[:,:,None],0,255).astype(np.uint8)
+    # Multi-scale shaded relief: broad landforms plus fine ridges. This keeps the
+    # surface readable from both the default camera and low grazing angles.
+    broad = np.asarray(
+        height_image.filter(ImageFilter.GaussianBlur(radius=12)), dtype=np.float32
+    ) / 255
+    fine = np.clip(normalized - broad, -0.18, 0.18)
+    broad_gy, broad_gx = np.gradient(broad)
+    north_west = np.clip(.76-broad_gx*5.6-broad_gy*6.4, .22, 1.18)
+    south_east = np.clip(.78+broad_gx*2.4+broad_gy*2.0, .42, 1.08)
+    relief = np.clip(north_west*.72+south_east*.28+fine*2.8, .24, 1.16)
+    low_color=np.array([17,77,55]); middle_color=np.array([63,116,62]); high_color=np.array([187,157,82])
+    lower=np.clip(normalized*2,0,1)[:,:,None]
+    upper=np.clip((normalized-.5)*2,0,1)[:,:,None]
+    color=low_color[None,None,:]*(1-lower)+middle_color[None,None,:]*lower
+    color=color*(1-upper)+high_color[None,None,:]*upper
+    color=np.clip(color*relief[:,:,None],0,255).astype(np.uint8)
+    terrain_base = Image.fromarray(color)
+    terrain_base = ImageEnhance.Contrast(ImageOps.autocontrast(terrain_base, cutoff=1)).enhance(1.12)
     mask=Image.new("L",(SIZE,SIZE),0); draw=ImageDraw.Draw(mask)
     def point(coord):
         px,py=lonlat_to_pixel(coord[0],coord[1]); return ((px-left)/(right-left)*SIZE,(py-top)/(bottom-top)*SIZE)
@@ -71,7 +85,7 @@ def main() -> None:
         for polygon in polygon_rings(geometry):
             draw.polygon([point(c) for c in polygon.exterior.coords],fill=255)
             for interior in polygon.interiors: draw.polygon([point(c) for c in interior.coords],fill=0)
-    terrain_image = Image.fromarray(color)
+    terrain_image = terrain_base
     border_draw = ImageDraw.Draw(terrain_image)
     for geometry in data.geometry:
         for polygon in polygon_rings(geometry):
@@ -80,7 +94,7 @@ def main() -> None:
         border_draw.line([point(c) for c in polygon.exterior.coords], fill=(226, 187, 85), width=4, joint="curve")
     terrain_image.save(OUTPUT/"daklak-terrain-color.png",quality=90,optimize=True)
     mask.save(OUTPUT/"daklak-terrain-mask.png",optimize=True)
-    write_json(OUTPUT/"daklak-terrain-metadata.json",{"source":"Mapzen Terrain Tiles / AWS Open Data","sourceUrl":"https://registry.opendata.aws/terrain-tiles/","primaryElevationSource":"NASA SRTM","zoom":ZOOM,"width":SIZE,"height":SIZE,"bbox":[min_lon,min_lat,max_lon,max_lat],"elevationMinMeters":round(low,1),"elevationMaxMeters":round(high,1)})
+    write_json(OUTPUT/"daklak-terrain-metadata.json",{"source":"Mapzen Terrain Tiles / AWS Open Data","sourceUrl":"https://registry.opendata.aws/terrain-tiles/","primaryElevationSource":"NASA SRTM","rendering":"multi-scale multidirectional shaded relief","zoom":ZOOM,"width":SIZE,"height":SIZE,"bbox":[min_lon,min_lat,max_lon,max_lat],"elevationMinMeters":round(low,1),"elevationMaxMeters":round(high,1)})
     print(f"Terrain generated: {low:.0f}–{high:.0f} m")
 
 if __name__ == "__main__": main()

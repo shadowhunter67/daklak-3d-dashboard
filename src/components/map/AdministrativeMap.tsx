@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber';
-import { Html, OrbitControls, useTexture } from '@react-three/drei';
+import { ContactShadows, Html, OrbitControls, useTexture } from '@react-three/drei';
 import type { ThreeEvent } from '@react-three/fiber';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
@@ -276,7 +276,17 @@ export function AdministrativeMap() {
       <color attach="background" args={['#071918']} />
       <hemisphereLight args={['#b9f0dd', '#031b19', 1.35]} />
       <directionalLight position={[-6, 9, 7]} intensity={3.8} color="#fff0c2" />
+      <gridHelper args={[18, 36, '#315e57', '#143633']} position={[0, -0.055, 0]} />
       <MapContent />
+      <ContactShadows
+        position={[0, -0.045, 0]}
+        opacity={0.32}
+        scale={12}
+        blur={2.6}
+        far={4}
+        resolution={256}
+        color="#000d0c"
+      />
       <CameraControls />
     </Canvas>
   );
