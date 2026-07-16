@@ -1,4 +1,4 @@
-import wards from '../../assets/maps/daklak/daklak-wards.json';
+import wards from '../../assets/maps/daklak/daklak-wards-render.json';
 import metrics from '../../assets/maps/daklak/daklak-metrics.json';
 import type { WardCollection, Metric } from '../../types/map';
 import { formatNumber } from '../../utils/geo';

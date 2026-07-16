@@ -1,7 +1,7 @@
 import { Canvas } from '@react-three/fiber';
-import { Environment, Html, MapControls } from '@react-three/drei';
+import { Html, MapControls } from '@react-three/drei';
 import type { ThreeEvent } from '@react-three/fiber';
-import wards from '../../assets/maps/daklak/daklak-wards.json';
+import wards from '../../assets/maps/daklak/daklak-wards-render.json';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
 import type { WardCollection } from '../../types/map';
 import { geometryToShapes, projection } from '../../utils/geo';
@@ -40,18 +40,13 @@ function MapContent() {
                   select(active ? null : code);
                 }}
                 position={[0, 0, active ? 0.16 : hot ? 0.1 : 0]}
-                castShadow
-                receiveShadow
               >
                 <extrudeGeometry
                   args={[
                     shape,
                     {
                       depth: 0.22,
-                      bevelEnabled: true,
-                      bevelSize: 0.012,
-                      bevelThickness: 0.025,
-                      bevelSegments: 1,
+                      bevelEnabled: false,
                     },
                   ]}
                 />
@@ -90,17 +85,17 @@ function MapContent() {
 export function AdministrativeMap() {
   return (
     <Canvas
-      shadows
+      dpr={[1, 1.35]}
+      gl={{ antialias: true, powerPreference: 'high-performance' }}
       orthographic
       camera={{ position: [0, 13, 16], zoom: 55, near: 0.1, far: 100 }}
       onPointerMissed={() => useMapStore.getState().select(null)}
     >
       <color attach="background" args={['#071918']} />
       <ambientLight intensity={1.4} />
-      <directionalLight castShadow position={[-5, 10, 8]} intensity={3.2} color="#fff4cf" />
+      <directionalLight position={[-5, 10, 8]} intensity={3.2} color="#fff4cf" />
       <MapContent />
       <MapControls enableRotate minZoom={28} maxZoom={110} maxPolarAngle={Math.PI / 2.25} />
-      <Environment preset="city" />
     </Canvas>
   );
 }

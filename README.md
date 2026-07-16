@@ -38,7 +38,7 @@ Clone `thanglequoc/vietnamese-provinces-database` ngang project vào `../referen
 
 ## Dữ liệu đầu ra
 
-- `daklak-wards.geojson`: 102 geometry chuẩn; `daklak-wards.json` là bản module byte-identical cho Vite.
+- `daklak-wards.geojson`: 102 geometry chuẩn; `daklak-wards.json` là bản byte-identical và `daklak-wards-render.json` là LOD nhẹ dành cho WebGL.
 - `daklak-outline.geojson`, `daklak-borders.geojson`: dissolve và unique linework.
 - `daklak-labels.json`, `daklak-label-overrides.json`: point-on-surface và override.
 - `daklak-metadata.json`, `daklak-source-summary.json`, `daklak-metrics.json`.

@@ -2,7 +2,8 @@
 from __future__ import annotations
 from datetime import date
 import time
-from shapely import make_valid
+from shapely import get_parts, make_valid
+from shapely.geometry import MultiPolygon, Polygon
 from shapely.ops import unary_union
 from gis_common import OUTPUT, REPORTS, read_source, write_json, geo_mapping
 
@@ -19,6 +20,15 @@ def main() -> None:
     output_data.to_file(OUTPUT / "daklak-wards.geojson", driver="GeoJSON", coordinate_precision=6)
     # Vite imports JSON natively; retain the canonical .geojson and a byte-identical module copy.
     (OUTPUT / "daklak-wards.json").write_bytes((OUTPUT / "daklak-wards.geojson").read_bytes())
+    # Visual-only LOD: canonical GIS above remains unchanged and is what validation checks.
+    render_data = output_data.copy()
+    def render_geometry(geometry):
+        polygon_parts = [part for part in get_parts(geometry) if isinstance(part, (Polygon, MultiPolygon))]
+        if not polygon_parts:
+            return Polygon()
+        return unary_union(polygon_parts).simplify(0.0005, preserve_topology=True)
+    render_data["geometry"] = render_data.geometry.map(render_geometry)
+    render_data.to_file(OUTPUT / "daklak-wards-render.json", driver="GeoJSON", coordinate_precision=5)
     outline = unary_union(list(output_data.geometry))
     write_json(OUTPUT / "daklak-outline.geojson", {"type":"FeatureCollection","features":[{"type":"Feature","properties":{"provinceCode":"66"},"geometry":geo_mapping(outline)}]})
     boundaries = unary_union([geom.boundary for geom in output_data.geometry])
