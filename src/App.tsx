@@ -1,14 +1,39 @@
 import { AdministrativeMap } from './components/map/AdministrativeMap';
 import { DetailPanel } from './components/dashboard/DetailPanel';
 import { StatPanel } from './components/dashboard/StatPanel';
+import { AccessibleDirectory } from './components/dashboard/AccessibleDirectory';
 import { useMapStore } from './stores/mapStore';
+import { datasetManifest, datasetManifestIssues, formatSnapshotDate } from './data/datasetManifest';
+import { useEffect, useState } from 'react';
 export default function App() {
+  const [reducedMotion, setReducedMotion] = useState(false);
   const toggle = useMapStore((s) => s.toggleLabels),
     visible = useMapStore((s) => s.labelsVisible),
     autoRotate = useMapStore((s) => s.autoRotate),
     toggleAutoRotate = useMapStore((s) => s.toggleAutoRotate),
     dataMode = useMapStore((s) => s.dataMode),
-    setDataMode = useMapStore((s) => s.setDataMode);
+    changeDataMode = useMapStore((s) => s.changeDataMode),
+    viewMode = useMapStore((s) => s.viewMode),
+    setViewMode = useMapStore((s) => s.setViewMode);
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => {
+      setReducedMotion(media.matches);
+      if (media.matches && useMapStore.getState().autoRotate)
+        useMapStore.setState({ autoRotate: false });
+    };
+    update();
+    media.addEventListener('change', update);
+    return () => media.removeEventListener('change', update);
+  }, []);
+  if (datasetManifestIssues.length) {
+    return (
+      <main className="app-fallback" role="alert">
+        <h1>Dữ liệu cấu hình không hợp lệ</h1>
+        <p>{datasetManifestIssues.join('. ')}</p>
+      </main>
+    );
+  }
   return (
     <main className="app-shell">
       <header>
@@ -28,24 +53,45 @@ export default function App() {
             <button
               key={mode}
               className={dataMode === mode ? 'active' : ''}
-              onClick={() => setDataMode(mode as typeof dataMode)}
+              aria-pressed={dataMode === mode}
+              onClick={() => changeDataMode(mode as typeof dataMode)}
             >
               {label}
             </button>
           ))}
         </nav>
         <div className="header-meta">
-          <span>102 xã/phường</span>
-          <button onClick={toggleAutoRotate} aria-pressed={autoRotate} title="Xoay bản đồ 360 độ">
-            {autoRotate ? 'Dừng xoay' : 'Xoay 360°'}
+          <span>{datasetManifest.administrativeUnitCount} xã/phường</span>
+          <button
+            onClick={() => setViewMode(viewMode === '3d' ? 'table' : '3d')}
+            aria-pressed={viewMode === 'table'}
+          >
+            {viewMode === '3d' ? 'Danh sách 2D' : 'Bản đồ 3D'}
+          </button>
+          <button
+            onClick={toggleAutoRotate}
+            aria-pressed={autoRotate}
+            disabled={reducedMotion}
+            title={reducedMotion ? 'Đã tắt do tùy chọn giảm chuyển động' : 'Xoay bản đồ 360 độ'}
+          >
+            {reducedMotion ? 'Đã giảm chuyển động' : autoRotate ? 'Dừng xoay' : 'Xoay 360°'}
           </button>
           <button onClick={toggle} aria-pressed={visible}>
             {visible ? 'Ẩn' : 'Hiện'} nhãn trung tâm
           </button>
         </div>
       </header>
-      <section className="map-stage" aria-label="Bản đồ hành chính 3D tỉnh Đắk Lắk">
+      <section
+        className="map-stage"
+        aria-label="Bản đồ hành chính 3D tỉnh Đắk Lắk"
+        hidden={viewMode !== '3d'}
+      >
         <AdministrativeMap />
+        {datasetManifest.metricStatus[dataMode] === 'illustrative' && (
+          <div className="illustrative-watermark" aria-label="Chế độ đang dùng dữ liệu minh họa">
+            DỮ LIỆU MINH HỌA
+          </div>
+        )}
         <div className="map-caption">
           <span>12°39′ BẮC · 108°02′ ĐÔNG</span>
           <p>Từ cao nguyên bazan đến duyên hải Phú Yên</p>
@@ -55,20 +101,22 @@ export default function App() {
           <i>↑</i>
         </div>
       </section>
-      <StatPanel />
-      <DetailPanel />
+      {viewMode === '3d' ? (
+        <>
+          <StatPanel />
+          <DetailPanel />
+        </>
+      ) : (
+        <AccessibleDirectory />
+      )}
       <footer>
         <span title="Contains modified Copernicus Sentinel data 2016">SENTINEL-2 · EOX</span>
         <p>
           {dataMode === 'overview' ? (
             <>
               Chỉ tiêu cấp tỉnh:{' '}
-              <a
-                href="https://daklak.gov.vn/vi/-/hop-bao-cong-bo-so-lieu-thong-ke-kinh-te-xa-hoi-tinh-ak-lak-nam-2025"
-                target="_blank"
-                rel="noreferrer"
-              >
-                nguồn công bố 2025
+              <a href={datasetManifest.sourceUrl} target="_blank" rel="noreferrer">
+                nguồn công bố {datasetManifest.sourceVersion}
               </a>{' '}
               · Chỉ tiêu cấp xã: dữ liệu minh họa.
             </>
@@ -76,7 +124,9 @@ export default function App() {
             'Lớp chuyên đề đang dùng dữ liệu minh họa có seed cố định.'
           )}
         </p>
-        <span>SNAPSHOT 12.07.2026</span>
+        <span title={`Phiên bản cache ${datasetManifest.cacheVersion}`}>
+          SNAPSHOT {formatSnapshotDate(datasetManifest.snapshotDate)}
+        </span>
       </footer>
     </main>
   );

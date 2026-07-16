@@ -38,8 +38,15 @@ npm run lint
 npm run format:check
 npm run typecheck
 npm test
+npx playwright install chromium
+npm run test:e2e
 npm run build
+npm run check:budget
 ```
+
+Playwright chạy smoke test và visual regression trên hai cấu hình Chromium desktop/mobile. Chỉ dùng `npm run test:e2e:update` khi thay đổi giao diện là có chủ đích và cần cập nhật ảnh baseline.
+
+Hoặc chạy toàn bộ bằng `npm run quality`. Ngân sách build được lưu tại `reports/performance-budget.json` và chặn tăng trưởng ngoài ý muốn của JavaScript/texture trong CI.
 
 ## Xây lại GIS
 
@@ -60,4 +67,6 @@ Tên/số lượng theo Nghị quyết 1660/NQ-UBTVQH15; mã theo Quyết địn
 
 ## Giới hạn và roadmap
 
-Geometry là dữ liệu mở tham khảo, chưa được cơ quan địa chính chứng nhận. Chưa có tile LOD, thống kê chính thức, kiểm thử trình duyệt đa thiết bị hoặc label collision solver động. Roadmap: Draco/TopoJSON, worker geometry cache, Playwright visual regression, nguồn thống kê có version và chế độ 2D accessible.
+Geometry là dữ liệu mở tham khảo, chưa được cơ quan địa chính chứng nhận. Dashboard đã có tìm kiếm không dấu theo tên/mã, danh sách 2D accessible đồng bộ selection, điều hướng bàn phím, reduced-motion, fallback WebGL, smoke test và visual regression Chromium desktop/mobile. Manifest gắn version nguồn GIS với ngày sinh artifact; CI kiểm tra dữ liệu và performance budget.
+
+Các phần còn phụ thuộc môi trường ngoài repo: kiểm thử Safari/iOS và GPU thật; nhập số liệu vận hành chính thức có chủ sở hữu/provenance; runtime telemetry cần một dịch vụ thu thập và chính sách quyền riêng tư. TopoJSON/worker chỉ nên triển khai khi profiling cho thấy geometry/hit-test là nút thắt; hiện hit-test đã dùng bounding-box trước point-in-polygon và dữ liệu chỉ có 102 đơn vị.

@@ -1,6 +1,8 @@
 references/
 node_modules/
 dist/
+playwright-report/
+test-results/
 .env
 __pycache__/
 *.pyc

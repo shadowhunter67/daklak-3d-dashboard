@@ -2,6 +2,7 @@ import { geoMercator } from 'd3-geo';
 import { Shape, Vector2 } from 'three';
 import type { GeoProjection } from 'd3-geo';
 import type { Geometry, Position } from 'geojson';
+import type { UnitType } from '../types/map';
 
 export const projection: GeoProjection = geoMercator()
   .center([108.5, 12.7])
@@ -28,3 +29,4 @@ export function geometryToShapes(geometry: Geometry): Shape[] {
   });
 }
 export const formatNumber = (value: number) => new Intl.NumberFormat('vi-VN').format(value);
+export const formatUnitType = (type: UnitType) => (type === 'phuong' ? 'Phường' : 'Xã');

@@ -1,14 +1,24 @@
-import ReactECharts from 'echarts-for-react';
+import ReactEChartsCore from 'echarts-for-react/lib/core';
+import { BarChart, type BarSeriesOption } from 'echarts/charts';
+import { GridComponent, type GridComponentOption } from 'echarts/components';
+import * as echarts from 'echarts/core';
+import { SVGRenderer } from 'echarts/renderers';
+import type { ComposeOption } from 'echarts/core';
 import metadata from '../../assets/maps/daklak/daklak-metadata.json';
 import metrics from '../../assets/maps/daklak/daklak-metrics.json';
 import { formatNumber } from '../../utils/geo';
 import dashboardData from '../../assets/data/dashboard-sources.json';
 import { useMapStore } from '../../stores/mapStore';
+
+echarts.use([BarChart, GridComponent, SVGRenderer]);
+
+type ChartOption = ComposeOption<BarSeriesOption | GridComponentOption>;
+
 export function StatPanel() {
   const dataMode = useMapStore((state) => state.dataMode);
   const values = Object.values(metrics);
   const population = values.reduce((s, v) => s + v.population, 0);
-  const option = {
+  const option: ChartOption = {
     backgroundColor: 'transparent',
     grid: { left: 4, right: 5, top: 8, bottom: 18, containLabel: true },
     xAxis: {
@@ -108,7 +118,12 @@ export function StatPanel() {
             ? 'Cường độ phân bố'
             : 'Chỉ số tiếp cận dịch vụ'}
       </div>
-      <ReactECharts option={option} style={{ height: 105 }} opts={{ renderer: 'svg' }} />
+      <ReactEChartsCore
+        echarts={echarts}
+        option={option}
+        style={{ height: 105 }}
+        opts={{ renderer: 'svg' }}
+      />
       <p className="mock-note">
         {dataMode === 'overview'
           ? `GRDP và doanh nghiệp: ${dashboardData.overview.sourceName}. Dân số cấp xã (${formatNumber(population)}) là dữ liệu minh họa.`
