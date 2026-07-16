@@ -13,6 +13,18 @@ type LabelMap = Record<
   { name: string; longitude: number; latitude: number; priority: number }
 >;
 
+const visibleLabels = Object.entries(labels as LabelMap).reduce<
+  Array<[string, LabelMap[string], [number, number]]>
+>((accepted, [code, label]) => {
+  if (label.priority !== 1) return accepted;
+  const point = projection([label.longitude, label.latitude])! as [number, number];
+  const isFarEnough = accepted.every(
+    ([, , other]) => Math.hypot(point[0] - other[0], point[1] - other[1]) > 0.72,
+  );
+  if (isFarEnough) accepted.push([code, label, point]);
+  return accepted;
+}, []);
+
 function MapContent() {
   const hovered = useMapStore((s) => s.hoveredCode),
     selected = useMapStore((s) => s.selectedCode),
@@ -39,18 +51,19 @@ function MapContent() {
                   e.stopPropagation();
                   select(active ? null : code);
                 }}
-                position={[0, 0, active ? 0.16 : hot ? 0.1 : 0]}
+                position={[0, 0, active ? 0.24 : hot ? 0.12 : 0]}
               >
                 <extrudeGeometry
                   args={[
                     shape,
                     {
-                      depth: 0.22,
+                      depth: active ? 0.72 : 0.58,
                       bevelEnabled: false,
                     },
                   ]}
                 />
                 <meshStandardMaterial
+                  attach="material-0"
                   color={
                     active
                       ? '#ffbb54'
@@ -61,7 +74,12 @@ function MapContent() {
                           : '#17685d'
                   }
                   roughness={0.72}
-                  metalness={0.08}
+                  metalness={0.04}
+                />
+                <meshStandardMaterial
+                  attach="material-1"
+                  color={active ? '#8e6120' : hot ? '#317d68' : '#083f39'}
+                  roughness={0.9}
                 />
               </mesh>
             ))}
@@ -69,16 +87,13 @@ function MapContent() {
         );
       })}
       {showLabels &&
-        Object.entries(labels as LabelMap)
-          .filter(([, v]) => v.priority === 1)
-          .map(([code, label]) => {
-            const p = projection([label.longitude, label.latitude])!;
-            return (
-              <Html key={code} position={[p[0], -p[1], 0.4]} transform sprite distanceFactor={14}>
-                <span className="map-label">{label.name}</span>
-              </Html>
-            );
-          })}
+        visibleLabels.map(([code, label, p]) => {
+          return (
+            <Html key={code} position={[p[0], -p[1], 0.78]} transform sprite distanceFactor={7}>
+              <span className="map-label">{label.name}</span>
+            </Html>
+          );
+        })}
     </group>
   );
 }
@@ -88,12 +103,12 @@ export function AdministrativeMap() {
       dpr={[1, 1.35]}
       gl={{ antialias: true, powerPreference: 'high-performance' }}
       orthographic
-      camera={{ position: [0, 13, 16], zoom: 55, near: 0.1, far: 100 }}
+      camera={{ position: [0, 8.5, 15.5], zoom: 58, near: 0.1, far: 100 }}
       onPointerMissed={() => useMapStore.getState().select(null)}
     >
       <color attach="background" args={['#071918']} />
-      <ambientLight intensity={1.4} />
-      <directionalLight position={[-5, 10, 8]} intensity={3.2} color="#fff4cf" />
+      <hemisphereLight args={['#b9f0dd', '#031b19', 1.35]} />
+      <directionalLight position={[-6, 9, 7]} intensity={3.8} color="#fff0c2" />
       <MapContent />
       <MapControls enableRotate minZoom={28} maxZoom={110} maxPolarAngle={Math.PI / 2.25} />
     </Canvas>

@@ -260,12 +260,13 @@ h1 i {
 }
 .map-label {
   white-space: nowrap;
-  background: #071918cc;
-  border: 1px solid #d3b25e88;
+  background: #071918e8;
+  border: 1px solid #d3b25e70;
   border-radius: 2px;
   padding: 3px 5px;
   color: #fff2c7;
-  font-size: 7px;
+  font-size: 6px;
+  box-shadow: 0 3px 12px #0009;
   pointer-events: none;
 }
 footer {
