@@ -4,7 +4,9 @@ import { StatPanel } from './components/dashboard/StatPanel';
 import { useMapStore } from './stores/mapStore';
 export default function App() {
   const toggle = useMapStore((s) => s.toggleLabels),
-    visible = useMapStore((s) => s.labelsVisible);
+    visible = useMapStore((s) => s.labelsVisible),
+    autoRotate = useMapStore((s) => s.autoRotate),
+    toggleAutoRotate = useMapStore((s) => s.toggleAutoRotate);
   return (
     <main className="app-shell">
       <header>
@@ -17,6 +19,9 @@ export default function App() {
         </div>
         <div className="header-meta">
           <span>102 miền đất</span>
+          <button onClick={toggleAutoRotate} aria-pressed={autoRotate} title="Xoay bản đồ 360 độ">
+            {autoRotate ? 'Dừng xoay' : 'Xoay 360°'}
+          </button>
           <button onClick={toggle} aria-pressed={visible}>
             {visible ? 'Ẩn' : 'Hiện'} nhãn
           </button>

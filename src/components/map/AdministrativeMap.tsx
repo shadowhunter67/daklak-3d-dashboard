@@ -140,6 +140,7 @@ function MapContent() {
   );
 }
 export function AdministrativeMap() {
+  const autoRotate = useMapStore((state) => state.autoRotate);
   return (
     <Canvas
       dpr={[1, 1.35]}
@@ -152,7 +153,15 @@ export function AdministrativeMap() {
       <hemisphereLight args={['#b9f0dd', '#031b19', 1.35]} />
       <directionalLight position={[-6, 9, 7]} intensity={3.8} color="#fff0c2" />
       <MapContent />
-      <MapControls enableRotate minZoom={60} maxZoom={340} maxPolarAngle={Math.PI / 2.25} />
+      <MapControls
+        enableRotate
+        autoRotate={autoRotate}
+        autoRotateSpeed={0.7}
+        minZoom={60}
+        maxZoom={340}
+        minPolarAngle={Math.PI / 7}
+        maxPolarAngle={Math.PI / 2.15}
+      />
     </Canvas>
   );
 }
