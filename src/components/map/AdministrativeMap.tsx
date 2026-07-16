@@ -42,13 +42,18 @@ const heatPoints = Object.entries(metrics)
     };
   });
 
+const [terrainMinLon, terrainMinLat, terrainMaxLon, terrainMaxLat] = terrainMetadata.bbox;
+const terrainNorthWest = projection([terrainMinLon, terrainMaxLat])!;
+const terrainSouthEast = projection([terrainMaxLon, terrainMinLat])!;
+const terrainWidth = terrainSouthEast[0] - terrainNorthWest[0];
+const terrainHeight = terrainSouthEast[1] - terrainNorthWest[1];
+
 function HeatmapTerrainOverlay() {
   const [heightMap, terrainMask] = useTexture([terrainHeightUrl, terrainMaskUrl]);
-  const [minLon, minLat, maxLon, maxLat] = terrainMetadata.bbox;
-  const northWest = projection([minLon, maxLat])!;
-  const southEast = projection([maxLon, minLat])!;
-  const width = southEast[0] - northWest[0];
-  const height = southEast[1] - northWest[1];
+  const northWest = terrainNorthWest;
+  const southEast = terrainSouthEast;
+  const width = terrainWidth;
+  const height = terrainHeight;
   const texture = useMemo(() => {
     const canvas = document.createElement('canvas');
     canvas.width = terrainMetadata.width;
@@ -165,11 +170,10 @@ function SelectedTerrainOverlay() {
     return element;
   }, []);
   const selectionTexture = useMemo(() => new CanvasTexture(canvas), [canvas]);
-  const [minLon, minLat, maxLon, maxLat] = terrainMetadata.bbox;
-  const northWest = projection([minLon, maxLat])!;
-  const southEast = projection([maxLon, minLat])!;
-  const width = southEast[0] - northWest[0];
-  const height = southEast[1] - northWest[1];
+  const northWest = terrainNorthWest;
+  const southEast = terrainSouthEast;
+  const width = terrainWidth;
+  const height = terrainHeight;
   useEffect(() => {
     const context = canvas.getContext('2d');
     if (!context) return;
@@ -193,7 +197,7 @@ function SelectedTerrainOverlay() {
   if (!selectedCode) return null;
   return (
     <mesh
-      position={[(northWest[0] + southEast[0]) / 2, -(northWest[1] + southEast[1]) / 2, 0.008]}
+      position={[(northWest[0] + southEast[0]) / 2, -(northWest[1] + southEast[1]) / 2, 0.016]}
       raycast={() => null}
     >
       <planeGeometry args={[width, height, 192, 160]} />
@@ -222,11 +226,10 @@ function TerrainSurface() {
     terrainNormalUrl,
     terrainMaskUrl,
   ]);
-  const [minLon, minLat, maxLon, maxLat] = terrainMetadata.bbox;
-  const northWest = projection([minLon, maxLat])!;
-  const southEast = projection([maxLon, minLat])!;
-  const width = southEast[0] - northWest[0];
-  const height = southEast[1] - northWest[1];
+  const northWest = terrainNorthWest;
+  const southEast = terrainSouthEast;
+  const width = terrainWidth;
+  const height = terrainHeight;
   const setHovered = useMapStore((state) => state.setHovered);
   const select = useMapStore((state) => state.select);
   const codeFromEvent = (event: ThreeEvent<PointerEvent> | ThreeEvent<MouseEvent>) => {
@@ -282,7 +285,14 @@ function MapContent() {
       {showLabels &&
         visibleLabels.map(([code, label, p]) => {
           return (
-            <Html key={code} position={[p[0], -p[1], 0.34]} transform sprite distanceFactor={2.4}>
+            <Html
+              key={code}
+              position={[p[0], -p[1], 0.34]}
+              transform
+              sprite
+              distanceFactor={2.4}
+              zIndexRange={[1, 0]}
+            >
               <span className="map-label">{label.name}</span>
             </Html>
           );
@@ -297,6 +307,7 @@ function MapContent() {
               transform
               sprite
               distanceFactor={2.2}
+              zIndexRange={[1, 0]}
             >
               <span className="energy-marker" data-name={node.name} />
             </Html>
