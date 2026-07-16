@@ -1,0 +1,55 @@
+{
+  "overview": {
+    "year": 2025,
+    "grdpGrowthPercent": 6.68,
+    "newBusinesses": 3168,
+    "registeredCapitalBillionVnd": 33601,
+    "sourceName": "UBND tỉnh Đắk Lắk / Thống kê tỉnh",
+    "sourceUrl": "https://daklak.gov.vn/vi/-/hop-bao-cong-bo-so-lieu-thong-ke-kinh-te-xa-hoi-tinh-ak-lak-nam-2025"
+  },
+  "energy": {
+    "status": "illustrative",
+    "nodes": [
+      {
+        "id": "bmt",
+        "name": "Trung tâm phụ tải Buôn Ma Thuột",
+        "longitude": 108.0378,
+        "latitude": 12.6667,
+        "kind": "load",
+        "value": 92
+      },
+      {
+        "id": "eahleo",
+        "name": "Cụm năng lượng Ea H'leo",
+        "longitude": 108.2,
+        "latitude": 13.22,
+        "kind": "renewable",
+        "value": 76
+      },
+      {
+        "id": "krongana",
+        "name": "Nút truyền tải Krông Ana",
+        "longitude": 108.02,
+        "latitude": 12.48,
+        "kind": "grid",
+        "value": 61
+      },
+      {
+        "id": "songhinh",
+        "name": "Cụm thủy điện Sông Hinh",
+        "longitude": 108.9,
+        "latitude": 12.93,
+        "kind": "hydro",
+        "value": 83
+      },
+      {
+        "id": "tuyhoa",
+        "name": "Trung tâm phụ tải Tuy Hòa",
+        "longitude": 109.31,
+        "latitude": 13.09,
+        "kind": "load",
+        "value": 88
+      }
+    ]
+  }
+}

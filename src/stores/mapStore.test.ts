@@ -7,6 +7,7 @@ describe('map interaction state', () => {
       selectedCode: null,
       labelsVisible: true,
       autoRotate: false,
+      dataMode: 'overview',
     }),
   );
   it('selects by stable code', () => {
@@ -20,5 +21,9 @@ describe('map interaction state', () => {
   it('toggles 360 degree auto rotation', () => {
     useMapStore.getState().toggleAutoRotate();
     expect(useMapStore.getState().autoRotate).toBe(true);
+  });
+  it('switches thematic data mode', () => {
+    useMapStore.getState().setDataMode('energy');
+    expect(useMapStore.getState().dataMode).toBe('energy');
   });
 });

@@ -13,6 +13,8 @@ import terrainHeightUrl from '../../assets/maps/daklak/daklak-terrain-height.png
 import terrainMaskUrl from '../../assets/maps/daklak/daklak-terrain-mask.png';
 import terrainNormalUrl from '../../assets/maps/daklak/daklak-terrain-normal.png';
 import terrainMetadata from '../../assets/maps/daklak/daklak-terrain-metadata.json';
+import dashboardData from '../../assets/data/dashboard-sources.json';
+import metrics from '../../assets/maps/daklak/daklak-metrics.json';
 import type { WardCollection } from '../../types/map';
 import { projection } from '../../utils/geo';
 import { useMapStore } from '../../stores/mapStore';
@@ -28,6 +30,17 @@ const visibleLabels = centerCodes.map((code) => {
   const label = (labels as LabelMap)[code];
   return [code, label, projection([label.longitude, label.latitude])! as [number, number]] as const;
 });
+const heatPoints = Object.entries(metrics)
+  .sort(([, a], [, b]) => b.population - a.population)
+  .slice(0, 20)
+  .map(([code, metric]) => {
+    const label = (labels as LabelMap)[code];
+    return {
+      code,
+      metric,
+      point: projection([label.longitude, label.latitude])! as [number, number],
+    };
+  });
 
 function ringContains([longitude, latitude]: [number, number], ring: Position[]) {
   let inside = false;
@@ -200,6 +213,7 @@ function TerrainSurface() {
 
 function MapContent() {
   const showLabels = useMapStore((s) => s.labelsVisible);
+  const dataMode = useMapStore((s) => s.dataMode);
   return (
     <group rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
       <TerrainSurface />
@@ -209,6 +223,38 @@ function MapContent() {
           return (
             <Html key={code} position={[p[0], -p[1], 0.34]} transform sprite distanceFactor={2.4}>
               <span className="map-label">{label.name}</span>
+            </Html>
+          );
+        })}
+      {dataMode === 'heatmap' &&
+        heatPoints.map(({ code, metric, point }) => (
+          <Html
+            key={code}
+            position={[point[0], -point[1], 0.3]}
+            transform
+            sprite
+            distanceFactor={2.2}
+          >
+            <span
+              className="map-data-marker"
+              style={
+                { '--marker-size': `${14 + metric.population / 5200}px` } as React.CSSProperties
+              }
+            />
+          </Html>
+        ))}
+      {dataMode === 'energy' &&
+        dashboardData.energy.nodes.map((node) => {
+          const point = projection([node.longitude, node.latitude])!;
+          return (
+            <Html
+              key={node.id}
+              position={[point[0], -point[1], 0.34]}
+              transform
+              sprite
+              distanceFactor={2.2}
+            >
+              <span className="energy-marker" data-name={node.name} />
             </Html>
           );
         })}

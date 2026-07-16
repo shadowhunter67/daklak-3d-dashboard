@@ -6,7 +6,9 @@ export default function App() {
   const toggle = useMapStore((s) => s.toggleLabels),
     visible = useMapStore((s) => s.labelsVisible),
     autoRotate = useMapStore((s) => s.autoRotate),
-    toggleAutoRotate = useMapStore((s) => s.toggleAutoRotate);
+    toggleAutoRotate = useMapStore((s) => s.toggleAutoRotate),
+    dataMode = useMapStore((s) => s.dataMode),
+    setDataMode = useMapStore((s) => s.setDataMode);
   return (
     <main className="app-shell">
       <header>
@@ -17,6 +19,21 @@ export default function App() {
             ĐẮK LẮK <i>3D</i>
           </h1>
         </div>
+        <nav className="mode-tabs" aria-label="Chế độ dữ liệu">
+          {[
+            ['overview', 'Tổng quan'],
+            ['energy', 'Năng lượng'],
+            ['heatmap', 'Heatmap'],
+          ].map(([mode, label]) => (
+            <button
+              key={mode}
+              className={dataMode === mode ? 'active' : ''}
+              onClick={() => setDataMode(mode as typeof dataMode)}
+            >
+              {label}
+            </button>
+          ))}
+        </nav>
         <div className="header-meta">
           <span>102 miền đất</span>
           <button onClick={toggleAutoRotate} aria-pressed={autoRotate} title="Xoay bản đồ 360 độ">
@@ -42,7 +59,11 @@ export default function App() {
       <DetailPanel />
       <footer>
         <span title="Contains modified Copernicus Sentinel data 2016">SENTINEL-2 · EOX</span>
-        <p>Dữ liệu trực quan tham khảo — không dùng cho mục đích địa chính, đo đạc hoặc pháp lý.</p>
+        <p>
+          {dataMode === 'overview'
+            ? 'Chỉ tiêu cấp tỉnh: nguồn công bố 2025 · Chỉ tiêu cấp xã: dữ liệu minh họa.'
+            : 'Lớp chuyên đề đang dùng dữ liệu minh họa có seed cố định.'}
+        </p>
         <span>SNAPSHOT 12.07.2026</span>
       </footer>
     </main>
