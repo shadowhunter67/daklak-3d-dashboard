@@ -17,3 +17,5 @@ GIS processing is offline: a pinned source snapshot is normalized to EPSG:4326, 
 5. Publish hover/selection through Zustand to the map, chart, details, and live region.
 
 Static hosting has no server-side telemetry. Runtime errors are surfaced locally; adding external monitoring requires a privacy decision and is intentionally outside this repository.
+
+The Vite build emits `build-info.json` into the same immutable artifact as the application. It records package version, source commit, UTC build time, pinned GIS source commit, and dataset snapshot without requiring a backend or exposing secrets.

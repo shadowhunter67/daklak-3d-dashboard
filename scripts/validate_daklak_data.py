@@ -2,7 +2,7 @@
 from __future__ import annotations
 import hashlib, json, time
 import geopandas as gpd
-from gis_common import OUTPUT, REPORTS, write_json
+from gis_common import OUTPUT, REPORTS, SOURCE_CONFIG, write_json
 
 def main() -> None:
     started=time.perf_counter(); errors=[]; warnings=[]
@@ -15,11 +15,29 @@ def main() -> None:
     if data.geometry.is_empty.any(): errors.append("Empty geometry")
     invalid=int((~data.geometry.is_valid).sum())
     if invalid: errors.append(f"{invalid} invalid geometries")
+    if (data["areaKm2"] <= 0).any(): errors.append("Non-positive administrative area")
+    if set(data["provinceCode"].astype(str)) != {"66"}: errors.append("Unexpected province code")
     if set(data["type"])!={"xa","phuong"}: errors.append("Unexpected administrative type")
     counts=data["type"].value_counts().to_dict()
     if counts.get("xa")!=88 or counts.get("phuong")!=14: errors.append(f"Expected 88/14, got {counts}")
     if data.crs is None or data.crs.to_epsg()!=4326: errors.append(f"Expected EPSG:4326, got {data.crs}")
     codes=set(data.code.astype(str))
+    render_path=OUTPUT/"daklak-wards-render.json"
+    render_data=gpd.read_file(render_path) if render_path.exists() else None
+    render_invalid=0
+    if render_data is None:
+        errors.append("Missing frontend render artifact: daklak-wards-render.json")
+    else:
+        render_data["code"]=render_data["code"].astype(str).str.zfill(5)
+        render_codes=set(render_data["code"])
+        if len(render_data)!=len(data): errors.append("Render feature count does not match canonical geometry")
+        if render_data["code"].duplicated().any(): errors.append("Duplicate unit codes in render artifact")
+        if render_codes!=codes: errors.append("Render codes do not exactly match canonical geometry codes")
+        if render_data.geometry.is_empty.any(): errors.append("Empty geometry in render artifact")
+        render_invalid=int((~render_data.geometry.is_valid).sum())
+        if render_invalid: errors.append(f"{render_invalid} invalid render geometries")
+        if render_data.crs is None or render_data.crs.to_epsg()!=4326:
+            errors.append(f"Expected render artifact EPSG:4326, got {render_data.crs}")
     metadata_path=OUTPUT/"daklak-metadata.json"
     metrics_path=OUTPUT/"daklak-metrics.json"
     source_path=OUTPUT/"daklak-source-summary.json"
@@ -38,6 +56,16 @@ def main() -> None:
     required_metric_fields={"population","coverage","growth"}
     incomplete=[code for code,value in metrics.items() if not required_metric_fields.issubset(value)]
     if incomplete: errors.append(f"Metrics missing required fields for {len(incomplete)} units")
+    invalid_metrics = [
+        code
+        for code, value in metrics.items()
+        if not isinstance(value.get("population"), int)
+        or value.get("population", -1) < 0
+        or not isinstance(value.get("coverage"), (int, float))
+        or not 0 <= value.get("coverage", -1) <= 100
+        or not isinstance(value.get("growth"), (int, float))
+    ]
+    if invalid_metrics: errors.append(f"Metrics contain invalid values for {len(invalid_metrics)} units")
     outside_labels=[]
     by_code=data.set_index(data.code.astype(str))
     for code, label in labels.items():
@@ -56,9 +84,13 @@ def main() -> None:
     snapshot=source.get("sourceSnapshot","")
     if len(snapshot)!=40 or any(char not in "0123456789abcdef" for char in snapshot.lower()):
         errors.append("Source snapshot must be a 40-character git commit")
+    elif snapshot != SOURCE_CONFIG["commit"]:
+        errors.append("Source snapshot does not match the pinned GIS source manifest")
     source_checksum=source.get("sourceChecksum","")
     if len(source_checksum)!=64 or any(char not in "0123456789abcdef" for char in source_checksum.lower()):
         errors.append("Source checksum must be a SHA-256 digest")
+    elif source_checksum != SOURCE_CONFIG["sha256"]:
+        errors.append("Source checksum does not match the pinned GIS source manifest")
     minx,miny,maxx,maxy=data.total_bounds
     if not (107<minx<110 and 11<miny<14 and 107<maxx<110 and 11<maxy<14): errors.append("Bounding box outside plausible Đắk Lắk extent")
     overlaps=0
@@ -68,9 +100,9 @@ def main() -> None:
             if j<=i: continue
             if geom.intersection(data.geometry.iloc[j]).area>1e-9: overlaps+=1
     if overlaps: warnings.append(f"{overlaps} polygon pairs have measurable overlap")
-    hash_paths=[path, metadata_path, metrics_path, source_path, labels_path, provenance_path]
+    hash_paths=[path, render_path, metadata_path, metrics_path, source_path, labels_path, provenance_path]
     artifact_hashes={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in hash_paths if p.exists()}
-    report={"status":"failed" if errors else "passed","featureCount":len(data),"communeCount":counts.get("xa",0),"wardCount":counts.get("phuong",0),"crs":"EPSG:4326","bbox":[round(v,6) for v in data.total_bounds],"invalidGeometries":invalid,"outsideLabels":len(outside_labels),"overlapPairs":overlaps,"provenanceRecords":len(provenance),"artifactHashes":artifact_hashes,"errors":errors,"warnings":warnings,"validationMs":round((time.perf_counter()-started)*1000,2)}
+    report={"status":"failed" if errors else "passed","featureCount":len(data),"renderFeatureCount":len(render_data) if render_data is not None else 0,"communeCount":counts.get("xa",0),"wardCount":counts.get("phuong",0),"crs":"EPSG:4326","bbox":[round(v,6) for v in data.total_bounds],"invalidGeometries":invalid,"invalidRenderGeometries":render_invalid,"outsideLabels":len(outside_labels),"overlapPairs":overlaps,"provenanceRecords":len(provenance),"artifactHashes":artifact_hashes,"errors":errors,"warnings":warnings,"validationMs":round((time.perf_counter()-started)*1000,2)}
     write_json(REPORTS/"validation-report.json",report)
     print(json.dumps(report,ensure_ascii=False,indent=2))
     if errors: raise SystemExit(1)

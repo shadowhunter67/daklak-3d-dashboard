@@ -59,6 +59,18 @@ test.describe('dashboard smoke tests', () => {
     await expect(page.getByRole('button', { name: 'Đã giảm chuyển động' })).toBeDisabled();
   });
 
+  test('preserves native arrow-key behavior on interactive controls', async ({ page }) => {
+    await page.goto('./');
+    await expect(page.locator('canvas')).toBeVisible();
+    const switchView = page.getByRole('button', { name: 'Danh sách 2D' });
+    const controlEventWasNotCancelled = await switchView.evaluate((element) =>
+      element.dispatchEvent(
+        new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }),
+      ),
+    );
+    expect(controlEventWasNotCancelled).toBe(true);
+  });
+
   test('shows a recovery path after WebGL context loss', async ({ page }) => {
     await page.goto('./');
     const canvas = page.locator('canvas');
@@ -118,6 +130,19 @@ test.describe('dashboard smoke tests', () => {
         ),
       )
       .toBe(true);
+  });
+
+  test('publishes production build metadata', async ({ page }) => {
+    test.skip(!process.env.E2E_PRODUCTION, 'Build metadata is emitted only by production builds');
+    test.skip(!test.info().project.name.includes('desktop-chromium'), 'Metadata is verified once');
+    const response = await page.request.get('./build-info.json');
+    expect(response.ok()).toBe(true);
+    const buildInfo = (await response.json()) as Record<string, string>;
+    expect(buildInfo.applicationVersion).toMatch(/^\d+\.\d+\.\d+/);
+    expect(buildInfo.gitCommit).toMatch(/^(unknown|[0-9a-f]{40})$/);
+    expect(buildInfo.buildTimestamp).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    expect(buildInfo.datasetVersion).toMatch(/^[0-9a-f]{40}$/);
+    expect(buildInfo.datasetSnapshot).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
   test('does not load 3D or chart chunks when starting in accessible 2D mode', async ({ page }) => {

@@ -1,6 +1,6 @@
 # Build metrics
 
-Generated: 2026-07-16T13:26:18.413Z
+Generated: 2026-07-16T15:34:39.207Z
 
 | Metric            |                                              Result |
 | ----------------- | --------------------------------------------------: |
@@ -11,7 +11,7 @@ Generated: 2026-07-16T13:26:18.413Z
 | JavaScript chunks |                                                   6 |
 | Largest asset     | assets/daklak-terrain-color-Dh7HDsa9.png (1.74 MiB) |
 | Three.js chunk    |     assets/three-vendor-DEtWXlOg.js (0.17 MiB gzip) |
-| ECharts chunk     |        assets/StatPanel-kmd3i375.js (0.16 MiB gzip) |
+| ECharts chunk     |        assets/StatPanel-B35N5nD6.js (0.16 MiB gzip) |
 | Canonical GeoJSON |                                           10.40 MiB |
 | Render JSON       |                                            0.53 MiB |
 | Budget            |                                              passed |

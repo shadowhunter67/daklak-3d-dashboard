@@ -5,12 +5,26 @@ updates:
     schedule:
       interval: weekly
     groups:
+      three-stack:
+        patterns:
+          - three
+          - '@types/three'
+          - '@react-three/fiber'
+          - '@react-three/drei'
+      playwright-and-testing:
+        patterns:
+          - '@playwright/test'
+          - '@axe-core/playwright'
+          - '@testing-library/*'
+          - vitest
+          - jsdom
       production-dependencies:
         dependency-type: production
       development-dependencies:
         dependency-type: development
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 6
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
+    open-pull-requests-limit: 5
