@@ -1,0 +1,12 @@
+references/
+node_modules/
+dist/
+.env
+__pycache__/
+*.pyc
+.cache/
+tmp/
+downloads/
+.vscode/
+.idea/
+.DS_Store
