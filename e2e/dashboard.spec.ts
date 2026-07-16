@@ -126,7 +126,9 @@ test.describe('dashboard smoke tests', () => {
     await page.goto('./?view=2d');
     await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeVisible();
     expect(
-      responses.some((url) => /\/assets\/(AdministrativeMap|StatPanel)-.*\.js/.test(url)),
+      responses.some((url) =>
+        /\/assets\/(AdministrativeMap|StatPanel|three-vendor)-.*\.js/.test(url),
+      ),
     ).toBe(false);
   });
 });
