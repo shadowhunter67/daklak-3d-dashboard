@@ -7,6 +7,7 @@ let cachedSupport: boolean | undefined;
 
 export function hasWebGLSupport(createCanvas?: () => HTMLCanvasElement): boolean {
   if (cachedSupport !== undefined && !createCanvas) return cachedSupport;
+  if (!createCanvas && typeof document === 'undefined') return false;
   try {
     const canvas = (createCanvas ?? (() => document.createElement('canvas')))();
     const supported = Boolean(canvas.getContext('webgl2') || canvas.getContext('webgl'));

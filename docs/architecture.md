@@ -1,5 +1,7 @@
 # Architecture
 
+`App` is high-level composition; `DashboardHeader`, `MapViewport`, `DashboardPanels`, and `DatasetFooter` own distinct layout responsibilities. A small query-string adapter synchronizes shareable state without a router.
+
 The application is a static React/Vite site. `App` owns route-like 3D/2D composition, Zustand owns interaction state, and lazy boundaries isolate the Three.js map and ECharts panel. The 2D view is a first-class accessible fallback and does not mount or download either heavy component.
 
 The WebGL layer is split into terrain surface, thematic overlays, annotations, camera controls, hit testing, and lifecycle recovery. A context-loss monitor removes its listeners on unmount and supports both restoration and an explicit remount. Dataset configuration is validated before rendering and a root error boundary prevents a malformed module from producing a blank page.

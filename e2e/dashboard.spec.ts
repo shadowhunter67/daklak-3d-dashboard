@@ -1,3 +1,4 @@
+/// <reference lib="dom" />
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
@@ -130,5 +131,37 @@ test.describe('dashboard smoke tests', () => {
         /\/assets\/(AdministrativeMap|StatPanel|three-vendor)-.*\.js/.test(url),
       ),
     ).toBe(false);
+  });
+
+  test('restores shareable URL state and browser history', async ({ page }) => {
+    await page.goto('./?view=2d&mode=energy&ward=22015');
+    await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Năng lượng' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    const selectedRow = page.locator('[role="row"][aria-selected="true"]');
+    await expect(selectedRow).toContainText(/Tuy Ho/);
+
+    await page.getByRole('button', { name: 'Bản đồ 3D' }).click();
+    await expect(page).toHaveURL(/view=3d&mode=energy&ward=22015/);
+    await expect(page.locator('#map-viewport')).toBeFocused();
+    await page.goBack();
+    await expect(page).toHaveURL(/view=2d&mode=energy&ward=22015/);
+    await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeFocused();
+  });
+
+  test('moves focus to the 2D fallback when WebGL is unavailable', async ({ page }) => {
+    await page.addInitScript(() => {
+      const original = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type, options) {
+        if (type === 'webgl' || type === 'webgl2') return null;
+        return original.call(this, type, options as never);
+      } as typeof HTMLCanvasElement.prototype.getContext;
+    });
+    await page.goto('./');
+    await expect(page.getByRole('heading', { name: 'Không thể hiển thị bản đồ 3D' })).toBeVisible();
+    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeFocused();
   });
 });
