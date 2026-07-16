@@ -1,6 +1,6 @@
 """Fail-fast validation for product GIS artifacts."""
 from __future__ import annotations
-import json, time
+import hashlib, json, time
 import geopandas as gpd
 from gis_common import OUTPUT, REPORTS, write_json
 
@@ -28,11 +28,31 @@ def main() -> None:
     metadata=json.loads(metadata_path.read_text(encoding="utf-8")) if metadata_path.exists() else {}
     metrics=json.loads(metrics_path.read_text(encoding="utf-8")) if metrics_path.exists() else {}
     source=json.loads(source_path.read_text(encoding="utf-8")) if source_path.exists() else {}
+    labels_path=OUTPUT/"daklak-labels.json"
+    labels=json.loads(labels_path.read_text(encoding="utf-8")) if labels_path.exists() else {}
+    provenance_path=OUTPUT.parent.parent/"data"/"metric-provenance.json"
+    provenance=json.loads(provenance_path.read_text(encoding="utf-8")) if provenance_path.exists() else {}
     if metadata.get("totalUnits")!=len(data): errors.append("Metadata totalUnits does not match geometry")
     if set(metrics)!=codes: errors.append("Metric codes do not exactly match geometry codes")
+    if set(labels)!=codes: errors.append("Label codes do not exactly match geometry codes")
     required_metric_fields={"population","coverage","growth"}
     incomplete=[code for code,value in metrics.items() if not required_metric_fields.issubset(value)]
     if incomplete: errors.append(f"Metrics missing required fields for {len(incomplete)} units")
+    outside_labels=[]
+    by_code=data.set_index(data.code.astype(str))
+    for code, label in labels.items():
+        if code in by_code.index:
+            from shapely.geometry import Point
+            if not by_code.loc[code].geometry.covers(Point(label["longitude"], label["latitude"])):
+                outside_labels.append(code)
+    if outside_labels: errors.append(f"{len(outside_labels)} labels fall outside their geometry")
+    required_provenance={"status","period","sourceName","sourceUrl","retrievedAt"}
+    if not provenance: errors.append("Metric provenance is missing")
+    for metric, record in provenance.items():
+        missing=required_provenance-set(record)
+        if missing: errors.append(f"Provenance {metric} missing: {sorted(missing)}")
+        if record.get("status") not in {"official","illustrative","mixed"}:
+            errors.append(f"Provenance {metric} has invalid status")
     snapshot=source.get("sourceSnapshot","")
     if len(snapshot)!=40 or any(char not in "0123456789abcdef" for char in snapshot.lower()):
         errors.append("Source snapshot must be a 40-character git commit")
@@ -45,7 +65,9 @@ def main() -> None:
             if j<=i: continue
             if geom.intersection(data.geometry.iloc[j]).area>1e-9: overlaps+=1
     if overlaps: warnings.append(f"{overlaps} polygon pairs have measurable overlap")
-    report={"status":"failed" if errors else "passed","featureCount":len(data),"communeCount":counts.get("xa",0),"wardCount":counts.get("phuong",0),"crs":"EPSG:4326","bbox":[round(v,6) for v in data.total_bounds],"invalidGeometries":invalid,"overlapPairs":overlaps,"errors":errors,"warnings":warnings,"validationMs":round((time.perf_counter()-started)*1000,2)}
+    hash_paths=[path, metadata_path, metrics_path, source_path, labels_path, provenance_path]
+    artifact_hashes={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in hash_paths if p.exists()}
+    report={"status":"failed" if errors else "passed","featureCount":len(data),"communeCount":counts.get("xa",0),"wardCount":counts.get("phuong",0),"crs":"EPSG:4326","bbox":[round(v,6) for v in data.total_bounds],"invalidGeometries":invalid,"outsideLabels":len(outside_labels),"overlapPairs":overlaps,"provenanceRecords":len(provenance),"artifactHashes":artifact_hashes,"errors":errors,"warnings":warnings,"validationMs":round((time.perf_counter()-started)*1000,2)}
     write_json(REPORTS/"validation-report.json",report)
     print(json.dumps(report,ensure_ascii=False,indent=2))
     if errors: raise SystemExit(1)

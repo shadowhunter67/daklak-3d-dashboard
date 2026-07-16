@@ -18,6 +18,7 @@ export default defineConfig({
   projects: [
     { name: 'desktop-chromium', use: { ...devices['Desktop Chrome'] } },
     { name: 'mobile-chromium', use: { ...devices['Pixel 7'] } },
+    { name: 'desktop-webkit', use: { ...devices['Desktop Safari'] } },
   ],
   webServer: {
     command: `${npmCommand} run dev -- --host 127.0.0.1 --port 4173`,

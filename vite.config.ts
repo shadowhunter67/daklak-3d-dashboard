@@ -5,15 +5,6 @@ export default defineConfig({
   plugins: [react()],
   build: {
     target: 'es2022',
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('echarts')) return 'charts';
-          if (id.includes('three') || id.includes('@react-three')) return 'three';
-          if (id.includes('node_modules')) return 'vendor';
-        },
-      },
-    },
   },
   test: {
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],

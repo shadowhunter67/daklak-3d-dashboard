@@ -1,7 +1,12 @@
 import { expect, test } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 
 test.describe('dashboard smoke tests', () => {
   test('loads the terrain, controls, and sourced overview', async ({ page }) => {
+    const runtimeErrors: string[] = [];
+    const failedRequests: string[] = [];
+    page.on('pageerror', (error) => runtimeErrors.push(error.message));
+    page.on('requestfailed', (request) => failedRequests.push(request.url()));
     await page.goto('./');
 
     await expect(page.getByRole('heading', { name: /Đắk Lắk/i })).toBeVisible();
@@ -11,6 +16,8 @@ test.describe('dashboard smoke tests', () => {
       'true',
     );
     await expect(page.getByText('SỐ LIỆU CẤP TỈNH CÓ NGUỒN')).toBeVisible();
+    expect(runtimeErrors).toEqual([]);
+    expect(failedRequests).toEqual([]);
   });
 
   test('switches all thematic modes and identifies illustrative data', async ({ page }) => {
@@ -35,7 +42,7 @@ test.describe('dashboard smoke tests', () => {
     await expect(page.getByRole('status')).toContainText('Tìm thấy 1 đơn vị');
     const row = page.getByRole('row', { name: /Buôn Ma Thuột/ });
     await row.click();
-    await expect(row).toHaveAttribute('aria-pressed', 'true');
+    await expect(row).toHaveAttribute('aria-selected', 'true');
     await search.fill('');
     const firstRow = page.getByRole('row').nth(1);
     await firstRow.focus();
@@ -54,15 +61,16 @@ test.describe('dashboard smoke tests', () => {
   test('shows a recovery path after WebGL context loss', async ({ page }) => {
     await page.goto('./');
     const canvas = page.locator('canvas');
-    await expect(canvas).toBeVisible();
-    await canvas.dispatchEvent('webglcontextlost');
+    await expect(canvas).toHaveAttribute('data-webgl-lifecycle', 'ready');
+    await canvas.dispatchEvent('webglcontextlost', { cancelable: true });
     await expect(page.getByRole('heading', { name: 'Không thể hiển thị bản đồ 3D' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Thử tải lại' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Tải lại bản đồ' })).toBeVisible();
     await canvas.dispatchEvent('webglcontextrestored');
     await expect(page.getByRole('heading', { name: 'Không thể hiển thị bản đồ 3D' })).toBeHidden();
   });
 
   test('matches the dashboard shell visual baseline', async ({ page }) => {
+    test.skip(!test.info().project.name.includes('chromium'), 'Visual baselines are Chromium-only');
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.goto('./');
     await expect(page.locator('canvas')).toBeVisible();
@@ -74,5 +82,51 @@ test.describe('dashboard smoke tests', () => {
       maskColor: '#071918',
       maxDiffPixelRatio: 0.03,
     });
+  });
+
+  test('has no serious automated accessibility violations in 3D and 2D views', async ({ page }) => {
+    await page.goto('./');
+    const threeDimensionalResults = await new AxeBuilder({ page }).analyze();
+    expect(
+      threeDimensionalResults.violations.filter(
+        ({ impact }) => impact === 'critical' || impact === 'serious',
+      ),
+    ).toEqual([]);
+
+    await page.getByRole('button', { name: 'Danh sách 2D' }).click();
+    const tableResults = await new AxeBuilder({ page }).analyze();
+    expect(
+      tableResults.violations.filter(({ impact }) => impact === 'critical' || impact === 'serious'),
+    ).toEqual([]);
+  });
+
+  test('loads lazy chunks and textures from the GitHub Pages base path', async ({ page }) => {
+    test.skip(!process.env.E2E_PRODUCTION, 'Hashed asset assertions require the production build');
+    test.skip(!test.info().project.name.includes('chromium'), 'Asset loading is verified once');
+    const responses: string[] = [];
+    page.on('response', (response) => responses.push(response.url()));
+    await page.goto('./');
+    await expect(page.locator('canvas')).toBeVisible();
+    expect(
+      responses.some((url) => /\/daklak-3d-dashboard\/assets\/AdministrativeMap-.*\.js/.test(url)),
+    ).toBe(true);
+    await expect
+      .poll(() =>
+        responses.some((url) =>
+          /\/daklak-3d-dashboard\/assets\/daklak-terrain-color-.*\.png/.test(url),
+        ),
+      )
+      .toBe(true);
+  });
+
+  test('does not load 3D or chart chunks when starting in accessible 2D mode', async ({ page }) => {
+    test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
+    const responses: string[] = [];
+    page.on('response', (response) => responses.push(response.url()));
+    await page.goto('./?view=2d');
+    await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeVisible();
+    expect(
+      responses.some((url) => /\/assets\/(AdministrativeMap|StatPanel)-.*\.js/.test(url)),
+    ).toBe(false);
   });
 });

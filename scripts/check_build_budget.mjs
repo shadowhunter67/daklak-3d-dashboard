@@ -6,9 +6,12 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
 const limits = {
+  totalJavaScriptBytes: 2_200_000,
   totalJavaScriptGzipBytes: 650_000,
   largestJavaScriptGzipBytes: 250_000,
   totalTextureBytes: 3_000_000,
+  largestAssetBytes: 1_900_000,
+  totalBuildBytes: 5_500_000,
 };
 
 async function filesAt(directory) {
@@ -36,16 +39,20 @@ const assets = await Promise.all(
 const scripts = assets.filter(({ file }) => file.endsWith('.js'));
 const textures = assets.filter(({ file }) => /terrain-.+\.png$/.test(file));
 const actual = {
+  totalJavaScriptBytes: scripts.reduce((sum, file) => sum + file.bytes, 0),
   totalJavaScriptGzipBytes: scripts.reduce((sum, file) => sum + (file.gzipBytes ?? 0), 0),
   largestJavaScriptGzipBytes: scripts.length
     ? Math.max(...scripts.map((file) => file.gzipBytes ?? 0))
     : 0,
   totalTextureBytes: textures.reduce((sum, file) => sum + file.bytes, 0),
+  largestAssetBytes: assets.length ? Math.max(...assets.map((file) => file.bytes)) : 0,
+  totalBuildBytes: assets.reduce((sum, file) => sum + file.bytes, 0),
 };
 const failures = Object.entries(limits)
   .filter(([key, limit]) => actual[key] > limit)
   .map(([key, limit]) => `${key}: ${actual[key]} > ${limit}`);
 if (!scripts.length) failures.push('Build did not produce any JavaScript files');
+if (!assets.length) failures.push('Build did not produce any assets');
 const report = {
   status: failures.length ? 'failed' : 'passed',
   generatedAt: new Date().toISOString(),

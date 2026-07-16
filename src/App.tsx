@@ -1,12 +1,22 @@
-import { AdministrativeMap } from './components/map/AdministrativeMap';
+import { lazy, Suspense, useEffect } from 'react';
 import { DetailPanel } from './components/dashboard/DetailPanel';
-import { StatPanel } from './components/dashboard/StatPanel';
 import { AccessibleDirectory } from './components/dashboard/AccessibleDirectory';
+import { MapFallback, MapLoading } from './components/map/MapFallback';
+import { hasWebGLSupport } from './components/map/webglLifecycle';
 import { useMapStore } from './stores/mapStore';
 import { datasetManifest, datasetManifestIssues, formatSnapshotDate } from './data/datasetManifest';
-import { useEffect, useState } from 'react';
+import labels from './assets/maps/daklak/daklak-labels.json';
+
+const AdministrativeMap = lazy(() =>
+  import('./components/map/AdministrativeMap').then((module) => ({
+    default: module.AdministrativeMap,
+  })),
+);
+const StatPanel = lazy(() =>
+  import('./components/dashboard/StatPanel').then((module) => ({ default: module.StatPanel })),
+);
+
 export default function App() {
-  const [reducedMotion, setReducedMotion] = useState(false);
   const toggle = useMapStore((s) => s.toggleLabels),
     visible = useMapStore((s) => s.labelsVisible),
     autoRotate = useMapStore((s) => s.autoRotate),
@@ -14,18 +24,17 @@ export default function App() {
     dataMode = useMapStore((s) => s.dataMode),
     changeDataMode = useMapStore((s) => s.changeDataMode),
     viewMode = useMapStore((s) => s.viewMode),
-    setViewMode = useMapStore((s) => s.setViewMode);
+    setViewMode = useMapStore((s) => s.setViewMode),
+    reducedMotion = useMapStore((s) => s.reducedMotion),
+    setReducedMotion = useMapStore((s) => s.setReducedMotion),
+    selectedCode = useMapStore((s) => s.selectedCode);
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const update = () => {
-      setReducedMotion(media.matches);
-      if (media.matches && useMapStore.getState().autoRotate)
-        useMapStore.setState({ autoRotate: false });
-    };
+    const update = () => setReducedMotion(media.matches);
     update();
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
-  }, []);
+  }, [setReducedMotion]);
   if (datasetManifestIssues.length) {
     return (
       <main className="app-fallback" role="alert">
@@ -86,7 +95,18 @@ export default function App() {
         aria-label="Bản đồ hành chính 3D tỉnh Đắk Lắk"
         hidden={viewMode !== '3d'}
       >
-        <AdministrativeMap />
+        {viewMode === '3d' &&
+          (hasWebGLSupport() ? (
+            <Suspense fallback={<MapLoading />}>
+              <AdministrativeMap />
+            </Suspense>
+          ) : (
+            <MapFallback
+              reason="Trình duyệt hoặc thiết bị này không hỗ trợ WebGL. Danh sách 2D vẫn khả dụng."
+              actionLabel="Mở danh sách 2D"
+              onRetry={() => setViewMode('table')}
+            />
+          ))}
         {datasetManifest.metricStatus[dataMode] === 'illustrative' && (
           <div className="illustrative-watermark" aria-label="Chế độ đang dùng dữ liệu minh họa">
             DỮ LIỆU MINH HỌA
@@ -103,12 +123,19 @@ export default function App() {
       </section>
       {viewMode === '3d' ? (
         <>
-          <StatPanel />
+          <Suspense fallback={null}>
+            <StatPanel />
+          </Suspense>
           <DetailPanel />
         </>
       ) : (
         <AccessibleDirectory />
       )}
+      <p className="visually-hidden" aria-live="polite" aria-atomic="true">
+        {selectedCode
+          ? `Đã chọn ${labels[selectedCode as keyof typeof labels]?.name ?? selectedCode}`
+          : 'Chưa chọn đơn vị hành chính'}
+      </p>
       <footer>
         <span title="Contains modified Copernicus Sentinel data 2016">SENTINEL-2 · EOX</span>
         <p>

@@ -7,6 +7,7 @@ describe('map interaction state', () => {
       selectedCode: null,
       labelsVisible: true,
       autoRotate: false,
+      reducedMotion: false,
       dataMode: 'overview',
       viewMode: '3d',
     }),
@@ -14,6 +15,10 @@ describe('map interaction state', () => {
   it('selects by stable code', () => {
     useMapStore.getState().select('22015');
     expect(useMapStore.getState().selectedCode).toBe('22015');
+  });
+  it('rejects unknown administrative codes', () => {
+    useMapStore.getState().select('invalid');
+    expect(useMapStore.getState().selectedCode).toBeNull();
   });
   it('toggles labels', () => {
     useMapStore.getState().toggleLabels();
@@ -37,6 +42,13 @@ describe('map interaction state', () => {
     useMapStore.setState({ autoRotate: true });
     useMapStore.getState().setViewMode('table');
     expect(useMapStore.getState().viewMode).toBe('table');
+    expect(useMapStore.getState().autoRotate).toBe(false);
+  });
+  it('enforces reduced motion inside the domain action', () => {
+    useMapStore.setState({ autoRotate: true });
+    useMapStore.getState().setReducedMotion(true);
+    expect(useMapStore.getState().autoRotate).toBe(false);
+    useMapStore.getState().toggleAutoRotate();
     expect(useMapStore.getState().autoRotate).toBe(false);
   });
 });

@@ -74,7 +74,7 @@ export function AccessibleDirectory() {
               type="button"
               role="row"
               className={`directory-row${selected ? ' selected' : ''}`}
-              aria-pressed={selected}
+              aria-selected={selected}
               key={properties.code}
               onClick={() => select(selected ? null : properties.code)}
               onKeyDown={(event) => moveFocus(event, index)}

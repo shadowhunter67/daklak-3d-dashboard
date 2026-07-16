@@ -54,14 +54,22 @@ export class AppErrorBoundary extends Component<Props, State> {
   }
 }
 
-export function MapFallback({ reason }: { reason: string }) {
+export function MapFallback({
+  reason,
+  actionLabel = 'Thử tải lại',
+  onRetry = () => window.location.reload(),
+}: {
+  reason: string;
+  actionLabel?: string;
+  onRetry?: () => void;
+}) {
   return (
     <div className="map-fallback" role="alert">
       <span aria-hidden="true">◇</span>
       <h2>Không thể hiển thị bản đồ 3D</h2>
       <p>{reason}</p>
-      <button type="button" onClick={() => window.location.reload()}>
-        Thử tải lại
+      <button type="button" onClick={onRetry}>
+        {actionLabel}
       </button>
     </div>
   );

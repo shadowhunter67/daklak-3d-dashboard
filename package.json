@@ -5,16 +5,19 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "preview": "vite preview",
     "build": "tsc -b && vite build",
     "check:budget": "node scripts/check_build_budget.mjs",
-    "quality": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run check:budget && npm run test:e2e",
+    "quality": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run validate:data && npm run build && npm run check:budget && npm run test:e2e:prod",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc -b --pretty false",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:prod": "npm run build && playwright test --config=playwright.prod.config.ts",
     "test:e2e:update": "playwright test --update-snapshots",
+    "security:audit": "npm audit --audit-level=high",
     "validate:data": "python scripts/validate_daklak_data.py",
     "build:gis": "python scripts/build_daklak_geojson.py",
     "build:terrain": "python scripts/generate_daklak_terrain.py"
@@ -31,6 +34,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.12.1",
     "@eslint/js": "^9.34.0",
     "@playwright/test": "^1.61.1",
     "@testing-library/jest-dom": "^6.8.0",

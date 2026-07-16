@@ -1,0 +1,37 @@
+{
+  "overview.grdpGrowthPercent": {
+    "status": "official",
+    "period": "2025",
+    "sourceName": "UBND tỉnh Đắk Lắk / Thống kê tỉnh",
+    "sourceUrl": "https://daklak.gov.vn/vi/-/hop-bao-cong-bo-so-lieu-thong-ke-kinh-te-xa-hoi-tinh-ak-lak-nam-2025",
+    "retrievedAt": "2026-07-16"
+  },
+  "overview.newBusinesses": {
+    "status": "official",
+    "period": "2025",
+    "sourceName": "UBND tỉnh Đắk Lắk / Thống kê tỉnh",
+    "sourceUrl": "https://daklak.gov.vn/vi/-/hop-bao-cong-bo-so-lieu-thong-ke-kinh-te-xa-hoi-tinh-ak-lak-nam-2025",
+    "retrievedAt": "2026-07-16"
+  },
+  "wards.populationCoverageGrowth": {
+    "status": "illustrative",
+    "period": "demo",
+    "sourceName": "Deterministic seeded demo generator",
+    "sourceUrl": "internal://scripts/build_daklak_geojson.py",
+    "retrievedAt": "2026-07-16"
+  },
+  "energy": {
+    "status": "illustrative",
+    "period": "demo",
+    "sourceName": "Dashboard demo scenario",
+    "sourceUrl": "internal://src/assets/data/dashboard-sources.json",
+    "retrievedAt": "2026-07-16"
+  },
+  "heatmap": {
+    "status": "illustrative",
+    "period": "demo",
+    "sourceName": "Deterministic visualization derived from demo metrics",
+    "sourceUrl": "internal://src/assets/maps/daklak/daklak-metrics.json",
+    "retrievedAt": "2026-07-16"
+  }
+}

@@ -118,12 +118,14 @@ export function StatPanel() {
             ? 'Cường độ phân bố'
             : 'Chỉ số tiếp cận dịch vụ'}
       </div>
-      <ReactEChartsCore
-        echarts={echarts}
-        option={option}
-        style={{ height: 105 }}
-        opts={{ renderer: 'svg' }}
-      />
+      <div role="img" aria-label="Biểu đồ cột tóm tắt ba nhóm chỉ số đang hiển thị">
+        <ReactEChartsCore
+          echarts={echarts}
+          option={option}
+          style={{ height: 105 }}
+          opts={{ renderer: 'svg' }}
+        />
+      </div>
       <p className="mock-note">
         {dataMode === 'overview'
           ? `GRDP và doanh nghiệp: ${dashboardData.overview.sourceName}. Dân số cấp xã (${formatNumber(population)}) là dữ liệu minh họa.`

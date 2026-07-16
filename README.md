@@ -48,6 +48,15 @@ Playwright chạy smoke test và visual regression trên hai cấu hình Chromiu
 
 Hoặc chạy toàn bộ bằng `npm run quality`. Ngân sách build được lưu tại `reports/performance-budget.json` và chặn tăng trưởng ngoài ý muốn của JavaScript/texture trong CI.
 
+## Tài liệu kỹ thuật
+
+- [Kiến trúc](docs/architecture.md)
+- [Nguồn gốc và kiểm định dữ liệu](docs/data-provenance.md)
+- [Chiến lược kiểm thử](docs/testing-strategy.md)
+- [Hiệu năng và ngân sách](docs/performance.md)
+- [Khả năng tiếp cận](docs/accessibility.md)
+- [Chính sách bảo mật](SECURITY.md) và [hướng dẫn đóng góp](CONTRIBUTING.md)
+
 ## Xây lại GIS
 
 Clone `thanglequoc/vietnamese-provinces-database` ngang project vào `../references/`, checkout snapshot ghi trong `daklak-source-summary.json`, rồi chạy `npm run build:gis`. Pipeline sinh các file tại `src/assets/maps/daklak/` và báo cáo tại `reports/`. `daklak-label-overrides.json` dành cho điều chỉnh label thủ công; hiện chưa có override. Thay `daklak-metrics.json` bằng nguồn thống kê thật nhưng phải giữ khóa `code` và cập nhật attribution.
