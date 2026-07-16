@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-07-16T11:40:27.261Z",
+  "generatedAt": "2026-07-16T13:26:18.046Z",
   "limits": {
     "totalJavaScriptBytes": 2200000,
     "totalJavaScriptGzipBytes": 650000,
@@ -10,18 +10,18 @@
     "totalBuildBytes": 5500000
   },
   "actual": {
-    "totalJavaScriptBytes": 2118831,
-    "totalJavaScriptGzipBytes": 607214,
+    "totalJavaScriptBytes": 2120625,
+    "totalJavaScriptGzipBytes": 607953,
     "largestJavaScriptGzipBytes": 183282,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 4943002
+    "totalBuildBytes": 4944838
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-QzJxs0UH.js",
-      "bytes": 192632,
-      "gzipBytes": 60888
+      "file": "assets/AdministrativeMap-DcJaHiFl.js",
+      "bytes": 192623,
+      "gzipBytes": 60883
     },
     {
       "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
@@ -40,18 +40,18 @@
       "bytes": 719308
     },
     {
-      "file": "assets/dashboard-sources-Jr1oynKD.js",
-      "bytes": 39532,
-      "gzipBytes": 14275
+      "file": "assets/geo-BBSah1AW.js",
+      "bytes": 40095,
+      "gzipBytes": 14405
     },
     {
-      "file": "assets/index-B4v3WtnT.js",
-      "bytes": 657884,
-      "gzipBytes": 177728
+      "file": "assets/index-CAZYd7qu.css",
+      "bytes": 9137
     },
     {
-      "file": "assets/index-Bu4bnikG.css",
-      "bytes": 9081
+      "file": "assets/index-CQvxFRST.js",
+      "bytes": 659143,
+      "gzipBytes": 178351
     },
     {
       "file": "assets/rolldown-runtime-CNC7AqOf.js",
@@ -59,9 +59,9 @@
       "gzipBytes": 504
     },
     {
-      "file": "assets/StatPanel-BIPiYurY.js",
-      "bytes": 503286,
-      "gzipBytes": 170537
+      "file": "assets/StatPanel-kmd3i375.js",
+      "bytes": 503267,
+      "gzipBytes": 170528
     },
     {
       "file": "assets/three-vendor-DEtWXlOg.js",
@@ -70,7 +70,7 @@
     },
     {
       "file": "index.html",
-      "bytes": 1206
+      "bytes": 1192
     }
   ],
   "failures": []
