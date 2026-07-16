@@ -19,6 +19,23 @@ def main() -> None:
     counts=data["type"].value_counts().to_dict()
     if counts.get("xa")!=88 or counts.get("phuong")!=14: errors.append(f"Expected 88/14, got {counts}")
     if data.crs is None or data.crs.to_epsg()!=4326: errors.append(f"Expected EPSG:4326, got {data.crs}")
+    codes=set(data.code.astype(str))
+    metadata_path=OUTPUT/"daklak-metadata.json"
+    metrics_path=OUTPUT/"daklak-metrics.json"
+    source_path=OUTPUT/"daklak-source-summary.json"
+    for artifact in (metadata_path,metrics_path,source_path):
+        if not artifact.exists(): errors.append(f"Missing artifact: {artifact.name}")
+    metadata=json.loads(metadata_path.read_text(encoding="utf-8")) if metadata_path.exists() else {}
+    metrics=json.loads(metrics_path.read_text(encoding="utf-8")) if metrics_path.exists() else {}
+    source=json.loads(source_path.read_text(encoding="utf-8")) if source_path.exists() else {}
+    if metadata.get("totalUnits")!=len(data): errors.append("Metadata totalUnits does not match geometry")
+    if set(metrics)!=codes: errors.append("Metric codes do not exactly match geometry codes")
+    required_metric_fields={"population","coverage","growth"}
+    incomplete=[code for code,value in metrics.items() if not required_metric_fields.issubset(value)]
+    if incomplete: errors.append(f"Metrics missing required fields for {len(incomplete)} units")
+    snapshot=source.get("sourceSnapshot","")
+    if len(snapshot)!=40 or any(char not in "0123456789abcdef" for char in snapshot.lower()):
+        errors.append("Source snapshot must be a 40-character git commit")
     minx,miny,maxx,maxy=data.total_bounds
     if not (107<minx<110 and 11<miny<14 and 107<maxx<110 and 11<maxy<14): errors.append("Bounding box outside plausible Đắk Lắk extent")
     overlaps=0

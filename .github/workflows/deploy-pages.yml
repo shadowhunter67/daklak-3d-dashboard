@@ -35,6 +35,8 @@ jobs:
           npm test -- --run
       - name: Build
         run: npm run build
+      - name: Enforce performance budget
+        run: npm run check:budget
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload site

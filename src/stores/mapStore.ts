@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 interface MapState {
   dataMode: 'overview' | 'energy' | 'heatmap';
+  viewMode: '3d' | 'table';
   hoveredCode: string | null;
   selectedCode: string | null;
   labelsVisible: boolean;
@@ -9,10 +10,12 @@ interface MapState {
   select: (code: string | null) => void;
   toggleLabels: () => void;
   toggleAutoRotate: () => void;
-  setDataMode: (mode: MapState['dataMode']) => void;
+  changeDataMode: (mode: MapState['dataMode']) => void;
+  setViewMode: (mode: MapState['viewMode']) => void;
 }
 export const useMapStore = create<MapState>((set) => ({
   dataMode: 'overview',
+  viewMode: '3d',
   hoveredCode: null,
   selectedCode: null,
   labelsVisible: true,
@@ -21,5 +24,6 @@ export const useMapStore = create<MapState>((set) => ({
   select: (selectedCode) => set({ selectedCode }),
   toggleLabels: () => set((s) => ({ labelsVisible: !s.labelsVisible })),
   toggleAutoRotate: () => set((s) => ({ autoRotate: !s.autoRotate })),
-  setDataMode: (dataMode) => set({ dataMode }),
+  changeDataMode: (dataMode) => set({ dataMode, hoveredCode: null }),
+  setViewMode: (viewMode) => set({ viewMode, hoveredCode: null, autoRotate: false }),
 }));

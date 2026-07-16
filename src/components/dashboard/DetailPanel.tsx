@@ -1,7 +1,7 @@
 import wards from '../../assets/maps/daklak/daklak-wards-render.json';
 import metrics from '../../assets/maps/daklak/daklak-metrics.json';
 import type { WardCollection, Metric } from '../../types/map';
-import { formatNumber } from '../../utils/geo';
+import { formatNumber, formatUnitType } from '../../utils/geo';
 import { useMapStore } from '../../stores/mapStore';
 const data = wards as WardCollection;
 const metricMap = metrics as Record<string, Metric>;
@@ -24,7 +24,7 @@ export function DetailPanel() {
       <p className="eyebrow">{selected ? 'ĐANG CHỌN' : 'ĐANG KHÁM PHÁ'}</p>
       <h2>{f.properties.name}</h2>
       <p className="unit-type">
-        {f.properties.type === 'phuong' ? 'Phường' : 'Xã'} · Mã {f.properties.code}
+        {formatUnitType(f.properties.type)} · Mã {f.properties.code}
       </p>
       <dl>
         <div>

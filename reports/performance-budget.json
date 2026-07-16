@@ -1,0 +1,61 @@
+{
+  "status": "passed",
+  "generatedAt": "2026-07-16T06:06:56.709Z",
+  "limits": {
+    "totalJavaScriptGzipBytes": 650000,
+    "largestJavaScriptGzipBytes": 250000,
+    "totalTextureBytes": 3000000
+  },
+  "actual": {
+    "totalJavaScriptGzipBytes": 608963,
+    "largestJavaScriptGzipBytes": 237691,
+    "totalTextureBytes": 2813884
+  },
+  "assets": [
+    {
+      "file": "assets/charts-4qsQvKLM.js",
+      "bytes": 303845,
+      "gzipBytes": 105662
+    },
+    {
+      "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
+      "bytes": 1829459
+    },
+    {
+      "file": "assets/daklak-terrain-height-C-NMfCJ0.png",
+      "bytes": 258103
+    },
+    {
+      "file": "assets/daklak-terrain-mask-DkVg9TPe.png",
+      "bytes": 7014
+    },
+    {
+      "file": "assets/daklak-terrain-normal-5DjtUcCG.png",
+      "bytes": 719308
+    },
+    {
+      "file": "assets/index-Bn9DT21I.js",
+      "bytes": 499378,
+      "gzipBytes": 127804
+    },
+    {
+      "file": "assets/index-C2Yrtxl_.css",
+      "bytes": 8898
+    },
+    {
+      "file": "assets/three-CzuG5W3z.js",
+      "bytes": 882275,
+      "gzipBytes": 237691
+    },
+    {
+      "file": "assets/vendor-D3QC5Z60.js",
+      "bytes": 417714,
+      "gzipBytes": 137806
+    },
+    {
+      "file": "index.html",
+      "bytes": 953
+    }
+  ],
+  "failures": []
+}
