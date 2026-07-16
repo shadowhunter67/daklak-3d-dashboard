@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T13:26:18.413Z",
+  "generatedAt": "2026-07-16T14:48:58.829Z",
   "javascript": {
     "rawBytes": 2120625,
     "gzipBytes": 607953,
@@ -54,7 +54,7 @@
       "largestJavaScriptGzipBytes": 183282,
       "totalTextureBytes": 2813884,
       "largestAssetBytes": 1829459,
-      "totalBuildBytes": 4944838
+      "totalBuildBytes": 4945080
     },
     "failures": []
   },

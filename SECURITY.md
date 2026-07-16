@@ -7,3 +7,5 @@ Report vulnerabilities privately through GitHub Security Advisories for this rep
 The maintained version is the current `main` branch. We aim to acknowledge reports within five working days. Do not test against systems or data outside this static demo.
 
 CI runs dependency audit, static analysis, tests, a restrictive CSP, and pinned build/deploy actions. The site processes no credentials and has no backend. Never commit secrets; revoke and rotate any accidentally exposed value before removing it from history.
+
+GitHub Pages does not allow this repository to configure arbitrary HTTP response headers such as `Content-Security-Policy`, `X-Content-Type-Options`, or `Permissions-Policy`. The current meta CSP applies supported document directives but cannot enforce header-only directives such as `frame-ancestors`. Vite emits external module scripts; the only inline allowance is `style-src 'unsafe-inline'`, required by current runtime styling dependencies. If strict response-header CSP becomes a release requirement, deploy the same static `dist` artifact through a host/CDN with configurable headers and validate it before switching traffic.

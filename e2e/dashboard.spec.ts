@@ -120,6 +120,19 @@ test.describe('dashboard smoke tests', () => {
       .toBe(true);
   });
 
+  test('publishes production build metadata', async ({ page }) => {
+    test.skip(!process.env.E2E_PRODUCTION, 'Build metadata is emitted only by production builds');
+    test.skip(!test.info().project.name.includes('desktop-chromium'), 'Metadata is verified once');
+    const response = await page.request.get('./build-info.json');
+    expect(response.ok()).toBe(true);
+    const buildInfo = (await response.json()) as Record<string, string>;
+    expect(buildInfo.applicationVersion).toMatch(/^\d+\.\d+\.\d+/);
+    expect(buildInfo.gitCommit).toMatch(/^(unknown|[0-9a-f]{40})$/);
+    expect(buildInfo.buildTimestamp).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+    expect(buildInfo.datasetVersion).toMatch(/^[0-9a-f]{40}$/);
+    expect(buildInfo.datasetSnapshot).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
   test('does not load 3D or chart chunks when starting in accessible 2D mode', async ({ page }) => {
     test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
     const responses: string[] = [];

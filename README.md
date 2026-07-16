@@ -49,11 +49,13 @@ npm run build
 npm run check:budget
 ```
 
-Playwright chạy smoke test và visual regression trên hai cấu hình Chromium desktop/mobile. Chỉ dùng `npm run test:e2e:update` khi thay đổi giao diện là có chủ đích và cần cập nhật ảnh baseline.
+Playwright chạy smoke test trên Chromium desktop, Chromium mobile (Pixel 7) và WebKit desktop (Desktop Safari). Visual regression chỉ dùng Chromium desktop/mobile để tránh nhiễu rasterization giữa engine. Chỉ dùng `npm run test:e2e:update` khi thay đổi giao diện là có chủ đích và cần cập nhật ảnh baseline.
 
 Hoặc chạy toàn bộ bằng `npm run quality`. Ngân sách build được lưu tại `reports/performance-budget.json` và chặn tăng trưởng ngoài ý muốn của JavaScript/texture trong CI.
 
 Dashboard đồng bộ `view`, `mode` và `ward` vào query string để URL có thể chia sẻ, refresh và dùng Back/Forward mà không cần router. `npm run build:metrics` sinh [JSON](reports/build-metrics.json) và [bảng Markdown](reports/build-metrics.md) từ build thật; FPS, GPU memory và LCP không được tuyên bố vì CI không đại diện cho GPU thiết bị thật.
+
+Mỗi production build sinh `dist/build-info.json` gồm version ứng dụng, commit SHA, thời điểm build và phiên bản dataset. Trên site đã deploy, mở `/daklak-3d-dashboard/build-info.json` để đối chiếu release đang chạy.
 
 ## Tài liệu kỹ thuật
 
@@ -62,6 +64,8 @@ Dashboard đồng bộ `view`, `mode` và `ward` vào query string để URL có
 - [Chiến lược kiểm thử](docs/testing-strategy.md)
 - [Hiệu năng và ngân sách](docs/performance.md)
 - [Khả năng tiếp cận](docs/accessibility.md)
+- [Vận hành production](docs/operations.md)
+- [Benchmark thiết bị thật](docs/device-benchmark.md)
 - [Chính sách bảo mật](SECURITY.md) và [hướng dẫn đóng góp](CONTRIBUTING.md)
 
 ## Xây lại GIS
