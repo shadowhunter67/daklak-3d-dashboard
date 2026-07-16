@@ -3,7 +3,7 @@ from __future__ import annotations
 import io, json, math, urllib.request
 from pathlib import Path
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 from shapely.ops import unary_union
 from gis_common import OUTPUT, read_source, write_json
 
@@ -51,7 +51,11 @@ def main() -> None:
     elevation = np.clip(elevation, 0, None)
     low, high = float(np.percentile(elevation,1)), float(np.percentile(elevation,99.5))
     normalized = np.clip((elevation-low)/max(high-low,1),0,1)
-    Image.fromarray((normalized*255).astype(np.uint8)).save(OUTPUT/"daklak-terrain-height.png",optimize=True)
+    height_image = Image.fromarray((normalized*255).astype(np.uint8)).filter(
+        ImageFilter.GaussianBlur(radius=3)
+    )
+    normalized = np.asarray(height_image, dtype=np.float32) / 255
+    height_image.save(OUTPUT/"daklak-terrain-height.png",optimize=True)
     gy,gx=np.gradient(normalized); strength=8
     normals=np.dstack((-gx*strength,-gy*strength,np.ones_like(normalized)))
     normals/=np.linalg.norm(normals,axis=2,keepdims=True)

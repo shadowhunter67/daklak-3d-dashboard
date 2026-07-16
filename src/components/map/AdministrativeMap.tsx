@@ -52,7 +52,7 @@ function TerrainSurface() {
         map={colorMap}
         normalMap={normalMap}
         displacementMap={heightMap}
-        displacementScale={0.58}
+        displacementScale={0.3}
         displacementBias={0.02}
         alphaMap={alphaMap}
         alphaTest={0.25}
@@ -90,13 +90,13 @@ function MapContent() {
                   e.stopPropagation();
                   select(active ? null : code);
                 }}
-                position={[0, 0, active ? 1.18 : 1.12]}
+                position={[0, 0, 0.32]}
               >
                 <extrudeGeometry
                   args={[
                     shape,
                     {
-                      depth: active ? 0.055 : 0.025,
+                      depth: 0.002,
                       bevelEnabled: false,
                     },
                   ]}
@@ -115,16 +115,18 @@ function MapContent() {
                   roughness={0.72}
                   metalness={0.04}
                   transparent
-                  opacity={active ? 0.34 : hot ? 0.2 : 0}
+                  opacity={0}
                   depthWrite={false}
+                  colorWrite={false}
                 />
                 <meshStandardMaterial
                   attach="material-1"
                   color={active ? '#8e6120' : hot ? '#317d68' : '#0a4d42'}
                   roughness={0.9}
                   transparent
-                  opacity={active ? 0.38 : hot ? 0.16 : 0}
+                  opacity={0}
                   depthWrite={false}
+                  colorWrite={false}
                 />
               </mesh>
             ))}
@@ -134,7 +136,7 @@ function MapContent() {
       {showLabels &&
         visibleLabels.map(([code, label, p]) => {
           return (
-            <Html key={code} position={[p[0], -p[1], 1.28]} transform sprite distanceFactor={2.4}>
+            <Html key={code} position={[p[0], -p[1], 0.34]} transform sprite distanceFactor={2.4}>
               <span className="map-label">{label.name}</span>
             </Html>
           );
