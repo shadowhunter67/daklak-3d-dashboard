@@ -1,0 +1,356 @@
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,700&display=swap');
+:root {
+  font-family: 'Be Vietnam Pro', sans-serif;
+  color: #e9f2ed;
+  background: #071918;
+  font-synthesis: none;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow: hidden;
+}
+button {
+  font: inherit;
+}
+.app-shell {
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at 55% 50%, #16483e 0, #0a2421 40%, #051413 100%);
+}
+.app-shell:before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image:
+    linear-gradient(#b8d3c8 1px, transparent 1px),
+    linear-gradient(90deg, #b8d3c8 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+header {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 98px;
+  display: flex;
+  align-items: center;
+  padding: 20px 3.3vw;
+  border-bottom: 1px solid #86aa9d2b;
+  background: linear-gradient(#071918e8, #0719185c, transparent);
+}
+.brand-mark {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #d4a446;
+  color: #d4a446;
+  border-radius: 50%;
+  font-weight: 700;
+  margin-right: 14px;
+}
+.eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: #9db6ae;
+  margin: 0 0 5px;
+  font-weight: 600;
+}
+h1 {
+  font-size: 26px;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+h1 i {
+  font-family: 'Playfair Display';
+  font-weight: 700;
+  color: #e7b855;
+  margin-left: 3px;
+}
+.header-meta {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  color: #acc5bc;
+  font-size: 12px;
+}
+.header-meta button {
+  border: 1px solid #d4a44655;
+  background: #d4a44612;
+  color: #e7c471;
+  border-radius: 999px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.map-stage {
+  position: absolute;
+  inset: 0;
+}
+.map-caption {
+  position: absolute;
+  left: 50%;
+  bottom: 76px;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+.map-caption span {
+  font-size: 9px;
+  letter-spacing: 0.24em;
+  color: #d9b864;
+}
+.map-caption p {
+  margin: 7px;
+  font-family: 'Playfair Display';
+  font-style: italic;
+  color: #c8dbd4;
+  font-size: 14px;
+}
+.compass {
+  position: absolute;
+  right: 3.5vw;
+  top: 128px;
+  text-align: center;
+  color: #cfb263;
+  font-size: 10px;
+}
+.compass i {
+  font-size: 22px;
+  font-style: normal;
+}
+.glass {
+  position: absolute;
+  z-index: 4;
+  background: linear-gradient(145deg, #0b2924e8, #071b19e2);
+  border: 1px solid #8bb3a433;
+  box-shadow:
+    0 22px 60px #0005,
+    inset 0 1px #fff1;
+  backdrop-filter: blur(18px);
+  border-radius: 2px;
+}
+.stat-panel {
+  left: 3.3vw;
+  top: 128px;
+  width: 238px;
+  padding: 20px;
+}
+.hero-stat {
+  display: flex;
+  align-items: end;
+  gap: 9px;
+}
+.hero-stat strong {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-size: 54px;
+  line-height: 1;
+  color: #ecc66d;
+}
+.hero-stat span {
+  font-size: 11px;
+  color: #9fb8b0;
+  padding-bottom: 7px;
+}
+.stat-pair {
+  display: flex;
+  gap: 34px;
+  margin-top: 18px;
+}
+.stat-pair div {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+.stat-pair b {
+  font-size: 20px;
+}
+.stat-pair small {
+  color: #88a39a;
+}
+.divider {
+  height: 1px;
+  background: #92b2a52b;
+  margin: 18px 0;
+}
+.metric {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #8fa9a1;
+}
+.metric b {
+  color: #e8f0ec;
+}
+.chart-title {
+  font-size: 10px;
+  margin-top: 18px;
+  color: #becfc9;
+}
+.mock-note {
+  font-size: 8px;
+  line-height: 1.5;
+  color: #748f87;
+  margin: 0;
+}
+.detail-panel {
+  right: 3.3vw;
+  top: 190px;
+  width: 240px;
+  padding: 22px;
+}
+.detail-panel h2 {
+  font-family: 'Playfair Display';
+  font-style: italic;
+  font-size: 26px;
+  color: #f0cf7a;
+  margin: 6px 0;
+}
+.unit-type {
+  font-size: 10px;
+  color: #92aaa2;
+}
+.detail-panel dl {
+  margin: 22px 0 0;
+}
+.detail-panel dl div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid #86a99c22;
+  padding: 12px 0;
+}
+.detail-panel dt {
+  font-size: 9px;
+  color: #8fa9a1;
+}
+.detail-panel dd {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+}
+.positive {
+  color: #7fdbac;
+}
+.detail-panel.empty {
+  text-align: center;
+  padding-block: 32px;
+}
+.empty > span {
+  font-size: 35px;
+  color: #c8aa5b;
+}
+.empty h2 {
+  font-size: 21px;
+}
+.empty p {
+  font-size: 10px;
+  line-height: 1.6;
+  color: #8ba49c;
+}
+.map-label {
+  white-space: nowrap;
+  background: #071918cc;
+  border: 1px solid #d3b25e88;
+  border-radius: 2px;
+  padding: 3px 5px;
+  color: #fff2c7;
+  font-size: 7px;
+  pointer-events: none;
+}
+footer {
+  position: absolute;
+  z-index: 5;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 44px;
+  border-top: 1px solid #83a99a24;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3.3vw;
+  background: #061715d9;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  color: #748f87;
+}
+footer p {
+  letter-spacing: 0.04em;
+}
+@media (max-width: 900px) {
+  .stat-panel {
+    width: 200px;
+  }
+  .detail-panel {
+    width: 205px;
+    top: auto;
+    bottom: 62px;
+  }
+  .map-caption {
+    display: none;
+  }
+}
+@media (max-width: 680px) {
+  body {
+    overflow: auto;
+  }
+  .app-shell {
+    min-height: 820px;
+    height: 100svh;
+  }
+  header {
+    height: 82px;
+    padding: 14px 16px;
+  }
+  .brand-mark {
+    width: 40px;
+    height: 40px;
+  }
+  .header-meta > span {
+    display: none;
+  }
+  .stat-panel {
+    left: 12px;
+    top: 96px;
+    width: 170px;
+    padding: 14px;
+  }
+  .hero-stat strong {
+    font-size: 42px;
+  }
+  .detail-panel {
+    right: 12px;
+    bottom: 56px;
+    width: 190px;
+    padding: 15px;
+  }
+  .compass {
+    display: none;
+  }
+  footer {
+    padding: 0 12px;
+  }
+  footer p {
+    max-width: 55%;
+    text-align: center;
+  }
+  footer span:last-child {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
