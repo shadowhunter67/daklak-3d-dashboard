@@ -80,7 +80,7 @@ def main() -> None:
     low, high = float(np.percentile(elevation,1)), float(np.percentile(elevation,99.5))
     normalized = np.clip((elevation-low)/max(high-low,1),0,1)
     height_image = Image.fromarray((normalized*255).astype(np.uint8)).filter(
-        ImageFilter.GaussianBlur(radius=3)
+        ImageFilter.GaussianBlur(radius=1.8)
     )
     normalized = np.asarray(height_image, dtype=np.float32) / 255
     height_image.save(OUTPUT/"daklak-terrain-height.png",optimize=True)

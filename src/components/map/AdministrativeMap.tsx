@@ -42,6 +42,66 @@ const heatPoints = Object.entries(metrics)
     };
   });
 
+function HeatmapTerrainOverlay() {
+  const [heightMap, terrainMask] = useTexture([terrainHeightUrl, terrainMaskUrl]);
+  const [minLon, minLat, maxLon, maxLat] = terrainMetadata.bbox;
+  const northWest = projection([minLon, maxLat])!;
+  const southEast = projection([maxLon, minLat])!;
+  const width = southEast[0] - northWest[0];
+  const height = southEast[1] - northWest[1];
+  const texture = useMemo(() => {
+    const canvas = document.createElement('canvas');
+    canvas.width = terrainMetadata.width;
+    canvas.height = terrainMetadata.height;
+    const context = canvas.getContext('2d');
+    if (context) {
+      context.globalCompositeOperation = 'lighter';
+      const populations = heatPoints.map(({ metric }) => metric.population);
+      const maximum = Math.max(...populations);
+      const minimum = Math.min(...populations);
+      heatPoints.forEach(({ metric, point }) => {
+        const x = ((point[0] - northWest[0]) / width) * canvas.width;
+        const y = ((point[1] - northWest[1]) / height) * canvas.height;
+        const intensity = (metric.population - minimum) / Math.max(maximum - minimum, 1);
+        const radius = 48 + intensity * 50;
+        const gradient = context.createRadialGradient(x, y, 0, x, y, radius);
+        gradient.addColorStop(0, `rgba(255, 48, 12, ${0.82 + intensity * 0.16})`);
+        gradient.addColorStop(0.24, 'rgba(255, 193, 28, .78)');
+        gradient.addColorStop(0.52, 'rgba(25, 220, 180, .54)');
+        gradient.addColorStop(1, 'rgba(10, 180, 190, 0)');
+        context.fillStyle = gradient;
+        context.fillRect(x - radius, y - radius, radius * 2, radius * 2);
+      });
+    }
+    return new CanvasTexture(canvas);
+  }, [height, northWest, width]);
+  useEffect(() => () => texture.dispose(), [texture]);
+  return (
+    <mesh
+      position={[(northWest[0] + southEast[0]) / 2, -(northWest[1] + southEast[1]) / 2, 0.012]}
+      raycast={() => null}
+    >
+      <planeGeometry args={[width, height, 192, 160]} />
+      <meshStandardMaterial
+        map={texture}
+        emissiveMap={texture}
+        emissive="#ffffff"
+        emissiveIntensity={0.55}
+        displacementMap={heightMap}
+        displacementScale={0.2}
+        displacementBias={0.02}
+        alphaMap={terrainMask}
+        alphaTest={0.01}
+        transparent
+        opacity={0.9}
+        depthWrite={false}
+        toneMapped={false}
+        roughness={0.9}
+      />
+    </mesh>
+  );
+}
+
 function ringContains([longitude, latitude]: [number, number], ring: Position[]) {
   let inside = false;
   for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
@@ -218,6 +278,7 @@ function MapContent() {
     <group rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
       <TerrainSurface />
       <SelectedTerrainOverlay />
+      {dataMode === 'heatmap' && <HeatmapTerrainOverlay />}
       {showLabels &&
         visibleLabels.map(([code, label, p]) => {
           return (
@@ -226,23 +287,6 @@ function MapContent() {
             </Html>
           );
         })}
-      {dataMode === 'heatmap' &&
-        heatPoints.map(({ code, metric, point }) => (
-          <Html
-            key={code}
-            position={[point[0], -point[1], 0.3]}
-            transform
-            sprite
-            distanceFactor={2.2}
-          >
-            <span
-              className="map-data-marker"
-              style={
-                { '--marker-size': `${14 + metric.population / 5200}px` } as React.CSSProperties
-              }
-            />
-          </Html>
-        ))}
       {dataMode === 'energy' &&
         dashboardData.energy.nodes.map((node) => {
           const point = projection([node.longitude, node.latitude])!;
