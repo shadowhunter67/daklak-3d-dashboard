@@ -1,4 +1,4 @@
-import type { FeatureCollection, MultiPolygon, Polygon } from 'geojson';
+import type { FeatureCollection, Geometry } from 'geojson';
 export type UnitType = 'xa' | 'phuong';
 export interface WardProperties {
   code: string;
@@ -7,7 +7,7 @@ export interface WardProperties {
   provinceCode: '66';
   areaKm2: number;
 }
-export type WardCollection = FeatureCollection<Polygon | MultiPolygon, WardProperties>;
+export type WardCollection = FeatureCollection<Geometry, WardProperties>;
 export interface Metric {
   population: number;
   coverage: number;

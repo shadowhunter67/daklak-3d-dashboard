@@ -1,7 +1,7 @@
 import { geoMercator } from 'd3-geo';
 import { Shape, Vector2 } from 'three';
 import type { GeoProjection } from 'd3-geo';
-import type { MultiPolygon, Polygon, Position } from 'geojson';
+import type { Geometry, Position } from 'geojson';
 
 export const projection: GeoProjection = geoMercator()
   .center([108.5, 12.7])
@@ -12,7 +12,13 @@ const ringToPoints = (ring: Position[]) =>
     const p = projection([lon, lat])!;
     return new Vector2(p[0], -p[1]);
   });
-export function geometryToShapes(geometry: Polygon | MultiPolygon): Shape[] {
+export function geometryToShapes(geometry: Geometry): Shape[] {
+  if (geometry.type === 'GeometryCollection') {
+    return geometry.geometries.flatMap(geometryToShapes);
+  }
+  if (geometry.type !== 'Polygon' && geometry.type !== 'MultiPolygon') {
+    return [];
+  }
   const polygons = geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates;
   return polygons.flatMap((polygon) => {
     if (!polygon[0]) return [];
