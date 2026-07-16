@@ -2,9 +2,10 @@ import { Canvas } from '@react-three/fiber';
 import { Html, OrbitControls, useTexture } from '@react-three/drei';
 import type { ThreeEvent } from '@react-three/fiber';
 import { useFrame } from '@react-three/fiber';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import type { Geometry, Position } from 'geojson';
+import { CanvasTexture } from 'three';
 import wards from '../../assets/maps/daklak/daklak-wards-render.json';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
 import terrainColorUrl from '../../assets/maps/daklak/daklak-terrain-color.png';
@@ -22,17 +23,11 @@ type LabelMap = Record<
   { name: string; longitude: number; latitude: number; priority: number }
 >;
 
-const visibleLabels = Object.entries(labels as LabelMap).reduce<
-  Array<[string, LabelMap[string], [number, number]]>
->((accepted, [code, label]) => {
-  if (label.priority !== 1) return accepted;
-  const point = projection([label.longitude, label.latitude])! as [number, number];
-  const isFarEnough = accepted.every(
-    ([, , other]) => Math.hypot(point[0] - other[0], point[1] - other[1]) > 0.72,
-  );
-  if (isFarEnough) accepted.push([code, label, point]);
-  return accepted;
-}, []);
+const centerCodes = ['24133', '22015'];
+const visibleLabels = centerCodes.map((code) => {
+  const label = (labels as LabelMap)[code];
+  return [code, label, projection([label.longitude, label.latitude])! as [number, number]] as const;
+});
 
 function ringContains([longitude, latitude]: [number, number], ring: Position[]) {
   let inside = false;
@@ -63,6 +58,89 @@ function geometryContains(point: [number, number], geometry: Geometry): boolean 
 
 const featureAt = (point: [number, number]) =>
   data.features.find((feature) => geometryContains(point, feature.geometry));
+
+function drawGeometryPath(
+  context: CanvasRenderingContext2D,
+  geometry: Geometry,
+  project: (position: Position) => [number, number],
+) {
+  if (geometry.type === 'GeometryCollection') {
+    geometry.geometries.forEach((part) => drawGeometryPath(context, part, project));
+    return;
+  }
+  if (geometry.type !== 'Polygon' && geometry.type !== 'MultiPolygon') return;
+  const polygons = geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates;
+  polygons.forEach((polygon) =>
+    polygon.forEach((ring) => {
+      ring.forEach((position, index) => {
+        const [x, y] = project(position);
+        if (index === 0) context.moveTo(x, y);
+        else context.lineTo(x, y);
+      });
+      context.closePath();
+    }),
+  );
+}
+
+function SelectedTerrainOverlay() {
+  const selectedCode = useMapStore((state) => state.selectedCode);
+  const heightMap = useTexture(terrainHeightUrl);
+  const canvas = useMemo(() => {
+    const element = document.createElement('canvas');
+    element.width = terrainMetadata.width;
+    element.height = terrainMetadata.height;
+    return element;
+  }, []);
+  const selectionTexture = useMemo(() => new CanvasTexture(canvas), [canvas]);
+  const [minLon, minLat, maxLon, maxLat] = terrainMetadata.bbox;
+  const northWest = projection([minLon, maxLat])!;
+  const southEast = projection([maxLon, minLat])!;
+  const width = southEast[0] - northWest[0];
+  const height = southEast[1] - northWest[1];
+  useEffect(() => {
+    const context = canvas.getContext('2d');
+    if (!context) return;
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    const feature = data.features.find((item) => item.properties.code === selectedCode);
+    if (feature) {
+      context.beginPath();
+      drawGeometryPath(context, feature.geometry, (position) => {
+        const point = projection([position[0], position[1]])!;
+        return [
+          ((point[0] - northWest[0]) / width) * canvas.width,
+          ((point[1] - northWest[1]) / height) * canvas.height,
+        ];
+      });
+      context.fillStyle = '#ffffff';
+      context.fill('evenodd');
+    }
+    selectionTexture.needsUpdate = true;
+  }, [canvas, height, northWest, selectedCode, selectionTexture, width]);
+  useEffect(() => () => selectionTexture.dispose(), [selectionTexture]);
+  if (!selectedCode) return null;
+  return (
+    <mesh
+      position={[(northWest[0] + southEast[0]) / 2, -(northWest[1] + southEast[1]) / 2, 0.008]}
+      raycast={() => null}
+    >
+      <planeGeometry args={[width, height, 192, 160]} />
+      <meshStandardMaterial
+        color="#ffd66b"
+        emissive="#a66a12"
+        emissiveIntensity={0.55}
+        displacementMap={heightMap}
+        displacementScale={0.3}
+        displacementBias={0.02}
+        alphaMap={selectionTexture}
+        alphaTest={0.08}
+        transparent
+        opacity={0.72}
+        depthWrite={false}
+        roughness={0.72}
+      />
+    </mesh>
+  );
+}
 
 function TerrainSurface() {
   const [colorMap, heightMap, normalMap, alphaMap] = useTexture([
@@ -125,6 +203,7 @@ function MapContent() {
   return (
     <group rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
       <TerrainSurface />
+      <SelectedTerrainOverlay />
       {showLabels &&
         visibleLabels.map(([code, label, p]) => {
           return (
