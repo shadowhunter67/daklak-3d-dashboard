@@ -32,6 +32,7 @@ export function MobileDashboardSheet() {
       className={`mobile-sheet mobile-sheet--${sheet.state}`}
       aria-label={title}
       data-state={sheet.state}
+      data-viewport-overlay="bottom"
     >
       <div className="mobile-sheet__bar">
         <button

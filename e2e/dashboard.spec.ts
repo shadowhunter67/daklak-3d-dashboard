@@ -343,3 +343,108 @@ test.describe('mobile dashboard composition', () => {
     });
   });
 });
+
+test.describe('directory ordering and safe bottom', () => {
+  const expectedFirstTen = [
+    'Bình Kiến',
+    'Buôn Đôn',
+    'Buôn Hồ',
+    'Buôn Ma Thuột',
+    'Cuôr Đăng',
+    'Cư Bao',
+    "Cư M'gar",
+    "Cư M'ta",
+    'Cư Pơng',
+    'Cư Prao',
+  ];
+
+  for (const viewport of [
+    { width: 390, height: 844 },
+    { width: 412, height: 915 },
+  ]) {
+    test(`sorts 102 rows and keeps the final row safe at ${viewport.width}x${viewport.height}`, async ({
+      page,
+    }) => {
+      await page.setViewportSize(viewport);
+      await page.goto('./?view=2d');
+      const rows = page.locator('button.directory-row');
+      await expect(rows).toHaveCount(102);
+      expect((await rows.locator('strong').allTextContents()).slice(0, 10)).toEqual(
+        expectedFirstTen,
+      );
+
+      const search = page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' });
+      await search.fill('cư');
+      const searchNames = await rows.locator('strong').allTextContents();
+      const collator = new Intl.Collator('vi', { sensitivity: 'base', numeric: true });
+      expect(searchNames).toEqual([...searchNames].sort(collator.compare));
+      await search.fill('');
+
+      const lastRow = rows.last();
+      await lastRow.scrollIntoViewIfNeeded();
+      const bounds = await lastRow.boundingBox();
+      expect(bounds).not.toBeNull();
+      expect(bounds!.y).toBeGreaterThanOrEqual(0);
+      expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(viewport.height - 8);
+      await lastRow.click();
+      await expect(lastRow).toHaveAttribute('aria-selected', 'true');
+      const code = await lastRow.getAttribute('data-code');
+      expect(code).toBeTruthy();
+      await expect(page).toHaveURL(new RegExp(`ward=${code}`));
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        ),
+      ).toBe(false);
+    });
+  }
+
+  test('keyboard navigation follows displayed order and scrolls the last row into view', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('./?view=2d');
+    const rows = page.locator('button.directory-row');
+    await rows.first().focus();
+    for (let index = 1; index < 102; index += 1) await page.keyboard.press('ArrowDown');
+    await expect(rows.last()).toBeFocused();
+    const bounds = await rows.last().boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(836);
+  });
+});
+
+test.describe('camera intent preservation', () => {
+  test('keeps user camera state and selection safe across sheet transitions', async ({ page }) => {
+    const runtimeErrors: string[] = [];
+    page.on('pageerror', (error) => runtimeErrors.push(error.message));
+    await page.setViewportSize({ width: 412, height: 915 });
+    await page.goto('./?view=3d&mode=overview&ward=22015');
+    const stage = page.locator('#map-viewport');
+    const canvas = page.locator('canvas');
+    await expect(canvas).toHaveAttribute('data-webgl-lifecycle', 'ready');
+    await page.waitForTimeout(500);
+    expect(runtimeErrors).toEqual([]);
+    await expect(stage).toHaveAttribute('data-selected-safe', 'true');
+    await canvas.hover();
+    await page.mouse.wheel(0, -260);
+    await page.waitForTimeout(200);
+    const before = JSON.parse((await stage.getAttribute('data-camera-state')) ?? '{}') as {
+      zoom: number;
+      target: number[];
+    };
+    await page.getByRole('button', { name: 'Chi tiết đơn vị đã chọn' }).click();
+    await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'expanded');
+    await expect(stage).toHaveAttribute('data-selected-safe', 'true');
+    const expanded = JSON.parse((await stage.getAttribute('data-camera-state')) ?? '{}') as {
+      zoom: number;
+      target: number[];
+    };
+    expect(expanded.zoom).toBeGreaterThan(0);
+    expect(Math.abs(expanded.zoom - before.zoom) / before.zoom).toBeLessThan(0.35);
+    expect(expanded.target).not.toEqual([0, 0, 0]);
+    await page.getByRole('button', { name: 'Chi tiết đơn vị đã chọn' }).click();
+    await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'peek');
+    await expect(stage).toHaveAttribute('data-selected-safe', 'true');
+  });
+});
