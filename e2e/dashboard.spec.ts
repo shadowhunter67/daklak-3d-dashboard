@@ -280,10 +280,11 @@ test.describe('mobile dashboard composition', () => {
     await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
     await expect(page.locator('.map-loading')).toBeHidden();
     await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'closed');
+    await page.addStyleTag({
+      content: '.map-canvas-shell canvas { visibility: hidden !important; }',
+    });
     await expect(page).toHaveScreenshot('dashboard-mobile-overview.png', {
       animations: 'disabled',
-      mask: [page.locator('canvas')],
-      maskColor: '#071918',
       maxDiffPixelRatio: 0.03,
     });
 
@@ -291,17 +292,16 @@ test.describe('mobile dashboard composition', () => {
     await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
     await expect(page.locator('.map-loading')).toBeHidden();
     await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'peek');
+    await page.addStyleTag({
+      content: '.map-canvas-shell canvas { visibility: hidden !important; }',
+    });
     await expect(page).toHaveScreenshot('dashboard-mobile-selection-peek.png', {
       animations: 'disabled',
-      mask: [page.locator('canvas')],
-      maskColor: '#071918',
       maxDiffPixelRatio: 0.03,
     });
     await page.getByRole('button', { name: 'Chi tiết đơn vị đã chọn' }).click();
     await expect(page).toHaveScreenshot('dashboard-mobile-selection-expanded.png', {
       animations: 'disabled',
-      mask: [page.locator('canvas')],
-      maskColor: '#071918',
       maxDiffPixelRatio: 0.03,
     });
 
@@ -309,10 +309,11 @@ test.describe('mobile dashboard composition', () => {
     await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
     await expect(page.locator('.map-loading')).toBeHidden();
     await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'closed');
+    await page.addStyleTag({
+      content: '.map-canvas-shell canvas { visibility: hidden !important; }',
+    });
     await expect(page).toHaveScreenshot('dashboard-mobile-heatmap.png', {
       animations: 'disabled',
-      mask: [page.locator('canvas')],
-      maskColor: '#071918',
       maxDiffPixelRatio: 0.03,
     });
     await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
@@ -326,10 +327,11 @@ test.describe('mobile dashboard composition', () => {
     await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
     await expect(page.locator('.map-loading')).toBeHidden();
     await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'closed');
+    await page.addStyleTag({
+      content: '.map-canvas-shell canvas { visibility: hidden !important; }',
+    });
     await expect(page).toHaveScreenshot('dashboard-mobile-overview-412.png', {
       animations: 'disabled',
-      mask: [page.locator('canvas')],
-      maskColor: '#071918',
       maxDiffPixelRatio: 0.03,
     });
   });
