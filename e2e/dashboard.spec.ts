@@ -273,8 +273,8 @@ test.describe('mobile dashboard composition', () => {
     test.setTimeout(120_000);
     test.skip(
       test.info().project.name !== 'mobile-chromium' ||
-        (process.platform !== 'win32' && !process.env.UPDATE_MOBILE_SNAPSHOTS),
-      'Mobile visual baselines run on Windows or an explicit Linux snapshot bootstrap',
+        !['win32', 'linux'].includes(process.platform),
+      'Mobile visual baselines are maintained for Windows and Linux Chromium',
     );
     await page.goto('./?view=3d&mode=overview');
     await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
