@@ -283,6 +283,7 @@ test.describe('mobile dashboard composition', () => {
     await page.addStyleTag({
       content: '.map-canvas-shell canvas { visibility: hidden !important; }',
     });
+    await page.waitForTimeout(500);
     await expect(page).toHaveScreenshot('dashboard-mobile-overview.png', {
       animations: 'disabled',
       maxDiffPixelRatio: 0.03,
@@ -295,11 +296,14 @@ test.describe('mobile dashboard composition', () => {
     await page.addStyleTag({
       content: '.map-canvas-shell canvas { visibility: hidden !important; }',
     });
+    await page.waitForTimeout(500);
     await expect(page).toHaveScreenshot('dashboard-mobile-selection-peek.png', {
       animations: 'disabled',
       maxDiffPixelRatio: 0.03,
     });
     await page.getByRole('button', { name: 'Chi tiết đơn vị đã chọn' }).click();
+    await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'expanded');
+    await page.waitForTimeout(300);
     await expect(page).toHaveScreenshot('dashboard-mobile-selection-expanded.png', {
       animations: 'disabled',
       maxDiffPixelRatio: 0.03,
@@ -312,11 +316,13 @@ test.describe('mobile dashboard composition', () => {
     await page.addStyleTag({
       content: '.map-canvas-shell canvas { visibility: hidden !important; }',
     });
+    await page.waitForTimeout(500);
     await expect(page).toHaveScreenshot('dashboard-mobile-heatmap.png', {
       animations: 'disabled',
       maxDiffPixelRatio: 0.03,
     });
     await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await expect(page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' })).toBeVisible();
     await expect(page).toHaveScreenshot('dashboard-mobile-directory.png', {
       animations: 'disabled',
       maxDiffPixelRatio: 0.03,
@@ -330,6 +336,7 @@ test.describe('mobile dashboard composition', () => {
     await page.addStyleTag({
       content: '.map-canvas-shell canvas { visibility: hidden !important; }',
     });
+    await page.waitForTimeout(500);
     await expect(page).toHaveScreenshot('dashboard-mobile-overview-412.png', {
       animations: 'disabled',
       maxDiffPixelRatio: 0.03,
