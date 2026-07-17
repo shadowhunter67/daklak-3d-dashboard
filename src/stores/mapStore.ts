@@ -13,11 +13,13 @@ export interface MapState {
   hoveredCode: string | null;
   selectedCode: string | null;
   labelsVisible: boolean;
+  roadsVisible: boolean;
   autoRotate: boolean;
   reducedMotion: boolean;
   setHovered: (code: string | null) => void;
   select: (code: string | null) => void;
   toggleLabels: () => void;
+  toggleRoads: () => void;
   toggleAutoRotate: () => void;
   setReducedMotion: (reduced: boolean) => void;
   changeDataMode: (mode: MapState['dataMode']) => void;
@@ -30,6 +32,7 @@ export const useMapStore = create<MapState>((set) => ({
   hoveredCode: null,
   selectedCode: initialUrlState.selectedCode,
   labelsVisible: true,
+  roadsVisible: false,
   autoRotate: false,
   reducedMotion: false,
   setHovered: (hoveredCode) => set({ hoveredCode }),
@@ -39,6 +42,7 @@ export const useMapStore = create<MapState>((set) => ({
         selectedCode && validAdministrativeCodes.has(selectedCode) ? selectedCode : null,
     }),
   toggleLabels: () => set((s) => ({ labelsVisible: !s.labelsVisible })),
+  toggleRoads: () => set((s) => ({ roadsVisible: !s.roadsVisible })),
   toggleAutoRotate: () =>
     set((state) => ({ autoRotate: state.reducedMotion ? false : !state.autoRotate })),
   setReducedMotion: (reducedMotion) =>

@@ -26,7 +26,7 @@ export default function App() {
   useEffect(() => {
     if (previousView.current === viewMode) return;
     previousView.current = viewMode;
-    const targetId = viewMode === 'table' ? 'directory-title' : 'map-viewport';
+    const targetId = viewMode === 'table' ? 'map-2d-title' : 'map-viewport';
     requestAnimationFrame(() => document.getElementById(targetId)?.focus());
   }, [viewMode]);
 
