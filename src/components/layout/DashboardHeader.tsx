@@ -1,3 +1,4 @@
+import { useRef, useState } from 'react';
 import { datasetManifest } from '../../data/datasetManifest';
 import { useMapStore } from '../../stores/mapStore';
 
@@ -8,6 +9,19 @@ const modes = [
 ] as const;
 
 export function DashboardHeader() {
+  const [shareStatus, setShareStatus] = useState('');
+  const shareTimer = useRef(0);
+  const shareDashboard = async () => {
+    const url = window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareStatus('Đã sao chép liên kết');
+      window.clearTimeout(shareTimer.current);
+      shareTimer.current = window.setTimeout(() => setShareStatus(''), 2400);
+    } catch {
+      window.prompt('Sao chép liên kết này:', url);
+    }
+  };
   const dataMode = useMapStore((state) => state.dataMode);
   const viewMode = useMapStore((state) => state.viewMode);
   const labelsVisible = useMapStore((state) => state.labelsVisible);
@@ -97,7 +111,34 @@ export function DashboardHeader() {
             Nhãn
           </span>
         </button>
+        <button
+          className="header-secondary-control"
+          onClick={() => window.dispatchEvent(new Event('dashboard-reset-camera'))}
+          aria-label="Đưa camera về toàn tỉnh"
+          title="Đưa camera về toàn tỉnh"
+        >
+          Toàn tỉnh
+        </button>
+        <button
+          className="header-secondary-control"
+          onClick={shareDashboard}
+          aria-label="Sao chép liên kết trạng thái hiện tại"
+          title="Sao chép liên kết"
+        >
+          Chia sẻ
+        </button>
+        <button
+          className="header-secondary-control header-help-control"
+          onClick={() => window.dispatchEvent(new Event('dashboard-show-help'))}
+          aria-label="Mở hướng dẫn sử dụng"
+          title="Hướng dẫn sử dụng"
+        >
+          ?
+        </button>
       </div>
+      <span className="share-status" role="status" aria-live="polite">
+        {shareStatus}
+      </span>
     </header>
   );
 }

@@ -196,6 +196,12 @@ export function CameraControls() {
   }, [scheduleAdjustment]);
 
   useEffect(() => {
+    const reset = () => scheduleAdjustment('manual-reset');
+    window.addEventListener('dashboard-reset-camera', reset);
+    return () => window.removeEventListener('dashboard-reset-camera', reset);
+  }, [scheduleAdjustment]);
+
+  useEffect(() => {
     const down = (event: KeyboardEvent) => {
       if (shouldHandleCameraKey(event.key, event.target)) {
         event.preventDefault();

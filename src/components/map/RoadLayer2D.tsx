@@ -2,7 +2,11 @@ import { geoPath, type GeoProjection } from 'd3-geo';
 import { useEffect, useMemo, useState } from 'react';
 import type { Position } from 'geojson';
 import { loadRoads, type RoadCollection } from '../../data/loadRoads';
+import labels from '../../assets/maps/daklak/daklak-labels.json';
+import { useMapStore } from '../../stores/mapStore';
 import { layoutMapLabels } from './labelLayout';
+
+type LabelMap = Record<string, { longitude: number; latitude: number }>;
 
 function projectedLine(
   coordinates: Position[],
@@ -27,6 +31,7 @@ export function RoadLayer2D({
   projection: GeoProjection;
   compact: boolean;
 }) {
+  const labelsVisible = useMapStore((state) => state.labelsVisible);
   const [roads, setRoads] = useState<RoadCollection | null>(null);
   useEffect(() => {
     let active = true;
@@ -62,16 +67,26 @@ export function RoadLayer2D({
           }
         });
       });
-    return layoutMapLabels(
-      [...best.entries()].map(([text, value]) => ({
+    const administrativePoints = Object.values(labels as LabelMap)
+      .map((label) => projection([label.longitude, label.latitude])! as [number, number])
+      .filter(Boolean);
+    const candidates = [...best.entries()]
+      .map(([text, value]) => ({
         id: text,
         text,
         point: value.point,
         priority: value.priority,
-      })),
-      compact ? 6 : 10,
-    );
-  }, [compact, projection, roads]);
+      }))
+      .filter((label) => {
+        if (!labelsVisible) return true;
+        const minimumDistance = label.priority === 1 ? 30 : 42;
+        return !administrativePoints.some(
+          (point) =>
+            Math.hypot(point[0] - label.point[0], point[1] - label.point[1]) < minimumDistance,
+        );
+      });
+    return layoutMapLabels(candidates, compact ? 6 : 10);
+  }, [compact, labelsVisible, projection, roads]);
   if (!roads) return <g data-testid="roads-loading" />;
   return (
     <g className="map-roads" aria-label="Mạng lưới đường OpenStreetMap">

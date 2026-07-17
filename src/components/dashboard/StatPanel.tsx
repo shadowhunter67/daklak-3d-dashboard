@@ -95,7 +95,7 @@ export function StatPanel() {
         </div>
       )}
       <div className="divider" />
-      <div className="metric">
+      <div className={dataMode === 'overview' ? 'metric' : 'metric metric--mock'}>
         <span>
           {dataMode === 'overview'
             ? 'GRDP 2025'
@@ -115,6 +115,12 @@ export function StatPanel() {
         <div className="metric">
           <span>Doanh nghiệp thành lập mới</span>
           <b>{formatNumber(dashboardData.overview.newBusinesses)}</b>
+        </div>
+      )}
+      {dataMode === 'overview' && (
+        <div className="metric metric--mock">
+          <span>Dân số cấp xã</span>
+          <b>Minh họa</b>
         </div>
       )}
       <div className="chart-title">

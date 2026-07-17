@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { BufferGeometry, Float32BufferAttribute } from 'three';
 import { projection } from '../../utils/geo';
 import { loadRoads, type RoadClass } from '../../data/loadRoads';
+import labels from '../../assets/maps/daklak/daklak-labels.json';
+import { useMapStore } from '../../stores/mapStore';
 import {
   displacementBias,
   displacementScale,
@@ -18,6 +20,8 @@ const styles: Record<RoadClass, { color: string; opacity: number }> = {
   provincial: { color: '#f3a44a', opacity: 0.94 },
   district: { color: '#d9e5df', opacity: 0.72 },
 };
+
+type LabelMap = Record<string, { longitude: number; latitude: number }>;
 
 async function loadHeightPixels() {
   const image = new Image();
@@ -36,9 +40,10 @@ function parts(geometry: LineString | MultiLineString): Position[][] {
 }
 
 export function RoadLayer3D() {
+  const labelsVisible = useMapStore((state) => state.labelsVisible);
   const [geometries, setGeometries] = useState<Record<RoadClass, BufferGeometry> | null>(null);
   const [roadLabels, setRoadLabels] = useState<
-    Array<{ text: string; position: [number, number, number] }>
+    Array<{ text: string; roadClass: RoadClass; position: [number, number, number] }>
   >([]);
   useEffect(() => {
     let active = true;
@@ -80,7 +85,13 @@ export function RoadLayer3D() {
           }
         }),
       );
-      const named = new Map<string, { coordinate: Position; score: number }>();
+      const administrativePoints = Object.values(labels as LabelMap)
+        .map((label) => projection([label.longitude, label.latitude])!)
+        .filter(Boolean);
+      const named = new Map<
+        string,
+        { coordinate: Position; projected: [number, number]; roadClass: RoadClass; score: number }
+      >();
       roads.features
         .filter((road) => road.properties.roadClass !== 'district')
         .forEach((road) => {
@@ -89,16 +100,30 @@ export function RoadLayer3D() {
           parts(road.geometry).forEach((line) => {
             const score = line.length + (road.properties.roadClass === 'national' ? 10_000 : 0);
             if (!named.has(text) || named.get(text)!.score < score) {
-              named.set(text, { coordinate: line[Math.floor(line.length / 2)], score });
+              const coordinate = line[Math.floor(line.length / 2)];
+              named.set(text, {
+                coordinate,
+                projected: projection([coordinate[0], coordinate[1]])! as [number, number],
+                roadClass: road.properties.roadClass,
+                score,
+              });
             }
           });
         });
       setRoadLabels(
         [...named.entries()]
           .sort((first, second) => second[1].score - first[1].score)
-          .slice(0, 16)
+          .filter(([, value]) => {
+            if (value.roadClass === 'national') return true;
+            return !administrativePoints.some(
+              (point) =>
+                Math.hypot(point[0] - value.projected[0], point[1] - value.projected[1]) < 18,
+            );
+          })
+          .slice(0, labelsVisible ? 8 : 14)
           .map(([text, value]) => ({
             text,
+            roadClass: value.roadClass,
             position: point(value.coordinate) as [number, number, number],
           })),
       );
@@ -114,7 +139,7 @@ export function RoadLayer3D() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [labelsVisible]);
   useEffect(
     () => () => Object.values(geometries ?? {}).forEach((geometry) => geometry.dispose()),
     [geometries],
@@ -138,10 +163,10 @@ export function RoadLayer3D() {
           position={label.position}
           transform
           sprite
-          distanceFactor={1.8}
+          distanceFactor={label.roadClass === 'national' ? 2.2 : 2.6}
           zIndexRange={[1, 0]}
         >
-          <span className="road-label-3d">{label.text}</span>
+          <span className={`road-label-3d road-label-3d--${label.roadClass}`}>{label.text}</span>
         </Html>
       ))}
     </>

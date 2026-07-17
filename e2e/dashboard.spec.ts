@@ -7,6 +7,12 @@ async function openMobileDirectory(page: import('@playwright/test').Page) {
   if (await toggle.isVisible()) await toggle.click();
 }
 
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() =>
+    window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true'),
+  );
+});
+
 test.describe('dashboard smoke tests', () => {
   test('loads the terrain, controls, and sourced overview', async ({ page }) => {
     const runtimeErrors: string[] = [];
