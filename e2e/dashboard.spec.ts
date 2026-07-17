@@ -198,6 +198,22 @@ test.describe('dashboard smoke tests', () => {
     ).toBeVisible();
   });
 
+  test('adaptive administrative and road label visual coverage', async ({ page }, testInfo) => {
+    test.skip(!testInfo.project.name.includes('chromium'), 'Chromium visual coverage');
+    const mobile = testInfo.project.name.includes('mobile');
+    await page.setViewportSize(mobile ? { width: 390, height: 844 } : { width: 1440, height: 900 });
+    await page.goto('./?view=2d');
+    await expect(page.locator('[data-label-code]')).not.toHaveCount(0);
+    expect(await page.locator('[data-label-code]').count()).toBeGreaterThan(mobile ? 20 : 40);
+    await page.locator('.header-meta button').nth(2).click();
+    await expect(page.locator('.map-road')).toHaveCount(1201);
+    expect(await page.locator('.map-road-labels text').count()).toBeGreaterThan(0);
+    await expect(page.locator('.administrative-map-2d')).toHaveScreenshot(
+      'adaptive-map-labels.png',
+      { animations: 'disabled', maxDiffPixelRatio: 0.03 },
+    );
+  });
+
   test('moves focus to the 2D fallback when WebGL is unavailable', async ({ page }) => {
     await page.addInitScript(() => {
       const original = HTMLCanvasElement.prototype.getContext;

@@ -340,8 +340,36 @@ h1 i {
   stroke: #071918;
   stroke-width: 3px;
   text-anchor: middle;
+  font-size: 8.5px;
+  font-weight: 600;
+  pointer-events: none;
+}
+.map-2d-labels text.is-emphasized {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 750;
+}
+.map-road-labels text {
+  fill: #ffe29a;
+  paint-order: stroke;
+  stroke: #071918;
+  stroke-width: 3px;
+  text-anchor: middle;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+.road-label-3d {
+  display: inline-block;
+  padding: 1px 3px;
+  border: 1px solid #ffe29a80;
+  border-radius: 3px;
+  color: #ffe29a;
+  background: #071918cc;
+  font-size: 7px;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
   pointer-events: none;
 }
 .accessible-directory {
