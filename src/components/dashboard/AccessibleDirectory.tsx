@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import metrics from '../../assets/maps/daklak/daklak-metrics.json';
 import wards from '../../assets/maps/daklak/daklak-wards-render.json';
 import { useMapStore } from '../../stores/mapStore';
@@ -18,6 +18,8 @@ export function AccessibleDirectory() {
   const selectedCode = useMapStore((state) => state.selectedCode);
   const select = useMapStore((state) => state.select);
   const rows = useRef<Array<HTMLButtonElement | null>>([]);
+  const tableRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
   const filtered = useMemo(() => {
     const term = normalizeSearchText(query);
     if (!term) return sortedUnits;
@@ -26,6 +28,22 @@ export function AccessibleDirectory() {
         normalizeSearchText(properties.name).includes(term) || properties.code.includes(term),
     );
   }, [query]);
+
+  useEffect(() => {
+    const table = tableRef.current;
+    const header = headerRef.current;
+    if (!table || !header) return;
+    const update = () => {
+      const height = header.getBoundingClientRect().height;
+      table.style.setProperty('--directory-sticky-header-height', `${height}px`);
+      table.dataset.stickyHeaderHeight = height.toFixed(2);
+    };
+    update();
+    if (typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(update);
+    observer.observe(header);
+    return () => observer.disconnect();
+  }, []);
 
   const moveFocus = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
     if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) return;
@@ -36,7 +54,18 @@ export function AccessibleDirectory() {
         : event.key === 'End'
           ? filtered.length - 1
           : (index + (event.key === 'ArrowDown' ? 1 : -1) + filtered.length) % filtered.length;
-    rows.current[next]?.focus();
+    const nextRow = rows.current[next];
+    nextRow?.focus({ preventScroll: true });
+    const table = tableRef.current;
+    const header = headerRef.current;
+    if (!nextRow || !table || !header) return;
+    const rowBounds = nextRow.getBoundingClientRect();
+    const tableBounds = table.getBoundingClientRect();
+    const headerBounds = header.getBoundingClientRect();
+    const topBoundary = headerBounds.bottom + 8;
+    if (rowBounds.top < topBoundary) table.scrollTop -= topBoundary - rowBounds.top;
+    if (rowBounds.bottom > tableBounds.bottom)
+      table.scrollTop += rowBounds.bottom - tableBounds.bottom;
   };
 
   return (
@@ -61,8 +90,8 @@ export function AccessibleDirectory() {
       <p className="directory-status" role="status" aria-live="polite">
         Tìm thấy {filtered.length} đơn vị. Dùng phím mũi tên lên/xuống để duyệt.
       </p>
-      <div className="directory-table" role="table" aria-rowcount={filtered.length}>
-        <div className="directory-row directory-header" role="row">
+      <div ref={tableRef} className="directory-table" role="table" aria-rowcount={filtered.length}>
+        <div ref={headerRef} className="directory-row directory-header" role="row">
           <span role="columnheader">Đơn vị</span>
           <span role="columnheader">Loại</span>
           <span role="columnheader">Diện tích</span>
