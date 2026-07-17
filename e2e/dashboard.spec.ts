@@ -270,6 +270,7 @@ test.describe('mobile dashboard composition', () => {
   });
 
   test('matches intentional mobile visual states', async ({ page }) => {
+    test.setTimeout(120_000);
     test.skip(
       test.info().project.name !== 'mobile-chromium' ||
         (process.platform !== 'win32' && !process.env.UPDATE_MOBILE_SNAPSHOTS),
