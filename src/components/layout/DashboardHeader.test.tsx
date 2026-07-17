@@ -17,7 +17,7 @@ describe('DashboardHeader', () => {
 
   it('switches to the accessible directory', () => {
     render(<DashboardHeader />);
-    fireEvent.click(screen.getByRole('button', { name: 'Danh sách 2D' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mở danh sách 2D' }));
     expect(useMapStore.getState().viewMode).toBe('table');
   });
 });

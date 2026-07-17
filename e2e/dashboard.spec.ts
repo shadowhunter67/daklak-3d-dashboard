@@ -16,6 +16,8 @@ test.describe('dashboard smoke tests', () => {
       'aria-pressed',
       'true',
     );
+    const summaryToggle = page.getByRole('button', { name: 'Mở tóm tắt' });
+    if (await summaryToggle.isVisible()) await summaryToggle.click();
     await expect(page.getByText('SỐ LIỆU CẤP TỈNH CÓ NGUỒN')).toBeVisible();
     expect(runtimeErrors).toEqual([]);
     expect(failedRequests).toEqual([]);
@@ -36,7 +38,7 @@ test.describe('dashboard smoke tests', () => {
     page,
   }) => {
     await page.goto('./');
-    await page.getByRole('button', { name: 'Danh sách 2D' }).click();
+    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
 
     const search = page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' });
     await search.fill('buon ma thuot');
@@ -62,7 +64,7 @@ test.describe('dashboard smoke tests', () => {
   test('preserves native arrow-key behavior on interactive controls', async ({ page }) => {
     await page.goto('./');
     await expect(page.locator('canvas')).toBeVisible();
-    const switchView = page.getByRole('button', { name: 'Danh sách 2D' });
+    const switchView = page.getByRole('button', { name: 'Mở danh sách 2D' });
     const controlEventWasNotCancelled = await switchView.evaluate((element) =>
       element.dispatchEvent(
         new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }),
@@ -106,7 +108,7 @@ test.describe('dashboard smoke tests', () => {
       ),
     ).toEqual([]);
 
-    await page.getByRole('button', { name: 'Danh sách 2D' }).click();
+    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
     const tableResults = await new AxeBuilder({ page }).analyze();
     expect(
       tableResults.violations.filter(({ impact }) => impact === 'critical' || impact === 'serious'),
@@ -168,7 +170,7 @@ test.describe('dashboard smoke tests', () => {
     const selectedRow = page.locator('[role="row"][aria-selected="true"]');
     await expect(selectedRow).toContainText(/Tuy Ho/);
 
-    await page.getByRole('button', { name: 'Bản đồ 3D' }).click();
+    await page.getByRole('button', { name: 'Mở bản đồ 3D' }).click();
     await expect(page).toHaveURL(/view=3d&mode=energy&ward=22015/);
     await expect(page.locator('#map-viewport')).toBeFocused();
     await page.goBack();
@@ -186,7 +188,148 @@ test.describe('dashboard smoke tests', () => {
     });
     await page.goto('./');
     await expect(page.getByRole('heading', { name: 'Không thể hiển thị bản đồ 3D' })).toBeVisible();
-    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await page.locator('.map-fallback').getByRole('button', { name: 'Mở danh sách 2D' }).click();
     await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeFocused();
+  });
+});
+
+test.describe('mobile dashboard composition', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+  });
+
+  test('keeps the compact header, tabs, and map inside portrait viewport', async ({ page }) => {
+    await page.goto('./?view=3d&mode=overview');
+    await expect(page.locator('canvas')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Mở danh sách 2D' })).toBeVisible();
+    await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'closed');
+    const layout = await page.evaluate(() => {
+      const header = document.querySelector('header')?.getBoundingClientRect();
+      const tabs = document.querySelector('.mode-tabs')?.getBoundingClientRect();
+      const map = document.querySelector('#map-viewport')?.getBoundingClientRect();
+      return {
+        overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+        headerBottom: header?.bottom ?? 0,
+        tabsTop: tabs?.top ?? 0,
+        tabsBottom: tabs?.bottom ?? 0,
+        mapTop: map?.top ?? 0,
+        mapHeight: map?.height ?? 0,
+      };
+    });
+    expect(layout.overflow).toBe(false);
+    expect(layout.tabsTop).toBeGreaterThanOrEqual(layout.headerBottom - 1);
+    expect(layout.mapTop).toBeGreaterThanOrEqual(layout.tabsBottom - 1);
+    expect(layout.mapHeight).toBeGreaterThan(600);
+  });
+
+  test('opens selection at peek and toggles the shared sheet', async ({ page }) => {
+    await page.setViewportSize({ width: 412, height: 915 });
+    await page.goto('./?view=3d&mode=overview&ward=22015');
+    const sheet = page.locator('#mobile-dashboard-sheet');
+    await expect(sheet).toHaveAttribute('data-state', 'peek');
+    await expect(sheet).toContainText(/Tuy Ho/);
+    const toggle = page.getByRole('button', { name: 'Chi tiết đơn vị đã chọn' });
+    await toggle.click();
+    await expect(sheet).toHaveAttribute('data-state', 'expanded');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await toggle.press('Enter');
+    await expect(sheet).toHaveAttribute('data-state', 'peek');
+  });
+
+  test('keeps heatmap and 2D directory usable without horizontal overflow', async ({ page }) => {
+    await page.goto('./?view=3d&mode=heatmap');
+    await expect(page.getByRole('button', { name: 'Heatmap' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await expect(page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' })).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      ),
+    ).toBe(false);
+  });
+
+  test('recomposes safely after an orientation-sized resize', async ({ page }) => {
+    await page.goto('./?view=3d&mode=overview');
+    const canvas = page.locator('canvas');
+    await expect(canvas).toBeVisible();
+    const portraitWidth = await canvas.evaluate((element) => element.clientWidth);
+    await page.setViewportSize({ width: 844, height: 390 });
+    await expect(page.locator('#mobile-dashboard-sheet')).toHaveCount(0);
+    await expect
+      .poll(() => canvas.evaluate((element) => element.clientWidth))
+      .toBeGreaterThan(portraitWidth);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      ),
+    ).toBe(false);
+  });
+
+  test('matches intentional mobile visual states', async ({ page }) => {
+    test.skip(
+      test.info().project.name !== 'mobile-chromium' ||
+        (process.platform !== 'win32' && !process.env.UPDATE_MOBILE_SNAPSHOTS),
+      'Mobile visual baselines run on Windows or an explicit Linux snapshot bootstrap',
+    );
+    await page.goto('./?view=3d&mode=overview');
+    await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
+    await expect(page.locator('.map-loading')).toBeHidden();
+    await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'closed');
+    await expect(page).toHaveScreenshot('dashboard-mobile-overview.png', {
+      animations: 'disabled',
+      mask: [page.locator('canvas')],
+      maskColor: '#071918',
+      maxDiffPixelRatio: 0.03,
+    });
+
+    await page.goto('./?view=3d&mode=overview&ward=22015');
+    await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
+    await expect(page.locator('.map-loading')).toBeHidden();
+    await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'peek');
+    await expect(page).toHaveScreenshot('dashboard-mobile-selection-peek.png', {
+      animations: 'disabled',
+      mask: [page.locator('canvas')],
+      maskColor: '#071918',
+      maxDiffPixelRatio: 0.03,
+    });
+    await page.getByRole('button', { name: 'Chi tiết đơn vị đã chọn' }).click();
+    await expect(page).toHaveScreenshot('dashboard-mobile-selection-expanded.png', {
+      animations: 'disabled',
+      mask: [page.locator('canvas')],
+      maskColor: '#071918',
+      maxDiffPixelRatio: 0.03,
+    });
+
+    await page.goto('./?view=3d&mode=heatmap');
+    await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
+    await expect(page.locator('.map-loading')).toBeHidden();
+    await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'closed');
+    await expect(page).toHaveScreenshot('dashboard-mobile-heatmap.png', {
+      animations: 'disabled',
+      mask: [page.locator('canvas')],
+      maskColor: '#071918',
+      maxDiffPixelRatio: 0.03,
+    });
+    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await expect(page).toHaveScreenshot('dashboard-mobile-directory.png', {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.03,
+    });
+
+    await page.setViewportSize({ width: 412, height: 915 });
+    await page.goto('./?view=3d&mode=overview');
+    await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
+    await expect(page.locator('.map-loading')).toBeHidden();
+    await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'closed');
+    await expect(page).toHaveScreenshot('dashboard-mobile-overview-412.png', {
+      animations: 'disabled',
+      mask: [page.locator('canvas')],
+      maskColor: '#071918',
+      maxDiffPixelRatio: 0.03,
+    });
   });
 });
