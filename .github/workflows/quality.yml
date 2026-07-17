@@ -97,7 +97,7 @@ jobs:
       - name: Install tested browsers
         run: npx playwright install --with-deps chromium webkit
       - name: Bootstrap missing Linux mobile visual baselines
-        if: ${{ hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-detail-name-24580-desktop-desktop-chromium-linux.png') == '' || hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-detail-name-24580-mobile-mobile-chromium-linux.png') == '' }}
+        if: ${{ hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-detail-name-24580-desktop-desktop-chromium-linux.png') == '' || hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-detail-name-24580-mobile-mobile-chromium-linux.png') == '' || hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-mobile-directory-mobile-chromium-linux.png') == '' || hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-mobile-directory-middle-focus-mobile-chromium-linux.png') == '' || hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-mobile-directory-last-focus-mobile-chromium-linux.png') == '' }}
         env:
           UPDATE_MOBILE_SNAPSHOTS: '1'
         run: |

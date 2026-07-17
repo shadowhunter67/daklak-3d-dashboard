@@ -748,9 +748,10 @@ footer a {
   .header-meta button {
     display: grid;
     place-items: center;
+    width: 44px;
     min-width: 44px;
     min-height: 44px;
-    padding: 4px 6px;
+    padding: 4px 2px;
     border-radius: 10px;
     font-size: 10px;
   }
