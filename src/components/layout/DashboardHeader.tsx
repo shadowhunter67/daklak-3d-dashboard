@@ -19,13 +19,15 @@ export function DashboardHeader() {
   const toggleAutoRotate = useMapStore((state) => state.toggleAutoRotate);
 
   return (
-    <header>
-      <div className="brand-mark">ĐL</div>
-      <div>
-        <p className="eyebrow">BẢN ĐỒ HÀNH CHÍNH TƯƠNG TÁC</p>
-        <h1>
-          ĐẮK LẮK <i>3D</i>
-        </h1>
+    <header className="dashboard-header">
+      <div className="dashboard-brand">
+        <div className="brand-mark">ĐL</div>
+        <div>
+          <p className="eyebrow">BẢN ĐỒ HÀNH CHÍNH TƯƠNG TÁC</p>
+          <h1>
+            ĐẮK LẮK <i>3D</i>
+          </h1>
+        </div>
       </div>
       <nav className="mode-tabs" aria-label="Chế độ dữ liệu">
         {modes.map(([mode, label]) => (
@@ -44,19 +46,42 @@ export function DashboardHeader() {
         <button
           onClick={() => setViewMode(viewMode === '3d' ? 'table' : '3d')}
           aria-pressed={viewMode === 'table'}
+          aria-label={viewMode === '3d' ? 'Mở danh sách 2D' : 'Mở bản đồ 3D'}
         >
-          {viewMode === '3d' ? 'Danh sách 2D' : 'Bản đồ 3D'}
+          <span className="control-label control-label--desktop">
+            {viewMode === '3d' ? 'Danh sách 2D' : 'Bản đồ 3D'}
+          </span>
+          <span className="control-label control-label--mobile" aria-hidden="true">
+            {viewMode === '3d' ? '2D' : '3D'}
+          </span>
         </button>
         <button
           onClick={toggleAutoRotate}
           aria-pressed={autoRotate}
           disabled={reducedMotion}
+          aria-label={
+            reducedMotion ? 'Đã giảm chuyển động' : autoRotate ? 'Dừng xoay' : 'Xoay bản đồ'
+          }
           title={reducedMotion ? 'Đã tắt do tùy chọn giảm chuyển động' : 'Xoay bản đồ 360 độ'}
         >
-          {reducedMotion ? 'Đã giảm chuyển động' : autoRotate ? 'Dừng xoay' : 'Xoay 360°'}
+          <span className="control-label control-label--desktop">
+            {reducedMotion ? 'Đã giảm chuyển động' : autoRotate ? 'Dừng xoay' : 'Xoay 360°'}
+          </span>
+          <span className="control-label control-label--mobile" aria-hidden="true">
+            Xoay
+          </span>
         </button>
-        <button onClick={toggleLabels} aria-pressed={labelsVisible}>
-          {labelsVisible ? 'Ẩn' : 'Hiện'} nhãn trung tâm
+        <button
+          onClick={toggleLabels}
+          aria-pressed={labelsVisible}
+          aria-label={labelsVisible ? 'Ẩn nhãn trung tâm' : 'Hiện nhãn trung tâm'}
+        >
+          <span className="control-label control-label--desktop">
+            {labelsVisible ? 'Ẩn' : 'Hiện'} nhãn trung tâm
+          </span>
+          <span className="control-label control-label--mobile" aria-hidden="true">
+            Nhãn
+          </span>
         </button>
       </div>
     </header>

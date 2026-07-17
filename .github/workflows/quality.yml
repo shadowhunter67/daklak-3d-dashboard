@@ -98,6 +98,21 @@ jobs:
         run: npx playwright install --with-deps chromium webkit
       - name: Production E2E
         run: npm run test:e2e:prod:built
+      - name: Bootstrap missing Linux mobile visual baselines
+        if: ${{ hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-mobile-*-linux.png') == '' }}
+        env:
+          UPDATE_MOBILE_SNAPSHOTS: '1'
+        run: >-
+          npx playwright test --config=playwright.prod.config.ts
+          --project=mobile-chromium --grep "intentional mobile visual states"
+          --update-snapshots
+      - name: Upload bootstrapped Linux mobile baselines
+        if: ${{ always() && hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-mobile-*-linux.png') != '' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: mobile-visual-baselines-linux-${{ github.run_attempt }}
+          path: e2e/dashboard.spec.ts-snapshots/dashboard-mobile-*-linux.png
+          if-no-files-found: error
       - name: Upload Playwright failure evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: failure()
