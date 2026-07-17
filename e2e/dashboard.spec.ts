@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test.describe('dashboard smoke tests', () => {
@@ -327,6 +327,20 @@ test.describe('mobile dashboard composition', () => {
       animations: 'disabled',
       maxDiffPixelRatio: 0.03,
     });
+    const directoryRows = page.locator('button.directory-row');
+    await directoryRows.first().focus();
+    for (let index = 0; index < 50; index += 1) await page.keyboard.press('ArrowDown');
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    await expect(page).toHaveScreenshot('dashboard-mobile-directory-middle-focus.png', {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.03,
+    });
+    await page.keyboard.press('End');
+    expect(await page.evaluate(() => window.scrollY)).toBe(0);
+    await expect(page).toHaveScreenshot('dashboard-mobile-directory-last-focus.png', {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.03,
+    });
 
     await page.setViewportSize({ width: 412, height: 915 });
     await page.goto('./?view=3d&mode=overview');
@@ -405,12 +419,29 @@ test.describe('directory ordering and safe bottom', () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('./?view=2d');
     const rows = page.locator('button.directory-row');
+    const stickyHeader = page.locator('.directory-header');
+    const expectBelowStickyHeader = async (row: Locator) => {
+      const [rowBounds, headerBounds] = await Promise.all([
+        row.boundingBox(),
+        stickyHeader.boundingBox(),
+      ]);
+      expect(rowBounds).not.toBeNull();
+      expect(headerBounds).not.toBeNull();
+      expect(rowBounds!.y).toBeGreaterThanOrEqual(headerBounds!.y + headerBounds!.height);
+      return rowBounds!;
+    };
     await rows.first().focus();
-    for (let index = 1; index < 102; index += 1) await page.keyboard.press('ArrowDown');
+    await expectBelowStickyHeader(rows.first());
+    for (let index = 1; index <= 50; index += 1) await page.keyboard.press('ArrowDown');
+    await expect(rows.nth(50)).toBeFocused();
+    await expectBelowStickyHeader(rows.nth(50));
+    for (let index = 51; index < 102; index += 1) await page.keyboard.press('ArrowDown');
     await expect(rows.last()).toBeFocused();
-    const bounds = await rows.last().boundingBox();
-    expect(bounds).not.toBeNull();
+    const bounds = await expectBelowStickyHeader(rows.last());
     expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(836);
+    await page.keyboard.press('ArrowUp');
+    await expect(rows.nth(100)).toBeFocused();
+    await expectBelowStickyHeader(rows.nth(100));
   });
 });
 
@@ -426,6 +457,10 @@ test.describe('camera intent preservation', () => {
     await page.waitForTimeout(500);
     expect(runtimeErrors).toEqual([]);
     await expect(stage).toHaveAttribute('data-selected-safe', 'true');
+    const peekBounds = await page.locator('#mobile-dashboard-sheet').boundingBox();
+    expect(peekBounds).not.toBeNull();
+    expect(peekBounds!.height).toBeGreaterThanOrEqual(108);
+    expect(peekBounds!.height).toBeLessThanOrEqual(114);
     await canvas.hover();
     await page.mouse.wheel(0, -260);
     await page.waitForTimeout(200);
@@ -441,7 +476,7 @@ test.describe('camera intent preservation', () => {
       target: number[];
     };
     expect(expanded.zoom).toBeGreaterThan(0);
-    expect(Math.abs(expanded.zoom - before.zoom) / before.zoom).toBeLessThan(0.35);
+    expect(Math.abs(expanded.zoom - before.zoom) / before.zoom).toBeLessThan(0.01);
     expect(expanded.target).not.toEqual([0, 0, 0]);
     await page.getByRole('button', { name: 'Chi tiết đơn vị đã chọn' }).click();
     await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'peek');

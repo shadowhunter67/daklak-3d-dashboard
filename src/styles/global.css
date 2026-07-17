@@ -321,9 +321,11 @@ a:focus-visible {
   font-size: 10px;
 }
 .directory-table {
+  --directory-sticky-header-height: 32px;
   min-height: 0;
   flex: 1 1 auto;
   overflow: auto;
+  scroll-padding-top: calc(var(--directory-sticky-header-height) + 8px);
   border-top: 1px solid #8bb3a433;
 }
 .directory-row {
@@ -339,6 +341,7 @@ a:focus-visible {
   background: transparent;
   text-align: left;
   font-size: 11px;
+  scroll-margin-top: calc(var(--directory-sticky-header-height) + 8px);
 }
 button.directory-row {
   cursor: pointer;
@@ -582,7 +585,7 @@ footer a {
     --mobile-header-height: calc(58px + env(safe-area-inset-top));
     --mobile-tabs-height: 48px;
     --mobile-sheet-closed-height: calc(52px + env(safe-area-inset-bottom));
-    --mobile-sheet-peek-height: calc(126px + env(safe-area-inset-bottom));
+    --mobile-sheet-peek-height: calc(110px + env(safe-area-inset-bottom));
     --mobile-sheet-expanded-height: min(58dvh, 520px);
     --mobile-system-bottom-space: max(env(safe-area-inset-bottom), 24px);
     --mobile-bottom-buffer: 24px;
