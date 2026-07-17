@@ -25,7 +25,8 @@
     "prepare:gis-source:offline": "python scripts/prepare_gis_source.py --offline",
     "validate:data": "python scripts/validate_daklak_data.py",
     "build:gis": "npm run prepare:gis-source && python scripts/build_daklak_geojson.py",
-    "build:terrain": "python scripts/generate_daklak_terrain.py"
+    "build:terrain": "python scripts/generate_daklak_terrain.py",
+    "build:roads": "python scripts/build_daklak_roads.py"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.0",

@@ -11,11 +11,13 @@ export function DashboardHeader() {
   const dataMode = useMapStore((state) => state.dataMode);
   const viewMode = useMapStore((state) => state.viewMode);
   const labelsVisible = useMapStore((state) => state.labelsVisible);
+  const roadsVisible = useMapStore((state) => state.roadsVisible);
   const autoRotate = useMapStore((state) => state.autoRotate);
   const reducedMotion = useMapStore((state) => state.reducedMotion);
   const changeDataMode = useMapStore((state) => state.changeDataMode);
   const setViewMode = useMapStore((state) => state.setViewMode);
   const toggleLabels = useMapStore((state) => state.toggleLabels);
+  const toggleRoads = useMapStore((state) => state.toggleRoads);
   const toggleAutoRotate = useMapStore((state) => state.toggleAutoRotate);
 
   return (
@@ -69,6 +71,18 @@ export function DashboardHeader() {
           </span>
           <span className="control-label control-label--mobile" aria-hidden="true">
             Xoay
+          </span>
+        </button>
+        <button
+          onClick={toggleRoads}
+          aria-pressed={roadsVisible}
+          aria-label={roadsVisible ? 'Ẩn lớp đường giao thông' : 'Hiện lớp đường giao thông'}
+        >
+          <span className="control-label control-label--desktop">
+            {roadsVisible ? 'Ẩn' : 'Hiện'} đường
+          </span>
+          <span className="control-label control-label--mobile" aria-hidden="true">
+            Đường
           </span>
         </button>
         <button

@@ -100,6 +100,24 @@ def main() -> None:
             if j<=i: continue
             if geom.intersection(data.geometry.iloc[j]).area>1e-9: overlaps+=1
     if overlaps: warnings.append(f"{overlaps} polygon pairs have measurable overlap")
+    roads_path=OUTPUT/"daklak-roads.json"
+    road_registry_path=OUTPUT/"road-source-registry.json"
+    road_metadata_path=OUTPUT/"road-metadata.json"
+    for artifact in (roads_path,road_registry_path,road_metadata_path):
+        if not artifact.exists(): errors.append(f"Missing road artifact: {artifact.name}")
+    if roads_path.exists():
+        roads=json.loads(roads_path.read_text(encoding="utf-8"))
+        road_features=roads.get("features",[])
+        road_ids=[]
+        for feature in road_features:
+            properties=feature.get("properties",{})
+            road_ids.append(properties.get("id"))
+            if properties.get("roadClass") not in {"national","provincial","district"}: errors.append("Road with invalid class")
+            if not properties.get("sourceId"): errors.append("Road without sourceId")
+            for coordinate in feature.get("geometry",{}).get("coordinates",[]):
+                if len(coordinate)<2 or not all(isinstance(value,(int,float)) and value==value for value in coordinate[:2]): errors.append("Road with invalid coordinate")
+        if len(road_ids)!=len(set(road_ids)): errors.append("Duplicate road IDs")
+        if not road_features: errors.append("Road artifact has no features")
     hash_paths=[path, render_path, metadata_path, metrics_path, source_path, labels_path, provenance_path]
     artifact_hashes={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in hash_paths if p.exists()}
     report={"status":"failed" if errors else "passed","featureCount":len(data),"renderFeatureCount":len(render_data) if render_data is not None else 0,"communeCount":counts.get("xa",0),"wardCount":counts.get("phuong",0),"crs":"EPSG:4326","bbox":[round(v,6) for v in data.total_bounds],"invalidGeometries":invalid,"invalidRenderGeometries":render_invalid,"outsideLabels":len(outside_labels),"overlapPairs":overlaps,"provenanceRecords":len(provenance),"artifactHashes":artifact_hashes,"errors":errors,"warnings":warnings,"validationMs":round((time.perf_counter()-started)*1000,2)}

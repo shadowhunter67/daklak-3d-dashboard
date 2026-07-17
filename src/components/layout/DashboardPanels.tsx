@@ -1,8 +1,8 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { useMapStore } from '../../stores/mapStore';
-import { AccessibleDirectory } from '../dashboard/AccessibleDirectory';
 import { DetailPanel } from '../dashboard/DetailPanel';
 import { MobileDashboardSheet } from './MobileDashboardSheet';
+import { TwoDimensionalView } from './TwoDimensionalView';
 
 const StatPanel = lazy(() =>
   import('../dashboard/StatPanel').then((module) => ({ default: module.StatPanel })),
@@ -20,7 +20,7 @@ export function DashboardPanels() {
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
   }, []);
-  if (viewMode === 'table') return <AccessibleDirectory />;
+  if (viewMode === 'table') return <TwoDimensionalView />;
   if (mobilePortrait) return <MobileDashboardSheet />;
   return (
     <div className="desktop-panels">

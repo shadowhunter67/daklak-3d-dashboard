@@ -8,6 +8,7 @@ import { MapAnnotations } from './MapAnnotations';
 import { TerrainSurface } from './TerrainSurface';
 import { HeatmapOverlay, SelectionOverlay } from './TerrainOverlays';
 import { MapErrorBoundary, MapFallback, MapLoading } from './MapFallback';
+import { RoadLayer3D } from './RoadLayer3D';
 import { hasWebGLSupport, subscribeWebGLContext } from './webglLifecycle';
 
 function WebGLContextMonitor({
@@ -27,12 +28,14 @@ function WebGLContextMonitor({
 
 function MapContent() {
   const dataMode = useMapStore((state) => state.dataMode);
+  const roadsVisible = useMapStore((state) => state.roadsVisible);
   return (
     <group rotation={[-Math.PI / 2, 0, 0]}>
       <TerrainSurface />
       <SelectionOverlay />
       {dataMode === 'heatmap' && <HeatmapOverlay />}
       <MapAnnotations />
+      {roadsVisible && <RoadLayer3D />}
     </group>
   );
 }

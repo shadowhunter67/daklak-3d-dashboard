@@ -2,6 +2,11 @@
 import { expect, test, type Locator } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
+async function openMobileDirectory(page: import('@playwright/test').Page) {
+  const toggle = page.getByRole('button', { name: 'Danh sách', exact: true });
+  if (await toggle.isVisible()) await toggle.click();
+}
+
 test.describe('dashboard smoke tests', () => {
   test('loads the terrain, controls, and sourced overview', async ({ page }) => {
     const runtimeErrors: string[] = [];
@@ -39,6 +44,7 @@ test.describe('dashboard smoke tests', () => {
   }) => {
     await page.goto('./');
     await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await openMobileDirectory(page);
 
     const search = page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' });
     await search.fill('buon ma thuot');
@@ -152,7 +158,7 @@ test.describe('dashboard smoke tests', () => {
     const responses: string[] = [];
     page.on('response', (response) => responses.push(response.url()));
     await page.goto('./?view=2d');
-    await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
     expect(
       responses.some((url) =>
         /\/assets\/(AdministrativeMap|StatPanel|three-vendor)-.*\.js/.test(url),
@@ -162,6 +168,7 @@ test.describe('dashboard smoke tests', () => {
 
   test('restores shareable URL state and browser history', async ({ page }) => {
     await page.goto('./?view=2d&mode=energy&ward=22015');
+    await openMobileDirectory(page);
     await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Năng lượng' })).toHaveAttribute(
       'aria-pressed',
@@ -175,7 +182,20 @@ test.describe('dashboard smoke tests', () => {
     await expect(page.locator('#map-viewport')).toBeFocused();
     await page.goBack();
     await expect(page).toHaveURL(/view=2d&mode=energy&ward=22015/);
-    await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeFocused();
+    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeFocused();
+  });
+
+  test('loads the offline road artifact only when enabled in 2D', async ({ page }) => {
+    const roadRequest = page.waitForResponse((response) =>
+      response.url().endsWith('/data/daklak-roads.json.gz'),
+    );
+    await page.goto('./?view=2d');
+    await page.getByRole('button', { name: 'Hiện lớp đường giao thông' }).click();
+    expect((await roadRequest).ok()).toBe(true);
+    await expect(page.locator('.map-road')).toHaveCount(1201);
+    await expect(
+      page.getByText('© OpenStreetMap contributors · ODbL 1.0 · dữ liệu tham khảo'),
+    ).toBeVisible();
   });
 
   test('moves focus to the 2D fallback when WebGL is unavailable', async ({ page }) => {
@@ -189,7 +209,7 @@ test.describe('dashboard smoke tests', () => {
     await page.goto('./');
     await expect(page.getByRole('heading', { name: 'Không thể hiển thị bản đồ 3D' })).toBeVisible();
     await page.locator('.map-fallback').getByRole('button', { name: 'Mở danh sách 2D' }).click();
-    await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeFocused();
+    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeFocused();
   });
 });
 
@@ -244,6 +264,7 @@ test.describe('mobile dashboard composition', () => {
       'true',
     );
     await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await openMobileDirectory(page);
     await expect(page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' })).toBeVisible();
     expect(
       await page.evaluate(
@@ -322,6 +343,7 @@ test.describe('mobile dashboard composition', () => {
       maxDiffPixelRatio: 0.03,
     });
     await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await openMobileDirectory(page);
     await expect(page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' })).toBeVisible();
     await expect(page).toHaveScreenshot('dashboard-mobile-directory.png', {
       animations: 'disabled',
@@ -381,6 +403,7 @@ test.describe('directory ordering and safe bottom', () => {
     }) => {
       await page.setViewportSize(viewport);
       await page.goto('./?view=2d');
+      await openMobileDirectory(page);
       const rows = page.locator('button.directory-row');
       await expect(rows).toHaveCount(102);
       expect((await rows.locator('strong').allTextContents()).slice(0, 10)).toEqual(
@@ -418,6 +441,7 @@ test.describe('directory ordering and safe bottom', () => {
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('./?view=2d');
+    await openMobileDirectory(page);
     const rows = page.locator('button.directory-row');
     const stickyHeader = page.locator('.directory-header');
     const expectBelowStickyHeader = async (row: Locator) => {
@@ -482,5 +506,73 @@ test.describe('camera intent preservation', () => {
     await page.getByRole('button', { name: 'Chi tiết đơn vị đã chọn' }).click();
     await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'peek');
     await expect(stage).toHaveAttribute('data-selected-safe', 'true');
+  });
+});
+
+test.describe('Vietnamese detail name visual coverage', () => {
+  test('renders code 24580 at 1440x900 without clipping', async ({ page }) => {
+    test.skip(
+      test.info().project.name !== 'desktop-chromium' ||
+        !['win32', 'linux'].includes(process.platform),
+      'Desktop Chromium baselines are maintained for Windows and Linux',
+    );
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('./?view=3d&mode=overview&ward=24580');
+    await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
+    await page.addStyleTag({
+      content: '.map-canvas-shell canvas { visibility: hidden !important; }',
+    });
+    const panel = page.locator('.detail-panel');
+    const heading = panel.locator('.unit-name');
+    await expect(heading).toHaveText('Liên Sơn Lắk');
+    const [panelBounds, headingBounds] = await Promise.all([
+      panel.boundingBox(),
+      heading.boundingBox(),
+    ]);
+    expect(panelBounds).not.toBeNull();
+    expect(headingBounds).not.toBeNull();
+    expect(headingBounds!.x).toBeGreaterThanOrEqual(panelBounds!.x);
+    expect(headingBounds!.x + headingBounds!.width).toBeLessThanOrEqual(
+      panelBounds!.x + panelBounds!.width,
+    );
+    await expect(panel).toHaveScreenshot('dashboard-detail-name-24580-desktop.png', {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.03,
+    });
+  });
+
+  test('renders code 24580 at 390x844 without clipping', async ({ page }) => {
+    test.skip(
+      test.info().project.name !== 'mobile-chromium' ||
+        !['win32', 'linux'].includes(process.platform),
+      'Mobile Chromium baselines are maintained for Windows and Linux',
+    );
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('./?view=3d&mode=overview&ward=24580');
+    await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
+    await page.addStyleTag({
+      content: '.map-canvas-shell canvas { visibility: hidden !important; }',
+    });
+    const sheet = page.locator('#mobile-dashboard-sheet');
+    const heading = sheet.locator('.unit-name');
+    await expect(sheet).toHaveAttribute('data-state', 'peek');
+    await expect(heading).toHaveText('Liên Sơn Lắk');
+    const [sheetBounds, headingBounds] = await Promise.all([
+      sheet.boundingBox(),
+      heading.boundingBox(),
+    ]);
+    expect(sheetBounds).not.toBeNull();
+    expect(headingBounds).not.toBeNull();
+    expect(headingBounds!.x).toBeGreaterThanOrEqual(sheetBounds!.x);
+    expect(headingBounds!.x + headingBounds!.width).toBeLessThanOrEqual(
+      sheetBounds!.x + sheetBounds!.width,
+    );
+    expect(headingBounds!.y + headingBounds!.height).toBeLessThanOrEqual(
+      sheetBounds!.y + sheetBounds!.height,
+    );
+    await expect(sheet).toHaveScreenshot('dashboard-detail-name-24580-mobile.png', {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.03,
+    });
   });
 });

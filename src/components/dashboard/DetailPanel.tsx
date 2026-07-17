@@ -2,6 +2,7 @@ import wards from '../../assets/maps/daklak/daklak-wards-render.json';
 import metrics from '../../assets/maps/daklak/daklak-metrics.json';
 import type { WardCollection, Metric } from '../../types/map';
 import { formatNumber, formatUnitType } from '../../utils/geo';
+import { normalizeDisplayName, splitDisplayNameWords } from '../../utils/displayName';
 import { useMapStore } from '../../stores/mapStore';
 const data = wards as WardCollection;
 const metricMap = metrics as Partial<Record<string, Metric>>;
@@ -26,10 +27,18 @@ export function DetailPanel() {
         <p>Không tìm thấy chỉ số tương ứng với đơn vị đã chọn.</p>
       </aside>
     );
+  const displayName = normalizeDisplayName(f.properties.name);
   return (
     <aside className="detail-panel glass">
       <p className="eyebrow">{selected ? 'ĐANG CHỌN' : 'ĐANG KHÁM PHÁ'}</p>
-      <h2>{f.properties.name}</h2>
+      <h2 className="unit-name" data-source-name={f.properties.name} aria-label={displayName}>
+        {splitDisplayNameWords(displayName).map((word, index) => (
+          <span key={`${word}-${index}`}>
+            {index > 0 ? ' ' : null}
+            <span className="unit-name__word">{word}</span>
+          </span>
+        ))}
+      </h2>
       <p className="unit-type">
         {formatUnitType(f.properties.type)} · Mã {f.properties.code}
       </p>

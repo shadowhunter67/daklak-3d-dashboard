@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-07-17T03:58:52.851Z",
+  "generatedAt": "2026-07-17T07:59:51.130Z",
   "limits": {
     "totalJavaScriptBytes": 2200000,
     "totalJavaScriptGzipBytes": 650000,
@@ -10,18 +10,18 @@
     "totalBuildBytes": 5500000
   },
   "actual": {
-    "totalJavaScriptBytes": 2130515,
-    "totalJavaScriptGzipBytes": 610758,
-    "largestJavaScriptGzipBytes": 183282,
+    "totalJavaScriptBytes": 2140897,
+    "totalJavaScriptGzipBytes": 614250,
+    "largestJavaScriptGzipBytes": 183291,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 4959530
+    "totalBuildBytes": 5082824
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-DKWfTzGA.js",
-      "bytes": 197367,
-      "gzipBytes": 62415
+      "file": "assets/AdministrativeMap-uW8Q8H5l.js",
+      "bytes": 198903,
+      "gzipBytes": 62971
     },
     {
       "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
@@ -40,18 +40,18 @@
       "bytes": 719308
     },
     {
-      "file": "assets/geo-Cf1xU6Ef.js",
-      "bytes": 40095,
-      "gzipBytes": 14401
+      "file": "assets/geo-DQz15khi.js",
+      "bytes": 40223,
+      "gzipBytes": 14454
     },
     {
-      "file": "assets/index-BtlpQ5w8.js",
-      "bytes": 664289,
-      "gzipBytes": 179630
+      "file": "assets/index-Ck3j_N5e.css",
+      "bytes": 16578
     },
     {
-      "file": "assets/index-EUbvEhna.css",
-      "bytes": 13697
+      "file": "assets/index-RmFQlaTk.js",
+      "bytes": 672983,
+      "gzipBytes": 182496
     },
     {
       "file": "assets/rolldown-runtime-CNC7AqOf.js",
@@ -59,18 +59,22 @@
       "gzipBytes": 504
     },
     {
-      "file": "assets/StatPanel-BKX1EzmB.js",
-      "bytes": 503267,
-      "gzipBytes": 170526
+      "file": "assets/StatPanel-9Tl4TvSU.js",
+      "bytes": 503277,
+      "gzipBytes": 170534
     },
     {
-      "file": "assets/three-vendor-DEtWXlOg.js",
-      "bytes": 724618,
-      "gzipBytes": 183282
+      "file": "assets/three-vendor-DLMYoo0M.js",
+      "bytes": 724632,
+      "gzipBytes": 183291
     },
     {
       "file": "build-info.json",
       "bytes": 242
+    },
+    {
+      "file": "data/daklak-roads.json.gz",
+      "bytes": 110031
     },
     {
       "file": "index.html",
