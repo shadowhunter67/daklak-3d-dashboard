@@ -37,9 +37,9 @@ function AdministrativeLabels() {
         const x = ((point[0] - terrainNorthWest[0]) / terrainWidth) * canvas.width;
         const y = ((point[1] - terrainNorthWest[1]) / terrainHeight) * canvas.height;
         const emphasized = code === selectedCode;
-        const size = emphasized ? 15 : label.priority === 1 ? 10 : 8;
+        const size = emphasized ? 13 : label.priority === 1 ? 10 : 8;
         context.font = `${emphasized ? 700 : 600} ${size}px "Segoe UI", "Be Vietnam Pro", Arial, sans-serif`;
-        context.lineWidth = emphasized ? 4 : 3;
+        context.lineWidth = emphasized ? 3.5 : 3;
         context.strokeStyle = '#041210';
         context.fillStyle = emphasized ? '#ffe49a' : '#f3f0d8';
         context.strokeText(label.name.normalize('NFC'), x, y);

@@ -80,6 +80,8 @@ export function AccessibleDirectory() {
         <label>
           <span>Tìm theo tên hoặc mã</span>
           <input
+            id="directory-search"
+            name="directory-search"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}

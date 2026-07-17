@@ -4,6 +4,7 @@ import { DashboardHeader } from './components/layout/DashboardHeader';
 import { DashboardPanels } from './components/layout/DashboardPanels';
 import { DatasetFooter } from './components/layout/DatasetFooter';
 import { MapViewport } from './components/layout/MapViewport';
+import { OnboardingOverlay } from './components/layout/OnboardingOverlay';
 import { datasetManifestIssues } from './data/datasetManifest';
 import { useDashboardUrlSync } from './hooks/useDashboardUrlSync';
 import { useMapStore } from './stores/mapStore';
@@ -46,6 +47,7 @@ export default function App() {
       <DashboardHeader />
       <MapViewport />
       <DashboardPanels />
+      <OnboardingOverlay />
       <p className="visually-hidden" aria-live="polite" aria-atomic="true">
         {viewMode === 'table' ? 'Đã mở danh sách 2D.' : 'Đã mở bản đồ 3D.'}{' '}
         {selectedName ? `Đã chọn ${selectedName}.` : ''}
