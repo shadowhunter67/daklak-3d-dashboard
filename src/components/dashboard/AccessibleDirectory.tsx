@@ -5,9 +5,13 @@ import { useMapStore } from '../../stores/mapStore';
 import type { Metric, WardCollection } from '../../types/map';
 import { formatNumber, formatUnitType } from '../../utils/geo';
 import { normalizeSearchText } from '../../utils/search';
+import { sortAdministrativeUnits } from '../../utils/administrativeUnits';
 
 const collection = wards as WardCollection;
 const metricMap = metrics as Record<string, Metric>;
+const sortedUnits = sortAdministrativeUnits(
+  collection.features.map(({ properties }) => properties),
+);
 
 export function AccessibleDirectory() {
   const [query, setQuery] = useState('');
@@ -16,9 +20,9 @@ export function AccessibleDirectory() {
   const rows = useRef<Array<HTMLButtonElement | null>>([]);
   const filtered = useMemo(() => {
     const term = normalizeSearchText(query);
-    if (!term) return collection.features;
-    return collection.features.filter(
-      ({ properties }) =>
+    if (!term) return sortedUnits;
+    return sortedUnits.filter(
+      (properties) =>
         normalizeSearchText(properties.name).includes(term) || properties.code.includes(term),
     );
   }, [query]);
@@ -65,7 +69,7 @@ export function AccessibleDirectory() {
           <span role="columnheader">Dân số minh họa</span>
           <span role="columnheader">Tiếp cận dịch vụ</span>
         </div>
-        {filtered.map(({ properties }, index) => {
+        {filtered.map((properties, index) => {
           const metric = metricMap[properties.code];
           const selected = selectedCode === properties.code;
           return (
@@ -77,6 +81,7 @@ export function AccessibleDirectory() {
               role="row"
               className={`directory-row${selected ? ' selected' : ''}`}
               aria-selected={selected}
+              data-code={properties.code}
               key={properties.code}
               onClick={() => select(selected ? null : properties.code)}
               onKeyDown={(event) => moveFocus(event, index)}
