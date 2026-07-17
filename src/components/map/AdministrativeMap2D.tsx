@@ -1,15 +1,19 @@
 import { geoMercator, geoPath } from 'd3-geo';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
 import metrics from '../../assets/maps/daklak/daklak-metrics.json';
 import wards from '../../assets/maps/daklak/daklak-wards-render.json';
 import { useMapStore } from '../../stores/mapStore';
 import type { Metric, WardCollection } from '../../types/map';
 import { RoadLayer2D } from './RoadLayer2D';
+import { layoutMapLabels } from './labelLayout';
 
 const collection = wards as WardCollection;
 const metricMap = metrics as Record<string, Metric>;
-const labelMap = labels as Record<string, { name: string; longitude: number; latitude: number }>;
+const labelMap = labels as Record<
+  string,
+  { name: string; longitude: number; latitude: number; priority: number }
+>;
 const width = 900;
 const height = 720;
 
@@ -21,6 +25,7 @@ function fillFor(code: string, mode: 'overview' | 'energy' | 'heatmap') {
 }
 
 export function AdministrativeMap2D() {
+  const [compactLabels, setCompactLabels] = useState(() => window.innerWidth < 600);
   const dataMode = useMapStore((state) => state.dataMode);
   const selectedCode = useMapStore((state) => state.selectedCode);
   const hoveredCode = useMapStore((state) => state.hoveredCode);
@@ -38,6 +43,25 @@ export function AdministrativeMap2D() {
     );
     return { path: geoPath(fitted), projection: fitted };
   }, []);
+  useEffect(() => {
+    const update = () => setCompactLabels(window.innerWidth < 600);
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  const visibleLabels = useMemo(
+    () =>
+      layoutMapLabels(
+        Object.entries(labelMap).map(([code, label]) => ({
+          id: code,
+          text: label.name,
+          point: projection([label.longitude, label.latitude])! as [number, number],
+          priority: label.priority,
+          emphasized: code === selectedCode || code === hoveredCode,
+        })),
+        compactLabels ? 34 : 72,
+      ),
+    [compactLabels, hoveredCode, projection, selectedCode],
+  );
 
   return (
     <section className="administrative-map-2d" aria-labelledby="map-2d-title">
@@ -79,19 +103,20 @@ export function AdministrativeMap2D() {
             );
           })}
         </g>
-        {roadsVisible && <RoadLayer2D projection={projection} />}
+        {roadsVisible && <RoadLayer2D projection={projection} compact={compactLabels} />}
         {labelsVisible && (
           <g className="map-2d-labels" aria-hidden="true">
-            {Object.entries(labelMap)
-              .filter(([code]) => code === selectedCode || code === hoveredCode)
-              .map(([code, label]) => {
-                const point = projection([label.longitude, label.latitude]);
-                return point ? (
-                  <text key={code} x={point[0]} y={point[1]}>
-                    {label.name}
-                  </text>
-                ) : null;
-              })}
+            {visibleLabels.map((label) => (
+              <text
+                key={label.id}
+                x={label.point[0]}
+                y={label.point[1]}
+                className={label.emphasized ? 'is-emphasized' : undefined}
+                data-label-code={label.id}
+              >
+                {label.text}
+              </text>
+            ))}
           </g>
         )}
       </svg>
