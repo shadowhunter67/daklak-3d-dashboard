@@ -13,7 +13,6 @@ import {
   terrainHeightUrl,
   terrainMetadata,
   terrainNorthWest,
-  terrainSegments,
   terrainWidth,
 } from './terrainConfig';
 
@@ -24,12 +23,11 @@ type LabelMap = Record<
 
 function AdministrativeLabels() {
   const selectedCode = useMapStore((state) => state.selectedCode);
-  const hoveredCode = useMapStore((state) => state.hoveredCode);
   const heightMap = useTexture(terrainHeightUrl);
   const texture = useMemo(() => {
     const canvas = document.createElement('canvas');
-    canvas.width = terrainMetadata.width;
-    canvas.height = terrainMetadata.height;
+    canvas.width = Math.round(terrainMetadata.width / 2);
+    canvas.height = Math.round(terrainMetadata.height / 2);
     const context = canvas.getContext('2d');
     if (context) {
       context.textAlign = 'center';
@@ -38,7 +36,7 @@ function AdministrativeLabels() {
         const point = projection([label.longitude, label.latitude])!;
         const x = ((point[0] - terrainNorthWest[0]) / terrainWidth) * canvas.width;
         const y = ((point[1] - terrainNorthWest[1]) / terrainHeight) * canvas.height;
-        const emphasized = code === selectedCode || code === hoveredCode;
+        const emphasized = code === selectedCode;
         const size = emphasized ? 15 : label.priority === 1 ? 10 : 8;
         context.font = `${emphasized ? 700 : 600} ${size}px "Segoe UI", "Be Vietnam Pro", Arial, sans-serif`;
         context.lineWidth = emphasized ? 4 : 3;
@@ -49,11 +47,11 @@ function AdministrativeLabels() {
       });
     }
     return new CanvasTexture(canvas);
-  }, [hoveredCode, selectedCode]);
+  }, [selectedCode]);
   useEffect(() => () => texture.dispose(), [texture]);
   return (
     <mesh position={[terrainCenter[0], terrainCenter[1], 0.024]} raycast={() => null}>
-      <planeGeometry args={[terrainWidth, terrainHeight, ...terrainSegments]} />
+      <planeGeometry args={[terrainWidth, terrainHeight, 96, 80]} />
       <meshStandardMaterial
         map={texture}
         emissiveMap={texture}
