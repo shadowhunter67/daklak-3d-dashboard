@@ -484,3 +484,71 @@ test.describe('camera intent preservation', () => {
     await expect(stage).toHaveAttribute('data-selected-safe', 'true');
   });
 });
+
+test.describe('Vietnamese detail name visual coverage', () => {
+  test('renders code 24580 at 1440x900 without clipping', async ({ page }) => {
+    test.skip(
+      test.info().project.name !== 'desktop-chromium' ||
+        !['win32', 'linux'].includes(process.platform),
+      'Desktop Chromium baselines are maintained for Windows and Linux',
+    );
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto('./?view=3d&mode=overview&ward=24580');
+    await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
+    await page.addStyleTag({
+      content: '.map-canvas-shell canvas { visibility: hidden !important; }',
+    });
+    const panel = page.locator('.detail-panel');
+    const heading = panel.locator('.unit-name');
+    await expect(heading).toHaveText('Liên Sơn Lắk');
+    const [panelBounds, headingBounds] = await Promise.all([
+      panel.boundingBox(),
+      heading.boundingBox(),
+    ]);
+    expect(panelBounds).not.toBeNull();
+    expect(headingBounds).not.toBeNull();
+    expect(headingBounds!.x).toBeGreaterThanOrEqual(panelBounds!.x);
+    expect(headingBounds!.x + headingBounds!.width).toBeLessThanOrEqual(
+      panelBounds!.x + panelBounds!.width,
+    );
+    await expect(panel).toHaveScreenshot('dashboard-detail-name-24580-desktop.png', {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.03,
+    });
+  });
+
+  test('renders code 24580 at 390x844 without clipping', async ({ page }) => {
+    test.skip(
+      test.info().project.name !== 'mobile-chromium' ||
+        !['win32', 'linux'].includes(process.platform),
+      'Mobile Chromium baselines are maintained for Windows and Linux',
+    );
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('./?view=3d&mode=overview&ward=24580');
+    await expect(page.locator('canvas')).toHaveAttribute('data-webgl-lifecycle', 'ready');
+    await page.addStyleTag({
+      content: '.map-canvas-shell canvas { visibility: hidden !important; }',
+    });
+    const sheet = page.locator('#mobile-dashboard-sheet');
+    const heading = sheet.locator('.unit-name');
+    await expect(sheet).toHaveAttribute('data-state', 'peek');
+    await expect(heading).toHaveText('Liên Sơn Lắk');
+    const [sheetBounds, headingBounds] = await Promise.all([
+      sheet.boundingBox(),
+      heading.boundingBox(),
+    ]);
+    expect(sheetBounds).not.toBeNull();
+    expect(headingBounds).not.toBeNull();
+    expect(headingBounds!.x).toBeGreaterThanOrEqual(sheetBounds!.x);
+    expect(headingBounds!.x + headingBounds!.width).toBeLessThanOrEqual(
+      sheetBounds!.x + sheetBounds!.width,
+    );
+    expect(headingBounds!.y + headingBounds!.height).toBeLessThanOrEqual(
+      sheetBounds!.y + sheetBounds!.height,
+    );
+    await expect(sheet).toHaveScreenshot('dashboard-detail-name-24580-mobile.png', {
+      animations: 'disabled',
+      maxDiffPixelRatio: 0.03,
+    });
+  });
+});

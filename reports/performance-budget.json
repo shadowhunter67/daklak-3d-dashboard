@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-07-17T03:58:52.851Z",
+  "generatedAt": "2026-07-17T05:22:09.738Z",
   "limits": {
     "totalJavaScriptBytes": 2200000,
     "totalJavaScriptGzipBytes": 650000,
@@ -10,16 +10,16 @@
     "totalBuildBytes": 5500000
   },
   "actual": {
-    "totalJavaScriptBytes": 2130515,
-    "totalJavaScriptGzipBytes": 610758,
+    "totalJavaScriptBytes": 2130821,
+    "totalJavaScriptGzipBytes": 610831,
     "largestJavaScriptGzipBytes": 183282,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 4959530
+    "totalBuildBytes": 4960056
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-DKWfTzGA.js",
+      "file": "assets/AdministrativeMap-D019EOyN.js",
       "bytes": 197367,
       "gzipBytes": 62415
     },
@@ -45,13 +45,13 @@
       "gzipBytes": 14401
     },
     {
-      "file": "assets/index-BtlpQ5w8.js",
-      "bytes": 664289,
-      "gzipBytes": 179630
+      "file": "assets/index-D6nTQWNw.js",
+      "bytes": 664595,
+      "gzipBytes": 179703
     },
     {
-      "file": "assets/index-EUbvEhna.css",
-      "bytes": 13697
+      "file": "assets/index-DP0okUYB.css",
+      "bytes": 13917
     },
     {
       "file": "assets/rolldown-runtime-CNC7AqOf.js",
@@ -59,7 +59,7 @@
       "gzipBytes": 504
     },
     {
-      "file": "assets/StatPanel-BKX1EzmB.js",
+      "file": "assets/StatPanel-BHPnVAkK.js",
       "bytes": 503267,
       "gzipBytes": 170526
     },

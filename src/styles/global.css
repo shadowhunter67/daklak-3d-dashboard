@@ -481,11 +481,21 @@ button.directory-row:hover,
   padding: 22px;
 }
 .detail-panel h2 {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-style: italic;
+  font-family: Cambria, 'Noto Serif', 'DejaVu Serif', 'Times New Roman', serif;
+  font-style: normal;
   font-size: 26px;
+  line-height: 1.18;
+  letter-spacing: 0;
+  font-kerning: normal;
+  font-feature-settings: 'kern' 1;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
   color: #f0cf7a;
   margin: 6px 0;
+}
+.unit-name__word {
+  display: inline-block;
 }
 .unit-type {
   font-size: 10px;
