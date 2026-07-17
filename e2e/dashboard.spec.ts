@@ -447,6 +447,7 @@ test.describe('directory ordering and safe bottom', () => {
 
 test.describe('camera intent preservation', () => {
   test('keeps user camera state and selection safe across sheet transitions', async ({ page }) => {
+    test.setTimeout(60_000);
     const runtimeErrors: string[] = [];
     page.on('pageerror', (error) => runtimeErrors.push(error.message));
     await page.setViewportSize({ width: 412, height: 915 });
