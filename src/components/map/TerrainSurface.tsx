@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef } from 'react';
 import { useMapStore } from '../../stores/mapStore';
 import { projection } from '../../utils/geo';
 import { featureAt } from './geometryHitTest';
+import { codeFromUv as resolveCodeFromUv } from './terrainHitTest';
 import {
   displacementBias,
   displacementScale,
@@ -19,12 +20,15 @@ import {
   terrainWidth,
 } from './terrainConfig';
 
+const hitTestConfig = {
+  northWest: terrainNorthWest,
+  southEast: terrainSouthEast,
+  width: terrainWidth,
+  height: terrainHeight,
+};
+
 function codeFromUv(uv: { x: number; y: number } | undefined) {
-  if (!uv || !projection.invert) return null;
-  const projectedX = terrainNorthWest[0] + uv.x * terrainWidth;
-  const projectedY = terrainSouthEast[1] - uv.y * terrainHeight;
-  const coordinate = projection.invert([projectedX, projectedY]);
-  return coordinate ? (featureAt(coordinate)?.properties.code ?? null) : null;
+  return resolveCodeFromUv(uv, projection, hitTestConfig, featureAt);
 }
 
 export function TerrainSurface() {

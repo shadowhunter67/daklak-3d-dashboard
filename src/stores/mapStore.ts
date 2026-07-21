@@ -64,6 +64,5 @@ export const useMapStore = create<MapState>((set) => ({
   // không cần payload, nên tăng số là đủ để trigger effect ở nơi lắng nghe.
   requestCameraReset: () => set((state) => ({ resetCameraSignal: state.resetCameraSignal + 1 })),
   requestHelp: () => set((state) => ({ helpSignal: state.helpSignal + 1 })),
-  notifyInsetsChanged: () =>
-    set((state) => ({ insetsChangeSignal: state.insetsChangeSignal + 1 })),
+  notifyInsetsChanged: () => set((state) => ({ insetsChangeSignal: state.insetsChangeSignal + 1 })),
 }));

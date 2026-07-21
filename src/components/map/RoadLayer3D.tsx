@@ -1,10 +1,17 @@
-import type { LineString, MultiLineString, Position } from 'geojson';
+import type { Position } from 'geojson';
+import { Html } from '@react-three/drei';
 import { useEffect, useState } from 'react';
 import { BufferGeometry, Float32BufferAttribute } from 'three';
 import { projection } from '../../utils/geo';
 import { loadRoads, type RoadClass } from '../../data/loadRoads';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
 import { useMapStore } from '../../stores/mapStore';
+import {
+  buildRoadGeometryBuckets,
+  buildRoadLabels3D,
+  createTerrainPointProjector,
+  type RoadLabel3D,
+} from './roadLabels3D';
 import {
   displacementBias,
   displacementScale,
@@ -35,97 +42,35 @@ async function loadHeightPixels() {
   return context?.getImageData(0, 0, canvas.width, canvas.height).data ?? null;
 }
 
-function parts(geometry: LineString | MultiLineString): Position[][] {
-  return geometry.type === 'LineString' ? [geometry.coordinates] : geometry.coordinates;
-}
+const projectFlat = (coordinate: Position) => projection([coordinate[0], coordinate[1]])!;
 
 export function RoadLayer3D() {
   const labelsVisible = useMapStore((state) => state.labelsVisible);
   const [geometries, setGeometries] = useState<Record<RoadClass, BufferGeometry> | null>(null);
-  const [roadLabels, setRoadLabels] = useState<
-    Array<{ text: string; roadClass: RoadClass; position: [number, number, number] }>
-  >([]);
+  const [roadLabels, setRoadLabels] = useState<RoadLabel3D[]>([]);
   useEffect(() => {
     let active = true;
     void Promise.all([loadRoads(), loadHeightPixels()]).then(([roads, pixels]) => {
       if (!active || !pixels) return;
-      const buckets: Record<RoadClass, number[]> = { national: [], provincial: [], district: [] };
-      const width = terrainMetadata.width;
-      const height = terrainMetadata.height;
-      const point = (coordinate: Position) => {
-        const projected = projection([coordinate[0], coordinate[1]])!;
-        const px = Math.max(
-          0,
-          Math.min(
-            width - 1,
-            Math.round(((projected[0] - terrainNorthWest[0]) / terrainWidth) * (width - 1)),
-          ),
-        );
-        const py = Math.max(
-          0,
-          Math.min(
-            height - 1,
-            Math.round(((projected[1] - terrainNorthWest[1]) / terrainHeight) * (height - 1)),
-          ),
-        );
-        const elevation = pixels[(py * width + px) * 4] / 255;
-        return [
-          projected[0],
-          -projected[1],
-          displacementBias + elevation * displacementScale + 0.008,
-        ];
-      };
-      roads.features.forEach((road) =>
-        parts(road.geometry).forEach((line) => {
-          for (let index = 1; index < line.length; index += 1) {
-            buckets[road.properties.roadClass].push(
-              ...point(line[index - 1]),
-              ...point(line[index]),
-            );
-          }
-        }),
+      const toPoint = createTerrainPointProjector(
+        pixels,
+        {
+          width: terrainMetadata.width,
+          height: terrainMetadata.height,
+          northWest: terrainNorthWest,
+          terrainWidth,
+          terrainHeight,
+          displacementBias,
+          displacementScale,
+        },
+        projectFlat,
       );
+      const buckets = buildRoadGeometryBuckets(roads, toPoint);
       const administrativePoints = Object.values(labels as LabelMap)
         .map((label) => projection([label.longitude, label.latitude])!)
         .filter(Boolean);
-      const named = new Map<
-        string,
-        { coordinate: Position; projected: [number, number]; roadClass: RoadClass; score: number }
-      >();
-      roads.features
-        .filter((road) => road.properties.roadClass !== 'district')
-        .forEach((road) => {
-          const text = road.properties.reference?.trim() || road.properties.name?.trim();
-          if (!text) return;
-          parts(road.geometry).forEach((line) => {
-            const score = line.length + (road.properties.roadClass === 'national' ? 10_000 : 0);
-            if (!named.has(text) || named.get(text)!.score < score) {
-              const coordinate = line[Math.floor(line.length / 2)];
-              named.set(text, {
-                coordinate,
-                projected: projection([coordinate[0], coordinate[1]])! as [number, number],
-                roadClass: road.properties.roadClass,
-                score,
-              });
-            }
-          });
-        });
       setRoadLabels(
-        [...named.entries()]
-          .sort((first, second) => second[1].score - first[1].score)
-          .filter(([, value]) => {
-            if (value.roadClass === 'national') return true;
-            return !administrativePoints.some(
-              (point) =>
-                Math.hypot(point[0] - value.projected[0], point[1] - value.projected[1]) < 18,
-            );
-          })
-          .slice(0, labelsVisible ? 8 : 14)
-          .map(([text, value]) => ({
-            text,
-            roadClass: value.roadClass,
-            position: point(value.coordinate) as [number, number, number],
-          })),
+        buildRoadLabels3D(roads, administrativePoints, projectFlat, toPoint, labelsVisible),
       );
       const next = Object.fromEntries(
         Object.entries(buckets).map(([roadClass, positions]) => {
@@ -172,4 +117,3 @@ export function RoadLayer3D() {
     </>
   );
 }
-import { Html } from '@react-three/drei';

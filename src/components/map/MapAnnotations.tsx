@@ -5,6 +5,7 @@ import dashboardData from '../../assets/data/dashboard-sources.json';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
 import { useMapStore } from '../../stores/mapStore';
 import { projection } from '../../utils/geo';
+import { layoutAdministrativeLabels } from './administrativeLabelLayout';
 import {
   displacementBias,
   displacementScale,
@@ -32,18 +33,23 @@ function AdministrativeLabels() {
     if (context) {
       context.textAlign = 'center';
       context.textBaseline = 'middle';
-      Object.entries(labels as LabelMap).forEach(([code, label]) => {
-        const point = projection([label.longitude, label.latitude])!;
-        const x = ((point[0] - terrainNorthWest[0]) / terrainWidth) * canvas.width;
-        const y = ((point[1] - terrainNorthWest[1]) / terrainHeight) * canvas.height;
-        const emphasized = code === selectedCode;
-        const size = emphasized ? 13 : label.priority === 1 ? 10 : 8;
-        context.font = `${emphasized ? 700 : 600} ${size}px "Segoe UI", "Be Vietnam Pro", Arial, sans-serif`;
-        context.lineWidth = emphasized ? 3.5 : 3;
+      const draws = layoutAdministrativeLabels(
+        labels as LabelMap,
+        selectedCode,
+        (longitude, latitude) => projection([longitude, latitude])!,
+        canvas.width,
+        canvas.height,
+        terrainNorthWest,
+        terrainWidth,
+        terrainHeight,
+      );
+      draws.forEach((draw) => {
+        context.font = `${draw.fontWeight} ${draw.fontSize}px "Segoe UI", "Be Vietnam Pro", Arial, sans-serif`;
+        context.lineWidth = draw.strokeWidth;
         context.strokeStyle = '#041210';
-        context.fillStyle = emphasized ? '#ffe49a' : '#f3f0d8';
-        context.strokeText(label.name.normalize('NFC'), x, y);
-        context.fillText(label.name.normalize('NFC'), x, y);
+        context.fillStyle = draw.fillStyle;
+        context.strokeText(draw.text, draw.x, draw.y);
+        context.fillText(draw.text, draw.x, draw.y);
       });
     }
     return new CanvasTexture(canvas);
