@@ -16,6 +16,9 @@ export interface MapState {
   roadsVisible: boolean;
   autoRotate: boolean;
   reducedMotion: boolean;
+  resetCameraSignal: number;
+  helpSignal: number;
+  insetsChangeSignal: number;
   setHovered: (code: string | null) => void;
   select: (code: string | null) => void;
   toggleLabels: () => void;
@@ -25,6 +28,9 @@ export interface MapState {
   changeDataMode: (mode: MapState['dataMode']) => void;
   setViewMode: (mode: MapState['viewMode']) => void;
   applyUrlState: (state: DashboardUrlState) => void;
+  requestCameraReset: () => void;
+  requestHelp: () => void;
+  notifyInsetsChanged: () => void;
 }
 export const useMapStore = create<MapState>((set) => ({
   dataMode: initialUrlState.dataMode,
@@ -35,6 +41,9 @@ export const useMapStore = create<MapState>((set) => ({
   roadsVisible: false,
   autoRotate: false,
   reducedMotion: false,
+  resetCameraSignal: 0,
+  helpSignal: 0,
+  insetsChangeSignal: 0,
   setHovered: (hoveredCode) => set({ hoveredCode }),
   select: (selectedCode) =>
     set({
@@ -51,4 +60,10 @@ export const useMapStore = create<MapState>((set) => ({
   setViewMode: (viewMode) => set({ viewMode, hoveredCode: null, autoRotate: false }),
   applyUrlState: ({ viewMode, dataMode, selectedCode }) =>
     set({ viewMode, dataMode, selectedCode, hoveredCode: null, autoRotate: false }),
+  // Bộ đếm tăng dần thay cho window.dispatchEvent: component chỉ cần biết "vừa có yêu cầu mới",
+  // không cần payload, nên tăng số là đủ để trigger effect ở nơi lắng nghe.
+  requestCameraReset: () => set((state) => ({ resetCameraSignal: state.resetCameraSignal + 1 })),
+  requestHelp: () => set((state) => ({ helpSignal: state.helpSignal + 1 })),
+  notifyInsetsChanged: () =>
+    set((state) => ({ insetsChangeSignal: state.insetsChangeSignal + 1 })),
 }));

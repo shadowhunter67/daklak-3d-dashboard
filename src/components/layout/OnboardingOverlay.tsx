@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useMapStore } from '../../stores/mapStore';
 
 const STORAGE_KEY = 'daklak-dashboard:onboarding-dismissed';
 
@@ -13,6 +14,8 @@ function hasSeenOnboarding() {
 export function OnboardingOverlay() {
   const [open, setOpen] = useState(() => !hasSeenOnboarding());
   const previousFocus = useRef<HTMLElement | null>(null);
+  const helpSignal = useMapStore((state) => state.helpSignal);
+  const previousHelpSignal = useRef(helpSignal);
 
   const dismiss = () => {
     try {
@@ -30,13 +33,11 @@ export function OnboardingOverlay() {
   };
 
   useEffect(() => {
-    const show = () => {
-      previousFocus.current = document.activeElement as HTMLElement | null;
-      setOpen(true);
-    };
-    window.addEventListener('dashboard-show-help', show);
-    return () => window.removeEventListener('dashboard-show-help', show);
-  }, []);
+    if (previousHelpSignal.current === helpSignal) return;
+    previousHelpSignal.current = helpSignal;
+    previousFocus.current = document.activeElement as HTMLElement | null;
+    setOpen(true);
+  }, [helpSignal]);
 
   useEffect(() => {
     if (!open) return;

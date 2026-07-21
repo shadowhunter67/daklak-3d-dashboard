@@ -51,4 +51,21 @@ describe('map interaction state', () => {
     useMapStore.getState().toggleAutoRotate();
     expect(useMapStore.getState().autoRotate).toBe(false);
   });
+  it('increments the camera reset signal on each request', () => {
+    useMapStore.setState({ resetCameraSignal: 0 });
+    useMapStore.getState().requestCameraReset();
+    expect(useMapStore.getState().resetCameraSignal).toBe(1);
+    useMapStore.getState().requestCameraReset();
+    expect(useMapStore.getState().resetCameraSignal).toBe(2);
+  });
+  it('increments the help signal on each request', () => {
+    useMapStore.setState({ helpSignal: 0 });
+    useMapStore.getState().requestHelp();
+    expect(useMapStore.getState().helpSignal).toBe(1);
+  });
+  it('increments the insets-change signal on each notification', () => {
+    useMapStore.setState({ insetsChangeSignal: 0 });
+    useMapStore.getState().notifyInsetsChanged();
+    expect(useMapStore.getState().insetsChangeSignal).toBe(1);
+  });
 });

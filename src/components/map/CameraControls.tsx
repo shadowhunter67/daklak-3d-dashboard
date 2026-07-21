@@ -42,12 +42,16 @@ function snapshotCamera(camera: OrthographicCamera, controls: OrbitControlsImpl)
 export function CameraControls() {
   const autoRotate = useMapStore((state) => state.autoRotate);
   const selectedCode = useMapStore((state) => state.selectedCode);
+  const resetCameraSignal = useMapStore((state) => state.resetCameraSignal);
+  const insetsChangeSignal = useMapStore((state) => state.insetsChangeSignal);
   const controls = useRef<OrbitControlsImpl>(null);
   const pressed = useRef(new Set<string>());
   const previousInsets = useRef(EMPTY_INSETS);
   const previousSize = useRef({ width: 0, height: 0 });
   const initialized = useRef(false);
   const previousSelection = useRef(selectedCode);
+  const previousResetSignal = useRef(resetCameraSignal);
+  const previousInsetsSignal = useRef(insetsChangeSignal);
   const userInteracting = useRef(false);
   const pendingReason = useRef<CameraAdjustmentReason | null>(null);
   const scheduledFrame = useRef(0);
@@ -185,21 +189,24 @@ export function CameraControls() {
     const sheetObserver = new ResizeObserver(() => scheduleAdjustment('sheet-inset-change'));
     const sheet = document.getElementById('mobile-dashboard-sheet');
     if (sheet) sheetObserver.observe(sheet);
-    const onInsetChange = () => scheduleAdjustment('sheet-inset-change');
-    window.addEventListener('dashboard-insets-change', onInsetChange);
     return () => {
       cancelAnimationFrame(scheduledFrame.current);
       stageObserver.disconnect();
       sheetObserver.disconnect();
-      window.removeEventListener('dashboard-insets-change', onInsetChange);
     };
   }, [scheduleAdjustment]);
 
   useEffect(() => {
-    const reset = () => scheduleAdjustment('manual-reset');
-    window.addEventListener('dashboard-reset-camera', reset);
-    return () => window.removeEventListener('dashboard-reset-camera', reset);
-  }, [scheduleAdjustment]);
+    if (previousInsetsSignal.current === insetsChangeSignal) return;
+    previousInsetsSignal.current = insetsChangeSignal;
+    scheduleAdjustment('sheet-inset-change');
+  }, [insetsChangeSignal, scheduleAdjustment]);
+
+  useEffect(() => {
+    if (previousResetSignal.current === resetCameraSignal) return;
+    previousResetSignal.current = resetCameraSignal;
+    scheduleAdjustment('manual-reset');
+  }, [resetCameraSignal, scheduleAdjustment]);
 
   useEffect(() => {
     const down = (event: KeyboardEvent) => {
