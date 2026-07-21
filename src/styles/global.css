@@ -1195,6 +1195,32 @@ footer a {
   inset: 0;
   background: #0d211f;
 }
+.detail-map-source-notice {
+  position: absolute;
+  top: 140px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(420px, 80vw);
+  padding: 16px 20px;
+  border: 1px solid #d4a44666;
+  border-radius: 12px;
+  background: #0b2924e6;
+  color: #a9c3ba;
+  text-align: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.detail-map-source-notice p {
+  margin: 0;
+}
+.detail-map-source-notice p:not(.eyebrow) {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.detail-map-source-notice strong {
+  color: #e9f2ed;
+}
 .detail-map-error {
   position: absolute;
   inset: 0;
@@ -1275,6 +1301,13 @@ footer a {
 }
 .basemap-option--disabled {
   opacity: 0.5;
+}
+.layer-toggle--unavailable {
+  opacity: 0.7;
+}
+.layer-toggle__note {
+  font-size: 11px;
+  color: #8eaaa3;
 }
 .local-search {
   position: relative;

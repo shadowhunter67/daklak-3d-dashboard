@@ -696,6 +696,42 @@ test.describe('detail map (MapLibre)', () => {
     await expect(page.getByRole('radio', { name: 'Vệ tinh' })).toBeDisabled();
   });
 
+  test('shows an honest empty-state notice instead of a blank canvas when no source is configured', async ({
+    page,
+  }) => {
+    await page.goto('./?view=map');
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    await expect(page.getByText('Chế độ chờ dữ liệu')).toBeVisible();
+    await expect(page.getByText(/không dùng dữ liệu giả thay thế/)).toBeVisible();
+  });
+
+  test('keeps layer toggles interactive but explains why they have no visible effect yet', async ({
+    page,
+  }) => {
+    await page.goto('./?view=map');
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    const heatmap = page.getByRole('checkbox', { name: 'Heatmap' });
+    await expect(heatmap).toBeEnabled();
+    await expect(heatmap).toHaveAttribute('aria-describedby', /.+/);
+  });
+
+  test('shows detail-map gestures, not the 3D rotate copy, when onboarding opens in map view', async ({
+    page,
+  }) => {
+    await page.addInitScript(() =>
+      window.localStorage.removeItem('daklak-dashboard:onboarding-dismissed'),
+    );
+    await page.goto('./?view=map');
+    const dialog = page.getByRole('dialog', { name: /102 xã, phường/i });
+    await expect(dialog).toBeVisible();
+    await expect(dialog.getByText('xoay góc nhìn')).toHaveCount(0);
+    await expect(dialog.getByText('Lớp bản đồ')).toBeVisible();
+    await dialog.getByRole('button', { name: 'Bắt đầu khám phá' }).click();
+    await expect(dialog).toHaveCount(0);
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+  });
+
   test('measures a distance, exits with Escape, and does not select a ward while measuring', async ({
     page,
   }) => {

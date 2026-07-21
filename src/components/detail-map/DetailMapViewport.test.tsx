@@ -61,6 +61,19 @@ describe('DetailMapViewport', () => {
     expect(useMapStore.getState().detailMapLayers.heatmapVisible).toBe(true);
   });
 
+  it('shows an honest empty-state notice when no data source is configured', async () => {
+    render(<DetailMapViewport />);
+    await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
+    expect(screen.getByText('Chế độ chờ dữ liệu')).toBeInTheDocument();
+  });
+
+  it('hides the empty-state notice once a data source is configured', async () => {
+    vi.stubEnv('VITE_DETAIL_MAP_SOURCE_URL', 'https://example.test/daklak.pmtiles');
+    render(<DetailMapViewport />);
+    await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
+    expect(screen.queryByText('Chế độ chờ dữ liệu')).toBeNull();
+  });
+
   it('selects a ward on a fake provider ward click while in browse mode', async () => {
     const initializeSpy = vi.spyOn(FakeMapProvider.prototype, 'initialize');
     render(<DetailMapViewport />);

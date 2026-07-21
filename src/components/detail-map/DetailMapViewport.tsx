@@ -5,6 +5,7 @@ import { MapFallback, MapLoading } from '../map/MapFallback';
 import { FakeMapProvider } from './FakeMapProvider';
 import { MapLibreProvider } from './MapLibreProvider';
 import { MapLayerPanel } from './MapLayerPanel';
+import { DetailMapSourceNotice } from './DetailMapSourceNotice';
 import { DistanceMeasureTool } from './DistanceMeasureTool';
 import { LocalSearch } from './LocalSearch';
 import { useDetailMapCameraSync } from './useDetailMapCameraSync';
@@ -191,6 +192,9 @@ export function DetailMapViewport() {
     >
       <div ref={containerRef} className="detail-map-canvas" key={generation} />
       {status === 'loading' && <MapLoading />}
+      {status === 'ready' &&
+        !sourceAvailability.roads &&
+        !sourceAvailability.administrativeBoundaries && <DetailMapSourceNotice />}
       {status === 'ready' && (
         <MapLayerPanel
           layers={layers}
