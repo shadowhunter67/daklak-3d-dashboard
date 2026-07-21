@@ -191,6 +191,31 @@ test.describe('dashboard smoke tests', () => {
     await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeFocused();
   });
 
+  test('selecting multiple wards in a row does not grow browser history', async ({ page }) => {
+    await page.goto('./?view=2d');
+    await openMobileDirectory(page);
+    const search = page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' });
+    const historyLength = () => page.evaluate(() => window.history.length);
+
+    const lengthBeforeSelection = await historyLength();
+
+    await search.fill('buon ma thuot');
+    await page.getByRole('row', { name: /Buôn Ma Thuột/ }).click();
+    await expect(page).toHaveURL(/ward=24133/);
+    expect(await historyLength()).toBe(lengthBeforeSelection);
+
+    await search.fill('buon ho');
+    await page.getByRole('row', { name: /Buôn Hồ/ }).click();
+    await expect(page).toHaveURL(/ward=24305/);
+    expect(await historyLength()).toBe(lengthBeforeSelection);
+
+    // A view/mode change is still push-worthy and creates a real, single Back step.
+    await page.getByRole('button', { name: 'Năng lượng' }).click();
+    expect(await historyLength()).toBe(lengthBeforeSelection + 1);
+    await page.goBack();
+    await expect(page).toHaveURL(/view=2d&mode=overview&ward=24305/);
+  });
+
   test('loads the offline road artifact only when enabled in 2D', async ({ page }) => {
     const roadRequest = page.waitForResponse((response) =>
       response.url().endsWith('/data/daklak-roads.json.gz'),
