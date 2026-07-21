@@ -16,16 +16,28 @@ describe('dashboard URL state', () => {
     });
   });
   it('falls back safely for invalid values', () => {
-    expect(parseDashboardUrl('?view=map&mode=bad&ward=99999', codes)).toEqual({
+    expect(parseDashboardUrl('?view=street-view&mode=bad&ward=99999', codes)).toEqual({
       viewMode: '3d',
       dataMode: 'overview',
       selectedCode: null,
+    });
+  });
+  it('parses the detail-map view mode (view=map), added for the MapLibre detail map', () => {
+    expect(parseDashboardUrl('?view=map&mode=overview&ward=24133', codes)).toEqual({
+      viewMode: 'map',
+      dataMode: 'overview',
+      selectedCode: '24133',
     });
   });
   it('serializes only canonical dashboard parameters', () => {
     expect(
       serializeDashboardUrl({ viewMode: '3d', dataMode: 'heatmap', selectedCode: '24133' }),
     ).toBe('?view=3d&mode=heatmap&ward=24133');
+  });
+  it('serializes the detail-map view mode as view=map', () => {
+    expect(
+      serializeDashboardUrl({ viewMode: 'map', dataMode: 'overview', selectedCode: null }),
+    ).toBe('?view=map&mode=overview');
   });
 });
 
@@ -51,6 +63,11 @@ describe('decideDashboardHistoryAction', () => {
 
   it('pushes history when the data mode changes', () => {
     const action = decideDashboardHistoryAction(base, { ...base, dataMode: 'energy' });
+    expect(action).toBe('push');
+  });
+
+  it('pushes history when switching to the detail-map experience', () => {
+    const action = decideDashboardHistoryAction(base, { ...base, viewMode: 'map' });
     expect(action).toBe('push');
   });
 

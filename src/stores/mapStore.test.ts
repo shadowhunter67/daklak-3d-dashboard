@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createMapStore, getInitialDashboardUrlState, useMapStore } from './mapStore';
+import { DEFAULT_DETAIL_MAP_CAMERA, DEFAULT_DETAIL_MAP_LAYER_STATE } from '../components/detail-map/detailMapTypes';
 
 describe('createMapStore', () => {
   it('initializes with the default state when given the default URL state', () => {
@@ -128,5 +129,61 @@ describe('map interaction state', () => {
     useMapStore.setState({ insetsChangeSignal: 0 });
     useMapStore.getState().notifyInsetsChanged();
     expect(useMapStore.getState().insetsChangeSignal).toBe(1);
+  });
+});
+
+describe('detail-map layer and camera state', () => {
+  beforeEach(() =>
+    useMapStore.setState({
+      detailMapLayers: DEFAULT_DETAIL_MAP_LAYER_STATE,
+      detailMapCamera: DEFAULT_DETAIL_MAP_CAMERA,
+    }),
+  );
+
+  it('selects a base map and derives terrain/satellite visibility from it', () => {
+    useMapStore.getState().setDetailMapBaseMap('terrain');
+    const layers = useMapStore.getState().detailMapLayers;
+    expect(layers.baseMap).toBe('terrain');
+    expect(layers.terrainVisible).toBe(true);
+    expect(layers.satelliteVisible).toBe(false);
+  });
+
+  it('switching base map away from terrain clears terrainVisible', () => {
+    useMapStore.getState().setDetailMapBaseMap('terrain');
+    useMapStore.getState().setDetailMapBaseMap('satellite');
+    const layers = useMapStore.getState().detailMapLayers;
+    expect(layers.terrainVisible).toBe(false);
+    expect(layers.satelliteVisible).toBe(true);
+  });
+
+  it('toggles a layer without affecting the others', () => {
+    useMapStore.getState().toggleDetailMapLayer('heatmapVisible');
+    expect(useMapStore.getState().detailMapLayers.heatmapVisible).toBe(true);
+    expect(useMapStore.getState().detailMapLayers.roadsVisible).toBe(
+      DEFAULT_DETAIL_MAP_LAYER_STATE.roadsVisible,
+    );
+  });
+
+  it('updates the camera when it actually changes', () => {
+    const next = { ...DEFAULT_DETAIL_MAP_CAMERA, zoom: 12 };
+    useMapStore.getState().setDetailMapCamera(next);
+    expect(useMapStore.getState().detailMapCamera.zoom).toBe(12);
+  });
+
+  it('ignores a camera update within epsilon of the current camera', () => {
+    const before = useMapStore.getState().detailMapCamera;
+    useMapStore
+      .getState()
+      .setDetailMapCamera({ ...before, latitude: before.latitude + 1e-9 });
+    // Same object reference: set() was never called, so no re-render is triggered either.
+    expect(useMapStore.getState().detailMapCamera).toBe(before);
+  });
+
+  it('restores both layers and camera from a parsed URL state', () => {
+    const layers = { ...DEFAULT_DETAIL_MAP_LAYER_STATE, heatmapVisible: true };
+    const camera = { ...DEFAULT_DETAIL_MAP_CAMERA, zoom: 15 };
+    useMapStore.getState().applyDetailMapUrlState({ layers, camera });
+    expect(useMapStore.getState().detailMapLayers).toEqual(layers);
+    expect(useMapStore.getState().detailMapCamera).toEqual(camera);
   });
 });
