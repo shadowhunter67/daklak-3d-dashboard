@@ -96,29 +96,6 @@ jobs:
           path: dist
       - name: Install tested browsers
         run: npx playwright install --with-deps chromium webkit
-      - name: Bootstrap missing Linux Vietnamese detail baselines
-        if: ${{ hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-detail-name-24580-desktop-desktop-chromium-linux.png') == '' || hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-detail-name-24580-mobile-mobile-chromium-linux.png') == '' }}
-        env:
-          UPDATE_MOBILE_SNAPSHOTS: '1'
-        run: npx playwright test --config=playwright.prod.config.ts --grep "Vietnamese detail name visual coverage" --update-snapshots
-      - name: Bootstrap missing Linux mobile directory baselines
-        if: ${{ hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-mobile-directory-mobile-chromium-linux.png') == '' || hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-mobile-directory-middle-focus-mobile-chromium-linux.png') == '' || hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-mobile-directory-last-focus-mobile-chromium-linux.png') == '' }}
-        env:
-          UPDATE_MOBILE_SNAPSHOTS: '1'
-        run: npx playwright test --config=playwright.prod.config.ts --project=mobile-chromium --grep "intentional mobile visual states" --update-snapshots
-      - name: Bootstrap missing Linux adaptive map label baselines
-        if: ${{ hashFiles('e2e/dashboard.spec.ts-snapshots/adaptive-map-labels-desktop-chromium-linux.png') == '' || hashFiles('e2e/dashboard.spec.ts-snapshots/adaptive-map-labels-mobile-chromium-linux.png') == '' }}
-        run: npx playwright test --config=playwright.prod.config.ts --grep "adaptive administrative and road label visual coverage" --update-snapshots
-      - name: Upload bootstrapped Linux mobile baselines
-        if: ${{ always() && hashFiles('e2e/dashboard.spec.ts-snapshots/dashboard-mobile-*-linux.png') != '' }}
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: visual-baselines-linux-${{ github.run_attempt }}
-          path: |
-            e2e/dashboard.spec.ts-snapshots/dashboard-mobile-*-linux.png
-            e2e/dashboard.spec.ts-snapshots/dashboard-detail-name-24580-*-linux.png
-            e2e/dashboard.spec.ts-snapshots/adaptive-map-labels-*-linux.png
-          if-no-files-found: error
       - name: Production E2E
         run: npm run test:e2e:prod:built
       - name: Upload Playwright failure evidence

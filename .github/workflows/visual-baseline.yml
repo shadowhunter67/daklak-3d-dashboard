@@ -1,0 +1,41 @@
+name: Visual baseline (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      grep:
+        description: 'Optional Playwright --grep pattern to limit which visual tests regenerate (leave empty to update every visual test)'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Production build
+        run: npm run build
+      - name: Install tested browsers
+        run: npx playwright install --with-deps chromium webkit
+      - name: Regenerate Linux visual baselines
+        env:
+          UPDATE_MOBILE_SNAPSHOTS: '1'
+        run: |
+          if [ -n "${{ inputs.grep }}" ]; then
+            npx playwright test --config=playwright.prod.config.ts --grep "${{ inputs.grep }}" --update-snapshots
+          else
+            npx playwright test --config=playwright.prod.config.ts --update-snapshots
+          fi
+      - name: Upload regenerated baselines as artifact
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: visual-baselines-linux-${{ github.run_id }}
+          path: e2e/dashboard.spec.ts-snapshots/*-linux.png
+          if-no-files-found: error

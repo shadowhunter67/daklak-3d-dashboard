@@ -80,9 +80,9 @@ npm run build
 npm run check:budget
 ```
 
-Playwright chạy smoke test trên Chromium desktop, Chromium mobile (Pixel 7) và WebKit desktop (Desktop Safari). Visual regression chỉ dùng Chromium desktop/mobile để tránh nhiễu rasterization giữa engine. Chỉ dùng `npm run test:e2e:update` khi thay đổi giao diện là có chủ đích và cần cập nhật ảnh baseline.
+Playwright chạy smoke test trên Chromium desktop, Chromium mobile (Pixel 7) và WebKit desktop (Desktop Safari). Visual regression chỉ dùng Chromium desktop/mobile để tránh nhiễu rasterization giữa engine. CI không tự bootstrap baseline còn thiếu — PR thiếu hoặc lệch baseline sẽ fail rõ ràng. Chỉ cập nhật baseline có chủ đích qua workflow thủ công **Visual baseline (manual)** (`workflow_dispatch`) hoặc `npm run test:e2e:update` cục bộ, xem [chi tiết](docs/testing-strategy.md#updating-a-visual-baseline-on-purpose).
 
-Hoặc chạy toàn bộ bằng `npm run quality`. Ngân sách build được lưu tại `reports/performance-budget.json` và chặn tăng trưởng ngoài ý muốn của JavaScript/texture trong CI.
+Hoặc chạy toàn bộ bằng `npm run quality:frontend` (lint, format, typecheck, unit test, build, budget, build metrics, E2E production — không cần Python/GIS) khi chỉ sửa frontend. Dùng `npm run quality:full` (hoặc alias `npm run quality`, giữ để không phá thói quen/CI hiện tại) khi cần thêm bước `validate:data` bằng Python. `npm run check:gis-deps` báo rõ nếu thiếu Python hoặc các gói GIS (`scripts/requirements.txt`) trước khi validate:data chạy. Ngân sách build được lưu tại `reports/performance-budget.json` và chặn tăng trưởng ngoài ý muốn của JavaScript/texture trong CI.
 
 Dashboard đồng bộ `view`, `mode` và `ward` vào query string để URL có thể chia sẻ, refresh và dùng Back/Forward mà không cần router. `npm run build:metrics` sinh [JSON](reports/build-metrics.json) và [bảng Markdown](reports/build-metrics.md) từ build thật; FPS, GPU memory và LCP không được tuyên bố vì CI không đại diện cho GPU thiết bị thật.
 
