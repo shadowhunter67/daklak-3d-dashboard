@@ -10,7 +10,7 @@
     "check:budget": "node scripts/check_build_budget.mjs",
     "build:metrics": "node scripts/generate_build_metrics.mjs",
     "quality:frontend": "npm run lint && npm run format:check && npm run typecheck && npm test && npm run build && npm run check:budget && npm run build:metrics && npm run test:e2e:prod:built",
-    "quality:full": "npm run quality:frontend && npm run check:gis-deps && npm run validate:data",
+    "quality:full": "npm run check:gis-deps && npm run quality:frontend && npm run validate:data",
     "quality": "npm run quality:full",
     "check:gis-deps": "node scripts/check_gis_deps.mjs",
     "lint": "eslint .",

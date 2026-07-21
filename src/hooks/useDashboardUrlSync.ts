@@ -32,8 +32,13 @@ export function useDashboardUrlSync() {
     });
     const restore = () => {
       applyingHistory = true;
-      useMapStore.getState().applyUrlState(parseDashboardUrl(window.location.search, validCodes));
-      applyingHistory = false;
+      try {
+        useMapStore
+          .getState()
+          .applyUrlState(parseDashboardUrl(window.location.search, validCodes));
+      } finally {
+        applyingHistory = false;
+      }
     };
     window.addEventListener('popstate', restore);
     return () => {

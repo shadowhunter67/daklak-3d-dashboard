@@ -4,7 +4,11 @@ import { parseDashboardUrl, type DashboardUrlState } from '../utils/dashboardUrl
 
 const validAdministrativeCodes = new Set(Object.keys(labels));
 
-/** Pure: reads the current URL only when called, never at module-import time. */
+/**
+ * Not pure — it reads window.location, so its result depends on external mutable state — but
+ * that read now happens only when this function is called, never as a module-import side
+ * effect, which is what actually makes createMapStore testable without touching window.location.
+ */
 export function getInitialDashboardUrlState(): DashboardUrlState {
   return parseDashboardUrl(
     typeof window === 'undefined' ? '' : window.location.search,
