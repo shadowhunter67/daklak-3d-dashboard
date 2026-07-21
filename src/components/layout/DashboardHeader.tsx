@@ -74,6 +74,18 @@ export function DashboardHeader() {
           </span>
         </button>
         <button
+          onClick={() => setViewMode(viewMode === 'map' ? '3d' : 'map')}
+          aria-pressed={viewMode === 'map'}
+          aria-label={viewMode === 'map' ? 'Thoát bản đồ chi tiết' : 'Mở bản đồ chi tiết'}
+        >
+          <span className="control-label control-label--desktop">
+            {viewMode === 'map' ? 'Thoát bản đồ chi tiết' : 'Bản đồ chi tiết'}
+          </span>
+          <span className="control-label control-label--mobile" aria-hidden="true">
+            Chi tiết
+          </span>
+        </button>
+        <button
           onClick={toggleAutoRotate}
           aria-pressed={autoRotate}
           disabled={reducedMotion}

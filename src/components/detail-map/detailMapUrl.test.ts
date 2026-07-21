@@ -49,9 +49,13 @@ describe('parseDetailMapCamera', () => {
   });
 
   it('parses and clamps a valid camera', () => {
-    expect(
-      parseDetailMapCamera('?lat=12.9&lng=108.2&zoom=14.4&bearing=45&pitch=30'),
-    ).toEqual({ latitude: 12.9, longitude: 108.2, zoom: 14.4, bearing: 45, pitch: 30 });
+    expect(parseDetailMapCamera('?lat=12.9&lng=108.2&zoom=14.4&bearing=45&pitch=30')).toEqual({
+      latitude: 12.9,
+      longitude: 108.2,
+      zoom: 14.4,
+      bearing: 45,
+      pitch: 30,
+    });
   });
 
   it('normalizes out-of-range and non-numeric values instead of crashing', () => {

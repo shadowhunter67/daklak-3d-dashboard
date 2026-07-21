@@ -52,16 +52,10 @@ function parseBooleanParam(params: URLSearchParams, key: string, fallback: boole
 export function parseDetailMapCamera(search: string): DetailMapCameraState {
   const params = new URLSearchParams(search);
   return {
-    latitude: clampLatitude(
-      parseNumberParam(params, 'lat', DEFAULT_DETAIL_MAP_CAMERA.latitude),
-    ),
-    longitude: clampLongitude(
-      parseNumberParam(params, 'lng', DEFAULT_DETAIL_MAP_CAMERA.longitude),
-    ),
+    latitude: clampLatitude(parseNumberParam(params, 'lat', DEFAULT_DETAIL_MAP_CAMERA.latitude)),
+    longitude: clampLongitude(parseNumberParam(params, 'lng', DEFAULT_DETAIL_MAP_CAMERA.longitude)),
     zoom: clampZoom(parseNumberParam(params, 'zoom', DEFAULT_DETAIL_MAP_CAMERA.zoom)),
-    bearing: clampBearing(
-      parseNumberParam(params, 'bearing', DEFAULT_DETAIL_MAP_CAMERA.bearing),
-    ),
+    bearing: clampBearing(parseNumberParam(params, 'bearing', DEFAULT_DETAIL_MAP_CAMERA.bearing)),
     pitch: clampPitch(parseNumberParam(params, 'pitch', DEFAULT_DETAIL_MAP_CAMERA.pitch)),
   };
 }
@@ -70,7 +64,9 @@ export function parseDetailMapLayers(search: string): DetailMapLayerState {
   const params = new URLSearchParams(search);
   const basemapParam = params.get('basemap') as DetailBaseMap | null;
   const baseMap =
-    basemapParam && baseMaps.has(basemapParam) ? basemapParam : DEFAULT_DETAIL_MAP_LAYER_STATE.baseMap;
+    basemapParam && baseMaps.has(basemapParam)
+      ? basemapParam
+      : DEFAULT_DETAIL_MAP_LAYER_STATE.baseMap;
   // A single `labels` URL param drives both road and place labels together — the layer panel
   // still exposes them as separate checkboxes internally, but collapsing them in the URL keeps
   // the shareable scheme short. See docs/detail-map-integration.md.

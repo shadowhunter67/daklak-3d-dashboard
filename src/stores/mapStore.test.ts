@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createMapStore, getInitialDashboardUrlState, useMapStore } from './mapStore';
-import { DEFAULT_DETAIL_MAP_CAMERA, DEFAULT_DETAIL_MAP_LAYER_STATE } from '../components/detail-map/detailMapTypes';
+import {
+  DEFAULT_DETAIL_MAP_CAMERA,
+  DEFAULT_DETAIL_MAP_LAYER_STATE,
+} from '../components/detail-map/detailMapTypes';
 
 describe('createMapStore', () => {
   it('initializes with the default state when given the default URL state', () => {
@@ -172,9 +175,7 @@ describe('detail-map layer and camera state', () => {
 
   it('ignores a camera update within epsilon of the current camera', () => {
     const before = useMapStore.getState().detailMapCamera;
-    useMapStore
-      .getState()
-      .setDetailMapCamera({ ...before, latitude: before.latitude + 1e-9 });
+    useMapStore.getState().setDetailMapCamera({ ...before, latitude: before.latitude + 1e-9 });
     // Same object reference: set() was never called, so no re-render is triggered either.
     expect(useMapStore.getState().detailMapCamera).toBe(before);
   });

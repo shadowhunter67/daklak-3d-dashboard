@@ -12,4 +12,10 @@ describe('DashboardPanels', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeInTheDocument();
   });
+
+  it('renders nothing for the detail-map experience, which owns its own panel', () => {
+    useMapStore.setState({ viewMode: 'map' });
+    const { container } = render(<DashboardPanels />);
+    expect(container).toBeEmptyDOMElement();
+  });
 });

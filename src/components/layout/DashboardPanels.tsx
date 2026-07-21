@@ -20,6 +20,7 @@ export function DashboardPanels() {
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
   }, []);
+  if (viewMode === 'map') return null;
   if (viewMode === 'table') return <TwoDimensionalView />;
   if (mobilePortrait) return <MobileDashboardSheet />;
   return (

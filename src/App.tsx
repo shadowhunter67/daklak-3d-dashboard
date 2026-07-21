@@ -4,6 +4,7 @@ import { DashboardHeader } from './components/layout/DashboardHeader';
 import { DashboardPanels } from './components/layout/DashboardPanels';
 import { DatasetFooter } from './components/layout/DatasetFooter';
 import { MapViewport } from './components/layout/MapViewport';
+import { DetailMapViewport } from './components/detail-map/DetailMapViewport';
 import { OnboardingOverlay } from './components/layout/OnboardingOverlay';
 import { datasetManifestIssues } from './data/datasetManifest';
 import { useDashboardUrlSync } from './hooks/useDashboardUrlSync';
@@ -27,7 +28,12 @@ export default function App() {
   useEffect(() => {
     if (previousView.current === viewMode) return;
     previousView.current = viewMode;
-    const targetId = viewMode === 'table' ? 'map-2d-title' : 'map-viewport';
+    const targetId =
+      viewMode === 'table'
+        ? 'map-2d-title'
+        : viewMode === 'map'
+          ? 'detail-map-viewport'
+          : 'map-viewport';
     requestAnimationFrame(() => document.getElementById(targetId)?.focus());
   }, [viewMode]);
 
@@ -46,10 +52,15 @@ export default function App() {
     <main className="app-shell">
       <DashboardHeader />
       <MapViewport />
+      {viewMode === 'map' && <DetailMapViewport />}
       <DashboardPanels />
       <OnboardingOverlay />
       <p className="visually-hidden" aria-live="polite" aria-atomic="true">
-        {viewMode === 'table' ? 'Đã mở danh sách 2D.' : 'Đã mở bản đồ 3D.'}{' '}
+        {viewMode === 'table'
+          ? 'Đã mở danh sách 2D.'
+          : viewMode === 'map'
+            ? 'Đã mở bản đồ chi tiết.'
+            : 'Đã mở bản đồ 3D.'}{' '}
         {selectedName ? `Đã chọn ${selectedName}.` : ''}
       </p>
       <DatasetFooter />

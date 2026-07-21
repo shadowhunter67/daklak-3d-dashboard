@@ -98,6 +98,12 @@ export interface DetailedMapProvider {
 
   /** Registers a callback for user clicks resolving to an administrative code (or null for empty space). */
   onWardClick(handler: (code: string | null) => void): () => void;
+  /**
+   * Registers a callback for the raw click coordinate. Distance measurement needs the actual
+   * point clicked, which onWardClick alone (ward code or null) cannot provide — this is the
+   * minimal necessary addition beyond the task's baseline interface sketch.
+   */
+  onMapClick(handler: (point: { latitude: number; longitude: number }) => void): () => void;
   /** Registers a callback fired on every camera settle (debounced by the caller, not here). */
   onCameraChange(handler: (camera: DetailMapCameraState) => void): () => void;
 
@@ -125,12 +131,8 @@ export const DEFAULT_DETAIL_MAP_CAMERA: DetailMapCameraState = {
   pitch: 0,
 };
 
-export const mapExperienceFromViewMode = (
-  viewMode: '3d' | 'table' | 'map',
-): MapExperience =>
+export const mapExperienceFromViewMode = (viewMode: '3d' | 'table' | 'map'): MapExperience =>
   viewMode === 'table' ? 'directory' : viewMode === 'map' ? 'detail-map' : 'overview-3d';
 
-export const viewModeFromMapExperience = (
-  experience: MapExperience,
-): '3d' | 'table' | 'map' =>
+export const viewModeFromMapExperience = (experience: MapExperience): '3d' | 'table' | 'map' =>
   experience === 'directory' ? 'table' : experience === 'detail-map' ? 'map' : '3d';

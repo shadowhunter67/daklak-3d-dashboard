@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import labels from '../assets/maps/daklak/daklak-labels.json';
-import { parseDashboardUrl, type DashboardUrlState, type DashboardView } from '../utils/dashboardUrl';
+import {
+  parseDashboardUrl,
+  type DashboardUrlState,
+  type DashboardView,
+} from '../utils/dashboardUrl';
 import {
   DEFAULT_DETAIL_MAP_CAMERA,
   DEFAULT_DETAIL_MAP_LAYER_STATE,
