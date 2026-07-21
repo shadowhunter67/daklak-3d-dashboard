@@ -5,13 +5,20 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
 const dist = join(root, 'dist');
+// Raised once (2026-07) to admit the detail-map feature's maplibre-gl + pmtiles dependency.
+// maplibre-gl is its own code-split chunk (~1.03MB raw / ~271KB gzip, a normal size for that
+// library) that a user who never opens the detail map never downloads — see the "does not load
+// 3D or chart chunks" / "detail map chunk only loads when opened" E2E tests, which are the real
+// guarantee that matters, not this aggregate ceiling. This is a deliberate, explained increase
+// for a genuinely new optional feature, not a cover for unexplained bloat in the shared/eager
+// chunks — those are still expected to stay flat run to run.
 const limits = {
-  totalJavaScriptBytes: 2_200_000,
-  totalJavaScriptGzipBytes: 650_000,
-  largestJavaScriptGzipBytes: 250_000,
+  totalJavaScriptBytes: 3_400_000,
+  totalJavaScriptGzipBytes: 950_000,
+  largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 1_900_000,
-  totalBuildBytes: 5_500_000,
+  totalBuildBytes: 6_400_000,
 };
 
 async function filesAt(directory) {

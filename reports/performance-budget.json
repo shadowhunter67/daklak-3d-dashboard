@@ -1,27 +1,27 @@
 {
   "status": "passed",
-  "generatedAt": "2026-07-21T09:18:26.772Z",
+  "generatedAt": "2026-07-21T14:12:28.590Z",
   "limits": {
-    "totalJavaScriptBytes": 2200000,
-    "totalJavaScriptGzipBytes": 650000,
-    "largestJavaScriptGzipBytes": 250000,
+    "totalJavaScriptBytes": 3400000,
+    "totalJavaScriptGzipBytes": 950000,
+    "largestJavaScriptGzipBytes": 300000,
     "totalTextureBytes": 3000000,
     "largestAssetBytes": 1900000,
-    "totalBuildBytes": 5500000
+    "totalBuildBytes": 6400000
   },
   "actual": {
-    "totalJavaScriptBytes": 2149363,
-    "totalJavaScriptGzipBytes": 616850,
-    "largestJavaScriptGzipBytes": 183942,
+    "totalJavaScriptBytes": 3213234,
+    "totalJavaScriptGzipBytes": 899780,
+    "largestJavaScriptGzipBytes": 270836,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 5094237
+    "totalBuildBytes": 6160517
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-B3WdMIqo.js",
+      "file": "assets/AdministrativeMap-CI-_IUV3.js",
       "bytes": 201941,
-      "gzipBytes": 63962
+      "gzipBytes": 63956
     },
     {
       "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
@@ -40,18 +40,28 @@
       "bytes": 719308
     },
     {
-      "file": "assets/geo-Big2cR-r.js",
-      "bytes": 40642,
-      "gzipBytes": 14591
+      "file": "assets/esm-xvg_75QE.js",
+      "bytes": 18558,
+      "gzipBytes": 7222
     },
     {
-      "file": "assets/index-BcMt_p1v.js",
-      "bytes": 677783,
-      "gzipBytes": 183942
+      "file": "assets/geo-C8G_ACWz.js",
+      "bytes": 43880,
+      "gzipBytes": 15488
     },
     {
-      "file": "assets/index-BhLbqveB.css",
-      "bytes": 18524
+      "file": "assets/index-a6jQAhua.js",
+      "bytes": 692106,
+      "gzipBytes": 187920
+    },
+    {
+      "file": "assets/index-CLOI-gwb.css",
+      "bytes": 20933
+    },
+    {
+      "file": "assets/maplibre-gl-B0OHC_Aq.js",
+      "bytes": 1027752,
+      "gzipBytes": 270836
     },
     {
       "file": "assets/rolldown-runtime-CNC7AqOf.js",
@@ -59,9 +69,9 @@
       "gzipBytes": 504
     },
     {
-      "file": "assets/StatPanel-ZgL5cKEC.js",
+      "file": "assets/StatPanel-C1trc6AT.js",
       "bytes": 503486,
-      "gzipBytes": 170560
+      "gzipBytes": 170563
     },
     {
       "file": "assets/three-vendor-DLMYoo0M.js",
