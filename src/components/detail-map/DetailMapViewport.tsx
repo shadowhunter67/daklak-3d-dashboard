@@ -197,6 +197,7 @@ export function DetailMapViewport() {
           sourceAvailability={sourceAvailability}
           onBaseMapChange={setDetailMapBaseMap}
           onToggleLayer={toggleDetailMapLayer}
+          suppressEscapeClose={interactionMode === 'measure'}
           toolsSlot={
             <>
               <LocalSearch onSelect={onSelectSearchResult} />

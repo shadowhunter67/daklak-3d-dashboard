@@ -122,12 +122,10 @@ describe('useDashboardUrlSync', () => {
       renderHook(() => useDashboardUrlSync());
       replaceSpy.mockClear();
 
-      useMapStore
-        .getState()
-        .setDetailMapCamera({
-          ...DEFAULT_DETAIL_MAP_CAMERA,
-          latitude: DEFAULT_DETAIL_MAP_CAMERA.latitude + 1e-9,
-        });
+      useMapStore.getState().setDetailMapCamera({
+        ...DEFAULT_DETAIL_MAP_CAMERA,
+        latitude: DEFAULT_DETAIL_MAP_CAMERA.latitude + 1e-9,
+      });
 
       expect(replaceSpy).not.toHaveBeenCalled();
     });

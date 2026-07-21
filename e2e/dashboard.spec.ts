@@ -167,8 +167,35 @@ test.describe('dashboard smoke tests', () => {
     await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
     expect(
       responses.some((url) =>
-        /\/assets\/(AdministrativeMap|StatPanel|three-vendor)-.*\.js/.test(url),
+        /\/assets\/(AdministrativeMap|StatPanel|three-vendor|maplibre-gl)-.*\.js/.test(url),
       ),
+    ).toBe(false);
+  });
+
+  test('does not load the MapLibre chunk when starting in the 3D overview', async ({ page }) => {
+    test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
+    const responses: string[] = [];
+    page.on('response', (response) => responses.push(response.url()));
+    await page.goto('./');
+    await expect(page.locator('canvas')).toBeVisible();
+    expect(responses.some((url) => /\/assets\/maplibre-gl-.*\.js/.test(url))).toBe(false);
+  });
+
+  test('loads the MapLibre chunk only once the detail map is opened, and never mounts Three.js there', async ({
+    page,
+  }) => {
+    test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
+    const responses: string[] = [];
+    page.on('response', (response) => responses.push(response.url()));
+    // Start directly on the detail map (skip the 3D overview) so this test isolates what the
+    // detail map itself loads, rather than what the default 3D-overview-then-switch flow loads.
+    await page.goto('./?view=map');
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    await expect
+      .poll(() => responses.some((url) => /\/assets\/maplibre-gl-.*\.js/.test(url)))
+      .toBe(true);
+    expect(
+      responses.some((url) => /\/assets\/(AdministrativeMap|three-vendor)-.*\.js/.test(url)),
     ).toBe(false);
   });
 
@@ -236,7 +263,7 @@ test.describe('dashboard smoke tests', () => {
     await page.goto('./?view=2d');
     await expect(page.locator('[data-label-code]')).not.toHaveCount(0);
     expect(await page.locator('[data-label-code]').count()).toBeGreaterThan(mobile ? 20 : 40);
-    await page.locator('.header-meta button').nth(2).click();
+    await page.getByRole('button', { name: 'Hiện lớp đường giao thông' }).click();
     await expect(page.locator('.map-road')).toHaveCount(1201);
     expect(await page.locator('.map-road-labels text').count()).toBeGreaterThan(0);
     await expect(page.locator('.administrative-map-2d')).toHaveScreenshot(
@@ -621,5 +648,117 @@ test.describe('Vietnamese detail name visual coverage', () => {
       animations: 'disabled',
       maxDiffPixelRatio: 0.03,
     });
+  });
+});
+
+test.describe('detail map (MapLibre)', () => {
+  test('opens from the header, updates the URL, and restores on Back/Forward', async ({ page }) => {
+    await page.goto('./');
+    await page.getByRole('button', { name: 'Mở bản đồ chi tiết' }).click();
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    await expect(page).toHaveURL(/view=map/);
+
+    await page.getByRole('button', { name: 'Thoát bản đồ chi tiết' }).click();
+    await expect(page).toHaveURL(/view=3d/);
+    await expect(page.locator('#detail-map-viewport')).toHaveCount(0);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/view=map/);
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+  });
+
+  test('opens the layer panel and toggles layers without pushing new history entries', async ({
+    page,
+  }) => {
+    await page.goto('./?view=map');
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    const historyLength = () => page.evaluate(() => window.history.length);
+    const lengthBeforeToggles = await historyLength();
+
+    await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    const heatmapCheckbox = page.getByRole('checkbox', { name: 'Heatmap' });
+    await heatmapCheckbox.check();
+    await expect(page).toHaveURL(/heatmap=1/);
+    const roadsCheckbox = page.getByRole('checkbox', { name: 'Đường', exact: true });
+    await roadsCheckbox.uncheck();
+    await expect(page).toHaveURL(/roads=0/);
+
+    expect(await historyLength()).toBe(lengthBeforeToggles);
+  });
+
+  test('disables terrain and satellite basemaps with an explanation when no source is configured', async ({
+    page,
+  }) => {
+    await page.goto('./?view=map');
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    await expect(page.getByRole('radio', { name: 'Địa hình' })).toBeDisabled();
+    await expect(page.getByRole('radio', { name: 'Vệ tinh' })).toBeDisabled();
+  });
+
+  test('measures a distance, exits with Escape, and does not select a ward while measuring', async ({
+    page,
+  }) => {
+    await page.goto('./?view=map');
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    await page.getByRole('button', { name: 'Đo khoảng cách', exact: true }).click();
+    await expect(page.getByText('Chạm vào bản đồ để thêm điểm đo.')).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('button', { name: 'Đo khoảng cách', exact: true })).toBeVisible();
+  });
+
+  test('searches local ward data and pans to the selected result', async ({ page }) => {
+    await page.goto('./?view=map');
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    const search = page.getByRole('searchbox', { name: 'Tìm xã, phường hoặc địa danh' });
+    await search.fill('buon ma thuot');
+    await expect(page.getByRole('option', { name: /Buôn Ma Thuột/ })).toBeVisible();
+    await page.getByRole('option', { name: /Buôn Ma Thuột/ }).click();
+    await expect(page).toHaveURL(/ward=24133/);
+  });
+
+  test('falls back to the WebGL-unavailable message and can open the directory instead', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      const original = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type, options) {
+        if (type === 'webgl' || type === 'webgl2') return null;
+        return original.call(this, type, options as never);
+      } as typeof HTMLCanvasElement.prototype.getContext;
+    });
+    await page.goto('./?view=map');
+    await expect(
+      page.getByText('không hỗ trợ WebGL nên không thể mở bản đồ chi tiết'),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
+  });
+
+  test('has no serious automated accessibility violations in the layer panel', async ({ page }) => {
+    await page.goto('./?view=map');
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    const results = await new AxeBuilder({ page }).analyze();
+    expect(
+      results.violations.filter(({ impact }) => impact === 'critical' || impact === 'serious'),
+    ).toEqual([]);
+  });
+
+  test('mobile: opens the layer panel as a bottom sheet without covering essential controls', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('./?view=map');
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    const panel = page.locator('.detail-map-layer-panel__content');
+    await expect(panel).toBeVisible();
+    const panelBox = await panel.boundingBox();
+    expect(panelBox).not.toBeNull();
+    expect(panelBox!.width).toBeLessThanOrEqual(390);
   });
 });

@@ -26,12 +26,19 @@ export function MapLayerPanel({
   onBaseMapChange,
   onToggleLayer,
   toolsSlot,
+  suppressEscapeClose = false,
 }: {
   layers: DetailMapLayerState;
   sourceAvailability: DetailMapSourceAvailability;
   onBaseMapChange: (baseMap: DetailBaseMap) => void;
   onToggleLayer: (layer: ToggleableLayer) => void;
   toolsSlot?: ReactNode;
+  /**
+   * True while a child tool (distance measurement) owns Escape for its own exit. Without this,
+   * Escape would both exit the tool AND close this whole panel in the same keypress, since both
+   * listen at the document level and neither should have to guess at the other's DOM order.
+   */
+  suppressEscapeClose?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -42,7 +49,7 @@ export function MapLayerPanel({
     const firstControl = panelRef.current?.querySelector<HTMLElement>('input, button, [tabindex]');
     firstControl?.focus();
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === 'Escape' && !suppressEscapeClose) {
         event.stopPropagation();
         setOpen(false);
         triggerRef.current?.focus();
@@ -50,7 +57,7 @@ export function MapLayerPanel({
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [open]);
+  }, [open, suppressEscapeClose]);
 
   return (
     <div className="detail-map-layer-panel">

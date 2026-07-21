@@ -67,7 +67,7 @@ export function LocalSearch({ onSelect }: { onSelect: (entry: LocalSearchEntry) 
         onChange={(event) => runSearch(event.target.value)}
         onKeyDown={onKeyDown}
         role="searchbox"
-        aria-controls="detail-map-local-search-results"
+        aria-controls={results.length > 0 ? 'detail-map-local-search-results' : undefined}
         aria-activedescendant={activeIndex >= 0 ? `local-search-result-${activeIndex}` : undefined}
       />
       {results.length > 0 && (
