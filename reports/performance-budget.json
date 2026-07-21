@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-07-21T03:36:52.605Z",
+  "generatedAt": "2026-07-21T09:18:26.772Z",
   "limits": {
     "totalJavaScriptBytes": 2200000,
     "totalJavaScriptGzipBytes": 650000,
@@ -10,18 +10,18 @@
     "totalBuildBytes": 5500000
   },
   "actual": {
-    "totalJavaScriptBytes": 2148654,
-    "totalJavaScriptGzipBytes": 616652,
-    "largestJavaScriptGzipBytes": 183955,
+    "totalJavaScriptBytes": 2149363,
+    "totalJavaScriptGzipBytes": 616850,
+    "largestJavaScriptGzipBytes": 183942,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 5093528
+    "totalBuildBytes": 5094237
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-Bpnv1zfe.js",
-      "bytes": 201474,
-      "gzipBytes": 63806
+      "file": "assets/AdministrativeMap-B3WdMIqo.js",
+      "bytes": 201941,
+      "gzipBytes": 63962
     },
     {
       "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
@@ -40,14 +40,14 @@
       "bytes": 719308
     },
     {
-      "file": "assets/geo-9giBBTby.js",
-      "bytes": 40478,
-      "gzipBytes": 14536
+      "file": "assets/geo-Big2cR-r.js",
+      "bytes": 40642,
+      "gzipBytes": 14591
     },
     {
-      "file": "assets/index-575rvOJi.js",
-      "bytes": 677705,
-      "gzipBytes": 183955
+      "file": "assets/index-BcMt_p1v.js",
+      "bytes": 677783,
+      "gzipBytes": 183942
     },
     {
       "file": "assets/index-BhLbqveB.css",
@@ -59,7 +59,7 @@
       "gzipBytes": 504
     },
     {
-      "file": "assets/StatPanel-ZY36TrI-.js",
+      "file": "assets/StatPanel-ZgL5cKEC.js",
       "bytes": 503486,
       "gzipBytes": 170560
     },
