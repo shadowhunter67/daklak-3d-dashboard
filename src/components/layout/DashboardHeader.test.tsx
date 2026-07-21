@@ -21,6 +21,14 @@ describe('DashboardHeader', () => {
     expect(useMapStore.getState().viewMode).toBe('table');
   });
 
+  it('opens and exits the detail map', () => {
+    render(<DashboardHeader />);
+    fireEvent.click(screen.getByRole('button', { name: 'Mở bản đồ chi tiết' }));
+    expect(useMapStore.getState().viewMode).toBe('map');
+    fireEvent.click(screen.getByRole('button', { name: 'Thoát bản đồ chi tiết' }));
+    expect(useMapStore.getState().viewMode).toBe('3d');
+  });
+
   it('offers camera reset and contextual help without changing selection', () => {
     useMapStore.setState({ selectedCode: '24580', resetCameraSignal: 0, helpSignal: 0 });
     render(<DashboardHeader />);

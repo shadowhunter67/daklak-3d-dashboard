@@ -26,9 +26,10 @@ jobs:
       - name: Regenerate Linux visual baselines
         env:
           UPDATE_MOBILE_SNAPSHOTS: '1'
+          GREP_PATTERN: ${{ inputs.grep }}
         run: |
-          if [ -n "${{ inputs.grep }}" ]; then
-            npx playwright test --config=playwright.prod.config.ts --grep "${{ inputs.grep }}" --update-snapshots
+          if [ -n "$GREP_PATTERN" ]; then
+            npx playwright test --config=playwright.prod.config.ts --grep "$GREP_PATTERN" --update-snapshots
           else
             npx playwright test --config=playwright.prod.config.ts --update-snapshots
           fi

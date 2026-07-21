@@ -1,10 +1,26 @@
 import { create } from 'zustand';
 import labels from '../assets/maps/daklak/daklak-labels.json';
-import { parseDashboardUrl, type DashboardUrlState } from '../utils/dashboardUrl';
+import {
+  parseDashboardUrl,
+  type DashboardUrlState,
+  type DashboardView,
+} from '../utils/dashboardUrl';
+import {
+  DEFAULT_DETAIL_MAP_CAMERA,
+  DEFAULT_DETAIL_MAP_LAYER_STATE,
+  type DetailBaseMap,
+  type DetailMapCameraState,
+  type DetailMapLayerState,
+} from '../components/detail-map/detailMapTypes';
+import { camerasApproximatelyEqual } from '../components/detail-map/detailMapUrl';
 
 const validAdministrativeCodes = new Set(Object.keys(labels));
 
-/** Pure: reads the current URL only when called, never at module-import time. */
+/**
+ * Not pure — it reads window.location, so its result depends on external mutable state — but
+ * that read now happens only when this function is called, never as a module-import side
+ * effect, which is what actually makes createMapStore testable without touching window.location.
+ */
 export function getInitialDashboardUrlState(): DashboardUrlState {
   return parseDashboardUrl(
     typeof window === 'undefined' ? '' : window.location.search,
@@ -12,9 +28,16 @@ export function getInitialDashboardUrlState(): DashboardUrlState {
   );
 }
 
+// terrainVisible/satelliteVisible are derived from baseMap (see setDetailMapBaseMap) and must
+// not be toggled independently — that would desync them from the actual base-map selection.
+type ToggleableDetailMapLayer = Exclude<
+  keyof DetailMapLayerState,
+  'baseMap' | 'terrainVisible' | 'satelliteVisible'
+>;
+
 export interface MapState {
   dataMode: 'overview' | 'energy' | 'heatmap';
-  viewMode: '3d' | 'table';
+  viewMode: DashboardView;
   hoveredCode: string | null;
   selectedCode: string | null;
   labelsVisible: boolean;
@@ -24,6 +47,8 @@ export interface MapState {
   resetCameraSignal: number;
   helpSignal: number;
   insetsChangeSignal: number;
+  detailMapLayers: DetailMapLayerState;
+  detailMapCamera: DetailMapCameraState;
   setHovered: (code: string | null) => void;
   select: (code: string | null) => void;
   toggleLabels: () => void;
@@ -36,6 +61,14 @@ export interface MapState {
   requestCameraReset: () => void;
   requestHelp: () => void;
   notifyInsetsChanged: () => void;
+  setDetailMapBaseMap: (baseMap: DetailBaseMap) => void;
+  toggleDetailMapLayer: (layer: ToggleableDetailMapLayer) => void;
+  /** No-op (and no re-render) if the new camera is within epsilon of the current one. */
+  setDetailMapCamera: (camera: DetailMapCameraState) => void;
+  applyDetailMapUrlState: (state: {
+    layers: DetailMapLayerState;
+    camera: DetailMapCameraState;
+  }) => void;
 }
 
 /**
@@ -44,7 +77,7 @@ export interface MapState {
  * on which order test files happen to import this module.
  */
 export function createMapStore(initialUrlState: DashboardUrlState = getInitialDashboardUrlState()) {
-  return create<MapState>((set) => ({
+  return create<MapState>((set, get) => ({
     dataMode: initialUrlState.dataMode,
     viewMode: initialUrlState.viewMode,
     hoveredCode: null,
@@ -56,6 +89,8 @@ export function createMapStore(initialUrlState: DashboardUrlState = getInitialDa
     resetCameraSignal: 0,
     helpSignal: 0,
     insetsChangeSignal: 0,
+    detailMapLayers: DEFAULT_DETAIL_MAP_LAYER_STATE,
+    detailMapCamera: DEFAULT_DETAIL_MAP_CAMERA,
     setHovered: (hoveredCode) => set({ hoveredCode }),
     select: (selectedCode) =>
       set({
@@ -78,6 +113,25 @@ export function createMapStore(initialUrlState: DashboardUrlState = getInitialDa
     requestHelp: () => set((state) => ({ helpSignal: state.helpSignal + 1 })),
     notifyInsetsChanged: () =>
       set((state) => ({ insetsChangeSignal: state.insetsChangeSignal + 1 })),
+    setDetailMapBaseMap: (baseMap) =>
+      set((state) => ({
+        detailMapLayers: {
+          ...state.detailMapLayers,
+          baseMap,
+          terrainVisible: baseMap === 'terrain',
+          satelliteVisible: baseMap === 'satellite',
+        },
+      })),
+    toggleDetailMapLayer: (layer) =>
+      set((state) => ({
+        detailMapLayers: { ...state.detailMapLayers, [layer]: !state.detailMapLayers[layer] },
+      })),
+    setDetailMapCamera: (camera) => {
+      if (camerasApproximatelyEqual(get().detailMapCamera, camera)) return;
+      set({ detailMapCamera: camera });
+    },
+    applyDetailMapUrlState: ({ layers, camera }) =>
+      set({ detailMapLayers: layers, detailMapCamera: camera }),
   }));
 }
 

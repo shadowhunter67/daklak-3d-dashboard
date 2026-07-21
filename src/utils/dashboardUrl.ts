@@ -1,4 +1,8 @@
-export type DashboardView = '3d' | 'table';
+// 'map' is the detail-map experience (MapLibre); see src/components/detail-map/detailMapTypes.ts
+// for the richer MapExperience model and the mapExperienceFromViewMode/viewModeFromMapExperience
+// mapping functions this three-value union backs. Existing '3d'/'table' URLs and consumers are
+// unaffected — 'map' is purely additive.
+export type DashboardView = '3d' | 'table' | 'map';
 export type DashboardMode = 'overview' | 'energy' | 'heatmap';
 
 export interface DashboardUrlState {
@@ -9,6 +13,18 @@ export interface DashboardUrlState {
 
 const modes = new Set<DashboardMode>(['overview', 'energy', 'heatmap']);
 
+function parseViewMode(raw: string | null): DashboardView {
+  if (raw === '2d') return 'table';
+  if (raw === 'map') return 'map';
+  return '3d';
+}
+
+function serializeViewMode(viewMode: DashboardView): string {
+  if (viewMode === 'table') return '2d';
+  if (viewMode === 'map') return 'map';
+  return '3d';
+}
+
 export function parseDashboardUrl(
   search: string,
   validCodes: ReadonlySet<string>,
@@ -17,7 +33,7 @@ export function parseDashboardUrl(
   const mode = params.get('mode') as DashboardMode | null;
   const ward = params.get('ward');
   return {
-    viewMode: params.get('view') === '2d' ? 'table' : '3d',
+    viewMode: parseViewMode(params.get('view')),
     dataMode: mode && modes.has(mode) ? mode : 'overview',
     selectedCode: ward && validCodes.has(ward) ? ward : null,
   };
@@ -25,7 +41,7 @@ export function parseDashboardUrl(
 
 export function serializeDashboardUrl(state: DashboardUrlState): string {
   const params = new URLSearchParams();
-  params.set('view', state.viewMode === 'table' ? '2d' : '3d');
+  params.set('view', serializeViewMode(state.viewMode));
   params.set('mode', state.dataMode);
   if (state.selectedCode) params.set('ward', state.selectedCode);
   return `?${params.toString()}`;
