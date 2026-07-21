@@ -30,3 +30,18 @@ export function serializeDashboardUrl(state: DashboardUrlState): string {
   if (state.selectedCode) params.set('ward', state.selectedCode);
   return `?${params.toString()}`;
 }
+
+export type DashboardHistoryAction = 'push' | 'replace';
+
+/**
+ * A ward selection alone should not clutter Back/Forward with one entry per click; only a
+ * view/data-mode change (with or without a simultaneous selection change) is push-worthy.
+ */
+export function decideDashboardHistoryAction(
+  previous: DashboardUrlState,
+  next: DashboardUrlState,
+): DashboardHistoryAction {
+  const viewOrModeChanged =
+    previous.viewMode !== next.viewMode || previous.dataMode !== next.dataMode;
+  return viewOrModeChanged ? 'push' : 'replace';
+}

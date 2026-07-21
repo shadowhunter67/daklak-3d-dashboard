@@ -8,4 +8,6 @@ Heavy WebGL and chart code is split behind React lazy boundaries. Direct `?view=
 
 Vitest performs 1,000 representative hit tests with a deliberately broad one-second CI ceiling. Real FPS, GPU memory, and thermal behavior depend on hardware and must be checked on representative physical devices before a high-traffic release.
 
+`src/utils/graphicsQuality.ts` derives a conservative `low`/`medium`/`high` tier once per Canvas mount from `devicePixelRatio` and `navigator.hardwareConcurrency` only — no benchmarking, no telemetry, no user-agent sniffing. A typical current desktop/laptop resolves to `high`, which matches today's hardcoded Canvas config exactly (antialias on, ContactShadows on, DPR up to 1.35), so nothing changes for the common case; only clearly constrained devices (very high DPR or 1–2 logical cores) drop `ContactShadows`, disable antialias, and cap DPR at 1. The tier is decided once and never recomputed reactively, so it cannot itself trigger a Canvas remount.
+
 Use the repeatable manual protocol in [device-benchmark.md](device-benchmark.md) for desktop, Android, and iOS/Safari measurements. The repository intentionally stores an empty results template rather than invented hardware numbers.

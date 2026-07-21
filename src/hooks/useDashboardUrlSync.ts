@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
 import { useMapStore } from '../stores/mapStore';
-import { parseDashboardUrl, serializeDashboardUrl } from '../utils/dashboardUrl';
+import {
+  decideDashboardHistoryAction,
+  parseDashboardUrl,
+  serializeDashboardUrl,
+} from '../utils/dashboardUrl';
 import labels from '../assets/maps/daklak/daklak-labels.json';
 
 const validCodes = new Set(Object.keys(labels));
@@ -14,12 +18,16 @@ export function useDashboardUrlSync() {
 
     const unsubscribe = useMapStore.subscribe((state, previous) => {
       if (applyingHistory) return;
-      if (
+      const changed =
         state.viewMode !== previous.viewMode ||
         state.dataMode !== previous.dataMode ||
-        state.selectedCode !== previous.selectedCode
-      ) {
-        window.history.pushState(null, '', serializeDashboardUrl(state));
+        state.selectedCode !== previous.selectedCode;
+      if (!changed) return;
+      const url = serializeDashboardUrl(state);
+      if (decideDashboardHistoryAction(previous, state) === 'push') {
+        window.history.pushState(null, '', url);
+      } else {
+        window.history.replaceState(null, '', url);
       }
     });
     const restore = () => {
