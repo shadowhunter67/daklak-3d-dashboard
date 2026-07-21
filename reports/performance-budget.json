@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-07-17T10:22:45.217Z",
+  "generatedAt": "2026-07-21T03:36:52.605Z",
   "limits": {
     "totalJavaScriptBytes": 2200000,
     "totalJavaScriptGzipBytes": 650000,
@@ -10,18 +10,18 @@
     "totalBuildBytes": 5500000
   },
   "actual": {
-    "totalJavaScriptBytes": 2144017,
-    "totalJavaScriptGzipBytes": 615290,
-    "largestJavaScriptGzipBytes": 183291,
+    "totalJavaScriptBytes": 2148654,
+    "totalJavaScriptGzipBytes": 616652,
+    "largestJavaScriptGzipBytes": 183955,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 5086412
+    "totalBuildBytes": 5093528
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-BuSYv_w5.js",
-      "bytes": 200360,
-      "gzipBytes": 63436
+      "file": "assets/AdministrativeMap-Bpnv1zfe.js",
+      "bytes": 201474,
+      "gzipBytes": 63806
     },
     {
       "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
@@ -40,18 +40,18 @@
       "bytes": 719308
     },
     {
-      "file": "assets/geo-DQz15khi.js",
-      "bytes": 40223,
-      "gzipBytes": 14454
+      "file": "assets/geo-9giBBTby.js",
+      "bytes": 40478,
+      "gzipBytes": 14536
     },
     {
-      "file": "assets/index-6J4GAuQf.js",
-      "bytes": 674646,
-      "gzipBytes": 183071
+      "file": "assets/index-575rvOJi.js",
+      "bytes": 677705,
+      "gzipBytes": 183955
     },
     {
-      "file": "assets/index-IMX8ozmN.css",
-      "bytes": 17046
+      "file": "assets/index-BhLbqveB.css",
+      "bytes": 18524
     },
     {
       "file": "assets/rolldown-runtime-CNC7AqOf.js",
@@ -59,9 +59,9 @@
       "gzipBytes": 504
     },
     {
-      "file": "assets/StatPanel-Bw9kBXLf.js",
-      "bytes": 503277,
-      "gzipBytes": 170534
+      "file": "assets/StatPanel-ZY36TrI-.js",
+      "bytes": 503486,
+      "gzipBytes": 170560
     },
     {
       "file": "assets/three-vendor-DLMYoo0M.js",
@@ -77,8 +77,12 @@
       "bytes": 110031
     },
     {
+      "file": "favicon.svg",
+      "bytes": 339
+    },
+    {
       "file": "index.html",
-      "bytes": 1192
+      "bytes": 1854
     }
   ],
   "failures": []

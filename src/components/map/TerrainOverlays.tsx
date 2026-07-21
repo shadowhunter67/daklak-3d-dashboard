@@ -1,5 +1,4 @@
 import { useTexture } from '@react-three/drei';
-import type { Geometry, Position } from 'geojson';
 import { CanvasTexture } from 'three';
 import { useEffect, useMemo } from 'react';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
@@ -7,6 +6,7 @@ import metrics from '../../assets/maps/daklak/daklak-metrics.json';
 import { useMapStore } from '../../stores/mapStore';
 import { projection } from '../../utils/geo';
 import { wardData } from './geometryHitTest';
+import { drawGeometryPath } from './geometryPath';
 import {
   displacementBias,
   displacementScale,
@@ -28,29 +28,6 @@ const heatPoints = Object.entries(metrics)
     const label = (labels as LabelMap)[code];
     return { metric, point: projection([label.longitude, label.latitude])! as [number, number] };
   });
-
-function drawGeometryPath(
-  context: CanvasRenderingContext2D,
-  geometry: Geometry,
-  project: (position: Position) => [number, number],
-) {
-  if (geometry.type === 'GeometryCollection') {
-    geometry.geometries.forEach((part) => drawGeometryPath(context, part, project));
-    return;
-  }
-  if (geometry.type !== 'Polygon' && geometry.type !== 'MultiPolygon') return;
-  const polygons = geometry.type === 'Polygon' ? [geometry.coordinates] : geometry.coordinates;
-  polygons.forEach((polygon) =>
-    polygon.forEach((ring) => {
-      ring.forEach((position, index) => {
-        const [x, y] = project(position);
-        if (index === 0) context.moveTo(x, y);
-        else context.lineTo(x, y);
-      });
-      context.closePath();
-    }),
-  );
-}
 
 export function HeatmapOverlay() {
   const [heightMap, terrainMask] = useTexture([terrainHeightUrl, terrainMaskUrl]);

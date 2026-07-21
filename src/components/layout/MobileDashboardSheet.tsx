@@ -10,6 +10,7 @@ const StatPanel = lazy(() =>
 export function MobileDashboardSheet() {
   const selectedCode = useMapStore((state) => state.selectedCode);
   const select = useMapStore((state) => state.select);
+  const notifyInsetsChanged = useMapStore((state) => state.notifyInsetsChanged);
   const [sheet, dispatch] = useReducer(reduceMobileSheet, initialMobileSheet);
   const previousSelection = useRef<string | null>(null);
 
@@ -20,8 +21,8 @@ export function MobileDashboardSheet() {
   }, [selectedCode]);
 
   useEffect(() => {
-    window.dispatchEvent(new Event('dashboard-insets-change'));
-  }, [sheet.state]);
+    notifyInsetsChanged();
+  }, [sheet.state, notifyInsetsChanged]);
 
   const selection = sheet.content === 'selection' && selectedCode;
   const title = selection ? 'Chi tiết đơn vị đã chọn' : 'Tóm tắt dữ liệu';

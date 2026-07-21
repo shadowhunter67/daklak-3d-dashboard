@@ -1,9 +1,13 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { useMapStore } from '../../stores/mapStore';
 import { OnboardingOverlay } from './OnboardingOverlay';
 
 describe('OnboardingOverlay', () => {
-  beforeEach(() => window.localStorage.clear());
+  beforeEach(() => {
+    window.localStorage.clear();
+    useMapStore.setState({ helpSignal: 0 });
+  });
   afterEach(cleanup);
 
   it('introduces the primary interactions and remembers dismissal', () => {
@@ -17,7 +21,7 @@ describe('OnboardingOverlay', () => {
   it('can be opened again from the help control', () => {
     window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true');
     render(<OnboardingOverlay />);
-    act(() => window.dispatchEvent(new Event('dashboard-show-help')));
+    act(() => useMapStore.getState().requestHelp());
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
@@ -27,7 +31,7 @@ describe('OnboardingOverlay', () => {
     document.body.append(help);
     help.focus();
     render(<OnboardingOverlay />);
-    act(() => window.dispatchEvent(new Event('dashboard-show-help')));
+    act(() => useMapStore.getState().requestHelp());
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     await waitFor(() => expect(document.activeElement).toBe(help));

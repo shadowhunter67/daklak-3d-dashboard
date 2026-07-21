@@ -33,6 +33,8 @@ export function DashboardHeader() {
   const toggleLabels = useMapStore((state) => state.toggleLabels);
   const toggleRoads = useMapStore((state) => state.toggleRoads);
   const toggleAutoRotate = useMapStore((state) => state.toggleAutoRotate);
+  const requestCameraReset = useMapStore((state) => state.requestCameraReset);
+  const requestHelp = useMapStore((state) => state.requestHelp);
 
   return (
     <header className="dashboard-header">
@@ -113,7 +115,7 @@ export function DashboardHeader() {
         </button>
         <button
           className="header-secondary-control"
-          onClick={() => window.dispatchEvent(new Event('dashboard-reset-camera'))}
+          onClick={requestCameraReset}
           aria-label="Đưa camera về toàn tỉnh"
           title="Đưa camera về toàn tỉnh"
         >
@@ -129,7 +131,7 @@ export function DashboardHeader() {
         </button>
         <button
           className="header-secondary-control header-help-control"
-          onClick={() => window.dispatchEvent(new Event('dashboard-show-help'))}
+          onClick={requestHelp}
           aria-label="Mở hướng dẫn sử dụng"
           title="Hướng dẫn sử dụng"
         >
