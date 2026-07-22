@@ -52,22 +52,50 @@ Two layers, because they catch different mistakes:
    `npm run validate:public-build:dist` after) — catches everything catalogValidation.ts
    structurally cannot see:
    - **Source scan**: forbidden path segments (`/internal/`, `/confidential/`, `/restricted/`,
-     `/protected/`), JSON imports outside the public allowlist, imports from `data-templates/`,
-     production files importing test fixtures, and whether `ProtectedApiAdapter` is reachable from
-     `src/main.tsx` (the real public app shell).
+     `/protected/`), imports from `data-templates/`, production files importing test fixtures,
+     whether `ProtectedApiAdapter` is reachable from `src/main.tsx` (the real public app shell), and
+     — the part that closes the previous version's biggest gap — every data-shaped file import
+     (`.json`, `.geojson`, `.csv`, `.tsv`, `.pmtiles`, `.pbf`, `.mvt`, `.topojson`, `.parquet`,
+     `.arrow`, `.feather`, with or without a trailing `.gz`) checked against an **exact-path
+     registry** (`config/public-data-files.json`), not a directory-prefix allowlist — see
+     [docs/data-platform-architecture.md](data-platform-architecture.md#public-data-file-registry--a-different-layer-than-the-catalog).
+     The same source-scan run also walks the entire `public/` directory, since Vite copies its
+     contents into `dist/` verbatim with no import statement for the scanner to see at all —
+     unregistered data-shaped files there fail exactly the same way.
    - **Dist scan**: greps the actual built `dist/` output for private hostnames (`localhost`,
      `.local`, `internal.`/`intranet.`, RFC1918/loopback IPs — each requiring a `://` scheme
      separator immediately before the match, since minified library code is otherwise full of
      incidental lookalikes like React Three Fiber's own `.internal.interaction` property), JWTs,
      `Bearer` tokens, credential-shaped query parameters, non-`http://json-schema.org`/`w3.org`
-     `http://` URLs, data-template placeholder text, protected role names, and any dataset id a
-     manifest (written by `npm test`, read from `reports/public-dataset-manifest.json`) says is
-     non-public.
+     `http://` URLs, data-template placeholder text, protected role names, any dataset id a manifest
+     says is non-public, any data-shaped file in `dist/` that isn't a registered
+     `public-static-asset` (except the Vite-plugin-generated `build-info.json`), and — the inverse
+     check — every registered `public-static-asset` actually appearing where expected.
 
-Both are wired into `.github/workflows/quality.yml` (`static-analysis` job for source-mode,
-`build-and-budget` job for dist-mode, which downloads the manifest artifact from `unit-and-data`).
-Fixture-based tests for the scanner itself live in
-`scripts/validate_public_build.test.mjs` (temp-directory fixtures, not the real repo tree).
+The manifest both scans depend on (`reports/public-dataset-manifest.json`) is produced by
+`npm run generate:public-manifest` (`scripts/generate_public_manifest.mjs`) — a deterministic
+command run explicitly in CI before each scan, not a `npm test` side effect. It also fails loudly
+if the registry disagrees with the real catalog (dangling dataset id, non-public classification,
+`requiresAuthentication`/`protected-api` contradiction, checksum mismatch, duplicate or traversing
+path, missing file) before ever writing the manifest — see
+`scripts/validate_public_build.mjs`'s exported `validateRegistry`.
+
+**Import forms the scanner recognizes** (and therefore can enforce the registry against): static
+`import ... from`, `export ... from`, dynamic `import(...)`, `require(...)`, and
+`new URL(..., import.meta.url)`. **Not supported**: `import.meta.glob(...)` targeting a data
+extension is detected and treated as a hard failure (the scanner cannot verify what a glob resolves
+to at scan time), and fully computed/templated specifiers (e.g. a path built from a runtime
+variable) are invisible to a regex-based static scan by construction — this is a documented scope
+limit, not a gap the scanner claims to close; see the "Không được làm" constraint against building
+a full parser (spec) and `docs/dataset-onboarding.md` for the exact-import convention this repo
+relies on instead.
+
+Both modes are wired into `.github/workflows/quality.yml` (`static-analysis` job generates the
+manifest then runs source-mode; `build-and-budget` job independently generates its own manifest,
+builds, then runs dist-mode — no cross-job artifact hand-off needed now that manifest generation is
+a cheap, deterministic command rather than a test side effect). Fixture-based tests for the scanner
+itself live in `scripts/validate_public_build.test.mjs` (temp-directory fixtures, not the real repo
+tree).
 
 ## CSP
 

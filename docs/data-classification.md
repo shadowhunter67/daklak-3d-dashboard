@@ -21,12 +21,24 @@ Everything else here is guidance; this one is enforced in code in two independen
    Vitest rather than a separate script.
 2. **Bypass-the-catalog boundary**: `npm run validate:public-build` (source) and
    `npm run validate:public-build:dist` (built output) — `scripts/validate_public_build.mjs` —
-   catch the case catalogValidation.ts structurally cannot: a developer importing a non-public
-   JSON file, or a forbidden path (`/internal/`, `/confidential/`, `/restricted/`, `/protected/`,
-   `data-templates/`), directly into `src/`, bypassing the catalog entirely. The dist-mode scan
-   also greps the _actual built bundle_ for private hostnames, credential-shaped query params,
-   JWT/Bearer tokens, and any dataset id the source-side manifest (written by `npm test`) says is
-   non-public. See [docs/security-architecture.md](security-architecture.md#public-data-leakage-boundary).
+   catch the case catalogValidation.ts structurally cannot: a developer importing a data file (any
+   of `.json`/`.geojson`/`.csv`/`.tsv`/`.pmtiles`/`.pbf`/`.mvt`/`.topojson`/`.parquet`/`.arrow`/
+   `.feather`, `.gz`-compressed or not) that isn't registered under its **exact path** in
+   `config/public-data-files.json`, or a forbidden path (`/internal/`, `/confidential/`,
+   `/restricted/`, `/protected/`, `data-templates/`), directly into `src/` — or the same kind of
+   unregistered data file sitting in `public/`, which Vite copies into `dist/` with no import
+   statement at all. The dist-mode scan also greps the _actual built bundle_ for private hostnames,
+   credential-shaped query params, JWT/Bearer tokens, any dataset id the manifest (written by
+   `npm run generate:public-manifest`) says is non-public, and any data-shaped file in `dist/` that
+   isn't a registered `public-static-asset`. See
+   [docs/security-architecture.md](security-architecture.md#public-data-leakage-boundary) and
+   [docs/data-platform-architecture.md](data-platform-architecture.md#public-data-file-registry--a-different-layer-than-the-catalog).
+
+   **The registry never makes data public or legal by itself.** Registering a file's exact path
+   only tells the scanner "this specific payload is expected to ship"; it does not verify license,
+   source, or classification correctness — those are still the dataset descriptor's and a human
+   reviewer's job. A file must never be placed under `src/assets/**` or `public/` — registered or
+   not — unless it is already genuinely `internal`/`confidential`/`restricted`-free.
 
 ## Evidence level vs. verification status
 

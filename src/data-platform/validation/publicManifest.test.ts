@@ -1,14 +1,6 @@
-/// <reference types="node" />
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 import { DATASET_CATALOG } from '../catalog/datasets';
-import { buildPublicBundleManifest, type PublicBundleManifest } from './publicManifest';
-
-const currentFile = fileURLToPath(import.meta.url);
-const repoRoot = resolve(dirname(currentFile), '../../../');
-const manifestPath = join(repoRoot, 'reports', 'public-dataset-manifest.json');
+import { buildPublicBundleManifest } from './publicManifest';
 
 describe('buildPublicBundleManifest', () => {
   it('separates public-bundled dataset ids from any non-public ones', () => {
@@ -18,6 +10,7 @@ describe('buildPublicBundleManifest', () => {
     // manifest structure exists so scripts/validate_public_build.mjs has something real to check
     // against the moment a non-public one is ever added.
     expect(manifest.nonPublicDatasetIds).toEqual([]);
+    expect(manifest.publicDatasetIds.length).toBe(DATASET_CATALOG.length);
     // Not every cataloged dataset is bundled-static (e.g. the not-yet-built detail-map PMTiles
     // source has access.delivery:'pmtiles') — only those actually shipped in the static bundle.
     const expectedCount = DATASET_CATALOG.filter(
@@ -27,7 +20,19 @@ describe('buildPublicBundleManifest', () => {
     expect(manifest.expectedBundledDatasetIds.length).toBeLessThan(DATASET_CATALOG.length);
   });
 
-  it('excludes a non-public or non-bundled dataset from expectedBundledDatasetIds', () => {
+  it('includes a per-dataset classification/access record for every cataloged dataset', () => {
+    const manifest = buildPublicBundleManifest();
+    expect(manifest.datasets.length).toBe(DATASET_CATALOG.length);
+    const administrativeUnits = manifest.datasets.find((d) => d.id === 'administrative-units');
+    expect(administrativeUnits).toEqual({
+      id: 'administrative-units',
+      classification: 'public',
+      delivery: 'bundled-static',
+      requiresAuthentication: false,
+    });
+  });
+
+  it('excludes a non-public or non-bundled dataset from expectedBundledDatasetIds, and reports it in datasets/nonPublicDatasetIds', () => {
     const manifest = buildPublicBundleManifest([
       {
         id: 'internal-example',
@@ -47,14 +52,15 @@ describe('buildPublicBundleManifest', () => {
       },
     ]);
     expect(manifest.nonPublicDatasetIds).toEqual(['internal-example']);
+    expect(manifest.publicDatasetIds).toEqual([]);
     expect(manifest.expectedBundledDatasetIds).toEqual([]);
-  });
-
-  it('writes the real catalog manifest to reports/public-dataset-manifest.json for the Node-side dist scanner to read', () => {
-    const manifest: PublicBundleManifest = buildPublicBundleManifest();
-    mkdirSync(dirname(manifestPath), { recursive: true });
-    writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
-    const written = JSON.parse(readFileSync(manifestPath, 'utf8')) as PublicBundleManifest;
-    expect(written.allDatasetIds).toEqual(manifest.allDatasetIds);
+    expect(manifest.datasets).toEqual([
+      {
+        id: 'internal-example',
+        classification: 'internal',
+        delivery: 'protected-api',
+        requiresAuthentication: true,
+      },
+    ]);
   });
 });

@@ -60,11 +60,50 @@ aggregator); `official-publication-reference` if you only confirmed an announcem
 See the two existing entries in `documents.ts` for both cases side by side, and
 [docs/data-classification.md](data-classification.md#evidence-level-vs-verification-status).
 
-## 6. Validate
+## 6. If it backs a physical file under `src/assets/**` or `public/`: register it
+
+**Do not skip this even if the file lives under a directory that "already has public files in
+it."** `config/public-data-files.json` is an exact-path registry, not a directory allowlist — a
+JSON/GeoJSON/CSV/TSV/PMTiles/PBF/MVT/TopoJSON/Parquet/Arrow/Feather file (`.gz`-compressed or not)
+that isn't registered under its own exact path fails `npm run validate:public-build`, even if a
+sibling file in the same folder is registered.
+
+Add one entry per file to `config/public-data-files.json`'s `files` array:
+
+```json
+{
+  "path": "src/assets/data/your-new-file.json",
+  "datasetIds": ["your-dataset-id"],
+  "classification": "public",
+  "delivery": "bundled-static",
+  "checksum": "<sha256sum your-new-file.json, 64 lowercase hex chars>"
+}
+```
+
+- `path` — exact repo-relative POSIX path. No wildcards, no directory prefixes.
+- `datasetIds` — every dataset id (from step 2) this file backs; each must already exist in
+  `DATASET_CATALOG` with `classification: 'public'` and `requiresAuthentication: false` — the
+  registry is cross-checked against the real catalog by `npm run generate:public-manifest` (fails
+  loudly if it disagrees) and again by `validate:public-build`.
+- `delivery` — `'bundled-static'` for a file imported directly into `src/` (ends up inside a JS
+  chunk); `'public-static-asset'` for a file placed under `public/` (Vite copies it into `dist/`
+  verbatim, with no import statement at all — the dist-scan checks it actually arrives there).
+- `checksum` — a real `sha256sum <file>` of the actual file content. If the file is trivial (a
+  handful of numbers, not worth hashing), omit `checksum` but then a `note` explaining why is
+  **required** instead — the registry validator rejects an entry with neither.
+
+A file dropped into `src/assets/**` or `public/` and left unregistered — or registered under the
+wrong exact path — fails `npm run validate:public-build` (source mode checks `src/` imports _and_
+walks all of `public/`) and, if it somehow reached `dist/` anyway, `npm run validate:public-build:dist`
+too. Registering an entry is not itself evidence the data is safe to publish — classification,
+license, and provenance are still your job from steps 1–2.
+
+## 7. Validate
 
 ```bash
-npm test                        # catalogValidationIssues must stay [] — includes the public-leakage check
-npm run validate:public-build   # source-side leakage scan
+npm test                            # catalogValidationIssues must stay [] — includes the public-leakage check
+npm run generate:public-manifest    # writes reports/public-dataset-manifest.json; fails if the registry disagrees with the catalog
+npm run validate:public-build       # source-side leakage scan (src/ imports + public/ scan + registry cross-check)
 npm run typecheck
 npm run lint
 ```

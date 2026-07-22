@@ -10,7 +10,8 @@ was created in this pass, per the explicit scope decision in this feature's plan
 
 - Built by the existing `npm run build` / `quality:frontend` pipeline — unchanged.
 - Contains only `classification: 'public'` datasets — enforced by `catalogValidationIssues` _and_
-  `scripts/validate_public_build.mjs` (source + dist scans; see
+  `scripts/validate_public_build.mjs` (source + dist scans, both cross-checking every physical data
+  file against its exact-path entry in `config/public-data-files.json`; see
   [docs/data-classification.md](data-classification.md) and
   [docs/security-architecture.md](security-architecture.md#public-data-leakage-boundary)).
 - No `ProtectedApiAdapter` instance is ever constructed with a real token provider in this profile
