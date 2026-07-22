@@ -1381,3 +1381,114 @@ footer a {
     overflow-y: auto;
   }
 }
+.provenance-panel-backdrop {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: #020b0acd;
+  backdrop-filter: blur(8px);
+}
+.provenance-panel-card {
+  width: min(720px, 100%);
+  max-height: min(80vh, 900px);
+  overflow-y: auto;
+  padding: clamp(20px, 4vw, 32px);
+  border: 1px solid #d4a44666;
+  border-radius: 14px;
+  color: #dcebe5;
+  background: linear-gradient(145deg, #0b2924fa, #071b19fc);
+  box-shadow: 0 28px 90px #000a;
+}
+.provenance-panel-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.provenance-panel-header h2 {
+  margin: 0;
+  color: #f0cf7a;
+  font:
+    700 clamp(20px, 4vw, 26px)/1.15 Cambria,
+    'Noto Serif',
+    'DejaVu Serif',
+    serif;
+}
+.data-status-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin: 0 0 16px;
+  padding: 0;
+  list-style: none;
+  font-size: 12px;
+  color: #a9c3ba;
+}
+.data-status-summary strong {
+  color: #e9f2ed;
+}
+.data-status-summary__total {
+  margin-left: auto;
+}
+.provenance-dataset-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.provenance-dataset-card {
+  padding: 12px 14px;
+  border: 1px solid #ffffff1a;
+  border-radius: 10px;
+  background: #ffffff08;
+}
+.provenance-dataset-card[data-classification='internal'],
+.provenance-dataset-card[data-classification='confidential'],
+.provenance-dataset-card[data-classification='restricted'] {
+  border-color: #e2bb5566;
+}
+.provenance-dataset-card h4 {
+  margin: 0 0 4px;
+  color: #e9f2ed;
+}
+.provenance-dataset-card > p {
+  margin: 0 0 8px;
+  color: #a9c3ba;
+  font-size: 13px;
+  line-height: 1.5;
+}
+.provenance-dataset-card dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 6px 12px;
+  margin: 0;
+  font-size: 12px;
+}
+.provenance-dataset-card dt {
+  color: #7fa39a;
+}
+.provenance-dataset-card dd {
+  margin: 0;
+  color: #dcebe5;
+}
+.provenance-dataset-card a {
+  color: #efc65d;
+}
+.provenance-dataset-card details {
+  margin-top: 8px;
+  font-size: 12px;
+}
+.provenance-dataset-card summary {
+  cursor: pointer;
+  color: #7fa39a;
+}
+.provenance-dataset-card details ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+  color: #a9c3ba;
+}

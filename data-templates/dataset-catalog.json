@@ -1,0 +1,37 @@
+[
+  {
+    "id": "REPLACE_WITH_UNIQUE_ID",
+    "title": "Ví dụ: Tên dataset hiển thị cho người dùng",
+    "description": "Mô tả ngắn gọn nội dung và phạm vi của dataset.",
+    "domain": "infrastructure",
+    "classification": "internal",
+    "authority": "official",
+    "publicationStatus": "draft",
+    "administrativeLevel": "commune",
+    "temporalResolution": "annual",
+    "spatialRepresentation": "point",
+    "source": {
+      "organization": "Tên cơ quan/đơn vị cung cấp",
+      "documentNumber": "Số văn bản nếu có",
+      "sourceUrl": "https://example.gov.vn/... (chỉ HTTPS)",
+      "retrievalDate": "2026-07-22",
+      "license": "Ghi rõ giấy phép/điều khoản sử dụng nếu có",
+      "termsOfUse": "Tóm tắt điều khoản nếu khác license"
+    },
+    "version": "1.0.0",
+    "period": { "label": "Năm 2025", "start": "2025-01-01", "end": "2025-12-31" },
+    "generatedAt": "2026-07-22",
+    "checksum": "sha256-cua-file-neu-co",
+    "refreshPolicy": { "mode": "manual", "expectedInterval": "P1Y" },
+    "quality": {
+      "status": "unverified",
+      "geometryStatus": "unknown",
+      "knownLimitations": ["Ghi rõ mọi giới hạn đã biết trước khi đưa vào catalog thật."]
+    },
+    "access": {
+      "delivery": "protected-api",
+      "requiresAuthentication": true,
+      "allowedRoles": ["REPLACE_WITH_ROLE"]
+    }
+  }
+]

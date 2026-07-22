@@ -35,6 +35,7 @@ export function DashboardHeader() {
   const toggleAutoRotate = useMapStore((state) => state.toggleAutoRotate);
   const requestCameraReset = useMapStore((state) => state.requestCameraReset);
   const requestHelp = useMapStore((state) => state.requestHelp);
+  const requestProvenancePanel = useMapStore((state) => state.requestProvenancePanel);
 
   return (
     <header className="dashboard-header">
@@ -148,6 +149,15 @@ export function DashboardHeader() {
           title="Hướng dẫn sử dụng"
         >
           ?
+        </button>
+        <button
+          id="open-data-provenance-panel"
+          className="header-secondary-control"
+          onClick={requestProvenancePanel}
+          aria-label="Xem nguồn và chất lượng dữ liệu"
+          title="Nguồn dữ liệu"
+        >
+          Nguồn dữ liệu
         </button>
       </div>
       <span className="share-status" role="status" aria-live="polite">

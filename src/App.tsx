@@ -6,9 +6,17 @@ import { DatasetFooter } from './components/layout/DatasetFooter';
 import { MapViewport } from './components/layout/MapViewport';
 import { DetailMapViewport } from './components/detail-map/DetailMapViewport';
 import { OnboardingOverlay } from './components/layout/OnboardingOverlay';
+import { DataProvenancePanel } from './components/provenance/DataProvenancePanel';
 import { datasetManifestIssues } from './data/datasetManifest';
 import { useDashboardUrlSync } from './hooks/useDashboardUrlSync';
 import { useMapStore } from './stores/mapStore';
+
+// Not lazy, unlike StatPanel: it listens for provenancePanelSignal from first mount, the same
+// way OnboardingOverlay listens for helpSignal — lazy-mounting it would race the signal (a click
+// that fires before the chunk resolves would be missed, since the ref that tracks "previous
+// signal" only starts existing once the component mounts). The JSON it reads is a few KB and
+// mostly already bundled elsewhere; see check:budget output in the final report for the actual
+// measured impact.
 
 export default function App() {
   const viewMode = useMapStore((state) => state.viewMode);
@@ -55,6 +63,7 @@ export default function App() {
       {viewMode === 'map' && <DetailMapViewport />}
       <DashboardPanels />
       <OnboardingOverlay />
+      <DataProvenancePanel />
       <p className="visually-hidden" aria-live="polite" aria-atomic="true">
         {viewMode === 'table'
           ? 'Đã mở danh sách 2D.'

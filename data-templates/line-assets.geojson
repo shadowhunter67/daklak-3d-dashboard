@@ -1,0 +1,26 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [108.45, 12.9],
+          [108.5, 12.95]
+        ]
+      },
+      "properties": {
+        "assetId": "example-line-001",
+        "assetType": "planned-road-segment",
+        "name": "Ví dụ tuyến hạ tầng",
+        "administrativeCode": "00001",
+        "status": "planned",
+        "classification": "internal",
+        "sourceDatasetId": "REPLACE_WITH_REAL_DATASET_ID",
+        "updatedAt": "2026-07-22",
+        "note": "Tọa độ và thuộc tính chỉ để minh họa cấu trúc; không phải tuyến thật."
+      }
+    }
+  ]
+}

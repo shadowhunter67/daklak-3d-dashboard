@@ -1,0 +1,108 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data-templates/schemas/dataset-descriptor.schema.json",
+  "title": "DatasetDescriptor",
+  "description": "Mirrors src/data-platform/schemas/dataset.ts — kept in sync by hand, see data-templates/README.md.",
+  "type": "object",
+  "required": [
+    "id",
+    "title",
+    "description",
+    "domain",
+    "classification",
+    "authority",
+    "publicationStatus",
+    "administrativeLevel",
+    "temporalResolution",
+    "spatialRepresentation",
+    "source",
+    "version",
+    "quality",
+    "access"
+  ],
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "domain": {
+      "enum": [
+        "administrative",
+        "population",
+        "economy",
+        "agriculture",
+        "infrastructure",
+        "energy",
+        "environment",
+        "planning",
+        "tourism",
+        "public-service",
+        "disaster",
+        "other"
+      ]
+    },
+    "classification": { "enum": ["public", "internal", "confidential", "restricted"] },
+    "authority": {
+      "enum": ["official", "authoritative-third-party", "open-community", "illustrative", "unknown"]
+    },
+    "publicationStatus": {
+      "enum": ["draft", "reviewed", "published", "deprecated", "withdrawn"]
+    },
+    "administrativeLevel": { "enum": ["province", "commune", "point", "grid", "mixed"] },
+    "temporalResolution": {
+      "enum": ["static", "annual", "quarterly", "monthly", "daily", "realtime", "event"]
+    },
+    "spatialRepresentation": {
+      "enum": ["none", "point", "line", "polygon", "raster", "vector-tile"]
+    },
+    "source": {
+      "type": "object",
+      "required": ["organization"],
+      "properties": {
+        "organization": { "type": "string", "minLength": 1 },
+        "documentNumber": { "type": "string" },
+        "sourceUrl": { "type": "string", "pattern": "^https://" },
+        "retrievalDate": { "type": "string", "format": "date" },
+        "license": { "type": "string" },
+        "termsOfUse": { "type": "string" }
+      }
+    },
+    "version": { "type": "string", "minLength": 1 },
+    "period": {
+      "type": "object",
+      "required": ["label"],
+      "properties": {
+        "label": { "type": "string" },
+        "start": { "type": "string", "format": "date" },
+        "end": { "type": "string", "format": "date" }
+      }
+    },
+    "generatedAt": { "type": "string" },
+    "checksum": { "type": "string" },
+    "refreshPolicy": {
+      "type": "object",
+      "required": ["mode"],
+      "properties": {
+        "mode": { "enum": ["manual", "scheduled", "event-driven"] },
+        "expectedInterval": { "type": "string", "pattern": "^P(\\d+Y)?(\\d+M)?(\\d+W)?(\\d+D)?$" }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "required": ["status", "knownLimitations"],
+      "properties": {
+        "status": { "enum": ["verified", "partially-verified", "unverified"] },
+        "geometryStatus": { "enum": ["official", "verified", "reference", "unknown"] },
+        "knownLimitations": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "access": {
+      "type": "object",
+      "required": ["delivery", "requiresAuthentication"],
+      "properties": {
+        "delivery": { "enum": ["bundled-static", "public-api", "protected-api", "pmtiles"] },
+        "requiresAuthentication": { "type": "boolean" },
+        "allowedRoles": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

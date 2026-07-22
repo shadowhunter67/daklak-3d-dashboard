@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { getLayerDescriptor } from '../../data-platform/catalog/layers';
 import { BaseMapSelector } from './BaseMapSelector';
 import type {
   DetailBaseMap,
@@ -11,26 +12,24 @@ type ToggleableLayer = Exclude<
   'baseMap' | 'terrainVisible' | 'satelliteVisible'
 >;
 
+/**
+ * Toggle order/availability-gating stays local (it depends on this map's own
+ * `DetailMapSourceAvailability` shape, which is specific to this renderer — not something the
+ * renderer-agnostic `MapLayerDescriptor` schema should encode). Only the display copy comes from
+ * the layer registry (`src/data-platform/catalog/layers.ts`), so a title/legend change has one
+ * source of truth instead of being hand-duplicated here.
+ */
 const layerToggles: Array<{
   key: ToggleableLayer;
-  label: string;
   /** Which sourceAvailability flag gates this layer's actual rendering (see MapLibreProvider.ts). */
   unavailableWhen: keyof DetailMapSourceAvailability;
 }> = [
-  { key: 'roadsVisible', label: 'Đường', unavailableWhen: 'roads' },
-  { key: 'roadLabelsVisible', label: 'Tên đường', unavailableWhen: 'roads' },
-  { key: 'placeLabelsVisible', label: 'Địa danh', unavailableWhen: 'roads' },
-  {
-    key: 'administrativeBoundariesVisible',
-    label: 'Ranh giới hành chính',
-    unavailableWhen: 'administrativeBoundaries',
-  },
-  {
-    key: 'dashboardMetricsVisible',
-    label: 'Chỉ số dashboard',
-    unavailableWhen: 'administrativeBoundaries',
-  },
-  { key: 'heatmapVisible', label: 'Heatmap', unavailableWhen: 'administrativeBoundaries' },
+  { key: 'roadsVisible', unavailableWhen: 'roads' },
+  { key: 'roadLabelsVisible', unavailableWhen: 'roads' },
+  { key: 'placeLabelsVisible', unavailableWhen: 'roads' },
+  { key: 'administrativeBoundariesVisible', unavailableWhen: 'administrativeBoundaries' },
+  { key: 'dashboardMetricsVisible', unavailableWhen: 'administrativeBoundaries' },
+  { key: 'heatmapVisible', unavailableWhen: 'administrativeBoundaries' },
 ];
 
 export function MapLayerPanel({
@@ -95,6 +94,7 @@ export function MapLayerPanel({
             {layerToggles.map((toggle) => {
               const unavailable = !sourceAvailability[toggle.unavailableWhen];
               const reasonId = `layer-${toggle.key}-unavailable-reason`;
+              const label = getLayerDescriptor(toggle.key)?.title ?? toggle.key;
               return (
                 // The unavailable-reason text below is a SIBLING of the label, not nested inside
                 // it — nesting it would make it part of the checkbox's accessible NAME (via the
@@ -117,7 +117,7 @@ export function MapLayerPanel({
                       onChange={() => onToggleLayer(toggle.key)}
                       aria-describedby={unavailable ? reasonId : undefined}
                     />
-                    {toggle.label}
+                    {label}
                     {unavailable && (
                       <span aria-hidden="true" className="layer-toggle__note">
                         (chưa có dữ liệu)

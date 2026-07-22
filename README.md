@@ -99,6 +99,14 @@ Mỗi production build sinh `dist/build-info.json` gồm version ứng dụng, c
 - [Vận hành production](docs/operations.md)
 - [Benchmark thiết bị thật](docs/device-benchmark.md)
 - [Chính sách bảo mật](SECURITY.md) và [hướng dẫn đóng góp](CONTRIBUTING.md)
+- Nền tảng dữ liệu (`src/data-platform/`): [kiến trúc](docs/data-platform-architecture.md) ·
+  [nguồn công khai](docs/public-data-sources.md) ·
+  [phân loại dữ liệu](docs/data-classification.md) ·
+  [tích hợp dữ liệu nội bộ](docs/internal-data-integration.md) ·
+  [kiến trúc bảo mật](docs/security-architecture.md) ·
+  [quản trị dữ liệu](docs/data-governance.md) ·
+  [thêm dataset mới](docs/dataset-onboarding.md) ·
+  [profile triển khai public/secure](docs/deployment-profiles.md)
 
 ## Xây lại GIS
 
@@ -122,5 +130,7 @@ Tên/số lượng theo Nghị quyết 1660/NQ-UBTVQH15; mã theo Quyết địn
 Geometry là dữ liệu mở tham khảo, chưa được cơ quan địa chính chứng nhận. Dashboard đã có tìm kiếm không dấu theo tên/mã, danh sách 2D accessible đồng bộ selection, điều hướng bàn phím, reduced-motion, fallback WebGL, smoke test và visual regression Chromium desktop/mobile. Manifest gắn version nguồn GIS với ngày sinh artifact; CI kiểm tra dữ liệu và performance budget.
 
 Các phần còn phụ thuộc môi trường ngoài repo: kiểm thử Safari/iOS và GPU thật; nhập số liệu vận hành chính thức có chủ sở hữu/provenance; runtime telemetry cần một dịch vụ thu thập và chính sách quyền riêng tư. TopoJSON/worker chỉ nên triển khai khi profiling cho thấy geometry/hit-test là nút thắt; hiện hit-test đã dùng bounding-box trước point-in-polygon và dữ liệu chỉ có 102 đơn vị.
+
+Nền tảng dữ liệu (`src/data-platform/`) bọc các nguồn thật hiện có (chỉ tiêu tổng quan tỉnh, đường OSM, địa hình SRTM/Sentinel-2, đơn vị hành chính) vào một catalog có phân loại/provenance/policy đầy đủ, cộng thêm bảng "Nguồn dữ liệu" xem trực tiếp trên dashboard — xem [docs/data-platform-architecture.md](docs/data-platform-architecture.md). Adapter cho API công khai/API nội bộ có xác thực đã có sẵn dạng contract nhưng chưa gắn với nguồn thật nào; PMTiles thật cho bản đồ chi tiết, thống kê dân số/kinh tế quy mô lớn và profile triển khai "secure" vẫn là việc cần làm tiếp theo.
 
 Bản đồ chi tiết (MapLibre) đã có đầy đủ: state/URL sync, provider abstraction, lazy-load, layer panel, đo khoảng cách, tìm kiếm local, xử lý lỗi/fallback, test đơn vị và E2E — nhưng **chưa có nguồn PMTiles đường/ranh giới thật, DEM địa hình, hay ảnh vệ tinh hợp pháp**; các lớp tương ứng và loại bản đồ Địa hình/Vệ tinh hiện disabled kèm giải thích rõ trên UI thay vì hiển thị dữ liệu giả. Chỉ đường (routing) và giao thông thời gian thực chưa triển khai vì cần backend riêng ngoài GitHub Pages. Xem [docs/detail-map-integration.md](docs/detail-map-integration.md) để biết quy trình xây PMTiles và checklist xác minh thủ công.

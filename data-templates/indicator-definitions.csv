@@ -1,0 +1,2 @@
+code,name,description,domain,unit,value_type,aggregation,methodology,numerator_indicator,denominator_indicator,source_dataset_id,allowed_administrative_levels
+example-commune-electricity-coverage,"Tỷ lệ hộ dùng điện lưới","Tỷ lệ hộ dân trên địa bàn có điện lưới quốc gia",infrastructure,%,percentage,average,,,,REPLACE_WITH_REAL_DATASET_ID,commune

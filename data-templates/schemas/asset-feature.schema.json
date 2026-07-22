@@ -1,0 +1,28 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data-templates/schemas/asset-feature.schema.json",
+  "title": "Generic point/line/polygon asset feature properties",
+  "description": "Properties shape for point-assets.geojson/line-assets.geojson/polygon-assets.geojson (spec §10). Deliberately has no personal-data fields — see data-templates/README.md.",
+  "type": "object",
+  "required": [
+    "assetId",
+    "assetType",
+    "name",
+    "status",
+    "classification",
+    "sourceDatasetId",
+    "updatedAt"
+  ],
+  "properties": {
+    "assetId": { "type": "string", "minLength": 1 },
+    "assetType": { "type": "string" },
+    "name": { "type": "string" },
+    "administrativeCode": { "type": "string" },
+    "status": { "type": "string" },
+    "classification": { "enum": ["public", "internal", "confidential", "restricted"] },
+    "sourceDatasetId": { "type": "string" },
+    "updatedAt": { "type": "string" },
+    "note": { "type": "string" }
+  },
+  "additionalProperties": false
+}

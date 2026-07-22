@@ -70,6 +70,7 @@ export interface MapState {
   reducedMotion: boolean;
   resetCameraSignal: number;
   helpSignal: number;
+  provenancePanelSignal: number;
   insetsChangeSignal: number;
   detailMapLayers: DetailMapLayerState;
   detailMapCamera: DetailMapCameraState;
@@ -84,6 +85,7 @@ export interface MapState {
   applyUrlState: (state: DashboardUrlState) => void;
   requestCameraReset: () => void;
   requestHelp: () => void;
+  requestProvenancePanel: () => void;
   notifyInsetsChanged: () => void;
   setDetailMapBaseMap: (baseMap: DetailBaseMap) => void;
   toggleDetailMapLayer: (layer: ToggleableDetailMapLayer) => void;
@@ -114,6 +116,7 @@ export function createMapStore(
     reducedMotion: false,
     resetCameraSignal: 0,
     helpSignal: 0,
+    provenancePanelSignal: 0,
     insetsChangeSignal: 0,
     detailMapLayers: initialUrlState.detailMapLayers ?? DEFAULT_DETAIL_MAP_LAYER_STATE,
     detailMapCamera: initialUrlState.detailMapCamera ?? DEFAULT_DETAIL_MAP_CAMERA,
@@ -137,6 +140,8 @@ export function createMapStore(
     // không cần payload, nên tăng số là đủ để trigger effect ở nơi lắng nghe.
     requestCameraReset: () => set((state) => ({ resetCameraSignal: state.resetCameraSignal + 1 })),
     requestHelp: () => set((state) => ({ helpSignal: state.helpSignal + 1 })),
+    requestProvenancePanel: () =>
+      set((state) => ({ provenancePanelSignal: state.provenancePanelSignal + 1 })),
     notifyInsetsChanged: () =>
       set((state) => ({ insetsChangeSignal: state.insetsChangeSignal + 1 })),
     setDetailMapBaseMap: (baseMap) =>
