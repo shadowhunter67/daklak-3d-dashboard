@@ -52,6 +52,29 @@ describe('FakeMapProvider', () => {
     expect(placeholder.dataset.heatmapVisible).toBe('true');
   });
 
+  it('applies a full layer state via setLayers(), delegating to the individual per-layer setters', async () => {
+    await provider.initialize(container, {
+      camera: DEFAULT_DETAIL_MAP_CAMERA,
+      layers: DEFAULT_DETAIL_MAP_LAYER_STATE,
+      sourceAvailability: {
+        roads: false,
+        administrativeBoundaries: false,
+        terrain: false,
+        satellite: false,
+      },
+    });
+    provider.setLayers({
+      ...DEFAULT_DETAIL_MAP_LAYER_STATE,
+      baseMap: 'terrain',
+      roadsVisible: false,
+      heatmapVisible: true,
+    });
+    const placeholder = container.querySelector<HTMLElement>('[data-testid="fake-map-provider"]')!;
+    expect(placeholder.dataset.baseMap).toBe('terrain');
+    expect(placeholder.dataset.roadsVisible).toBe('false');
+    expect(placeholder.dataset.heatmapVisible).toBe('true');
+  });
+
   it('notifies registered ward-click handlers and supports unsubscribe', async () => {
     await provider.initialize(container, {
       camera: DEFAULT_DETAIL_MAP_CAMERA,

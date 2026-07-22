@@ -19,6 +19,30 @@ describe('createMapStore', () => {
     expect(state.resetCameraSignal).toBe(0);
     expect(state.helpSignal).toBe(0);
     expect(state.insetsChangeSignal).toBe(0);
+    // detail-map fields still fall back to their own defaults when the caller omits them —
+    // existing call sites like this one, written before detail-map URL hydration existed, must
+    // keep working unchanged.
+    expect(state.detailMapLayers).toEqual(DEFAULT_DETAIL_MAP_LAYER_STATE);
+    expect(state.detailMapCamera).toEqual(DEFAULT_DETAIL_MAP_CAMERA);
+  });
+
+  it('hydrates detailMapLayers/detailMapCamera directly from an explicit initial state (regression: these used to be silently dropped in favor of hardcoded defaults)', () => {
+    const layers = {
+      ...DEFAULT_DETAIL_MAP_LAYER_STATE,
+      baseMap: 'terrain' as const,
+      roadsVisible: false,
+    };
+    const camera = { ...DEFAULT_DETAIL_MAP_CAMERA, zoom: 13.5 };
+    const store = createMapStore({
+      viewMode: 'map',
+      dataMode: 'overview',
+      selectedCode: null,
+      detailMapLayers: layers,
+      detailMapCamera: camera,
+    });
+    const state = store.getState();
+    expect(state.detailMapLayers).toEqual(layers);
+    expect(state.detailMapCamera).toEqual(camera);
   });
 
   it('initializes directly from an explicit URL state, without touching window.location', () => {
@@ -51,6 +75,8 @@ describe('getInitialDashboardUrlState', () => {
       viewMode: '3d',
       dataMode: 'overview',
       selectedCode: null,
+      detailMapLayers: DEFAULT_DETAIL_MAP_LAYER_STATE,
+      detailMapCamera: DEFAULT_DETAIL_MAP_CAMERA,
     });
   });
 
@@ -60,6 +86,42 @@ describe('getInitialDashboardUrlState', () => {
       viewMode: 'table',
       dataMode: 'energy',
       selectedCode: '24133',
+      detailMapLayers: DEFAULT_DETAIL_MAP_LAYER_STATE,
+      detailMapCamera: DEFAULT_DETAIL_MAP_CAMERA,
+    });
+    window.history.replaceState(null, '', '/');
+  });
+
+  // Regression test: before this fix, detailMapLayers/detailMapCamera silently kept their
+  // hardcoded defaults at store-creation time no matter what the URL said, so a shared
+  // ?view=map&...&roads=0&... link lost its camera/layers on first load (they were only ever
+  // restored later, on popstate). See useDashboardUrlSync's mount effect for the other half of
+  // this bug: it canonicalizes the URL from whatever the store's initial state is.
+  it('reads detail-map camera and layer params from a view=map URL', () => {
+    window.history.replaceState(
+      null,
+      '',
+      '/?view=map&mode=overview&basemap=terrain&roads=0&labels=1&boundaries=1&heatmap=1&lat=12.9&lng=108.2&zoom=13.5&bearing=0&pitch=0',
+    );
+    const state = getInitialDashboardUrlState();
+    expect(state.viewMode).toBe('map');
+    expect(state.detailMapLayers).toEqual({
+      baseMap: 'terrain',
+      roadsVisible: false,
+      roadLabelsVisible: true,
+      placeLabelsVisible: true,
+      administrativeBoundariesVisible: true,
+      dashboardMetricsVisible: false,
+      heatmapVisible: true,
+      terrainVisible: true,
+      satelliteVisible: false,
+    });
+    expect(state.detailMapCamera).toEqual({
+      latitude: 12.9,
+      longitude: 108.2,
+      zoom: 13.5,
+      bearing: 0,
+      pitch: 0,
     });
     window.history.replaceState(null, '', '/');
   });

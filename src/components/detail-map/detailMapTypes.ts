@@ -86,6 +86,14 @@ export interface DetailedMapProvider {
   setCamera(camera: DetailMapCameraState): void;
   fitBounds(bounds: DetailBounds): void;
 
+  /**
+   * Applies a full layer state at once. `detailMapLayers` in the store is always replaced as a
+   * whole object (see mapStore.ts), so the provider is always given the complete state rather
+   * than one changed field at a time — used both to sync live layer-panel changes and to apply
+   * the initial URL-derived state once the map/style is ready (see MapLibreProvider.initialize()).
+   */
+  setLayers(layers: DetailMapLayerState): void;
+
   setRoadsVisible(visible: boolean): void;
   setRoadLabelsVisible(visible: boolean): void;
   setPlaceLabelsVisible(visible: boolean): void;

@@ -74,6 +74,16 @@ export class FakeMapProvider implements DetailedMapProvider {
     this.placeholder.dataset.lastFitBounds = `${bounds.south},${bounds.west},${bounds.north},${bounds.east}`;
   }
 
+  setLayers(layers: DetailMapLayerState): void {
+    this.setBaseMap(layers.baseMap);
+    this.setRoadsVisible(layers.roadsVisible);
+    this.setRoadLabelsVisible(layers.roadLabelsVisible);
+    this.setPlaceLabelsVisible(layers.placeLabelsVisible);
+    this.setAdministrativeBoundariesVisible(layers.administrativeBoundariesVisible);
+    this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
+    this.setHeatmapVisible(layers.heatmapVisible);
+  }
+
   setRoadsVisible(visible: boolean): void {
     this.setLayerFlag('roadsVisible', visible);
   }

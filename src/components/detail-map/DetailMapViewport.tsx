@@ -116,6 +116,18 @@ export function DetailMapViewport() {
     providerRef.current?.setSelectedWard(selectedCode);
   }, [selectedCode]);
 
+  // Keeps the mounted provider in sync with every layer-panel change (base map, roads, labels,
+  // boundaries, metrics, heatmap). `detailMapLayers` in the store is always replaced as a whole
+  // object, so it's always safe to hand the provider the complete state via setLayers() rather
+  // than tracking which individual field changed. This also re-applies once, harmlessly, right
+  // when `status` first becomes 'ready' — MapLibreProvider.initialize() already applied the
+  // initial state itself by then, so this is a no-op re-application for it, but it's what
+  // actually applies the initial state for any future provider that doesn't do that internally.
+  useEffect(() => {
+    if (status !== 'ready') return;
+    providerRef.current?.setLayers(layers);
+  }, [layers, status]);
+
   useEffect(() => {
     if (interactionMode !== 'measure') return;
     const onKeyDown = (event: KeyboardEvent) => {
