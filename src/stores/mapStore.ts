@@ -12,20 +12,44 @@ import {
   type DetailMapCameraState,
   type DetailMapLayerState,
 } from '../components/detail-map/detailMapTypes';
-import { camerasApproximatelyEqual } from '../components/detail-map/detailMapUrl';
+import {
+  camerasApproximatelyEqual,
+  parseDetailMapCamera,
+  parseDetailMapLayers,
+} from '../components/detail-map/detailMapUrl';
 
 const validAdministrativeCodes = new Set(Object.keys(labels));
+
+/**
+ * Base URL state plus the detail-map camera/layers, both parsed from the same `search` string.
+ * The detail-map fields are optional so existing callers/tests that only care about
+ * view/mode/ward (e.g. `createMapStore({ viewMode, dataMode, selectedCode })`) keep working
+ * unchanged — createMapStore falls back to the usual defaults when they're omitted.
+ */
+export interface InitialMapUrlState extends DashboardUrlState {
+  detailMapLayers?: DetailMapLayerState;
+  detailMapCamera?: DetailMapCameraState;
+}
 
 /**
  * Not pure — it reads window.location, so its result depends on external mutable state — but
  * that read now happens only when this function is called, never as a module-import side
  * effect, which is what actually makes createMapStore testable without touching window.location.
+ *
+ * Parses BOTH the base view/mode/ward params and the detail-map camera/layer params from the
+ * same `search` string in one place. Before this, createMapStore only ever hydrated the base
+ * fields at creation time and detail-map fields silently kept their hardcoded defaults — so a
+ * shared `?view=map&...&roads=0&...` URL lost its camera/layers on first load (they were only
+ * ever restored on `popstate`, never on initial mount). See useDashboardUrlSync's mount effect,
+ * which now canonicalizes a store that's already correct instead of one that's already wrong.
  */
-export function getInitialDashboardUrlState(): DashboardUrlState {
-  return parseDashboardUrl(
-    typeof window === 'undefined' ? '' : window.location.search,
-    validAdministrativeCodes,
-  );
+export function getInitialDashboardUrlState(): Required<InitialMapUrlState> {
+  const search = typeof window === 'undefined' ? '' : window.location.search;
+  return {
+    ...parseDashboardUrl(search, validAdministrativeCodes),
+    detailMapLayers: parseDetailMapLayers(search),
+    detailMapCamera: parseDetailMapCamera(search),
+  };
 }
 
 // terrainVisible/satelliteVisible are derived from baseMap (see setDetailMapBaseMap) and must
@@ -76,7 +100,9 @@ export interface MapState {
  * URL state and get an isolated store instance, without depending on window.location or
  * on which order test files happen to import this module.
  */
-export function createMapStore(initialUrlState: DashboardUrlState = getInitialDashboardUrlState()) {
+export function createMapStore(
+  initialUrlState: InitialMapUrlState = getInitialDashboardUrlState(),
+) {
   return create<MapState>((set, get) => ({
     dataMode: initialUrlState.dataMode,
     viewMode: initialUrlState.viewMode,
@@ -89,8 +115,8 @@ export function createMapStore(initialUrlState: DashboardUrlState = getInitialDa
     resetCameraSignal: 0,
     helpSignal: 0,
     insetsChangeSignal: 0,
-    detailMapLayers: DEFAULT_DETAIL_MAP_LAYER_STATE,
-    detailMapCamera: DEFAULT_DETAIL_MAP_CAMERA,
+    detailMapLayers: initialUrlState.detailMapLayers ?? DEFAULT_DETAIL_MAP_LAYER_STATE,
+    detailMapCamera: initialUrlState.detailMapCamera ?? DEFAULT_DETAIL_MAP_CAMERA,
     setHovered: (hoveredCode) => set({ hoveredCode }),
     select: (selectedCode) =>
       set({

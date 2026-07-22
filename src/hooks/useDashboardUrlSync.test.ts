@@ -139,6 +139,63 @@ describe('useDashboardUrlSync', () => {
       expect(pushSpy).toHaveBeenCalledTimes(1);
     });
 
+    // Regression test for the initial-load bug: useDashboardUrlSync's mount effect used to
+    // canonicalize the URL from whatever the store's initial state already was — and the store
+    // never hydrated detailMapLayers/detailMapCamera from the URL at creation time, so a shared
+    // ?view=map&...&roads=0&... link got its camera/layers silently reset to defaults on first
+    // load. The store's own hydration is covered directly in mapStore.test.ts
+    // (getInitialDashboardUrlState); this test proves the OTHER half — that once the store
+    // already holds the correct (non-default) values a real page load would have produced,
+    // mounting this hook does not push a spurious history entry and does not rewrite the URL
+    // back to defaults. (useDashboardUrlSync always operates on the singleton store, which
+    // can't be re-constructed mid-test with a fresh URL, hence setState here rather than
+    // constructing a new store — see the comment above.)
+    it('preserves a view=map URL with custom camera/layers on initial mount, without dispatching popstate', () => {
+      const canonicalSearch =
+        '?view=map&mode=overview&basemap=terrain&roads=0&labels=1&boundaries=1&metrics=0&heatmap=1&lat=12.9000000&lng=108.2000000&zoom=13.50&bearing=0.0&pitch=0.0';
+      window.history.replaceState(null, '', canonicalSearch);
+      useMapStore.setState({
+        viewMode: 'map',
+        dataMode: 'overview',
+        selectedCode: null,
+        detailMapLayers: {
+          baseMap: 'terrain',
+          roadsVisible: false,
+          roadLabelsVisible: true,
+          placeLabelsVisible: true,
+          administrativeBoundariesVisible: true,
+          dashboardMetricsVisible: false,
+          heatmapVisible: true,
+          terrainVisible: true,
+          satelliteVisible: false,
+        },
+        detailMapCamera: { latitude: 12.9, longitude: 108.2, zoom: 13.5, bearing: 0, pitch: 0 },
+      });
+
+      const pushSpy = vi.spyOn(window.history, 'pushState');
+      const replaceSpy = vi.spyOn(window.history, 'replaceState');
+      renderHook(() => useDashboardUrlSync());
+
+      expect(pushSpy).not.toHaveBeenCalled();
+      // The URL is already exactly canonical for the store's (already-hydrated) state, so there
+      // is nothing to normalize — asserting zero calls is a stronger guarantee than merely
+      // checking content, since it proves the mount effect never touched the URL at all here.
+      expect(replaceSpy).not.toHaveBeenCalled();
+      expect(window.location.search).toBe(canonicalSearch);
+
+      const state = useMapStore.getState();
+      expect(state.detailMapCamera).toEqual({
+        latitude: 12.9,
+        longitude: 108.2,
+        zoom: 13.5,
+        bearing: 0,
+        pitch: 0,
+      });
+      expect(state.detailMapLayers.baseMap).toBe('terrain');
+      expect(state.detailMapLayers.roadsVisible).toBe(false);
+      expect(state.detailMapLayers.heatmapVisible).toBe(true);
+    });
+
     it('restores layers and camera from the URL on popstate', () => {
       renderHook(() => useDashboardUrlSync());
 

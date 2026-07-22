@@ -1,4 +1,4 @@
-import type { Map as MapLibreMap } from 'maplibre-gl';
+import type { ErrorEvent as MapLibreErrorEvent, Map as MapLibreMap } from 'maplibre-gl';
 import { buildDetailMapStyle } from './detailMapStyle';
 import type {
   DetailBaseMap,
@@ -33,6 +33,10 @@ export class MapLibreProvider implements DetailedMapProvider {
     (point: { latitude: number; longitude: number }) => void
   >();
   private readonly cameraChangeHandlers = new Set<(camera: DetailMapCameraState) => void>();
+  // Lets destroy() unstick the "wait for load" promise in initialize() if destroy() runs first.
+  // Without this, that promise would hang forever: MapLibre's Map.remove() doesn't fire `load`
+  // or `error`, so nothing would ever settle it on its own.
+  private settlePendingLoad: (() => void) | null = null;
 
   async initialize(container: HTMLElement, options: DetailMapInitOptions): Promise<void> {
     const { maplibregl, pmtiles } = await loadMapLibreModules();
@@ -43,7 +47,7 @@ export class MapLibreProvider implements DetailedMapProvider {
     }
     this.layers = options.layers;
     this.sourceAvailability = options.sourceAvailability;
-    this.map = new maplibregl.Map({
+    const map = new maplibregl.Map({
       container,
       style: buildDetailMapStyle(options.sourceAvailability),
       center: [options.camera.longitude, options.camera.latitude],
@@ -52,14 +56,49 @@ export class MapLibreProvider implements DetailedMapProvider {
       pitch: options.camera.pitch,
       attributionControl: { compact: false },
     });
-    this.map.on('moveend', () => this.emitCameraChange());
-    this.map.on('click', (event) => {
+    this.map = map;
+
+    // Resolve only once MapLibre has actually finished loading the style — before that, layers
+    // referenced by id (setLayoutProperty/getLayer) don't exist yet, so a caller that treats
+    // initialize() as "done" too early would have its layer-visibility calls silently no-op.
+    await new Promise<void>((resolve, reject) => {
+      const onLoad = () => {
+        map.off('error', onError);
+        this.settlePendingLoad = null;
+        resolve();
+      };
+      const onError = (event: MapLibreErrorEvent) => {
+        map.off('load', onLoad);
+        this.settlePendingLoad = null;
+        // A tile-load error firing *after* `load` never reaches this handler at all (it's
+        // detached the moment `load` settles this promise, in onLoad above) — so this only ever
+        // rejects for a genuine failure to complete the map's first load, not a later recoverable
+        // per-tile error, which is the distinction docs/detail-map-integration.md asks for.
+        reject(new Error(event.error.message || 'MapLibre không thể tải bản đồ chi tiết'));
+      };
+      this.settlePendingLoad = () => {
+        map.off('load', onLoad);
+        map.off('error', onError);
+        resolve();
+      };
+      map.once('load', onLoad);
+      map.once('error', onError);
+    });
+
+    if (this.map !== map) return; // destroy() ran while we were waiting; nothing left to wire up
+
+    map.on('moveend', () => this.emitCameraChange());
+    map.on('click', (event) => {
       const code = this.resolveWardCodeAt(event.point);
       this.wardClickHandlers.forEach((handler) => handler(code));
       this.mapClickHandlers.forEach((handler) =>
         handler({ latitude: event.lngLat.lat, longitude: event.lngLat.lng }),
       );
     });
+    // Apply the initial layer/basemap state now that the style can actually accept it — the
+    // style built in buildDetailMapStyle() only reflects sourceAvailability, never the caller's
+    // requested visibility (e.g. a shared URL with roads=0&heatmap=1&basemap=terrain).
+    this.setLayers(options.layers);
   }
 
   private emitCameraChange() {
@@ -120,6 +159,17 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.map.setLayoutProperty(layerId, 'visibility', visible ? 'visible' : 'none');
   }
 
+  setLayers(layers: DetailMapLayerState): void {
+    this.layers = layers;
+    this.setBaseMap(layers.baseMap);
+    this.setRoadsVisible(layers.roadsVisible);
+    this.setRoadLabelsVisible(layers.roadLabelsVisible);
+    this.setPlaceLabelsVisible(layers.placeLabelsVisible);
+    this.setAdministrativeBoundariesVisible(layers.administrativeBoundariesVisible);
+    this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
+    this.setHeatmapVisible(layers.heatmapVisible);
+  }
+
   setRoadsVisible(visible: boolean): void {
     if (!this.sourceAvailability?.roads) return;
     this.setLayerVisibility('roads-line', visible);
@@ -172,6 +222,7 @@ export class MapLibreProvider implements DetailedMapProvider {
   }
 
   destroy(): void {
+    this.settlePendingLoad?.();
     this.wardClickHandlers.clear();
     this.mapClickHandlers.clear();
     this.cameraChangeHandlers.clear();
