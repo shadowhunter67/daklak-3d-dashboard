@@ -15,6 +15,8 @@ export function OnboardingOverlay() {
   const [open, setOpen] = useState(() => !hasSeenOnboarding());
   const previousFocus = useRef<HTMLElement | null>(null);
   const helpSignal = useMapStore((state) => state.helpSignal);
+  const viewMode = useMapStore((state) => state.viewMode);
+  const isDetailMap = viewMode === 'map';
   const previousHelpSignal = useRef(helpSignal);
 
   const dismiss = () => {
@@ -59,19 +61,37 @@ export function OnboardingOverlay() {
         aria-labelledby="onboarding-title"
       >
         <p className="eyebrow">KHÁM PHÁ ĐẮK LẮK 2025</p>
-        <h2 id="onboarding-title">102 xã, phường trong một bản đồ tương tác</h2>
+        <h2 id="onboarding-title">
+          {isDetailMap
+            ? '102 xã, phường trên bản đồ chi tiết'
+            : '102 xã, phường trong một bản đồ tương tác'}
+        </h2>
         <p>Chọn một khu vực để xem hồ sơ nhanh, hoặc mở danh sách 2D để tìm bằng tên và mã.</p>
-        <ul>
-          <li>
-            <strong>Kéo</strong> để xoay góc nhìn
-          </li>
-          <li>
-            <strong>Cuộn hoặc chụm</strong> để thu phóng
-          </li>
-          <li>
-            <strong>Chạm</strong> một khu vực để xem chi tiết
-          </li>
-        </ul>
+        {isDetailMap ? (
+          <ul>
+            <li>
+              <strong>Kéo</strong> để di chuyển bản đồ
+            </li>
+            <li>
+              <strong>Cuộn hoặc chụm</strong> để thu phóng
+            </li>
+            <li>
+              <strong>Lớp bản đồ</strong> để bật/tắt từng lớp hiển thị
+            </li>
+          </ul>
+        ) : (
+          <ul>
+            <li>
+              <strong>Kéo</strong> để xoay góc nhìn
+            </li>
+            <li>
+              <strong>Cuộn hoặc chụm</strong> để thu phóng
+            </li>
+            <li>
+              <strong>Chạm</strong> một khu vực để xem chi tiết
+            </li>
+          </ul>
+        )}
         <button type="button" autoFocus onClick={dismiss}>
           Bắt đầu khám phá
         </button>

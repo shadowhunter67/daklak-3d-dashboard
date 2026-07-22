@@ -11,13 +11,26 @@ type ToggleableLayer = Exclude<
   'baseMap' | 'terrainVisible' | 'satelliteVisible'
 >;
 
-const layerToggles: Array<{ key: ToggleableLayer; label: string }> = [
-  { key: 'roadsVisible', label: 'Đường' },
-  { key: 'roadLabelsVisible', label: 'Tên đường' },
-  { key: 'placeLabelsVisible', label: 'Địa danh' },
-  { key: 'administrativeBoundariesVisible', label: 'Ranh giới hành chính' },
-  { key: 'dashboardMetricsVisible', label: 'Chỉ số dashboard' },
-  { key: 'heatmapVisible', label: 'Heatmap' },
+const layerToggles: Array<{
+  key: ToggleableLayer;
+  label: string;
+  /** Which sourceAvailability flag gates this layer's actual rendering (see MapLibreProvider.ts). */
+  unavailableWhen: keyof DetailMapSourceAvailability;
+}> = [
+  { key: 'roadsVisible', label: 'Đường', unavailableWhen: 'roads' },
+  { key: 'roadLabelsVisible', label: 'Tên đường', unavailableWhen: 'roads' },
+  { key: 'placeLabelsVisible', label: 'Địa danh', unavailableWhen: 'roads' },
+  {
+    key: 'administrativeBoundariesVisible',
+    label: 'Ranh giới hành chính',
+    unavailableWhen: 'administrativeBoundaries',
+  },
+  {
+    key: 'dashboardMetricsVisible',
+    label: 'Chỉ số dashboard',
+    unavailableWhen: 'administrativeBoundaries',
+  },
+  { key: 'heatmapVisible', label: 'Heatmap', unavailableWhen: 'administrativeBoundaries' },
 ];
 
 export function MapLayerPanel({
@@ -79,16 +92,47 @@ export function MapLayerPanel({
         >
           <section aria-labelledby="detail-map-layer-panel-layers-heading">
             <h3 id="detail-map-layer-panel-layers-heading">Lớp thông tin</h3>
-            {layerToggles.map((toggle) => (
-              <label key={toggle.key} className="layer-toggle">
-                <input
-                  type="checkbox"
-                  checked={layers[toggle.key] as boolean}
-                  onChange={() => onToggleLayer(toggle.key)}
-                />
-                {toggle.label}
-              </label>
-            ))}
+            {layerToggles.map((toggle) => {
+              const unavailable = !sourceAvailability[toggle.unavailableWhen];
+              const reasonId = `layer-${toggle.key}-unavailable-reason`;
+              return (
+                // The unavailable-reason text below is a SIBLING of the label, not nested inside
+                // it — nesting it would make it part of the checkbox's accessible NAME (via the
+                // native label-wraps-control "name from content" rule), not just its description,
+                // turning "Heatmap" into a full sentence for every assistive-tech/query lookup.
+                <div key={toggle.key}>
+                  <label
+                    className={
+                      unavailable ? 'layer-toggle layer-toggle--unavailable' : 'layer-toggle'
+                    }
+                    title={
+                      unavailable
+                        ? 'Lựa chọn vẫn được lưu và áp dụng ngay khi có nguồn dữ liệu; hiện chưa hiển thị trên bản đồ.'
+                        : undefined
+                    }
+                  >
+                    <input
+                      type="checkbox"
+                      checked={layers[toggle.key] as boolean}
+                      onChange={() => onToggleLayer(toggle.key)}
+                      aria-describedby={unavailable ? reasonId : undefined}
+                    />
+                    {toggle.label}
+                    {unavailable && (
+                      <span aria-hidden="true" className="layer-toggle__note">
+                        (chưa có dữ liệu)
+                      </span>
+                    )}
+                  </label>
+                  {unavailable && (
+                    <span id={reasonId} className="visually-hidden">
+                      Lựa chọn vẫn được lưu và áp dụng ngay khi có nguồn dữ liệu; hiện chưa có dữ
+                      liệu để hiển thị trên bản đồ.
+                    </span>
+                  )}
+                </div>
+              );
+            })}
           </section>
           <section aria-labelledby="detail-map-layer-panel-basemap-heading">
             <h3 id="detail-map-layer-panel-basemap-heading">Loại bản đồ</h3>

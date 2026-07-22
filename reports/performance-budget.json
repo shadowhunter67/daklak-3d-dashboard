@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-07-21T14:12:28.590Z",
+  "generatedAt": "2026-07-21T15:31:42.769Z",
   "limits": {
     "totalJavaScriptBytes": 3400000,
     "totalJavaScriptGzipBytes": 950000,
@@ -10,16 +10,16 @@
     "totalBuildBytes": 6400000
   },
   "actual": {
-    "totalJavaScriptBytes": 3213234,
-    "totalJavaScriptGzipBytes": 899780,
+    "totalJavaScriptBytes": 3215087,
+    "totalJavaScriptGzipBytes": 900181,
     "largestJavaScriptGzipBytes": 270836,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 6160517
+    "totalBuildBytes": 6162888
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-CI-_IUV3.js",
+      "file": "assets/AdministrativeMap-B5liGCMi.js",
       "bytes": 201941,
       "gzipBytes": 63956
     },
@@ -50,13 +50,13 @@
       "gzipBytes": 15488
     },
     {
-      "file": "assets/index-a6jQAhua.js",
-      "bytes": 692106,
-      "gzipBytes": 187920
+      "file": "assets/index-BqsWDtMp.js",
+      "bytes": 693959,
+      "gzipBytes": 188321
     },
     {
-      "file": "assets/index-CLOI-gwb.css",
-      "bytes": 20933
+      "file": "assets/index-D7Y5wl1a.css",
+      "bytes": 21451
     },
     {
       "file": "assets/maplibre-gl-B0OHC_Aq.js",
@@ -69,7 +69,7 @@
       "gzipBytes": 504
     },
     {
-      "file": "assets/StatPanel-C1trc6AT.js",
+      "file": "assets/StatPanel-foRSN7lS.js",
       "bytes": 503486,
       "gzipBytes": 170563
     },

@@ -67,9 +67,22 @@ honestly disabled:
 | Local search                                                 | **Fully implemented** over `daklak-labels.json` ward names — no external geocoding call.                                                                                                     |
 | Ward selection, camera sync, URL state, history push/replace | **Fully implemented and tested.**                                                                                                                                                            |
 
-The `MapLayerPanel`/`BaseMapSelector` UI reflects this: disabled toggles show a `title`/
-`aria-describedby` explanation ("Chưa cấu hình nguồn dữ liệu cho loại bản đồ này") rather than
-silently doing nothing or, worse, animating as if they worked.
+The UI reflects this honestly at two levels, since an empty canvas alone looked indistinguishable
+from a rendering failure (see the "no source configured" report that prompted this section):
+
+- `DetailMapSourceNotice` renders a permanent, non-blocking (`pointer-events: none`) explanation
+  directly over the map canvas whenever neither `roads` nor `administrativeBoundaries` is
+  available, so a first-time visitor sees an honest "waiting for data" message instead of a blank
+  void with no explanation anywhere on screen.
+- In `BaseMapSelector`, the terrain/satellite basemap radios are genuinely `disabled` (with a
+  `title`/`aria-describedby` explanation) because picking either would be a permanent dead end in
+  the current session. In `MapLayerPanel`, the six layer checkboxes (roads/labels/boundaries/
+  metrics/heatmap) are deliberately **not** `disabled` — they stay interactive and keep updating
+  the store/URL (`roads=1`, `heatmap=1`, …) so a shared link still encodes the intended layers for
+  whoever opens it once a real source is configured later. Each gets a `title` plus an
+  `aria-describedby` note ("Lựa chọn vẫn được lưu... hiện chưa có dữ liệu để hiển thị") explaining
+  why toggling it has no visible effect yet — rendered as a sibling of the `<label>`, not nested
+  inside it, so the long explanation doesn't leak into the checkbox's accessible name.
 
 ## Building a real PMTiles source (not yet done — manual process)
 

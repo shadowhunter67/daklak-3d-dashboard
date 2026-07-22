@@ -6,7 +6,7 @@ import { OnboardingOverlay } from './OnboardingOverlay';
 describe('OnboardingOverlay', () => {
   beforeEach(() => {
     window.localStorage.clear();
-    useMapStore.setState({ helpSignal: 0 });
+    useMapStore.setState({ helpSignal: 0, viewMode: '3d' });
   });
   afterEach(cleanup);
 
@@ -16,6 +16,14 @@ describe('OnboardingOverlay', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Bắt đầu khám phá' }));
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(window.localStorage.getItem('daklak-dashboard:onboarding-dismissed')).toBe('true');
+  });
+
+  it('shows detail-map-specific gestures instead of the 3D rotate copy when in map view', () => {
+    useMapStore.setState({ viewMode: 'map' });
+    render(<OnboardingOverlay />);
+    expect(screen.getByRole('dialog', { name: /102 xã, phường/i })).toBeInTheDocument();
+    expect(screen.queryByText('xoay góc nhìn')).not.toBeInTheDocument();
+    expect(screen.getByText('Lớp bản đồ')).toBeInTheDocument();
   });
 
   it('can be opened again from the help control', () => {
