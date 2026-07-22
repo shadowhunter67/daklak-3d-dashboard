@@ -134,17 +134,40 @@ protocol to fetch only the tiles a viewport needs, not the whole file). However:
   way to configure custom response headers (the same limitation already documented in
   `SECURITY.md` for CSP).
 
-**Recommendation**: if the real PMTiles file stays under ~80-90MB (leaving headroom under the
-100MB hard limit), committing it under `public/maps/` and serving it from GitHub Pages
-same-origin is the simplest option and keeps the CSP's `connect-src 'self'` unchanged. If it's
-larger — likely for a road network at higher zoom detail — host it on **Cloudflare R2**, **AWS
-S3 + CloudFront**, or any static-file CDN that supports range requests, and point
-`VITE_DETAIL_MAP_SOURCE_URL` at that URL. This is **not required to be implemented as part of this
-change** — it's an operational decision for whoever produces the real dataset, made explicit here
-so it isn't discovered by surprise later.
+**Decided (2026-07-22), not yet needed:** if the real PMTiles file stays under ~80-90MB (headroom
+under the 100MB hard limit), commit it under `public/maps/` and serve it from GitHub Pages
+same-origin — simplest option, CSP's `connect-src 'self'` stays unchanged. **If it's larger, host
+it as a GitHub Releases asset in this same repository** (up to 2GB, no new account/service/domain
+to maintain):
 
-If the source ever moves off same-origin, update the CSP `connect-src` (and `img-src` if raster
-tiles are added) in `index.html` accordingly — see `SECURITY.md`.
+```bash
+pmtiles convert daklak.mbtiles daklak.pmtiles
+gh release create map-data-v1 daklak.pmtiles --title "Detail map data v1" \
+  --notes "PMTiles built from OSM extract <date/commit>, see docs/detail-map-integration.md"
+```
+
+```bash
+# .env / build config
+VITE_DETAIL_MAP_SOURCE_URL=https://github.com/shadowhunter67/daklak-3d-dashboard/releases/download/map-data-v1/daklak.pmtiles
+```
+
+Re-releasing under a new tag (`map-data-v2`, …) and repointing the env var is how the file gets
+updated later — accepted as adequate friction for data that only changes when the OSM extract is
+periodically refreshed, not something needing a push-button pipeline.
+
+Cloudflare R2 (or S3+CloudFront) was considered and rejected for now: proper production use needs
+either a custom domain routed through Cloudflare (a real recurring cost/maintenance item this
+project doesn't otherwise need) or the free `r2.dev` subdomain, which Cloudflare's own docs say is
+not meant for production traffic (no SLA, may be rate-limited). Revisit this if the project ever
+needs a real CDN for other reasons (e.g. terrain/satellite tiles at scale).
+
+**Whichever URL is used, verify CSP empirically before shipping**: GitHub Releases asset URLs
+(`github.com/.../releases/download/...`) redirect to asset storage (historically
+`objects.githubusercontent.com`); some browsers enforce `connect-src` against the post-redirect
+URL too, so `index.html`'s CSP likely needs both `https://github.com` and
+`https://objects.githubusercontent.com` in `connect-src` once this is actually wired up — check
+the Network tab for CSP violations rather than assuming either origin is sufficient. See
+`SECURITY.md`.
 
 ## Camera/URL sync design
 
