@@ -16,12 +16,21 @@ In `src/data-platform/catalog/datasets.ts` (or a new file re-exported the same w
 grows large enough to split), add an entry following the existing ones. Required real fields, not
 placeholders:
 
-- `source.organization` and, where they exist, `source.sourceUrl`/`documentNumber`/`license`.
+- `source.organization` and, where they exist, `source.sourceUrl` (HTTPS only —
+  `catalogValidation.ts` rejects anything else) / `documentNumber` / `license`. For a source that
+  lives in this repo itself (a generator script, not a web URL), use `source.repositoryPath`
+  (relative, no `..`) instead — never a fake `internal://` URI (the provenance UI would have
+  nowhere sensible to link it).
+- If names/geometry/metrics come from genuinely different-authority sources (the common case:
+  legally-issued names/codes rendered with community-sourced geometry), set `authorityDetail`
+  (`identityAuthority`/`geometryAuthority`/`metricAuthority`) instead of relying on the coarse
+  `authority` fallback — see [docs/data-classification.md](data-classification.md#identity-vs-geometry-vs-metric-authority).
 - `quality.status` — be honest: `verified` requires an independently checked source, not just "the
   website said so."
 - `quality.knownLimitations` — at minimum, either a real `checksum`, or a limitation entry
   mentioning "checksum" explaining why not (`catalogValidation.ts` enforces this).
-- `access` — see step 1.
+- `access` — see step 1. `access.delivery: 'bundled-static'` can never pair with
+  `requiresAuthentication: true` — `catalogValidation.ts` rejects that contradiction.
 
 Use `data-templates/dataset-catalog.json` and
 `data-templates/schemas/dataset-descriptor.schema.json` as a starting shape if useful — they're
@@ -44,16 +53,26 @@ the comment there for why toggle mechanics stay separate from the registry).
 ## 5. If it's a document, not spatial/tabular data: add a `DocumentReference`
 
 In `src/data-platform/catalog/documents.ts`. Set `verificationStatus: 'research-needed'` unless you
-(or whoever adds it) actually opened the source and confirmed title/number/date/authority/URL —
-see the two existing entries for both cases side by side.
+(or whoever adds it) actually opened the source and confirmed title/number/date/authority/URL. If
+`verified`, also set `evidenceLevel` honestly — `official-primary-document` only if you reached the
+signed instrument itself (ideally on the issuing authority's own document portal, not a legal
+aggregator); `official-publication-reference` if you only confirmed an announcement page about it.
+See the two existing entries in `documents.ts` for both cases side by side, and
+[docs/data-classification.md](data-classification.md#evidence-level-vs-verification-status).
 
 ## 6. Validate
 
 ```bash
-npm test          # catalogValidationIssues must stay [] — includes the public-leakage check
+npm test                        # catalogValidationIssues must stay [] — includes the public-leakage check
+npm run validate:public-build   # source-side leakage scan
 npm run typecheck
 npm run lint
 ```
+
+If you added or changed a field in `src/data-platform/schemas/*.ts`, update the matching
+`data-templates/schemas/*.schema.json` too, and add/adjust a fixture in
+`data-templates/fixtures/{valid,invalid}/` so `schemaDriftGuard.test.ts` actually exercises the
+change — see [docs/data-platform-architecture.md](data-platform-architecture.md#schema-drift-guard).
 
 ## 7. If it affects UI
 

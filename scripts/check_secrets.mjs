@@ -12,7 +12,14 @@ const patterns = [
   // A literal bearer token value, not the word "Bearer" alone (e.g. in prose/docs).
   /\bBearer [A-Za-z0-9._~+/-]{20,}={0,2}\b/,
 ];
-const excluded = new Set(['package-lock.json', 'scripts/check_secrets.mjs']);
+const excluded = new Set([
+  'package-lock.json',
+  'scripts/check_secrets.mjs',
+  // Contains the well-known, publicly-documented example JWT from jwt.io's own docs (used
+  // everywhere in JWT tutorials), as a fixture proving validate_public_build.mjs's JWT-shaped-
+  // token detection actually fires on a real JWT shape — not a real secret.
+  'scripts/validate_public_build.test.mjs',
+]);
 const files = execFileSync('git', ['ls-files', '-z']).toString('utf8').split('\0').filter(Boolean);
 const findings = [];
 for (const file of files) {

@@ -9,11 +9,18 @@ was created in this pass, per the explicit scope decision in this feature's plan
 ## Public profile (this repo, as shipped)
 
 - Built by the existing `npm run build` / `quality:frontend` pipeline — unchanged.
-- Contains only `classification: 'public'` datasets — enforced by `catalogValidationIssues`
-  (see [docs/data-classification.md](data-classification.md)).
+- Contains only `classification: 'public'` datasets — enforced by `catalogValidationIssues` _and_
+  `scripts/validate_public_build.mjs` (source + dist scans; see
+  [docs/data-classification.md](data-classification.md) and
+  [docs/security-architecture.md](security-architecture.md#public-data-leakage-boundary)).
 - No `ProtectedApiAdapter` instance is ever constructed with a real token provider in this profile
-  — nothing in the app currently instantiates one at all.
+  — nothing in the app currently instantiates one at all; the source-scan step specifically checks
+  that `ProtectedApiAdapter.ts` isn't even reachable from `src/main.tsx`.
 - No login, no session, no secret, no private endpoint.
+- `DetailMapViewport` and `DataProvenancePanel` are separate lazy chunks — a visitor who never
+  opens the detail map or the provenance panel never downloads their code, only the tiny
+  `provenancePanelOpen` boolean in the always-loaded store (see
+  [docs/data-platform-architecture.md](data-platform-architecture.md#lazy-loading)).
 
 ## Secure profile (not built — target shape only)
 

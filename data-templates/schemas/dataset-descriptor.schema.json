@@ -61,6 +61,11 @@
         "organization": { "type": "string", "minLength": 1 },
         "documentNumber": { "type": "string" },
         "sourceUrl": { "type": "string", "pattern": "^https://" },
+        "repositoryPath": {
+          "type": "string",
+          "description": "Relative path within the repo; never absolute, never containing '..'.",
+          "not": { "pattern": "(^/)|(^[a-zA-Z]:[\\\\/])|(\\.\\.)" }
+        },
         "retrievalDate": { "type": "string", "format": "date" },
         "license": { "type": "string" },
         "termsOfUse": { "type": "string" }
@@ -102,6 +107,18 @@
         "delivery": { "enum": ["bundled-static", "public-api", "protected-api", "pmtiles"] },
         "requiresAuthentication": { "type": "boolean" },
         "allowedRoles": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "if": {
+    "properties": { "access": { "properties": { "delivery": { "const": "protected-api" } } } },
+    "required": ["access"]
+  },
+  "then": {
+    "properties": {
+      "access": {
+        "properties": { "requiresAuthentication": { "const": true } },
+        "description": "access.delivery:'protected-api' must pair with requiresAuthentication:true."
       }
     }
   }

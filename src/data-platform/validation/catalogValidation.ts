@@ -32,12 +32,28 @@ function findDuplicates(values: readonly string[]): string[] {
   return [...duplicates];
 }
 
-function hasAcceptedSourceUrlScheme(url: string): boolean {
-  return url.startsWith('https://') || url.startsWith('internal:');
+/** No `internal://` or other fake scheme is ever accepted here — a source that isn't a real,
+ * fetchable HTTPS URL belongs in `source.repositoryPath` instead (see dataset.ts), so the UI never
+ * has to decide whether to render a dead link. */
+function isHttpsUrl(url: string): boolean {
+  return url.startsWith('https://');
+}
+
+/** Relative to the repo root, no absolute path, no `..` traversal. */
+function isSafeRepositoryPath(path: string): boolean {
+  if (path.startsWith('/') || /^[a-zA-Z]:[\\/]/.test(path)) return false;
+  return !path.split(/[\\/]/).includes('..');
 }
 
 function documentsMissingChecksum(dataset: DatasetDescriptor): boolean {
   return dataset.quality.knownLimitations.some((note) => /checksum/i.test(note));
+}
+
+function referenceTimestamp(dataset: DatasetDescriptor): number | null {
+  const raw = dataset.generatedAt ?? dataset.period?.end ?? dataset.source.retrievalDate;
+  if (!raw) return null;
+  const time = new Date(raw).getTime();
+  return Number.isNaN(time) ? null : time;
 }
 
 export interface CatalogValidationInput {
@@ -46,6 +62,8 @@ export interface CatalogValidationInput {
   indicatorObservations: readonly IndicatorObservation[];
   layers: readonly MapLayerDescriptor[];
   policies: Readonly<Record<string, DataAccessPolicy>>;
+  /** Injectable for tests; defaults to the real current time. */
+  now?: Date;
 }
 
 export function validateCatalog({
@@ -54,6 +72,7 @@ export function validateCatalog({
   indicatorObservations,
   layers,
   policies,
+  now = new Date(),
 }: CatalogValidationInput): string[] {
   const issues: string[] = [];
   const datasetIds = new Set(datasets.map((dataset) => dataset.id));
@@ -115,9 +134,13 @@ export function validateCatalog({
   }
 
   for (const dataset of datasets) {
-    if (dataset.source.sourceUrl && !hasAcceptedSourceUrlScheme(dataset.source.sourceUrl))
+    if (dataset.source.sourceUrl && !isHttpsUrl(dataset.source.sourceUrl))
       issues.push(
-        `Dataset ${dataset.id} có sourceUrl không phải HTTPS/internal: ${dataset.source.sourceUrl}`,
+        `Dataset ${dataset.id} có sourceUrl không phải HTTPS: ${dataset.source.sourceUrl}. Dùng source.repositoryPath cho nguồn nội bộ trong repo.`,
+      );
+    if (dataset.source.repositoryPath && !isSafeRepositoryPath(dataset.source.repositoryPath))
+      issues.push(
+        `Dataset ${dataset.id} có repositoryPath không hợp lệ (phải là đường dẫn tương đối, không chứa '..'): ${dataset.source.repositoryPath}`,
       );
     if (!dataset.checksum && !documentsMissingChecksum(dataset))
       issues.push(
@@ -128,6 +151,17 @@ export function validateCatalog({
     if (dataset.access.delivery === 'bundled-static' && dataset.classification !== 'public')
       issues.push(
         `RÒ RỈ DỮ LIỆU: dataset ${dataset.id} có access.delivery='bundled-static' nhưng classification='${dataset.classification}' — sẽ lọt vào bundle công khai.`,
+      );
+    // A dataset claiming public bundled delivery must not also demand authentication — those two
+    // facts contradict each other (spec §3.1).
+    if (dataset.access.delivery === 'bundled-static' && dataset.access.requiresAuthentication)
+      issues.push(
+        `Dataset ${dataset.id} có access.delivery='bundled-static' nhưng requiresAuthentication=true — mâu thuẫn: dữ liệu đã nằm trong bundle công khai thì không thể yêu cầu xác thực.`,
+      );
+    const referenceTime = referenceTimestamp(dataset);
+    if (referenceTime !== null && referenceTime > now.getTime())
+      issues.push(
+        `Dataset ${dataset.id} có ngày (generatedAt/period.end/retrievalDate) trong tương lai so với thời điểm kiểm tra — có thể là lỗi nhập liệu.`,
       );
   }
 

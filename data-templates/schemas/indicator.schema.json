@@ -65,6 +65,14 @@
         "revision": { "type": "integer", "minimum": 1 },
         "updatedAt": { "type": "string" },
         "note": { "type": "string" }
+      },
+      "if": {
+        "properties": { "status": { "const": "missing" } },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": { "value": { "const": null } },
+        "description": "status:'missing' must pair with value:null — never 0 as a stand-in."
       }
     }
   }

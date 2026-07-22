@@ -1,0 +1,10 @@
+{
+  "indicatorCode": "fixture-indicator",
+  "administrativeCode": "00001",
+  "administrativeLevel": "commune",
+  "period": "2025",
+  "value": 0,
+  "status": "missing",
+  "sourceDatasetId": "fixture-valid-dataset",
+  "note": "Sai: dùng 0 thay vì null cho giá trị missing."
+}

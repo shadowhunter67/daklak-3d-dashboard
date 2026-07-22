@@ -27,8 +27,15 @@ export const ADMINISTRATIVE_UNITS_DATASET: DatasetDescriptor = {
   classification: 'public',
   // The distributed artifact here is the polygon geometry, sourced from an open-community GitHub
   // repository — not a government geodata service. Legal correctness of NAMES/CODES is a separate
-  // claim (see knownLimitations) and does not make the geometry itself official.
+  // claim (see knownLimitations and authorityDetail) and does not make the geometry itself official.
   authority: 'open-community',
+  authorityDetail: {
+    // Names/codes trace to Nghị quyết 1660/NQ-UBTVQH15 + Quyết định 19/2025/QĐ-TTg — real legal
+    // instruments — while the polygon shapes come from thanglequoc/vietnamese-provinces-database
+    // (MIT, open-community). One dataset, two different authority levels; see quality.geometryStatus.
+    identityAuthority: 'official',
+    geometryAuthority: 'open-community',
+  },
   publicationStatus: 'published',
   administrativeLevel: 'commune',
   temporalResolution: 'static',
@@ -106,7 +113,7 @@ export const COMMUNE_DEMOGRAPHIC_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
   spatialRepresentation: 'polygon',
   source: {
     organization: 'Deterministic seeded demo generator (nội bộ project)',
-    sourceUrl: 'internal://scripts/build_daklak_geojson.py',
+    repositoryPath: 'scripts/build_daklak_geojson.py',
     retrievalDate: metricProvenance['wards.populationCoverageGrowth']?.retrievedAt,
   },
   version: '1.0.0',
@@ -135,7 +142,7 @@ export const ENERGY_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
   spatialRepresentation: 'point',
   source: {
     organization: 'Dashboard demo scenario (nội bộ project)',
-    sourceUrl: 'internal://src/assets/data/dashboard-sources.json',
+    repositoryPath: 'src/assets/data/dashboard-sources.json',
     retrievalDate: metricProvenance.energy?.retrievedAt,
   },
   version: '1.0.0',
@@ -164,7 +171,7 @@ export const HEATMAP_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
   spatialRepresentation: 'polygon',
   source: {
     organization: 'Deterministic visualization derived from demo metrics',
-    sourceUrl: 'internal://src/assets/maps/daklak/daklak-metrics.json',
+    repositoryPath: 'src/assets/maps/daklak/daklak-metrics.json',
     retrievalDate: metricProvenance.heatmap?.retrievedAt,
   },
   version: '1.0.0',

@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-07-22T09:09:05.722Z",
+  "allDatasetIds": [
+    "administrative-units",
+    "province-overview-indicators",
+    "commune-demographic-illustrative",
+    "energy-illustrative",
+    "heatmap-illustrative",
+    "road-network-osm-3d2d",
+    "terrain-imagery",
+    "road-network-detail-map-pmtiles"
+  ],
+  "nonPublicDatasetIds": [],
+  "expectedBundledDatasetIds": [
+    "administrative-units",
+    "province-overview-indicators",
+    "commune-demographic-illustrative",
+    "energy-illustrative",
+    "heatmap-illustrative",
+    "road-network-osm-3d2d",
+    "terrain-imagery"
+  ]
+}
