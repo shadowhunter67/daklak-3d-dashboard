@@ -1,0 +1,3 @@
+indicator_code,administrative_code,administrative_level,period,value,status,source_dataset_id,revision,updated_at,note
+example-commune-electricity-coverage,00001,commune,2025,98.4,provisional,REPLACE_WITH_REAL_DATASET_ID,1,2026-07-22,"Ví dụ — để trống value khi số liệu chưa có (không dùng 0)"
+example-commune-electricity-coverage,00002,commune,2025,,missing,REPLACE_WITH_REAL_DATASET_ID,1,2026-07-22,"Ví dụ về giá trị missing: cột value để trống, status=missing"

@@ -1,0 +1,20 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [108.4715, 12.9279] },
+      "properties": {
+        "assetId": "example-point-001",
+        "assetType": "industrial-zone-node",
+        "name": "Ví dụ điểm hạ tầng",
+        "administrativeCode": "00001",
+        "status": "active",
+        "classification": "internal",
+        "sourceDatasetId": "REPLACE_WITH_REAL_DATASET_ID",
+        "updatedAt": "2026-07-22",
+        "note": "Tọa độ và thuộc tính chỉ để minh họa cấu trúc; không phải vị trí hay dự án thật."
+      }
+    }
+  ]
+}

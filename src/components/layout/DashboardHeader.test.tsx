@@ -38,4 +38,12 @@ describe('DashboardHeader', () => {
     expect(useMapStore.getState().helpSignal).toBe(1);
     expect(useMapStore.getState().selectedCode).toBe('24580');
   });
+
+  it('requests the data provenance panel without changing selection', () => {
+    useMapStore.setState({ selectedCode: '24580', provenancePanelSignal: 0 });
+    render(<DashboardHeader />);
+    fireEvent.click(screen.getByRole('button', { name: 'Xem nguồn và chất lượng dữ liệu' }));
+    expect(useMapStore.getState().provenancePanelSignal).toBe(1);
+    expect(useMapStore.getState().selectedCode).toBe('24580');
+  });
 });
