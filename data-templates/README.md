@@ -19,6 +19,13 @@ catalog. They are **not** auto-generated from the TS source and can drift — th
 build step that keeps them in sync, so update both together when either changes (see
 [docs/dataset-onboarding.md](../docs/dataset-onboarding.md)).
 
+`fixtures/{valid,invalid}/` are small JSON fixtures used by
+`src/data-platform/validation/schemaDriftGuard.test.ts`, which compiles the schemas above with Ajv
+(a dev-only dependency — never imported by app source) and cross-checks the result against a
+second, hand-written TypeScript validator (`schemaDriftGuard.ts`) over the same fixtures. A
+mismatch between the two means the TS mirror and the JSON Schema have drifted apart — that's the
+actual anti-drift mechanism; the fixtures aren't just examples.
+
 ## Deliberately excluded
 
 No template here has a field for personal data (name-of-person, phone, ID number, address of an

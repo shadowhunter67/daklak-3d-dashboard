@@ -1,0 +1,10 @@
+{
+  "indicatorCode": "fixture-indicator",
+  "administrativeCode": "00001",
+  "administrativeLevel": "district",
+  "period": "2025",
+  "value": 1,
+  "status": "official",
+  "sourceDatasetId": "fixture-valid-dataset",
+  "note": "Sai: 'district' không nằm trong enum ['province','commune']. Trường hợp gán số liệu cấp tỉnh cho xã (cross-reference với IndicatorDefinition.allowedAdministrativeLevels) đã có test riêng trong catalogValidation.test.ts."
+}

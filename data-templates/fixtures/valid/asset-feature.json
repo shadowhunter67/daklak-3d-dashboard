@@ -1,0 +1,10 @@
+{
+  "assetId": "fixture-asset-001",
+  "assetType": "example",
+  "name": "Fixture asset",
+  "administrativeCode": "00001",
+  "status": "active",
+  "classification": "public",
+  "sourceDatasetId": "fixture-valid-dataset",
+  "updatedAt": "2026-07-22"
+}

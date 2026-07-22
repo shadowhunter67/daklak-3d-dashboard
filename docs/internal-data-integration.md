@@ -17,6 +17,8 @@ contract a future one would use, and what already exists in code to support it.
   `AccessTokenProvider` (`getAccessToken(): Promise<string | null>`) — it never stores or refreshes
   a token itself, and never touches `localStorage`. Calls `onUnauthorized`/`onForbidden` on
   401/403 instead of throwing a generic error, and never logs the parsed response body.
+  `npm run validate:public-build` specifically checks this file is not reachable from
+  `src/main.tsx` — see [docs/security-architecture.md](security-architecture.md#public-data-leakage-boundary).
 - **`PmtilesSourceAdapter`** — describes a tile source's configured URL/attribution/checksum for
   the provenance UI; does not itself perform tile loading (that stays in `MapLibreProvider.ts`,
   untouched).
@@ -48,5 +50,7 @@ contract a future one would use, and what already exists in code to support it.
    the secure deployment uses.
 4. Confirm `catalogValidationIssues` still equals `[]` (`npm test`) — this also verifies the
    dataset never accidentally gets `access.delivery: 'bundled-static'`.
-5. Verify the public build (`docs/deployment-profiles.md`'s public profile) truly excludes this
+5. Run `npm run validate:public-build:dist` against a real build — it independently confirms this
+   dataset's id doesn't appear anywhere in `dist/`.
+6. Verify the public build (`docs/deployment-profiles.md`'s public profile) truly excludes this
    dataset before deploying anything.

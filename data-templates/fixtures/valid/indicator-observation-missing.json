@@ -1,0 +1,9 @@
+{
+  "indicatorCode": "fixture-indicator",
+  "administrativeCode": "00001",
+  "administrativeLevel": "commune",
+  "period": "2025",
+  "value": null,
+  "status": "missing",
+  "sourceDatasetId": "fixture-valid-dataset"
+}

@@ -160,7 +160,7 @@ describe('validateCatalog', () => {
     expect(issues).toEqual([]);
   });
 
-  it('rejects a non-HTTPS, non-internal source URL', () => {
+  it('rejects a non-HTTPS source URL', () => {
     const dataset = makeDataset({
       source: { organization: 'x', sourceUrl: 'http://example.com/data' },
     });
@@ -172,6 +172,67 @@ describe('validateCatalog', () => {
       policies: DEFAULT_ACCESS_POLICIES,
     });
     expect(issues.some((issue) => issue.includes('HTTPS'))).toBe(true);
+  });
+
+  it('rejects a fake internal:// scheme — internal sources must use repositoryPath instead', () => {
+    const dataset = makeDataset({
+      source: { organization: 'x', sourceUrl: 'internal://scripts/build.py' },
+    });
+    const issues = validateCatalog({
+      datasets: [dataset],
+      indicatorDefinitions: [],
+      indicatorObservations: [],
+      layers: [],
+      policies: DEFAULT_ACCESS_POLICIES,
+    });
+    expect(issues.some((issue) => issue.includes('HTTPS'))).toBe(true);
+  });
+
+  it('accepts a safe relative repositoryPath and rejects an absolute or traversing one', () => {
+    const safe = makeDataset({ source: { organization: 'x', repositoryPath: 'scripts/build.py' } });
+    const absolute = makeDataset({
+      id: 'ds-2',
+      source: { organization: 'x', repositoryPath: '/etc/passwd' },
+    });
+    const traversal = makeDataset({
+      id: 'ds-3',
+      source: { organization: 'x', repositoryPath: '../../etc/passwd' },
+    });
+    const issues = validateCatalog({
+      datasets: [safe, absolute, traversal],
+      indicatorDefinitions: [],
+      indicatorObservations: [],
+      layers: [],
+      policies: DEFAULT_ACCESS_POLICIES,
+    });
+    expect(issues.filter((issue) => issue.includes('repositoryPath'))).toHaveLength(2);
+  });
+
+  it('flags a bundled-static dataset that also requires authentication as a contradiction', () => {
+    const dataset = makeDataset({
+      access: { delivery: 'bundled-static', requiresAuthentication: true },
+    });
+    const issues = validateCatalog({
+      datasets: [dataset],
+      indicatorDefinitions: [],
+      indicatorObservations: [],
+      layers: [],
+      policies: DEFAULT_ACCESS_POLICIES,
+    });
+    expect(issues.some((issue) => issue.includes('requiresAuthentication'))).toBe(true);
+  });
+
+  it('flags a dataset whose reference date is in the future instead of treating it as current', () => {
+    const dataset = makeDataset({ generatedAt: '2099-01-01' });
+    const issues = validateCatalog({
+      datasets: [dataset],
+      indicatorDefinitions: [],
+      indicatorObservations: [],
+      layers: [],
+      policies: DEFAULT_ACCESS_POLICIES,
+      now: new Date('2026-07-22T00:00:00Z'),
+    });
+    expect(issues.some((issue) => issue.includes('tương lai'))).toBe(true);
   });
 
   it('requires either a checksum or a documented reason for its absence', () => {

@@ -1,0 +1,15 @@
+{
+  "id": "fixture-invalid-missing-source",
+  "title": "Thiếu source",
+  "description": "Dùng cho schema drift-guard test — thiếu field bắt buộc 'source'.",
+  "domain": "other",
+  "classification": "public",
+  "authority": "official",
+  "publicationStatus": "published",
+  "administrativeLevel": "province",
+  "temporalResolution": "annual",
+  "spatialRepresentation": "none",
+  "version": "1.0.0",
+  "quality": { "status": "verified", "knownLimitations": [] },
+  "access": { "delivery": "bundled-static", "requiresAuthentication": false }
+}

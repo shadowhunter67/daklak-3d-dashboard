@@ -71,6 +71,16 @@ export function DetailMapViewport() {
     interactionModeRef.current = interactionMode;
   }, [interactionMode]);
 
+  // This component only exists in the tree while `viewMode === 'map'` (see App.tsx) — it's fully
+  // mounted/unmounted per entry into the detail map, unlike MapViewport/DashboardPanels which stay
+  // mounted across view switches. So "just mounted" here always means "the user just entered the
+  // detail map," which used to be decided by App.tsx's viewMode-change effect; that effect can no
+  // longer reliably do it now that this component is lazy-loaded (its rAF could fire before the
+  // chunk resolves and this element even exists).
+  useEffect(() => {
+    requestAnimationFrame(() => document.getElementById('detail-map-viewport')?.focus());
+  }, []);
+
   useEffect(() => {
     if (!webGLSupported) return;
     let cancelled = false;

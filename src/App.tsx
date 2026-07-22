@@ -1,27 +1,48 @@
-import { useEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect, useRef } from 'react';
 import labels from './assets/maps/daklak/daklak-labels.json';
 import { DashboardHeader } from './components/layout/DashboardHeader';
 import { DashboardPanels } from './components/layout/DashboardPanels';
 import { DatasetFooter } from './components/layout/DatasetFooter';
 import { MapViewport } from './components/layout/MapViewport';
-import { DetailMapViewport } from './components/detail-map/DetailMapViewport';
+import { MapLoading } from './components/map/MapFallback';
 import { OnboardingOverlay } from './components/layout/OnboardingOverlay';
-import { DataProvenancePanel } from './components/provenance/DataProvenancePanel';
 import { datasetManifestIssues } from './data/datasetManifest';
 import { useDashboardUrlSync } from './hooks/useDashboardUrlSync';
 import { useMapStore } from './stores/mapStore';
 
-// Not lazy, unlike StatPanel: it listens for provenancePanelSignal from first mount, the same
-// way OnboardingOverlay listens for helpSignal — lazy-mounting it would race the signal (a click
-// that fires before the chunk resolves would be missed, since the ref that tracks "previous
-// signal" only starts existing once the component mounts). The JSON it reads is a few KB and
-// mostly already bundled elsewhere; see check:budget output in the final report for the actual
-// measured impact.
+// Lazy: the detail map's own orchestration code (camera sync, search, distance measurement, the
+// layer panel) has no reason to sit in the eager main chunk for a user who never opens it — only
+// the maplibre-gl/pmtiles *library* itself was previously deferred (via MapLibreLoader.ts inside
+// this module); this defers the orchestration component too.
+const DetailMapViewport = lazy(() =>
+  import('./components/detail-map/DetailMapViewport').then((module) => ({
+    default: module.DetailMapViewport,
+  })),
+);
+
+// Lazy, safely: `provenancePanelOpen` is a plain boolean in the always-loaded store (see
+// mapStore.ts), not a signal counter — this component only mounts while that's true, so a click
+// that fires before the chunk resolves can't be missed the way it could be with a counter-based
+// "have I seen this value" ref that only starts existing once the lazy component itself mounts.
+const DataProvenancePanel = lazy(() =>
+  import('./components/provenance/DataProvenancePanel').then((module) => ({
+    default: module.DataProvenancePanel,
+  })),
+);
+
+function ProvenancePanelLoading() {
+  return (
+    <div className="provenance-panel-backdrop" role="status" aria-live="polite">
+      Đang tải…
+    </div>
+  );
+}
 
 export default function App() {
   const viewMode = useMapStore((state) => state.viewMode);
   const selectedCode = useMapStore((state) => state.selectedCode);
   const setReducedMotion = useMapStore((state) => state.setReducedMotion);
+  const provenancePanelOpen = useMapStore((state) => state.provenancePanelOpen);
   const previousView = useRef(viewMode);
   useDashboardUrlSync();
 
@@ -36,12 +57,10 @@ export default function App() {
   useEffect(() => {
     if (previousView.current === viewMode) return;
     previousView.current = viewMode;
-    const targetId =
-      viewMode === 'table'
-        ? 'map-2d-title'
-        : viewMode === 'map'
-          ? 'detail-map-viewport'
-          : 'map-viewport';
+    // 'map' is handled inside DetailMapViewport itself (see there) — it's now a lazy boundary, so
+    // an immediate rAF here could fire before its chunk has resolved and the element even exists.
+    if (viewMode === 'map') return;
+    const targetId = viewMode === 'table' ? 'map-2d-title' : 'map-viewport';
     requestAnimationFrame(() => document.getElementById(targetId)?.focus());
   }, [viewMode]);
 
@@ -60,10 +79,18 @@ export default function App() {
     <main className="app-shell">
       <DashboardHeader />
       <MapViewport />
-      {viewMode === 'map' && <DetailMapViewport />}
+      {viewMode === 'map' && (
+        <Suspense fallback={<MapLoading />}>
+          <DetailMapViewport />
+        </Suspense>
+      )}
       <DashboardPanels />
       <OnboardingOverlay />
-      <DataProvenancePanel />
+      {provenancePanelOpen && (
+        <Suspense fallback={<ProvenancePanelLoading />}>
+          <DataProvenancePanel />
+        </Suspense>
+      )}
       <p className="visually-hidden" aria-live="polite" aria-atomic="true">
         {viewMode === 'table'
           ? 'Đã mở danh sách 2D.'

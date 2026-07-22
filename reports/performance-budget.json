@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-07-22T06:58:39.332Z",
+  "generatedAt": "2026-07-22T09:57:22.222Z",
   "limits": {
     "totalJavaScriptBytes": 3400000,
     "totalJavaScriptGzipBytes": 950000,
@@ -10,18 +10,18 @@
     "totalBuildBytes": 6400000
   },
   "actual": {
-    "totalJavaScriptBytes": 3238366,
-    "totalJavaScriptGzipBytes": 906453,
+    "totalJavaScriptBytes": 3242239,
+    "totalJavaScriptGzipBytes": 909559,
     "largestJavaScriptGzipBytes": 270836,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 6188083
+    "totalBuildBytes": 6191964
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-xtbQ0qBN.js",
-      "bytes": 201457,
-      "gzipBytes": 63620
+      "file": "assets/AdministrativeMap-DVcoF4tg.js",
+      "bytes": 201539,
+      "gzipBytes": 63672
     },
     {
       "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
@@ -36,8 +36,23 @@
       "bytes": 7014
     },
     {
+      "file": "assets/daklak-terrain-metadata-Ba4DiDHX.js",
+      "bytes": 1117,
+      "gzipBytes": 660
+    },
+    {
       "file": "assets/daklak-terrain-normal-5DjtUcCG.png",
       "bytes": 719308
+    },
+    {
+      "file": "assets/DataProvenancePanel-BjhP5yge.js",
+      "bytes": 21364,
+      "gzipBytes": 6929
+    },
+    {
+      "file": "assets/DetailMapViewport-D2pOxxM9.js",
+      "bytes": 18442,
+      "gzipBytes": 6090
     },
     {
       "file": "assets/esm-xvg_75QE.js",
@@ -45,18 +60,18 @@
       "gzipBytes": 7222
     },
     {
-      "file": "assets/geo-xniOki_n.js",
-      "bytes": 44082,
-      "gzipBytes": 15539
-    },
-    {
       "file": "assets/index-CkMECvnv.css",
       "bytes": 23367
     },
     {
-      "file": "assets/index-Cn6Jio2C.js",
-      "bytes": 717520,
-      "gzipBytes": 194881
+      "file": "assets/index-COkvUTEf.js",
+      "bytes": 703130,
+      "gzipBytes": 192606
+    },
+    {
+      "file": "assets/jsx-runtime--BHpUnPn.js",
+      "bytes": 21337,
+      "gzipBytes": 7191
     },
     {
       "file": "assets/maplibre-gl-B0OHC_Aq.js",
@@ -69,9 +84,9 @@
       "gzipBytes": 504
     },
     {
-      "file": "assets/StatPanel-B-GN9rgB.js",
-      "bytes": 503486,
-      "gzipBytes": 170560
+      "file": "assets/StatPanel-FpWqcOD5.js",
+      "bytes": 503489,
+      "gzipBytes": 170558
     },
     {
       "file": "assets/three-vendor-DLMYoo0M.js",
@@ -92,7 +107,7 @@
     },
     {
       "file": "index.html",
-      "bytes": 1854
+      "bytes": 1862
     }
   ],
   "failures": []

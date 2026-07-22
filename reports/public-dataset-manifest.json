@@ -1,0 +1,191 @@
+{
+  "generatedAt": "2026-07-22T09:57:01.251Z",
+  "allDatasetIds": [
+    "administrative-units",
+    "province-overview-indicators",
+    "commune-demographic-illustrative",
+    "energy-illustrative",
+    "heatmap-illustrative",
+    "road-network-osm-3d2d",
+    "terrain-imagery",
+    "road-network-detail-map-pmtiles"
+  ],
+  "publicDatasetIds": [
+    "administrative-units",
+    "province-overview-indicators",
+    "commune-demographic-illustrative",
+    "energy-illustrative",
+    "heatmap-illustrative",
+    "road-network-osm-3d2d",
+    "terrain-imagery",
+    "road-network-detail-map-pmtiles"
+  ],
+  "nonPublicDatasetIds": [],
+  "expectedBundledDatasetIds": [
+    "administrative-units",
+    "province-overview-indicators",
+    "commune-demographic-illustrative",
+    "energy-illustrative",
+    "heatmap-illustrative",
+    "road-network-osm-3d2d",
+    "terrain-imagery"
+  ],
+  "datasets": [
+    {
+      "id": "administrative-units",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "province-overview-indicators",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "commune-demographic-illustrative",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "energy-illustrative",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "heatmap-illustrative",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "road-network-osm-3d2d",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "terrain-imagery",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "road-network-detail-map-pmtiles",
+      "classification": "public",
+      "delivery": "pmtiles",
+      "requiresAuthentication": false
+    }
+  ],
+  "registeredPublicDataFiles": [
+    {
+      "path": "src/assets/data/dashboard-sources.json",
+      "datasetIds": [
+        "province-overview-indicators",
+        "energy-illustrative"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "4e71dc1fa56e0786cdd68e50696182ca6365e9379a53f626eb6d6c61fa20cec1"
+    },
+    {
+      "path": "src/assets/data/metric-provenance.json",
+      "datasetIds": [
+        "province-overview-indicators",
+        "commune-demographic-illustrative",
+        "energy-illustrative",
+        "heatmap-illustrative"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "d1ea277f19ff4813c369a7cc24aec2b1c4a30bb933af9367c9c892c46c84a7e3"
+    },
+    {
+      "path": "src/assets/maps/daklak/daklak-metrics.json",
+      "datasetIds": [
+        "commune-demographic-illustrative",
+        "heatmap-illustrative"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "416a2760d8003d47030813f744671a03509b2569164ea8a1ece7ef76ead3333c"
+    },
+    {
+      "path": "src/assets/maps/daklak/daklak-wards-render.json",
+      "datasetIds": [
+        "administrative-units"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "e1f33ec38abad25c48693da2770a2c8b03502f876a820acc93f9f97960784b89"
+    },
+    {
+      "path": "src/assets/maps/daklak/road-metadata.json",
+      "datasetIds": [
+        "road-network-osm-3d2d"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "f43e8b7ec0b0246fea15394feb3f9b92bbcf0cf4c0fc60811b4355193b3591ed"
+    },
+    {
+      "path": "src/assets/maps/daklak/road-source-registry.json",
+      "datasetIds": [
+        "road-network-osm-3d2d"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "c7958cb8cf7f06f57ab8dffefb0abbc02fac150034485ab41f643023094a67b4"
+    },
+    {
+      "path": "src/assets/maps/daklak/daklak-terrain-metadata.json",
+      "datasetIds": [
+        "terrain-imagery"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "4a0bd2fddc63d9c8a30402ad3ac6eff23f4aadfb530b30b487e3d55abfcc4d04"
+    },
+    {
+      "path": "src/assets/maps/daklak/daklak-labels.json",
+      "datasetIds": [
+        "administrative-units"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "19ee707eb8564332d7d246189dced0e96b290916ca4afb66ac1d0ed79fb2562f"
+    },
+    {
+      "path": "src/assets/maps/daklak/daklak-metadata.json",
+      "datasetIds": [
+        "administrative-units",
+        "province-overview-indicators"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "b16c4850a8e8f3bc086f0465320a0390c79bd0f1c955e576e55256892c9fbda6"
+    },
+    {
+      "path": "src/assets/maps/daklak/daklak-source-summary.json",
+      "datasetIds": [
+        "administrative-units"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "6326a6ef22f02abe92b28714aea6dc538eec14322c04d7603bd10772f17fc015"
+    },
+    {
+      "path": "public/data/daklak-roads.json.gz",
+      "datasetIds": [
+        "road-network-osm-3d2d"
+      ],
+      "classification": "public",
+      "delivery": "public-static-asset",
+      "checksum": "7dbdc16218fd9dfc3f8b9ce4b30982ec1037ec34cc6e5623e7136b637a286ce8",
+      "note": "Gzip-compressed road geometry fetched at runtime by src/data/loadRoads.ts; Vite copies public/ verbatim, so this is not bundled into a JS chunk."
+    }
+  ]
+}

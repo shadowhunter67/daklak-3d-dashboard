@@ -1,0 +1,16 @@
+{
+  "id": "fixture-invalid-protected-not-authenticated",
+  "title": "Protected API nhưng requiresAuthentication=false",
+  "description": "Dùng cho schema drift-guard test.",
+  "domain": "other",
+  "classification": "internal",
+  "authority": "official",
+  "publicationStatus": "draft",
+  "administrativeLevel": "province",
+  "temporalResolution": "annual",
+  "spatialRepresentation": "none",
+  "source": { "organization": "Fixture org", "sourceUrl": "https://example.gov.vn/data" },
+  "version": "1.0.0",
+  "quality": { "status": "unverified", "knownLimitations": ["fixture"] },
+  "access": { "delivery": "protected-api", "requiresAuthentication": false }
+}

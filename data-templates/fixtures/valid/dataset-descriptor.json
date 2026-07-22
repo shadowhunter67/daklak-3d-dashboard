@@ -1,0 +1,16 @@
+{
+  "id": "fixture-valid-dataset",
+  "title": "Fixture dataset hợp lệ",
+  "description": "Dùng cho schema drift-guard test.",
+  "domain": "other",
+  "classification": "public",
+  "authority": "official",
+  "publicationStatus": "published",
+  "administrativeLevel": "province",
+  "temporalResolution": "annual",
+  "spatialRepresentation": "none",
+  "source": { "organization": "Fixture org", "sourceUrl": "https://example.gov.vn/data" },
+  "version": "1.0.0",
+  "quality": { "status": "verified", "knownLimitations": [] },
+  "access": { "delivery": "bundled-static", "requiresAuthentication": false }
+}

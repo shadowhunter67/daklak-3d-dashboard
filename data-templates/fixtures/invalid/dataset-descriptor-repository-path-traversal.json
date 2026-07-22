@@ -1,0 +1,16 @@
+{
+  "id": "fixture-invalid-repository-path",
+  "title": "repositoryPath chứa dấu '..'",
+  "description": "Dùng cho schema drift-guard test.",
+  "domain": "other",
+  "classification": "public",
+  "authority": "illustrative",
+  "publicationStatus": "published",
+  "administrativeLevel": "province",
+  "temporalResolution": "static",
+  "spatialRepresentation": "none",
+  "source": { "organization": "Fixture org", "repositoryPath": "../../etc/passwd" },
+  "version": "1.0.0",
+  "quality": { "status": "unverified", "knownLimitations": ["fixture"] },
+  "access": { "delivery": "bundled-static", "requiresAuthentication": false }
+}

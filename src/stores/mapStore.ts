@@ -70,7 +70,14 @@ export interface MapState {
   reducedMotion: boolean;
   resetCameraSignal: number;
   helpSignal: number;
-  provenancePanelSignal: number;
+  /**
+   * Persistent open/closed state, not an event-signal counter like helpSignal — this is what lets
+   * `DataProvenancePanel` be a real React.lazy boundary: the store (already loaded, tiny) holds
+   * "should the panel be open" from the moment of the click, so a click that fires before the
+   * lazy chunk resolves is never lost (a counter's "have I already seen this value" ref only
+   * starts existing once the lazy component itself mounts — see App.tsx).
+   */
+  provenancePanelOpen: boolean;
   insetsChangeSignal: number;
   detailMapLayers: DetailMapLayerState;
   detailMapCamera: DetailMapCameraState;
@@ -85,7 +92,8 @@ export interface MapState {
   applyUrlState: (state: DashboardUrlState) => void;
   requestCameraReset: () => void;
   requestHelp: () => void;
-  requestProvenancePanel: () => void;
+  openProvenancePanel: () => void;
+  closeProvenancePanel: () => void;
   notifyInsetsChanged: () => void;
   setDetailMapBaseMap: (baseMap: DetailBaseMap) => void;
   toggleDetailMapLayer: (layer: ToggleableDetailMapLayer) => void;
@@ -116,7 +124,7 @@ export function createMapStore(
     reducedMotion: false,
     resetCameraSignal: 0,
     helpSignal: 0,
-    provenancePanelSignal: 0,
+    provenancePanelOpen: false,
     insetsChangeSignal: 0,
     detailMapLayers: initialUrlState.detailMapLayers ?? DEFAULT_DETAIL_MAP_LAYER_STATE,
     detailMapCamera: initialUrlState.detailMapCamera ?? DEFAULT_DETAIL_MAP_CAMERA,
@@ -140,8 +148,8 @@ export function createMapStore(
     // không cần payload, nên tăng số là đủ để trigger effect ở nơi lắng nghe.
     requestCameraReset: () => set((state) => ({ resetCameraSignal: state.resetCameraSignal + 1 })),
     requestHelp: () => set((state) => ({ helpSignal: state.helpSignal + 1 })),
-    requestProvenancePanel: () =>
-      set((state) => ({ provenancePanelSignal: state.provenancePanelSignal + 1 })),
+    openProvenancePanel: () => set({ provenancePanelOpen: true }),
+    closeProvenancePanel: () => set({ provenancePanelOpen: false }),
     notifyInsetsChanged: () =>
       set((state) => ({ insetsChangeSignal: state.insetsChangeSignal + 1 })),
     setDetailMapBaseMap: (baseMap) =>
