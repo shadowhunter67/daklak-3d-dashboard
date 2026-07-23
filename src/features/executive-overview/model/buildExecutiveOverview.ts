@@ -11,11 +11,17 @@ import {
 import { availableKpi } from '../../../entities/project/kpi/types';
 import { assessPortfolio } from '../../../entities/project/portfolioAssessment';
 import {
+  ATTENTION_REASON_LABEL,
+  REASON_RANK,
+  pickPrimaryReason,
+} from '../../../entities/project/attentionReason';
+import {
   PROJECT_STATUSES,
   type ProjectBundle,
   type ProjectStatus,
 } from '../../../entities/project/types';
 import { summarizeDataQuality } from '../../../entities/project/dataQualitySummary';
+import { PROJECT_STATUS_LABELS } from '../../../entities/project/labels';
 import type { DataQualityContext } from '../../../entities/project/validation/dataQualityRules';
 import type {
   DataHealthSummary,
@@ -25,19 +31,9 @@ import type {
   ProjectAttentionItem,
 } from './executiveOverviewTypes';
 
-export const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {
-  proposed: 'Đề xuất',
-  preparing: 'Đang chuẩn bị',
-  approved: 'Đã phê duyệt',
-  procurement: 'Đang đấu thầu',
-  active: 'Đang triển khai',
-  'at-risk': 'Có nguy cơ chậm',
-  delayed: 'Chậm tiến độ',
-  suspended: 'Tạm dừng',
-  completed: 'Hoàn thành',
-  cancelled: 'Đã huỷ',
-  unknown: 'Chưa xác định',
-};
+// Re-exported for backward compatibility — moved to entities/project/labels.ts (Phase 2B1) so
+// Project Portfolio/Detail can reuse the same label set instead of redefining it.
+export { PROJECT_STATUS_LABELS };
 
 export interface BuildExecutiveOverviewInput {
   bundles: readonly ProjectBundle[];
@@ -48,47 +44,7 @@ export interface BuildExecutiveOverviewInput {
   sourceStatus?: 'ok' | 'degraded';
 }
 
-const AGENCY_ALERT_CATEGORY_LABEL: Record<ProjectAttentionItem['reasonCategory'], string> = {
-  'overdue-critical-issue': 'Có vướng mắc nghiêm trọng quá hạn',
-  delayed: 'Đang chậm tiến độ',
-  'at-risk': 'Có nguy cơ chậm tiến độ',
-  'stale-data': 'Dữ liệu đã quá hạn cập nhật',
-  'budget-exposure': 'Giải ngân vượt tiến độ khối lượng',
-};
-
-/** Thứ tự ưu tiên xếp hạng — thấp hơn = nghiêm trọng hơn = hiện trước. Tài liệu hoá tường minh để
- * không ai phải đoán "tại sao dự án A đứng trước dự án B" (spec: không tạo AI score không giải
- * thích được). */
-const REASON_RANK: Record<ProjectAttentionItem['reasonCategory'], number> = {
-  'overdue-critical-issue': 0,
-  delayed: 1,
-  'at-risk': 2,
-  'stale-data': 3,
-  'budget-exposure': 4,
-};
-
-function pickPrimaryReason(
-  projectId: string,
-  assessment: ReturnType<typeof assessPortfolio>,
-): ProjectAttentionItem['reasonCategory'] | null {
-  const projectBusinessAlerts = assessment.businessAlerts.filter((a) => a.projectId === projectId);
-  const projectQualityIssues = assessment.qualityIssues.filter(
-    (i) => i.entityType === 'project' && i.entityId === projectId,
-  );
-
-  const candidates: ProjectAttentionItem['reasonCategory'][] = [];
-  if (projectBusinessAlerts.some((a) => a.category === 'overdue-critical-issue'))
-    candidates.push('overdue-critical-issue');
-  if (projectBusinessAlerts.some((a) => a.category === 'schedule-delay'))
-    candidates.push('delayed');
-  if (projectBusinessAlerts.some((a) => a.category === 'at-risk')) candidates.push('at-risk');
-  if (projectQualityIssues.some((i) => i.rule === 'stale-data')) candidates.push('stale-data');
-  if (projectBusinessAlerts.some((a) => a.category === 'budget-exposure'))
-    candidates.push('budget-exposure');
-
-  if (candidates.length === 0) return null;
-  return candidates.sort((a, b) => REASON_RANK[a] - REASON_RANK[b])[0];
-}
+const AGENCY_ALERT_CATEGORY_LABEL = ATTENTION_REASON_LABEL;
 
 function buildPriorityProjects(
   bundles: readonly ProjectBundle[],

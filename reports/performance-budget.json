@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-07-23T08:13:41.065Z",
+  "generatedAt": "2026-07-23T13:20:13.641Z",
   "limits": {
     "totalJavaScriptBytes": 3400000,
     "totalJavaScriptGzipBytes": 950000,
@@ -10,18 +10,18 @@
     "totalBuildBytes": 6400000
   },
   "actual": {
-    "totalJavaScriptBytes": 3296751,
-    "totalJavaScriptGzipBytes": 923125,
+    "totalJavaScriptBytes": 3332041,
+    "totalJavaScriptGzipBytes": 933642,
     "largestJavaScriptGzipBytes": 270836,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 6254058
+    "totalBuildBytes": 6295850
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-DCzimanA.js",
-      "bytes": 201539,
-      "gzipBytes": 63670
+      "file": "assets/AdministrativeMap-CwmPal-t.js",
+      "bytes": 201530,
+      "gzipBytes": 63723
     },
     {
       "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
@@ -45,14 +45,19 @@
       "bytes": 719308
     },
     {
-      "file": "assets/DataProvenancePanel-CW7UMNfE.js",
-      "bytes": 25027,
-      "gzipBytes": 7503
+      "file": "assets/DataProvenancePanel-Yy90mllX.js",
+      "bytes": 10064,
+      "gzipBytes": 3613
     },
     {
-      "file": "assets/DetailMapViewport-D40hP1IO.js",
-      "bytes": 18442,
-      "gzipBytes": 6091
+      "file": "assets/datasets-DdrC-Z6L.js",
+      "bytes": 15106,
+      "gzipBytes": 4491
+    },
+    {
+      "file": "assets/DetailMapViewport-CrfwqEct.js",
+      "bytes": 18447,
+      "gzipBytes": 6099
     },
     {
       "file": "assets/esm-xvg_75QE.js",
@@ -60,18 +65,18 @@
       "gzipBytes": 7222
     },
     {
-      "file": "assets/index-Bl-IYD7f.js",
-      "bytes": 753934,
-      "gzipBytes": 205590
+      "file": "assets/index-ChwBIWAd.js",
+      "bytes": 764609,
+      "gzipBytes": 208599
     },
     {
-      "file": "assets/index-LDuiI5Yr.css",
-      "bytes": 30949
+      "file": "assets/index-DmrsFxgr.css",
+      "bytes": 37451
     },
     {
-      "file": "assets/jsx-runtime-BsEm7PxN.js",
-      "bytes": 21377,
-      "gzipBytes": 7196
+      "file": "assets/jsx-runtime-C6-Y8I7P.js",
+      "bytes": 15683,
+      "gzipBytes": 5340
     },
     {
       "file": "assets/maplibre-gl-B0OHC_Aq.js",
@@ -79,12 +84,22 @@
       "gzipBytes": 270836
     },
     {
+      "file": "assets/ProjectDetailView-BpvLchgk.js",
+      "bytes": 17270,
+      "gzipBytes": 4778
+    },
+    {
+      "file": "assets/ProjectPortfolioView-C4wZohA7.js",
+      "bytes": 12900,
+      "gzipBytes": 3924
+    },
+    {
       "file": "assets/rolldown-runtime-CNC7AqOf.js",
       "bytes": 879,
       "gzipBytes": 504
     },
     {
-      "file": "assets/StatPanel-DMmkx6RX.js",
+      "file": "assets/StatPanel-Dt3jQkop.js",
       "bytes": 503494,
       "gzipBytes": 170562
     },
