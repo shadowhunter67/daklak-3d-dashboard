@@ -1658,6 +1658,11 @@ footer a {
   list-style: none;
 }
 .kpi-card {
+  /* min-width: 0 overrides the grid-item default (min-width: auto), which otherwise lets a long
+     unbroken value (e.g. a large VND amount with no spaces) force the card wider than its grid
+     track and visually spill into the next card instead of wrapping. */
+  min-width: 0;
+  overflow: hidden;
   padding: 14px 16px;
   border: 1px solid #ffffff1a;
   border-radius: 12px;
@@ -1678,6 +1683,7 @@ footer a {
   color: #e9f2ed;
   font-size: clamp(18px, 2.4vw, 24px);
   font-weight: 700;
+  overflow-wrap: anywhere;
 }
 .kpi-card[data-unavailable] .kpi-card__value {
   color: #8fa39a;

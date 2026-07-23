@@ -10,13 +10,37 @@ Dự án đang chuyển dần từ "dashboard bản đồ 3D" sang "nền tảng
 
 ## Demo
 
-[![Đắk Lắk 3D Dashboard](docs/images/dashboard-demo.png)](https://shadowhunter67.github.io/daklak-3d-dashboard/)
+[![Tổng quan điều hành — Đắk Lắk 3D Dashboard](docs/images/readme-gallery/executive-overview-desktop.png)](https://shadowhunter67.github.io/daklak-3d-dashboard/)
 
 **Live demo:** https://shadowhunter67.github.io/daklak-3d-dashboard/
 
-> **Disclaimer:** sản phẩm trực quan tham khảo, không dùng cho đất đai, đo đạc, quy hoạch pháp lý hoặc xác lập địa giới chính thức. Số liệu dashboard là mock data deterministic, không phải thống kê nhà nước.
+> **Disclaimer:** toàn bộ dữ liệu dự án/gói thầu/mốc tiến độ/ngân sách/giải ngân/tiến độ/vướng mắc hiển thị trong Tổng quan điều hành và các trải nghiệm bản đồ đều là **dữ liệu minh họa deterministic** (seed cố định trong mã nguồn), không phải số liệu vận hành hay số liệu chính thức của cơ quan nhà nước, không dùng cho quyết định quản lý, phê duyệt hoặc báo cáo thực tế. Bản đồ là sản phẩm trực quan tham khảo, không dùng cho đất đai, đo đạc, quy hoạch pháp lý hoặc xác lập địa giới chính thức.
+
+## Điều hướng
+
+Bốn trải nghiệm loại trừ lẫn nhau, đồng bộ vào query string `?view=` (giá trị thật do `src/utils/dashboardUrl.ts` phát ra — xem `parseViewMode`/`serializeViewMode`):
+
+| `?view=`                             | Trải nghiệm             | Ghi chú                                                                                                                       |
+| ------------------------------------ | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| _(không có tham số)_ hoặc `overview` | **Tổng quan điều hành** | Landing mặc định từ Phase 2A — KPI danh mục dự án, danh sách cần chú ý, cảnh báo, sức khỏe dữ liệu.                           |
+| `3d`                                 | Tổng quan 3D            | Bản đồ WebGL displacement terrain, giữ nguyên hành vi trước Phase 2A.                                                         |
+| `2d`                                 | Danh sách 2D accessible | Giá trị URL thực tế vẫn là `2d` (không phải `table`) dù kiểu `DashboardView` nội bộ gọi là `'table'` — xem `dashboardUrl.ts`. |
+| `map`                                | Bản đồ chi tiết         | MapLibre GL JS + PMTiles tự host.                                                                                             |
+
+Mọi URL `?view=3d` / `?view=2d` / `?view=map` từ trước Phase 2A vẫn hoạt động y hệt — chỉ việc thiếu tham số `view` (hoặc giá trị lạ) mới đổi hành vi, từ ngã về `3d` (trước Phase 2A) sang ngã về `overview` (từ Phase 2A). Xem [ADR 0001](docs/adr/0001-project-centric-domain.md).
 
 ## Screenshots
+
+<p align="center">
+  <img src="docs/images/readme-gallery/executive-overview-desktop.png" alt="Tổng quan điều hành trên desktop 1440x900: thẻ KPI danh mục dự án, danh sách dự án cần chú ý, danh sách cảnh báo và huy hiệu DỮ LIỆU MINH HỌA" width="49%">
+  <img src="docs/images/readme-gallery/executive-overview-mobile.png" alt="Tổng quan điều hành trên mobile 390x844, các thẻ KPI xếp lại thành lưới 2 cột không tràn ngang" width="49%">
+</p>
+<p align="center"><sub><b>Trái:</b> Tổng quan điều hành trên desktop — landing mặc định từ Phase 2A. <b>Phải:</b> cùng trải nghiệm trên khung hình mobile.</sub></p>
+
+<p align="center">
+  <img src="docs/images/readme-gallery/executive-project-summary.png" alt="Hộp thoại tóm tắt dự án mở trên Tổng quan điều hành, hiển thị mã dự án, trạng thái, tỷ lệ giải ngân, lý do cần chú ý và nút Xem trên bản đồ" width="70%">
+</p>
+<p align="center"><sub>Hộp thoại tóm tắt một dự án (mở từ "Xem tóm tắt" trong danh sách "Dự án cần chú ý"), đóng bằng Escape hoặc nút "Đóng" và trả focus đúng về nút đã mở nó.</sub></p>
 
 <p align="center">
   <img src="docs/images/readme-gallery/dashboard-3d-overview.png" alt="Bản đồ 3D Đắk Lắk ở chế độ Tổng quan, hiển thị đầy đủ nhãn hành chính 102 xã/phường trên nền địa hình Sentinel-2, chưa chọn đơn vị nào" width="49%">
@@ -58,6 +82,12 @@ Luồng dữ liệu: snapshot MIT → chuẩn hóa/repair EPSG:4326 → GeoJSON 
 
 Phần bản đồ được tách theo trách nhiệm: bề mặt terrain, các overlay heatmap/selection, nhãn và điểm năng lượng, camera controls, cấu hình terrain và hit-test hình học. Hover được giới hạn theo animation frame và lọc bounding box trước khi chạy point-in-polygon.
 
+Tổng quan điều hành đi theo một luồng riêng, tách biệt hoàn toàn khỏi phần bản đồ:
+
+`BundledProjectPortfolioSource` (`src/data/`) → domain validation/assessment (`src/entities/project/`) → read model Tổng quan điều hành (`buildExecutiveOverview`, `src/features/executive-overview/model/`) → component trình bày (`ExecutiveOverview`, `KpiCardGrid`, `PriorityProjectList`, `AlertList`, `DataHealthPanel`, …)
+
+Component trình bày không tự tính KPI/cảnh báo — mọi con số đều đọc từ `ExecutiveOverviewModel` do `buildExecutiveOverview` tạo ra trên domain layer đã validate. Xem [docs/architecture.md](docs/architecture.md) và [docs/domain-model.md](docs/domain-model.md) để biết chi tiết ranh giới import (domain layer không được import GIS/UI/Zustand).
+
 ## Chạy dự án
 
 Yêu cầu Node.js 22. Các artifact GIS đã được commit, vì vậy developer chỉ sửa frontend không cần cài Python hoặc xây lại dữ liệu:
@@ -89,6 +119,14 @@ Hoặc chạy toàn bộ bằng `npm run quality:frontend` (lint, format, typech
 Dashboard đồng bộ `view`, `mode` và `ward` vào query string để URL có thể chia sẻ, refresh và dùng Back/Forward mà không cần router. `npm run build:metrics` sinh [JSON](reports/build-metrics.json) và [bảng Markdown](reports/build-metrics.md) từ build thật; FPS, GPU memory và LCP không được tuyên bố vì CI không đại diện cho GPU thiết bị thật.
 
 Mỗi production build sinh `dist/build-info.json` gồm version ứng dụng, commit SHA, thời điểm build và phiên bản dataset. Trên site đã deploy, mở `/daklak-3d-dashboard/build-info.json` để đối chiếu release đang chạy.
+
+## Khả năng tiếp cận và hiệu năng
+
+- Tổng quan điều hành (landing mặc định) không cần WebGL — chỉ HTML/CSS thuần, không mount canvas nào.
+- Ba trải nghiệm nặng (3D, ECharts, MapLibre/bản đồ chi tiết) đều là lazy chunk riêng, chỉ tải khi thực sự mở — xem [docs/performance.md](docs/performance.md) cho số byte thật (không hardcode ở đây vì sẽ lỗi thời qua từng build).
+- Giá trị KPI không hiển thị âm thầm thành "0" khi thiếu dữ liệu đầu vào — luôn kèm giải thích ("Chưa đủ dữ liệu").
+- Trạng thái (Ổn định/Cần chú ý/Nghiêm trọng…) không chỉ phân biệt bằng màu — luôn có nhãn chữ đi kèm.
+- Hộp thoại (tóm tắt dự án, nguồn dữ liệu) trả focus đúng về phần tử đã kích hoạt mở nó khi đóng, kể cả khi hộp thoại tự `autoFocus` nút đóng lúc mount.
 
 ## Tài liệu kỹ thuật
 
