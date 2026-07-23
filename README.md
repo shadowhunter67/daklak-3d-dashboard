@@ -107,6 +107,10 @@ Mỗi production build sinh `dist/build-info.json` gồm version ứng dụng, c
   [quản trị dữ liệu](docs/data-governance.md) ·
   [thêm dataset mới](docs/dataset-onboarding.md) ·
   [profile triển khai public/secure](docs/deployment-profiles.md)
+- Nền tảng điều hành dự án trọng điểm (`src/entities/project/`, đang xây dựng theo phase):
+  [gap analysis](docs/reviews/project-platform-gap-analysis.md) ·
+  [ADR 0001 — Project là entity trung tâm](docs/adr/0001-project-centric-domain.md) ·
+  [domain model](docs/domain-model.md)
 
 ## Xây lại GIS
 
