@@ -225,8 +225,13 @@ export interface Project {
   plannedCompletionDate?: string;
   forecastCompletionDate?: string;
   actualCompletionDate?: string;
+  /** VND, số nguyên (Number.isInteger), không âm, trong Number.MAX_SAFE_INTEGER — xem "Chuẩn hoá
+   * tiền tệ" trong docs/domain-model.md. Không dùng số thập phân (không có khái niệm hào/xu ở quy
+   * mô ngân sách dự án). */
   approvedBudget: number;
+  /** Cùng đơn vị/ràng buộc với `approvedBudget`. */
   adjustedBudget?: number;
+  /** Cùng đơn vị/ràng buộc với `approvedBudget`. */
   disbursedAmount: number;
   /** 0-100, tiến độ tổng thể (khối lượng thực tế). */
   overallProgress: number;
@@ -255,7 +260,9 @@ export interface WorkPackage {
   actualEnd?: string;
   plannedProgress: number;
   actualProgress: number;
+  /** VND, số nguyên, không âm, trong Number.MAX_SAFE_INTEGER — xem docs/domain-model.md. */
   budget: number;
+  /** Cùng đơn vị/ràng buộc với `budget`. */
   paidAmount: number;
   status: WorkPackageStatus;
 }
@@ -287,6 +294,11 @@ export interface ProjectIssue {
   status: IssueStatus;
   relatedGeometry?: ProjectGeometry;
   evidenceIds: string[];
+  /** Dataset chịu trách nhiệm cung cấp bản ghi này — phải resolve được qua
+   * `data-platform/catalog/datasets.ts` (ví dụ `project-issues-illustrative` cho fixture minh hoạ).
+   * Thêm ở Phase 1.5 để mọi record trong domain đều truy vết được provenance, cùng nguyên tắc với
+   * `Project.sourceDatasetId`/`ProgressSnapshot.sourceDatasetId`. */
+  sourceDatasetId: string;
 }
 
 export interface ProgressSnapshot {
@@ -295,6 +307,7 @@ export interface ProgressSnapshot {
   plannedPhysicalProgress: number;
   physicalProgress: number;
   financialProgress: number;
+  /** VND, số nguyên, không âm, trong Number.MAX_SAFE_INTEGER — xem docs/domain-model.md. */
   disbursedAmount: number;
   sourceDatasetId: string;
   sourceRecordId: string;

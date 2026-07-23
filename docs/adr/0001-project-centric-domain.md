@@ -115,3 +115,32 @@ docs/domain-model.md            # tài liệu hoá entity + status taxonomy (tha
 Không đụng tới `src/components/**`, `src/stores/mapStore.ts`, `src/App.tsx`, hay bất kỳ route/view
 hiện có trong Phase 1 — mục tiêu là domain layer biên dịch, tự test được, và không ảnh hưởng tới
 `npm run quality`/`check:budget` hiện tại (không thêm gì vào bundle được import từ `main.tsx`).
+
+## Cập nhật — Phase 1.5 (domain hardening, trước Phase 2A)
+
+Trước khi xây UI, 7 điểm kiến trúc còn thiếu trong Phase 1 đã được xử lý — chi tiết đầy đủ trong
+[docs/domain-model.md](../domain-model.md#phase-15--domain-hardening):
+
+1. Thay `sourceDatasetId` giả bằng 3 `DatasetDescriptor` thật (`project-portfolio-illustrative`,
+   `project-progress-illustrative`, `project-issues-illustrative`) trong
+   `data-platform/catalog/datasets.ts`.
+2. Thêm `importBoundary.test.ts` xác nhận domain không phụ thuộc GIS asset/component/store/CSS.
+3. Tách `PortfolioAssessment` (`validationErrors`/`qualityIssues`/`businessAlerts`) trong
+   `portfolioAssessment.ts` — quyết định kiến trúc quan trọng nhất của Phase 1.5: một dự án chậm
+   tiến độ là dữ liệu hợp lệ, không phải lỗi dữ liệu.
+4. Mọi hàm domain (KPI, `runDataQualityRules`, `summarizeDataQuality`, `assessPortfolio`) nhận
+   `asOf: Date` bắt buộc, không còn `new Date()` ngầm.
+5. Chuẩn hoá tiền tệ: Phương án A (số nguyên VND, validate finite/integer/non-negative/safe-integer)
+   — không tạo `Money` value object cho tới khi có nhu cầu đa tiền tệ thật.
+6. Định nghĩa identity (`projectId + observedAt + sourceDatasetId`) và selection rule cho
+   `ProgressSnapshot` trong `progressSnapshotSelection.ts`.
+7. Mở rộng scenario coverage của 9 fixture project (không tăng số lượng) để phủ đủ: on-track,
+   at-risk, delayed, suspended, completed, stale, missing-optional-input, no-geometry, multi-area,
+   overdue-critical-issue, no-issue, snapshot-history.
+
+Đồng thời ghi nhận **API contract gate** cho Phase 3 (xem domain-model.md): domain type không được
+mặc định trở thành wire contract — cần DTO schema/mapper/contract test riêng trước khi nối
+`PublicHttpAdapter`/`ProtectedApiAdapter` thật.
+
+Không có thay đổi nào trong Phase 1.5 chạm tới `src/components/**`, `src/stores/mapStore.ts`, hay
+`src/App.tsx` — vẫn hoàn toàn additive, giữ đúng quyết định ban đầu của ADR này.

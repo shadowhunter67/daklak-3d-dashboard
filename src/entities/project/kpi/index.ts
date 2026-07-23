@@ -3,6 +3,11 @@
  * — dễ unit test) và trả về `KpiResult` (xem `./types.ts`). Khi input cần thiết bị thiếu hoặc
  * không hợp lệ, trả `status: 'unavailable'` thay vì suy ra 0 — 0 là một giá trị có ý nghĩa nghiệp
  * vụ thật (ví dụ "chưa giải ngân đồng nào"), không được dùng để che giấu "không có dữ liệu".
+ *
+ * `asOf: Date` là tham số bắt buộc ở mọi hàm — domain layer không được tự gọi `new Date()` (Phase
+ * 1.5 hardening). Điều này giữ mọi phép tính hoàn toàn deterministic: cùng input + cùng `asOf` luôn
+ * cho cùng kết quả, bất kể thời điểm test/CI chạy thật. Lớp adapter/UI (Phase 2A) chịu trách nhiệm
+ * cung cấp `asOf` mặc định (ví dụ thời điểm request).
  */
 import type { IssueStatus, ProjectBundle, ProjectIssue } from '../types';
 import { availableKpi, unavailableKpi, type KpiResult } from './types';
@@ -19,7 +24,7 @@ function isOpenIssueStatus(status: IssueStatus): boolean {
 
 /** Tỷ lệ giải ngân: disbursedAmount / ngân sách hiệu lực (adjustedBudget nếu có, ngược lại
  * approvedBudget). */
-export function disbursementRate(bundle: ProjectBundle, now: Date = new Date()): KpiResult {
+export function disbursementRate(bundle: ProjectBundle, asOf: Date): KpiResult {
   const { project } = bundle;
   const ceiling = project.adjustedBudget ?? project.approvedBudget;
   if (!Number.isFinite(ceiling) || ceiling <= 0)
@@ -27,7 +32,7 @@ export function disbursementRate(bundle: ProjectBundle, now: Date = new Date()):
       '%',
       ['approvedBudget/adjustedBudget'],
       'Không có ngân sách hợp lệ để tính tỷ lệ giải ngân.',
-      now,
+      asOf,
     );
   const value = (project.disbursedAmount / ceiling) * 100;
   return availableKpi(
@@ -35,20 +40,20 @@ export function disbursementRate(bundle: ProjectBundle, now: Date = new Date()):
     '%',
     [project.sourceDatasetId],
     'disbursedAmount / (adjustedBudget hoặc approvedBudget) × 100.',
-    now,
+    asOf,
   );
 }
 
 /** Chênh lệch tiến độ khối lượng so với kế hoạch tại thời điểm hiện tại (điểm phần trăm). Âm =
  * chậm so với kế hoạch. */
-export function scheduleVariance(bundle: ProjectBundle, now: Date = new Date()): KpiResult {
+export function scheduleVariance(bundle: ProjectBundle, asOf: Date): KpiResult {
   const { project } = bundle;
   if (project.overallProgress == null || project.plannedProgress == null)
     return unavailableKpi(
       'percentage-points',
       ['overallProgress', 'plannedProgress'],
       'Thiếu tiến độ thực tế hoặc kế hoạch.',
-      now,
+      asOf,
     );
   const value = project.overallProgress - project.plannedProgress;
   return availableKpi(
@@ -56,21 +61,21 @@ export function scheduleVariance(bundle: ProjectBundle, now: Date = new Date()):
     'percentage-points',
     [project.sourceDatasetId],
     'overallProgress − plannedProgress.',
-    now,
+    asOf,
   );
 }
 
 /** Chênh lệch nhịp giải ngân so với nhịp thi công thực tế (điểm phần trăm). Dương = giải ngân
  * nhanh hơn khối lượng thực hiện (rủi ro tạm ứng vượt khối lượng); âm = giải ngân chậm hơn thi
  * công. */
-export function progressVariance(bundle: ProjectBundle, now: Date = new Date()): KpiResult {
+export function progressVariance(bundle: ProjectBundle, asOf: Date): KpiResult {
   const { project } = bundle;
   if (project.financialProgress == null || project.overallProgress == null)
     return unavailableKpi(
       'percentage-points',
       ['financialProgress', 'overallProgress'],
       'Thiếu tiến độ tài chính hoặc khối lượng.',
-      now,
+      asOf,
     );
   const value = project.financialProgress - project.overallProgress;
   return availableKpi(
@@ -78,19 +83,19 @@ export function progressVariance(bundle: ProjectBundle, now: Date = new Date()):
     'percentage-points',
     [project.sourceDatasetId],
     'financialProgress − overallProgress.',
-    now,
+    asOf,
   );
 }
 
 /** Chênh lệch ngân sách điều chỉnh so với ngân sách phê duyệt ban đầu. */
-export function budgetVariance(bundle: ProjectBundle, now: Date = new Date()): KpiResult {
+export function budgetVariance(bundle: ProjectBundle, asOf: Date): KpiResult {
   const { project } = bundle;
   if (project.adjustedBudget == null)
     return unavailableKpi(
       'VND',
       ['adjustedBudget'],
       'Dự án chưa có ngân sách điều chỉnh — chưa có căn cứ so sánh.',
-      now,
+      asOf,
     );
   const value = project.adjustedBudget - project.approvedBudget;
   return availableKpi(
@@ -98,20 +103,20 @@ export function budgetVariance(bundle: ProjectBundle, now: Date = new Date()): K
     'VND',
     [project.sourceDatasetId],
     'adjustedBudget − approvedBudget.',
-    now,
+    asOf,
   );
 }
 
 /** Số ngày dự báo chậm so với kế hoạch (forecastCompletionDate − plannedCompletionDate). Âm nghĩa
  * là dự báo về đích sớm hơn kế hoạch. */
-export function forecastDelayInDays(bundle: ProjectBundle, now: Date = new Date()): KpiResult {
+export function forecastDelayInDays(bundle: ProjectBundle, asOf: Date): KpiResult {
   const { project } = bundle;
   if (!project.forecastCompletionDate || !project.plannedCompletionDate)
     return unavailableKpi(
       'days',
       ['forecastCompletionDate', 'plannedCompletionDate'],
       'Thiếu ngày dự báo hoặc ngày kế hoạch hoàn thành.',
-      now,
+      asOf,
     );
   const value = daysBetween(project.plannedCompletionDate, project.forecastCompletionDate);
   return availableKpi(
@@ -119,32 +124,29 @@ export function forecastDelayInDays(bundle: ProjectBundle, now: Date = new Date(
     'days',
     [project.sourceDatasetId],
     'forecastCompletionDate − plannedCompletionDate, tính bằng ngày.',
-    now,
+    asOf,
   );
 }
 
-/** Số vướng mắc quá hạn (dueAt đã qua, chưa resolved/closed) tại thời điểm `now`. */
-export function overdueIssueCount(
-  issues: readonly ProjectIssue[],
-  now: Date = new Date(),
-): KpiResult {
+/** Số vướng mắc quá hạn (dueAt đã qua, chưa resolved/closed) tại thời điểm `asOf`. */
+export function overdueIssueCount(issues: readonly ProjectIssue[], asOf: Date): KpiResult {
   const relevant = issues.filter((i) => i.dueAt);
   if (relevant.length === 0)
     return unavailableKpi(
       'count',
       ['issue.dueAt'],
       'Không có vướng mắc nào khai báo hạn xử lý (dueAt).',
-      now,
+      asOf,
     );
   const overdue = relevant.filter(
-    (i) => isOpenIssueStatus(i.status) && new Date(i.dueAt as string).getTime() < now.getTime(),
+    (i) => isOpenIssueStatus(i.status) && new Date(i.dueAt as string).getTime() < asOf.getTime(),
   );
   return availableKpi(
     overdue.length,
     'count',
     [...new Set(issues.map((i) => i.projectId))],
-    'Số issue có dueAt < hiện tại và status chưa resolved/closed.',
-    now,
+    'Số issue có dueAt < asOf và status chưa resolved/closed.',
+    asOf,
   );
 }
 
@@ -153,7 +155,7 @@ export function overdueIssueCount(
  * land-clearance nào (không có nghĩa là 100% hay 0%, mà là "không áp dụng / chưa có dữ liệu"). */
 export function landClearanceCompletionRate(
   issues: readonly ProjectIssue[],
-  now: Date = new Date(),
+  asOf: Date,
 ): KpiResult {
   const landClearanceIssues = issues.filter((i) => i.category === 'land-clearance');
   if (landClearanceIssues.length === 0)
@@ -161,7 +163,7 @@ export function landClearanceCompletionRate(
       '%',
       ['issue.category=land-clearance'],
       'Dự án không có vướng mắc giải phóng mặt bằng nào được ghi nhận.',
-      now,
+      asOf,
     );
   const resolved = landClearanceIssues.filter(
     (i) => i.status === 'resolved' || i.status === 'closed',
@@ -172,23 +174,28 @@ export function landClearanceCompletionRate(
     '%',
     [...new Set(landClearanceIssues.map((i) => i.projectId))],
     'Số issue land-clearance đã resolved/closed / tổng số issue land-clearance × 100.',
-    now,
+    asOf,
   );
 }
 
-/** Độ mới dữ liệu tính bằng số ngày kể từ `project.dataUpdatedAt`. */
-export function dataFreshness(bundle: ProjectBundle, now: Date = new Date()): KpiResult {
+/** Độ mới dữ liệu tính bằng số ngày kể từ `project.dataUpdatedAt` tới `asOf`. */
+export function dataFreshness(bundle: ProjectBundle, asOf: Date): KpiResult {
   const { project } = bundle;
   const updated = new Date(project.dataUpdatedAt);
   if (Number.isNaN(updated.getTime()))
-    return unavailableKpi('days', ['dataUpdatedAt'], 'dataUpdatedAt không hợp lệ hoặc trống.', now);
-  const ageDays = Math.max(0, Math.round((now.getTime() - updated.getTime()) / DAY_MS));
+    return unavailableKpi(
+      'days',
+      ['dataUpdatedAt'],
+      'dataUpdatedAt không hợp lệ hoặc trống.',
+      asOf,
+    );
+  const ageDays = Math.max(0, Math.round((asOf.getTime() - updated.getTime()) / DAY_MS));
   return availableKpi(
     ageDays,
     'days',
     [project.sourceDatasetId],
-    'Số ngày kể từ dataUpdatedAt tới thời điểm tính.',
-    now,
+    'Số ngày kể từ dataUpdatedAt tới asOf.',
+    asOf,
   );
 }
 
@@ -197,7 +204,7 @@ export function dataFreshness(bundle: ProjectBundle, now: Date = new Date()): Kp
  * Danh sách field cố định, không đoán field tuỳ theo trạng thái dự án — một dự án `proposed` sẽ tự
  * nhiên có completeness thấp hơn, điều đó là đúng và có ý nghĩa, không phải lỗi.
  */
-export function dataCompleteness(bundle: ProjectBundle, now: Date = new Date()): KpiResult {
+export function dataCompleteness(bundle: ProjectBundle, asOf: Date): KpiResult {
   const { project } = bundle;
   const checklist: Array<[string, unknown]> = [
     ['projectManagerId', project.projectManagerId],
@@ -219,7 +226,7 @@ export function dataCompleteness(bundle: ProjectBundle, now: Date = new Date()):
     value,
     unit: '%',
     status: 'ok',
-    calculatedAt: now.toISOString(),
+    calculatedAt: asOf.toISOString(),
     sourceDatasetIds: [project.sourceDatasetId],
     missingInputs,
     explanation:

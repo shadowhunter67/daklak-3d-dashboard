@@ -69,6 +69,23 @@ describe('validateProjectRecord', () => {
     expect(errors.some((e) => e.includes('disbursedAmount'))).toBe(true);
   });
 
+  it('rejects a non-integer VND amount', () => {
+    const errors = validateProjectRecord(makeProject({ approvedBudget: 100.5 }));
+    expect(errors.some((e) => e.includes('approvedBudget'))).toBe(true);
+  });
+
+  it('rejects a negative VND amount', () => {
+    const errors = validateProjectRecord(makeProject({ disbursedAmount: -1 }));
+    expect(errors.some((e) => e.includes('disbursedAmount'))).toBe(true);
+  });
+
+  it('rejects a VND amount above Number.MAX_SAFE_INTEGER', () => {
+    const errors = validateProjectRecord(
+      makeProject({ approvedBudget: Number.MAX_SAFE_INTEGER + 2, disbursedAmount: 0 }),
+    );
+    expect(errors.some((e) => e.includes('approvedBudget'))).toBe(true);
+  });
+
   it('prefers adjustedBudget over approvedBudget as the ceiling', () => {
     const errors = validateProjectRecord(
       makeProject({ approvedBudget: 100, adjustedBudget: 200, disbursedAmount: 150 }),
@@ -146,6 +163,7 @@ describe('validateProjectIssueRecord', () => {
       resolvedAt: '2026-02-01T00:00:00.000Z',
       status: 'open',
       evidenceIds: [],
+      sourceDatasetId: 'ds-issues',
     };
     expect(validateProjectIssueRecord(issue).some((e) => e.includes('resolvedAt'))).toBe(true);
   });

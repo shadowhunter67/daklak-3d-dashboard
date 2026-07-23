@@ -30,11 +30,13 @@ export interface DataQualitySummary {
   calculatedAt: string;
 }
 
+/** `context.asOf` là bắt buộc (Phase 1.5 hardening) — không có `new Date()` ngầm ở đây; caller
+ * (adapter/UI) cung cấp thời điểm tính toán tường minh. */
 export function summarizeDataQuality(
   bundles: readonly ProjectBundle[],
   context: DataQualityContext,
-  now: Date = context.now ?? new Date(),
 ): DataQualitySummary {
+  const { asOf } = context;
   const perRecordErrorsByProject = new Map<string, string[]>();
   for (const bundle of bundles) {
     const errors: string[] = [
@@ -55,7 +57,7 @@ export function summarizeDataQuality(
     0,
   );
 
-  const crossRecordIssues = runDataQualityRules(bundles, { ...context, now });
+  const crossRecordIssues = runDataQualityRules(bundles, context);
   const staleProjectCount = crossRecordIssues.filter((i) => i.rule === 'stale-data').length;
   const duplicateRecordCount = crossRecordIssues.filter(
     (i) => i.rule === 'duplicate-primary-key',
@@ -74,6 +76,6 @@ export function summarizeDataQuality(
     missingRequiredFieldIssueCount,
     totalDataQualityIssues: missingRequiredFieldIssueCount + crossRecordIssues.length,
     sourceAvailable: true,
-    calculatedAt: now.toISOString(),
+    calculatedAt: asOf.toISOString(),
   };
 }

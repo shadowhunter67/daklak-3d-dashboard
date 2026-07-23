@@ -126,6 +126,7 @@ describe('overdueIssueCount', () => {
     openedAt: '2026-01-01T00:00:00.000Z',
     status: 'open',
     evidenceIds: [],
+    sourceDatasetId: 'ds-issues',
   };
 
   it('is unavailable when no issue declares a due date', () => {
@@ -165,6 +166,7 @@ describe('landClearanceCompletionRate', () => {
         openedAt: '2026-01-01T00:00:00.000Z',
         status: 'resolved',
         evidenceIds: [],
+        sourceDatasetId: 'ds-issues',
       },
       {
         id: 'is-2',
@@ -176,6 +178,7 @@ describe('landClearanceCompletionRate', () => {
         openedAt: '2026-01-01T00:00:00.000Z',
         status: 'open',
         evidenceIds: [],
+        sourceDatasetId: 'ds-issues',
       },
       {
         id: 'is-3',
@@ -187,6 +190,7 @@ describe('landClearanceCompletionRate', () => {
         openedAt: '2026-01-01T00:00:00.000Z',
         status: 'open',
         evidenceIds: [],
+        sourceDatasetId: 'ds-issues',
       },
     ];
     const result = landClearanceCompletionRate(issues, now);

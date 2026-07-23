@@ -41,6 +41,20 @@ function isBefore(a: string, b: string): boolean {
   return new Date(a).getTime() <= new Date(b).getTime();
 }
 
+/**
+ * VND amount contract (Phase 1.5 — see "Chuẩn hoá tiền tệ" in docs/domain-model.md, Option A):
+ * finite, integer, non-negative, within `Number.MAX_SAFE_INTEGER`. No fractional VND exists at
+ * project-budget scale, so a non-integer value is always a data error, never legitimate precision.
+ */
+function isValidVndAmount(value: number): boolean {
+  return (
+    Number.isFinite(value) &&
+    Number.isInteger(value) &&
+    value >= 0 &&
+    value <= Number.MAX_SAFE_INTEGER
+  );
+}
+
 /** Rule §8 (spec): geometry phải hợp lệ ở mức validation hiện có — kiểm tra cấu trúc/toạ độ, không
  * phải một GIS geometry engine đầy đủ (topology/self-intersection nằm ngoài phạm vi frontend, xem
  * AGENTS.md "không đưa xử lý GeoPandas/Shapely nặng vào browser"). */
@@ -110,8 +124,18 @@ export function validateProjectRecord(project: Project): string[] {
     errors.push(
       `Project ${label} có disbursedAmount (${project.disbursedAmount}) vượt ngân sách cho phép (${budgetCeiling})`,
     );
-  if (project.approvedBudget < 0) errors.push(`Project ${label} có approvedBudget âm`);
-  if (project.disbursedAmount < 0) errors.push(`Project ${label} có disbursedAmount âm`);
+  if (!isValidVndAmount(project.approvedBudget))
+    errors.push(
+      `Project ${label} có approvedBudget không phải số nguyên VND hợp lệ (không âm, ≤ MAX_SAFE_INTEGER): ${project.approvedBudget}`,
+    );
+  if (project.adjustedBudget !== undefined && !isValidVndAmount(project.adjustedBudget))
+    errors.push(
+      `Project ${label} có adjustedBudget không phải số nguyên VND hợp lệ: ${project.adjustedBudget}`,
+    );
+  if (!isValidVndAmount(project.disbursedAmount))
+    errors.push(
+      `Project ${label} có disbursedAmount không phải số nguyên VND hợp lệ: ${project.disbursedAmount}`,
+    );
 
   for (const [field, value] of [
     ['startDate', project.startDate],
@@ -180,8 +204,14 @@ export function validateWorkPackageRecord(workPackage: WorkPackage): string[] {
     errors.push(
       `WorkPackage ${label} có paidAmount (${workPackage.paidAmount}) vượt budget (${workPackage.budget})`,
     );
-  if (workPackage.budget < 0) errors.push(`WorkPackage ${label} có budget âm`);
-  if (workPackage.paidAmount < 0) errors.push(`WorkPackage ${label} có paidAmount âm`);
+  if (!isValidVndAmount(workPackage.budget))
+    errors.push(
+      `WorkPackage ${label} có budget không phải số nguyên VND hợp lệ: ${workPackage.budget}`,
+    );
+  if (!isValidVndAmount(workPackage.paidAmount))
+    errors.push(
+      `WorkPackage ${label} có paidAmount không phải số nguyên VND hợp lệ: ${workPackage.paidAmount}`,
+    );
 
   return errors;
 }
@@ -208,6 +238,7 @@ export function validateProjectIssueRecord(issue: ProjectIssue): string[] {
   if (!issue.id) errors.push('ProjectIssue thiếu id');
   if (!issue.projectId) errors.push(`ProjectIssue ${label} thiếu projectId`);
   if (!issue.title) errors.push(`ProjectIssue ${label} thiếu title`);
+  if (!issue.sourceDatasetId) errors.push(`ProjectIssue ${label} thiếu sourceDatasetId`);
   if (!isIsoDate(issue.openedAt)) errors.push(`ProjectIssue ${label} có openedAt không hợp lệ`);
   if (
     issue.dueAt &&
@@ -241,7 +272,10 @@ export function validateProgressSnapshotRecord(snapshot: ProgressSnapshot): stri
     if (!isPercentage(value))
       errors.push(`ProgressSnapshot ${label} có ${field}=${value} ngoài khoảng 0-100`);
   }
-  if (snapshot.disbursedAmount < 0) errors.push(`ProgressSnapshot ${label} có disbursedAmount âm`);
+  if (!isValidVndAmount(snapshot.disbursedAmount))
+    errors.push(
+      `ProgressSnapshot ${label} có disbursedAmount không phải số nguyên VND hợp lệ: ${snapshot.disbursedAmount}`,
+    );
   if (!snapshot.sourceDatasetId) errors.push(`ProgressSnapshot ${label} thiếu sourceDatasetId`);
   if (!snapshot.sourceRecordId) errors.push(`ProgressSnapshot ${label} thiếu sourceRecordId`);
 

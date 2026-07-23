@@ -285,6 +285,106 @@ export const DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET: DatasetDescriptor = {
   access: { delivery: 'pmtiles', requiresAuthentication: false },
 };
 
+/**
+ * Provenance for `src/entities/project/fixtures/projects.mock.ts` (Phase 1.5 hardening — see
+ * docs/adr/0001-project-centric-domain.md). These three descriptors exist so every
+ * `sourceDatasetId` a project-domain fixture record cites actually resolves through
+ * `getDatasetById`, the same way every other rendered value in this app already does — a
+ * `sourceDatasetId` that intentionally didn't resolve (Phase 1's original choice) was a
+ * provenance shortcut, not a real invariant, and `catalogValidationIssues` would have no way to
+ * catch a *dangling* project-domain reference the way it catches other kinds of drift.
+ * `authority: 'illustrative'` + `quality.status: 'unverified'` mirror
+ * `COMMUNE_DEMOGRAPHIC_ILLUSTRATIVE_DATASET` above — same shape, same meaning: seeded, deterministic,
+ * demo-only, never a stand-in for a real official source.
+ */
+export const PROJECT_PORTFOLIO_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
+  id: 'project-portfolio-illustrative',
+  title: 'Danh mục dự án trọng điểm (minh họa)',
+  description:
+    'Hồ sơ 9 dự án trọng điểm minh họa (giao thông, năng lượng, thủy lợi, y tế, giáo dục, đô thị, chuyển đổi số) dùng để trình diễn nền tảng điều hành dự án. Không phản ánh dự án, ngân sách hoặc tiến độ chính thức của tỉnh Đắk Lắk; không được dùng cho quyết định quản lý thực tế.',
+  domain: 'planning',
+  classification: 'public',
+  authority: 'illustrative',
+  publicationStatus: 'published',
+  administrativeLevel: 'commune',
+  temporalResolution: 'static',
+  spatialRepresentation: 'point',
+  source: {
+    organization: 'Deterministic seeded demo fixture (nội bộ project)',
+    repositoryPath: 'src/entities/project/fixtures/projects.mock.ts',
+  },
+  version: '1.0.0',
+  period: { label: 'demo' },
+  quality: {
+    status: 'unverified',
+    knownLimitations: [
+      'Dữ liệu minh họa deterministic (seed cố định trong mã nguồn), không phải hồ sơ dự án vận hành thật.',
+      'Tên dự án, cơ quan, nhà thầu, ngân sách và tiến độ đều là hư cấu — chỉ mã hành chính (administrativeAreaCodes) là mã xã/phường thật.',
+      'Không được dùng làm căn cứ cho bất kỳ quyết định quản lý, phê duyệt hay báo cáo thực tế nào.',
+      'Không tính checksum cho dữ liệu minh họa có seed cố định.',
+    ],
+  },
+  access: { delivery: 'bundled-static', requiresAuthentication: false },
+};
+
+export const PROJECT_PROGRESS_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
+  id: 'project-progress-illustrative',
+  title: 'Tiến độ và giải ngân dự án trọng điểm (minh họa)',
+  description:
+    'Chuỗi progress snapshot minh họa (tiến độ khối lượng, tiến độ tài chính, giải ngân) đi kèm danh mục dự án minh họa. Không phải số liệu giải ngân/tiến độ vận hành thật.',
+  domain: 'planning',
+  classification: 'public',
+  authority: 'illustrative',
+  publicationStatus: 'published',
+  administrativeLevel: 'commune',
+  temporalResolution: 'monthly',
+  spatialRepresentation: 'none',
+  source: {
+    organization: 'Deterministic seeded demo fixture (nội bộ project)',
+    repositoryPath: 'src/entities/project/fixtures/projects.mock.ts',
+  },
+  version: '1.0.0',
+  period: { label: 'demo' },
+  quality: {
+    status: 'unverified',
+    knownLimitations: [
+      'Dữ liệu minh họa deterministic, không phải số liệu giải ngân/tiến độ vận hành thật.',
+      'Không được dùng làm căn cứ cho bất kỳ quyết định quản lý, phê duyệt hay báo cáo thực tế nào.',
+      'Không tính checksum cho dữ liệu minh họa có seed cố định.',
+    ],
+  },
+  access: { delivery: 'bundled-static', requiresAuthentication: false },
+};
+
+export const PROJECT_ISSUES_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
+  id: 'project-issues-illustrative',
+  title: 'Vướng mắc dự án trọng điểm (minh họa)',
+  description:
+    'Danh sách vướng mắc minh họa (giải phóng mặt bằng, thủ tục, nhà thầu, tài chính...) gắn với danh mục dự án minh họa. Không phải số liệu vướng mắc vận hành thật.',
+  domain: 'planning',
+  classification: 'public',
+  authority: 'illustrative',
+  publicationStatus: 'published',
+  administrativeLevel: 'commune',
+  temporalResolution: 'event',
+  spatialRepresentation: 'none',
+  source: {
+    organization: 'Deterministic seeded demo fixture (nội bộ project)',
+    repositoryPath: 'src/entities/project/fixtures/projects.mock.ts',
+  },
+  version: '1.0.0',
+  period: { label: 'demo' },
+  quality: {
+    status: 'unverified',
+    knownLimitations: [
+      'Dữ liệu minh họa deterministic, không phải vướng mắc dự án thật đang xử lý.',
+      'Không được dùng làm căn cứ cho bất kỳ quyết định quản lý, phê duyệt hay báo cáo thực tế nào.',
+      'Không tính checksum cho dữ liệu minh họa có seed cố định.',
+    ],
+  },
+  access: { delivery: 'bundled-static', requiresAuthentication: false },
+};
+
 export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   ADMINISTRATIVE_UNITS_DATASET,
   PROVINCE_OVERVIEW_INDICATORS_DATASET,
@@ -294,6 +394,9 @@ export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   ROAD_NETWORK_3D2D_DATASET,
   TERRAIN_IMAGERY_DATASET,
   DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET,
+  PROJECT_PORTFOLIO_ILLUSTRATIVE_DATASET,
+  PROJECT_PROGRESS_ILLUSTRATIVE_DATASET,
+  PROJECT_ISSUES_ILLUSTRATIVE_DATASET,
 ];
 
 export function getDatasetById(id: string): DatasetDescriptor | undefined {

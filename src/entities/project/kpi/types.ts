@@ -15,17 +15,23 @@ export interface KpiResult {
   explanation: string;
 }
 
+/**
+ * `asOf` là bắt buộc, không có giá trị mặc định — domain layer không được tự gọi `new Date()`
+ * (Phase 1.5 hardening, xem docs/adr/0001-project-centric-domain.md). Caller ở lớp adapter/UI
+ * (Phase 2A: `BundledProjectPortfolioSource`) chịu trách nhiệm cung cấp `asOf` mặc định rõ ràng
+ * (ví dụ thời điểm request), để mọi phép tính KPI luôn deterministic và test được với ngày cố định.
+ */
 export function unavailableKpi(
   unit: string,
   missingInputs: string[],
   explanation: string,
-  now: Date = new Date(),
+  asOf: Date,
 ): KpiResult {
   return {
     value: null,
     unit,
     status: 'unavailable',
-    calculatedAt: now.toISOString(),
+    calculatedAt: asOf.toISOString(),
     sourceDatasetIds: [],
     missingInputs,
     explanation,
@@ -37,13 +43,13 @@ export function availableKpi(
   unit: string,
   sourceDatasetIds: string[],
   explanation: string,
-  now: Date = new Date(),
+  asOf: Date,
 ): KpiResult {
   return {
     value,
     unit,
     status: 'ok',
-    calculatedAt: now.toISOString(),
+    calculatedAt: asOf.toISOString(),
     sourceDatasetIds,
     missingInputs: [],
     explanation,

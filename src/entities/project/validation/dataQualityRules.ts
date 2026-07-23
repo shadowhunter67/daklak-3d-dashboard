@@ -7,6 +7,7 @@
  * sách này, không phải để chặn build (khác với `validateProjectRecord`, dùng cho `npm test`).
  */
 import type { Agency, Contractor, DataQualityIssue, Evidence, ProjectBundle } from '../types';
+import { groupSnapshotsByIdentity } from './progressSnapshotSelection';
 
 const DEFAULT_FRESHNESS_SLA_MS = 90 * 24 * 60 * 60 * 1000; // 90 ngày — mặc định cho mock/demo.
 
@@ -15,7 +16,9 @@ export interface DataQualityContext {
   agencies?: readonly Agency[];
   contractors?: readonly Contractor[];
   evidence?: readonly Evidence[];
-  now?: Date;
+  /** Bắt buộc, không có giá trị mặc định — domain layer không được tự gọi `new Date()` (Phase 1.5
+   * hardening). Caller (adapter/UI, Phase 2A) chịu trách nhiệm cung cấp thời điểm tính toán. */
+  asOf: Date;
   /** SLA độ mới dữ liệu — mỗi dự án có thể có nhịp cập nhật khác nhau; mặc định 90 ngày khi không
    * khai báo, giống tinh thần `computeFreshness` trong data-platform (không đoán một ngưỡng toàn
    * cục duy nhất, nhưng domain này chưa có refreshPolicy per-project nên dùng một default rõ ràng,
@@ -49,7 +52,7 @@ export function runDataQualityRules(
   context: DataQualityContext,
 ): DataQualityIssue[] {
   const issues: DataQualityIssue[] = [];
-  const now = context.now ?? new Date();
+  const { asOf } = context;
   const freshnessSlaMs = context.freshnessSlaMs ?? DEFAULT_FRESHNESS_SLA_MS;
   const agencyIds = new Set((context.agencies ?? []).map((a) => a.id));
   const contractorIds = new Set((context.contractors ?? []).map((c) => c.id));
@@ -118,7 +121,7 @@ export function runDataQualityRules(
     if (
       !isStaticStatus &&
       !Number.isNaN(updatedAtMs) &&
-      now.getTime() - updatedAtMs > freshnessSlaMs
+      asOf.getTime() - updatedAtMs > freshnessSlaMs
     )
       issues.push(
         issue(
@@ -211,6 +214,36 @@ export function runDataQualityRules(
             `projectId không tồn tại: ${snapshot.projectId}`,
           ),
         );
+    }
+
+    // Rule §6 (spec Phase 1.5): identity = projectId + observedAt + sourceDatasetId (xem
+    // progressSnapshotSelection.ts). Cùng identity với cùng sourceRecordId là trùng lặp thật
+    // (severity error, ví dụ lỗi import lặp); cùng identity nhưng khác sourceRecordId là nhiều
+    // giai đoạn xác thực hợp lệ của cùng một lần quan sát (severity warning) —
+    // `selectAuthoritativeSnapshot` chọn bản ghi dùng cho KPI, không phải lỗi dữ liệu.
+    for (const [key, group] of groupSnapshotsByIdentity(progressSnapshots)) {
+      if (group.length <= 1) continue;
+      const distinctRecordIds = new Set(group.map((s) => s.sourceRecordId));
+      if (distinctRecordIds.size === 1) {
+        issues.push(
+          issue(
+            'progressSnapshot',
+            key,
+            'duplicate-primary-key',
+            `Trùng progress snapshot (cùng projectId+observedAt+sourceDatasetId+sourceRecordId): ${key}`,
+          ),
+        );
+      } else {
+        issues.push(
+          issue(
+            'progressSnapshot',
+            key,
+            'multiple-verification-stage-records',
+            `Nhiều bản ghi cho cùng identity (${key}) ở các giai đoạn xác thực khác nhau — dùng selectAuthoritativeSnapshot để chọn bản ghi tính KPI.`,
+            'warning',
+          ),
+        );
+      }
     }
   }
 

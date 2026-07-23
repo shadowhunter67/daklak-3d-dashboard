@@ -40,7 +40,7 @@ function bundle(
 
 const context = {
   validAdministrativeCodes: new Set(['24133']),
-  now: new Date('2026-07-23T00:00:00.000Z'),
+  asOf: new Date('2026-07-23T00:00:00.000Z'),
 };
 
 describe('runDataQualityRules', () => {
@@ -131,5 +131,77 @@ describe('runDataQualityRules', () => {
       context,
     );
     expect(issues.some((i) => i.rule === 'stale-data')).toBe(false);
+  });
+
+  const baseSnapshot = {
+    projectId: 'prj-1',
+    observedAt: '2026-06-01T00:00:00.000Z',
+    plannedPhysicalProgress: 50,
+    physicalProgress: 50,
+    financialProgress: 50,
+    disbursedAmount: 1000,
+    sourceDatasetId: 'ds-progress',
+    importedAt: '2026-06-02T00:00:00.000Z',
+  } as const;
+
+  it('flags an exact duplicate progress snapshot (same identity and sourceRecordId) as an error', () => {
+    const issues = runDataQualityRules(
+      [
+        bundle(
+          {},
+          {
+            progressSnapshots: [
+              { ...baseSnapshot, sourceRecordId: 'rec-1', verificationStatus: 'raw' },
+              { ...baseSnapshot, sourceRecordId: 'rec-1', verificationStatus: 'raw' },
+            ],
+          },
+        ),
+      ],
+      context,
+    );
+    const duplicate = issues.find(
+      (i) => i.entityType === 'progressSnapshot' && i.rule === 'duplicate-primary-key',
+    );
+    expect(duplicate?.severity).toBe('error');
+  });
+
+  it('flags same-identity, different-sourceRecordId snapshots as a warning, not an error', () => {
+    const issues = runDataQualityRules(
+      [
+        bundle(
+          {},
+          {
+            progressSnapshots: [
+              { ...baseSnapshot, sourceRecordId: 'rec-raw', verificationStatus: 'raw' },
+              { ...baseSnapshot, sourceRecordId: 'rec-approved', verificationStatus: 'approved' },
+            ],
+          },
+        ),
+      ],
+      context,
+    );
+    const multiStage = issues.find(
+      (i) =>
+        i.entityType === 'progressSnapshot' && i.rule === 'multiple-verification-stage-records',
+    );
+    expect(multiStage?.severity).toBe('warning');
+    expect(issues.some((i) => i.rule === 'duplicate-primary-key')).toBe(false);
+  });
+
+  it('does not flag a single progress snapshot per identity', () => {
+    const issues = runDataQualityRules(
+      [
+        bundle(
+          {},
+          {
+            progressSnapshots: [
+              { ...baseSnapshot, sourceRecordId: 'rec-1', verificationStatus: 'approved' },
+            ],
+          },
+        ),
+      ],
+      context,
+    );
+    expect(issues.some((i) => i.entityType === 'progressSnapshot')).toBe(false);
   });
 });
