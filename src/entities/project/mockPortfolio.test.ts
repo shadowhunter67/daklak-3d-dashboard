@@ -1,22 +1,22 @@
 import { describe, expect, it } from 'vitest';
-import labels from '../../../assets/maps/daklak/daklak-labels.json';
-import { getDatasetById } from '../../../data-platform/catalog/datasets';
-import { PROJECT_SECTORS } from '../types';
+import labels from '../../assets/maps/daklak/daklak-labels.json';
+import { getDatasetById } from '../../data-platform/catalog/datasets';
+import { PROJECT_SECTORS } from './types';
 import {
   validateMilestoneRecord,
   validateProgressSnapshotRecord,
   validateProjectIssueRecord,
   validateProjectRecord,
   validateWorkPackageRecord,
-} from '../validation/validateProject';
-import { runDataQualityRules } from '../validation/dataQualityRules';
+} from './validation/validateProject';
+import { runDataQualityRules } from './validation/dataQualityRules';
 import {
   MOCK_AGENCIES,
   MOCK_CONTRACTORS,
   MOCK_EVIDENCE,
   MOCK_PROJECT_BUNDLES,
   MOCK_REFERENCE_DATE,
-} from './projects.mock';
+} from './mockPortfolio';
 
 const validAdministrativeCodes = new Set(Object.keys(labels));
 

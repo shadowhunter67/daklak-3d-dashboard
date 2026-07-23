@@ -15,12 +15,29 @@ describe('dashboard URL state', () => {
       selectedCode: '24133',
     });
   });
-  it('falls back safely for invalid values', () => {
+  it('falls back to Executive Overview for invalid values (Phase 2A default landing)', () => {
     expect(parseDashboardUrl('?view=street-view&mode=bad&ward=99999', codes)).toEqual({
-      viewMode: '3d',
+      viewMode: 'overview',
       dataMode: 'overview',
       selectedCode: null,
     });
+  });
+  it('defaults to Executive Overview when there is no view param at all', () => {
+    expect(parseDashboardUrl('', codes)).toEqual({
+      viewMode: 'overview',
+      dataMode: 'overview',
+      selectedCode: null,
+    });
+  });
+  it('resolves the explicit canonical view=overview the same as no param', () => {
+    expect(parseDashboardUrl('?view=overview', codes)).toEqual({
+      viewMode: 'overview',
+      dataMode: 'overview',
+      selectedCode: null,
+    });
+  });
+  it('still resolves ?view=3d to the 3D experience (backward compatibility)', () => {
+    expect(parseDashboardUrl('?view=3d', codes).viewMode).toBe('3d');
   });
   it('parses the detail-map view mode (view=map), added for the MapLibre detail map', () => {
     expect(parseDashboardUrl('?view=map&mode=overview&ward=24133', codes)).toEqual({
@@ -38,6 +55,11 @@ describe('dashboard URL state', () => {
     expect(
       serializeDashboardUrl({ viewMode: 'map', dataMode: 'overview', selectedCode: null }),
     ).toBe('?view=map&mode=overview');
+  });
+  it('serializes Executive Overview as the canonical view=overview', () => {
+    expect(
+      serializeDashboardUrl({ viewMode: 'overview', dataMode: 'overview', selectedCode: null }),
+    ).toBe('?view=overview&mode=overview');
   });
 });
 

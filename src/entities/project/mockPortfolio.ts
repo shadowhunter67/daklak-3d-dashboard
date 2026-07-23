@@ -13,7 +13,7 @@
  * Không có ngày `now` động ở đây — mọi tính toán "quá hạn"/"stale" trong test phải truyền tường
  * minh `MOCK_REFERENCE_DATE` làm `now`, để kết quả test ổn định vĩnh viễn bất kể ngày chạy thật.
  */
-import type { Agency, Contractor, Evidence, ProjectBundle } from '../types';
+import type { Agency, Contractor, Evidence, ProjectBundle } from './types';
 
 export const MOCK_REFERENCE_DATE = '2026-07-23T00:00:00.000Z';
 const PROJECT_PORTFOLIO_DATASET_ID = 'project-portfolio-illustrative';
@@ -632,7 +632,7 @@ export const MOCK_PROJECT_BUNDLES: ProjectBundle[] = [
       geometry: { type: 'Point', coordinates: [108.35, 12.75] },
       // Cố tình cũ hơn 90 ngày so với MOCK_REFERENCE_DATE (2026-07-23) để minh hoạ scenario "dữ
       // liệu quá hạn" (stale-data) trong data-quality summary/Executive Overview — xem
-      // fixtures/projects.mock.test.ts và dataQualityRules.ts rule §9.
+      // mockPortfolio.test.ts và dataQualityRules.ts rule §9.
       dataUpdatedAt: '2026-02-01T00:00:00.000Z',
       dataOwner: MOCK_DATA_OWNER,
       sourceDatasetId: PROJECT_PORTFOLIO_DATASET_ID,

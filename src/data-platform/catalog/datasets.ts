@@ -286,7 +286,7 @@ export const DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET: DatasetDescriptor = {
 };
 
 /**
- * Provenance for `src/entities/project/fixtures/projects.mock.ts` (Phase 1.5 hardening — see
+ * Provenance for `src/entities/project/mockPortfolio.ts` (Phase 1.5 hardening — see
  * docs/adr/0001-project-centric-domain.md). These three descriptors exist so every
  * `sourceDatasetId` a project-domain fixture record cites actually resolves through
  * `getDatasetById`, the same way every other rendered value in this app already does — a
@@ -311,7 +311,7 @@ export const PROJECT_PORTFOLIO_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
   spatialRepresentation: 'point',
   source: {
     organization: 'Deterministic seeded demo fixture (nội bộ project)',
-    repositoryPath: 'src/entities/project/fixtures/projects.mock.ts',
+    repositoryPath: 'src/entities/project/mockPortfolio.ts',
   },
   version: '1.0.0',
   period: { label: 'demo' },
@@ -341,7 +341,7 @@ export const PROJECT_PROGRESS_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
   spatialRepresentation: 'none',
   source: {
     organization: 'Deterministic seeded demo fixture (nội bộ project)',
-    repositoryPath: 'src/entities/project/fixtures/projects.mock.ts',
+    repositoryPath: 'src/entities/project/mockPortfolio.ts',
   },
   version: '1.0.0',
   period: { label: 'demo' },
@@ -370,7 +370,7 @@ export const PROJECT_ISSUES_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
   spatialRepresentation: 'none',
   source: {
     organization: 'Deterministic seeded demo fixture (nội bộ project)',
-    repositoryPath: 'src/entities/project/fixtures/projects.mock.ts',
+    repositoryPath: 'src/entities/project/mockPortfolio.ts',
   },
   version: '1.0.0',
   period: { label: 'demo' },

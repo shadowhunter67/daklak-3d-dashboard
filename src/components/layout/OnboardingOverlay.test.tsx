@@ -26,6 +26,19 @@ describe('OnboardingOverlay', () => {
     expect(screen.getByText('Lớp bản đồ')).toBeInTheDocument();
   });
 
+  it('does not auto-open on first visit while landing on Executive Overview', () => {
+    useMapStore.setState({ viewMode: 'overview' });
+    render(<OnboardingOverlay />);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('still opens from the help control while on Executive Overview', () => {
+    useMapStore.setState({ viewMode: 'overview' });
+    render(<OnboardingOverlay />);
+    act(() => useMapStore.getState().requestHelp());
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
   it('can be opened again from the help control', () => {
     window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true');
     render(<OnboardingOverlay />);

@@ -8,6 +8,19 @@ const modes = [
   ['heatmap', 'Heatmap'],
 ] as const;
 
+// Primary navigation (Phase 2A): the four mutually-exclusive top-level experiences. Distinct from
+// the `modes` thematic tabs above (which only apply within the 3D/2D map experiences) and from the
+// quick-toggle buttons further down (kept unchanged for existing keyboard muscle-memory/tests).
+// Label is "Tổng quan điều hành" (not "Tổng quan") specifically to avoid an accessible-name clash
+// with the `modes` data-mode tab of the same literal text — the two are unrelated concepts
+// (top-level view vs. 3D thematic overlay) and must resolve unambiguously by role+name in tests.
+const primaryViews = [
+  ['overview', 'Tổng quan điều hành'],
+  ['3d', '3D'],
+  ['table', 'Danh sách'],
+  ['map', 'Bản đồ chi tiết'],
+] as const;
+
 export function DashboardHeader() {
   const [shareStatus, setShareStatus] = useState('');
   const shareTimer = useRef(0);
@@ -48,6 +61,21 @@ export function DashboardHeader() {
           </h1>
         </div>
       </div>
+      <span className="header-mock-badge" role="note">
+        DỮ LIỆU MINH HỌA
+      </span>
+      <nav className="primary-nav" aria-label="Điều hướng chính">
+        {primaryViews.map(([mode, label]) => (
+          <button
+            key={mode}
+            className={viewMode === mode ? 'active' : ''}
+            aria-current={viewMode === mode ? 'page' : undefined}
+            onClick={() => setViewMode(mode)}
+          >
+            {label}
+          </button>
+        ))}
+      </nav>
       <nav className="mode-tabs" aria-label="Chế độ dữ liệu">
         {modes.map(([mode, label]) => (
           <button
@@ -62,6 +90,16 @@ export function DashboardHeader() {
       </nav>
       <div className="header-meta">
         <span>{datasetManifest.administrativeUnitCount} xã/phường</span>
+        <button
+          onClick={() => setViewMode('overview')}
+          aria-pressed={viewMode === 'overview'}
+          aria-label="Mở tổng quan điều hành"
+        >
+          <span className="control-label control-label--desktop">Tổng quan điều hành</span>
+          <span className="control-label control-label--mobile" aria-hidden="true">
+            Tổng quan
+          </span>
+        </button>
         <button
           onClick={() => setViewMode(viewMode === '3d' ? 'table' : '3d')}
           aria-pressed={viewMode === 'table'}

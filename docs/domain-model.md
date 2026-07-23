@@ -26,10 +26,14 @@ src/entities/project/
     index.ts                     9 hàm KPI (disbursementRate, scheduleVariance, progressVariance,
                                   budgetVariance, forecastDelayInDays, overdueIssueCount,
                                   landClearanceCompletionRate, dataFreshness, dataCompleteness)
-  fixtures/
-    projects.mock.ts             9 dự án minh hoạ (giao thông ×2, năng lượng, thuỷ lợi, y tế ×2,
+  mockPortfolio.ts               9 dự án minh hoạ (giao thông ×2, năng lượng, thuỷ lợi, y tế ×2,
                                   giáo dục, đô thị, chuyển đổi số) — phủ đủ scenario yêu cầu (xem
-                                  "Scenario coverage" bên dưới)
+                                  "Scenario coverage" bên dưới). KHÔNG nằm dưới một thư mục
+                                  `fixtures/` dù tên biến là `MOCK_*` — nó là dữ liệu minh hoạ được
+                                  import bởi production code thật (`BundledProjectPortfolioSource`,
+                                  Phase 2A), và `scripts/validate_public_build.mjs` chặn mọi import
+                                  production từ path chứa `/fixtures/` (quy ước "fixtures chỉ dành
+                                  cho test") — xem "Data access boundary" trong ADR 0001.
   portfolioAssessment.ts         assessPortfolio(): tách validationErrors / qualityIssues /
                                   businessAlerts — xem "Ba nhóm kết quả" bên dưới
   dataQualitySummary.ts          summarizeDataQuality(): tổng hợp cho UI (Phase 2)
@@ -77,7 +81,7 @@ quả đó với `validateProject.ts` thành một `DataQualitySummary` — shap
 
 ## Dữ liệu mẫu
 
-`fixtures/projects.mock.ts` — 9 dự án **DỮ LIỆU MINH HỌA**, deterministic (không phụ thuộc
+`mockPortfolio.ts` — 9 dự án **DỮ LIỆU MINH HỌA**, deterministic (không phụ thuộc
 `Date.now()`; mọi tính toán "quá hạn"/"stale" trong test dùng `MOCK_REFERENCE_DATE` cố định). Mã
 hành chính dùng trong fixture là mã xã/phường **thật** của Đắk Lắk (đối chiếu qua
 `daklak-labels.json` — chỉ trong test, xem "Import boundary" bên dưới) để đi qua được rule
@@ -101,7 +105,7 @@ vào `src/data-platform/catalog/datasets.ts` (`project-portfolio-illustrative`,
 `project-progress-illustrative`, `project-issues-illustrative` — `classification: 'public'`,
 `authority: 'illustrative'`, `access.delivery: 'bundled-static'`), và mọi fixture record
 (`Project.sourceDatasetId`, `ProgressSnapshot.sourceDatasetId`, `ProjectIssue.sourceDatasetId` — field
-mới thêm) trỏ vào một trong ba id đó. `fixtures/projects.mock.test.ts` xác nhận mọi id resolve được,
+mới thêm) trỏ vào một trong ba id đó. `mockPortfolio.test.ts` xác nhận mọi id resolve được,
 đều public/illustrative — không có descriptor "official" nào được tạo cho dữ liệu minh hoạ.
 
 ### Import boundary — domain không phụ thuộc GIS asset/UI
@@ -170,7 +174,7 @@ completed (prj-006), stale data (prj-007, `dataUpdatedAt` cố tình cũ hơn 90
 án, xác nhận bằng test), missing optional KPI input (prj-002/prj-007, không có
 `adjustedBudget`/`forecastCompletionDate`), không geometry (prj-009), nhiều administrative area
 (prj-001), overdue critical issue (prj-005), không issue (prj-004/006/008/009), progress snapshot
-history nhiều điểm (prj-001). `fixtures/projects.mock.test.ts` có test riêng cho từng scenario.
+history nhiều điểm (prj-001). `mockPortfolio.test.ts` có test riêng cho từng scenario.
 
 ### API contract gate (chuẩn bị Phase 3, không triển khai trong Phase 1.5)
 

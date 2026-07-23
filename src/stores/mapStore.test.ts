@@ -69,10 +69,10 @@ describe('createMapStore', () => {
 });
 
 describe('getInitialDashboardUrlState', () => {
-  it('reads the default state from an empty URL', () => {
+  it('reads the default state from an empty URL (Executive Overview, Phase 2A landing)', () => {
     window.history.replaceState(null, '', '/');
     expect(getInitialDashboardUrlState()).toEqual({
-      viewMode: '3d',
+      viewMode: 'overview',
       dataMode: 'overview',
       selectedCode: null,
       detailMapLayers: DEFAULT_DETAIL_MAP_LAYER_STATE,

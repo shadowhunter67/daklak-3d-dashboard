@@ -7,7 +7,7 @@ import {
   MOCK_EVIDENCE,
   MOCK_PROJECT_BUNDLES,
   MOCK_REFERENCE_DATE,
-} from './fixtures/projects.mock';
+} from './mockPortfolio';
 import type { ProjectBundle } from './types';
 
 const validAdministrativeCodes = new Set(Object.keys(labels));
