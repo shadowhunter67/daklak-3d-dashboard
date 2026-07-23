@@ -1,11 +1,19 @@
 /**
- * Bộ dữ liệu mẫu deterministic cho 9 dự án trọng điểm minh hoạ, trải nhiều lĩnh vực theo đúng yêu
- * cầu spec (giao thông, năng lượng, thuỷ lợi, y tế, giáo dục, đô thị, chuyển đổi số).
+ * DỮ LIỆU MINH HỌA ĐƯỢC ĐÓNG GÓI VÀO PRODUCTION BUILD (không phải test fixture) — bộ dữ liệu mẫu
+ * deterministic cho 9 dự án trọng điểm minh hoạ, trải nhiều lĩnh vực theo đúng yêu cầu spec (giao
+ * thông, năng lượng, thuỷ lợi, y tế, giáo dục, đô thị, chuyển đổi số). File này nằm ngoài
+ * `/fixtures/` và không có tên "mock"/"fixture" một cách vô tình — nó vẫn được đặt tên
+ * `mockPortfolio.ts` (đã đổi tên từ `fixtures/projects.mock.ts` sang đây) vì
+ * `scripts/validate_public_build.mjs` cấm production code import từ bất kỳ path `/fixtures/`
+ * nào; đặt file ở đây là quyết định có chủ đích để dữ liệu minh hoạ này được phép nằm trong bundle
+ * công khai (`BundledProjectPortfolioSource` import trực tiếp file này ở `src/data/`).
  *
- * DỮ LIỆU MINH HỌA — không phải số liệu vận hành thật. Tên dự án, số liệu ngân sách/tiến độ, nhà
- * thầu và cơ quan đều là hư cấu, không trùng với dự án thật nào đang triển khai tại Đắk Lắk. Mọi
- * `sourceDatasetId` trỏ tới `'mock-project-portfolio-v1'` — một dataset id KHÔNG tồn tại trong
- * `src/data-platform/catalog/datasets.ts`, để không ai nhầm lẫn đây là dữ liệu đã qua catalog thật.
+ * Không phải số liệu vận hành thật. Tên dự án, số liệu ngân sách/tiến độ, nhà thầu và cơ quan đều
+ * là hư cấu, không trùng với dự án thật nào đang triển khai tại Đắk Lắk. Mọi `sourceDatasetId`
+ * trỏ tới các entry `*-illustrative` (`project-portfolio-illustrative`,
+ * `project-progress-illustrative`, `project-issues-illustrative`) tồn tại thật trong
+ * `src/data-platform/catalog/datasets.ts` với `authority: 'illustrative'` và
+ * `quality.status: 'unverified'` — được khai báo rõ ràng, không giả làm dữ liệu chính thức.
  * Mã hành chính (`administrativeAreaCodes`) là mã xã/phường THẬT của tỉnh Đắk Lắk (từ
  * `daklak-labels.json`) — chỉ mã là thật, để fixture đi qua được rule "administrative code phải
  * tồn tại"; toạ độ dự án là điểm minh hoạ gần đúng, không phải toạ độ công trình thật.

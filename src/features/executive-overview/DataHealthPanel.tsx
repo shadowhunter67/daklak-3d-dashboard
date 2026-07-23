@@ -1,3 +1,4 @@
+import { captureProvenanceFocusTrigger } from '../../components/provenance/provenanceFocusTrigger';
 import { useMapStore } from '../../stores/mapStore';
 import { formatRelativeUpdatedAt } from './model/executiveOverviewSelectors';
 import type { DataHealthSummary } from './model/executiveOverviewTypes';
@@ -66,7 +67,10 @@ export function DataHealthPanel({
       </ul>
       <button
         type="button"
-        onClick={openProvenancePanel}
+        onClick={(event) => {
+          captureProvenanceFocusTrigger(event.currentTarget);
+          openProvenancePanel();
+        }}
         className="data-health-panel__provenance-link"
       >
         Xem chi tiết nguồn dữ liệu

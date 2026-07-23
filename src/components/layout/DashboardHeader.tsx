@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { datasetManifest } from '../../data/datasetManifest';
+import { captureProvenanceFocusTrigger } from '../provenance/provenanceFocusTrigger';
 import { useMapStore } from '../../stores/mapStore';
 
 const modes = [
@@ -192,7 +193,10 @@ export function DashboardHeader() {
           id="open-data-provenance-panel"
           className="header-secondary-control"
           aria-haspopup="dialog"
-          onClick={openProvenancePanel}
+          onClick={(event) => {
+            captureProvenanceFocusTrigger(event.currentTarget);
+            openProvenancePanel();
+          }}
           aria-label="Xem nguồn và chất lượng dữ liệu"
           title="Nguồn dữ liệu"
         >
