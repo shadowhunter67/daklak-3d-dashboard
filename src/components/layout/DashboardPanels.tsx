@@ -20,6 +20,9 @@ export function DashboardPanels() {
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
   }, []);
+  // Executive Overview owns its own full-screen content (see App.tsx) — the floating 3D
+  // stat/detail panels below are specific to the 3D experience.
+  if (viewMode === 'overview') return null;
   if (viewMode === 'map') return null;
   if (viewMode === 'table') return <TwoDimensionalView />;
   if (mobilePortrait) return <MobileDashboardSheet />;

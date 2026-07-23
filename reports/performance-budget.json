@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-07-22T09:57:22.222Z",
+  "generatedAt": "2026-07-23T08:13:41.065Z",
   "limits": {
     "totalJavaScriptBytes": 3400000,
     "totalJavaScriptGzipBytes": 950000,
@@ -10,18 +10,18 @@
     "totalBuildBytes": 6400000
   },
   "actual": {
-    "totalJavaScriptBytes": 3242239,
-    "totalJavaScriptGzipBytes": 909559,
+    "totalJavaScriptBytes": 3296751,
+    "totalJavaScriptGzipBytes": 923125,
     "largestJavaScriptGzipBytes": 270836,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 6191964
+    "totalBuildBytes": 6254058
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-DVcoF4tg.js",
+      "file": "assets/AdministrativeMap-DCzimanA.js",
       "bytes": 201539,
-      "gzipBytes": 63672
+      "gzipBytes": 63670
     },
     {
       "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
@@ -45,14 +45,14 @@
       "bytes": 719308
     },
     {
-      "file": "assets/DataProvenancePanel-BjhP5yge.js",
-      "bytes": 21364,
-      "gzipBytes": 6929
+      "file": "assets/DataProvenancePanel-CW7UMNfE.js",
+      "bytes": 25027,
+      "gzipBytes": 7503
     },
     {
-      "file": "assets/DetailMapViewport-D2pOxxM9.js",
+      "file": "assets/DetailMapViewport-D40hP1IO.js",
       "bytes": 18442,
-      "gzipBytes": 6090
+      "gzipBytes": 6091
     },
     {
       "file": "assets/esm-xvg_75QE.js",
@@ -60,18 +60,18 @@
       "gzipBytes": 7222
     },
     {
-      "file": "assets/index-CkMECvnv.css",
-      "bytes": 23367
+      "file": "assets/index-Bl-IYD7f.js",
+      "bytes": 753934,
+      "gzipBytes": 205590
     },
     {
-      "file": "assets/index-COkvUTEf.js",
-      "bytes": 703130,
-      "gzipBytes": 192606
+      "file": "assets/index-LDuiI5Yr.css",
+      "bytes": 30949
     },
     {
-      "file": "assets/jsx-runtime--BHpUnPn.js",
-      "bytes": 21337,
-      "gzipBytes": 7191
+      "file": "assets/jsx-runtime-BsEm7PxN.js",
+      "bytes": 21377,
+      "gzipBytes": 7196
     },
     {
       "file": "assets/maplibre-gl-B0OHC_Aq.js",
@@ -84,9 +84,9 @@
       "gzipBytes": 504
     },
     {
-      "file": "assets/StatPanel-FpWqcOD5.js",
-      "bytes": 503489,
-      "gzipBytes": 170558
+      "file": "assets/StatPanel-DMmkx6RX.js",
+      "bytes": 503494,
+      "gzipBytes": 170562
     },
     {
       "file": "assets/three-vendor-DLMYoo0M.js",

@@ -39,6 +39,30 @@ describe('DashboardHeader', () => {
     expect(useMapStore.getState().selectedCode).toBe('24580');
   });
 
+  it('navigates to Executive Overview via the primary nav', () => {
+    useMapStore.setState({ viewMode: '3d' });
+    render(<DashboardHeader />);
+    fireEvent.click(screen.getByRole('button', { name: 'Tổng quan điều hành' }));
+    expect(useMapStore.getState().viewMode).toBe('overview');
+  });
+
+  it('marks the active primary nav item with aria-current', () => {
+    useMapStore.setState({ viewMode: 'table' });
+    render(<DashboardHeader />);
+    expect(screen.getByRole('button', { name: 'Danh sách' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    expect(screen.getByRole('button', { name: '3D' })).not.toHaveAttribute('aria-current');
+  });
+
+  it('offers a compact "Tổng quan điều hành" toggle in header-meta (reachable on mobile)', () => {
+    useMapStore.setState({ viewMode: '3d' });
+    render(<DashboardHeader />);
+    fireEvent.click(screen.getByRole('button', { name: 'Mở tổng quan điều hành' }));
+    expect(useMapStore.getState().viewMode).toBe('overview');
+  });
+
   it('opens the data provenance panel without changing selection', () => {
     useMapStore.setState({ selectedCode: '24580', provenancePanelOpen: false });
     render(<DashboardHeader />);

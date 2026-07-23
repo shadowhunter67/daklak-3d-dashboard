@@ -7,6 +7,7 @@ import { MapViewport } from './components/layout/MapViewport';
 import { MapLoading } from './components/map/MapFallback';
 import { OnboardingOverlay } from './components/layout/OnboardingOverlay';
 import { datasetManifestIssues } from './data/datasetManifest';
+import { ExecutiveOverview } from './features/executive-overview/ExecutiveOverview';
 import { useDashboardUrlSync } from './hooks/useDashboardUrlSync';
 import { useMapStore } from './stores/mapStore';
 
@@ -60,7 +61,12 @@ export default function App() {
     // 'map' is handled inside DetailMapViewport itself (see there) — it's now a lazy boundary, so
     // an immediate rAF here could fire before its chunk has resolved and the element even exists.
     if (viewMode === 'map') return;
-    const targetId = viewMode === 'table' ? 'map-2d-title' : 'map-viewport';
+    const targetId =
+      viewMode === 'table'
+        ? 'map-2d-title'
+        : viewMode === 'overview'
+          ? 'executive-overview'
+          : 'map-viewport';
     requestAnimationFrame(() => document.getElementById(targetId)?.focus());
   }, [viewMode]);
 
@@ -75,8 +81,19 @@ export default function App() {
   const selectedName = selectedCode
     ? (labels[selectedCode as keyof typeof labels]?.name ?? selectedCode)
     : null;
+  const skipLinkTargetId =
+    viewMode === 'table'
+      ? 'map-2d-title'
+      : viewMode === 'map'
+        ? 'detail-map-viewport'
+        : viewMode === 'overview'
+          ? 'executive-overview'
+          : 'map-viewport';
   return (
     <main className="app-shell">
+      <a href={`#${skipLinkTargetId}`} className="skip-link">
+        Bỏ qua để tới nội dung chính
+      </a>
       <DashboardHeader />
       <MapViewport />
       {viewMode === 'map' && (
@@ -84,6 +101,7 @@ export default function App() {
           <DetailMapViewport />
         </Suspense>
       )}
+      {viewMode === 'overview' && <ExecutiveOverview />}
       <DashboardPanels />
       <OnboardingOverlay />
       {provenancePanelOpen && (
@@ -96,7 +114,9 @@ export default function App() {
           ? 'Đã mở danh sách 2D.'
           : viewMode === 'map'
             ? 'Đã mở bản đồ chi tiết.'
-            : 'Đã mở bản đồ 3D.'}{' '}
+            : viewMode === 'overview'
+              ? 'Đã mở tổng quan điều hành.'
+              : 'Đã mở bản đồ 3D.'}{' '}
         {selectedName ? `Đã chọn ${selectedName}.` : ''}
       </p>
       <DatasetFooter />

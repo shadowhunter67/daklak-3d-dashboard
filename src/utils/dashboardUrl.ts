@@ -2,7 +2,12 @@
 // for the richer MapExperience model and the mapExperienceFromViewMode/viewModeFromMapExperience
 // mapping functions this three-value union backs. Existing '3d'/'table' URLs and consumers are
 // unaffected — 'map' is purely additive.
-export type DashboardView = '3d' | 'table' | 'map';
+//
+// 'overview' (Executive Overview, Phase 2A) is the new default landing experience — see
+// parseViewMode below. It is additive too: every previously-working `?view=3d`/`?view=2d`/
+// `?view=map` URL still resolves to exactly the same view it always did. Only the absence of a
+// `view` param (or an unrecognized one) now resolves to 'overview' instead of '3d'.
+export type DashboardView = 'overview' | '3d' | 'table' | 'map';
 export type DashboardMode = 'overview' | 'energy' | 'heatmap';
 
 export interface DashboardUrlState {
@@ -14,15 +19,19 @@ export interface DashboardUrlState {
 const modes = new Set<DashboardMode>(['overview', 'energy', 'heatmap']);
 
 function parseViewMode(raw: string | null): DashboardView {
+  if (raw === '3d') return '3d';
   if (raw === '2d') return 'table';
   if (raw === 'map') return 'map';
-  return '3d';
+  // No param, or an unrecognized value (including the explicit canonical 'overview'): land on
+  // Executive Overview. Before Phase 2A this fell back to '3d' — see docs/adr for the rationale.
+  return 'overview';
 }
 
 function serializeViewMode(viewMode: DashboardView): string {
   if (viewMode === 'table') return '2d';
   if (viewMode === 'map') return 'map';
-  return '3d';
+  if (viewMode === '3d') return '3d';
+  return 'overview';
 }
 
 export function parseDashboardUrl(

@@ -9,6 +9,7 @@ import type {
 } from '../../data-platform/schemas/dataset';
 import { useMapStore } from '../../stores/mapStore';
 import { DataStatusSummary } from './DataStatusSummary';
+import { consumeProvenanceFocusTrigger } from './provenanceFocusTrigger';
 
 const CLASSIFICATION_LABELS: Record<DatasetDescriptor['classification'], string> = {
   public: 'Công khai',
@@ -234,10 +235,11 @@ export function DataProvenancePanel() {
   const panelRef = useRef<HTMLDivElement | null>(null);
   const closeProvenancePanel = useMapStore((state) => state.closeProvenancePanel);
 
-  // Focus return: capture whatever had focus right before this mounted (the header's trigger
-  // button, since clicking it is what set provenancePanelOpen=true) and restore it on unmount.
+  // Focus return: the trigger element is captured by the caller's click handler (before this
+  // dialog mounts and autoFocuses its own close button — see provenanceFocusTrigger.ts for why
+  // `document.activeElement` can't be read reliably in here), then restored on unmount.
   useEffect(() => {
-    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const previouslyFocused = consumeProvenanceFocusTrigger();
     return () => {
       const target = previouslyFocused?.isConnected
         ? previouslyFocused

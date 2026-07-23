@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { useMapStore } from '../../stores/mapStore';
 import { DataProvenancePanel } from './DataProvenancePanel';
+import { captureProvenanceFocusTrigger } from './provenanceFocusTrigger';
 
 /**
  * This component has no internal open/closed state — App.tsx only mounts it while
@@ -156,5 +157,48 @@ describe('DataProvenancePanel', () => {
         'Điều chỉnh Quy hoạch tỉnh Đắk Lắk thời kỳ 2021-2030, tầm nhìn đến năm 2050',
       ),
     ).toBeInTheDocument();
+  });
+
+  /**
+   * Regression test for the same root-cause bug already fixed in `ProjectSummaryPanel`: the
+   * dialog's close button has `autoFocus`, which React applies during commit — before any
+   * passive `useEffect` runs. A naive `document.activeElement` read inside the dialog's own mount
+   * effect would therefore capture the dialog's own close button instead of the real trigger
+   * (a non-header, non-fallback-id button, so the old code's `document.getElementById` fallback
+   * couldn't paper over it either). This exercises the full real flow — a distinct trigger button
+   * capturing itself via `captureProvenanceFocusTrigger` at click time, then the dialog mounting
+   * and autoFocusing away from it — the way `DataHealthPanel`/`DashboardHeader` actually do it.
+   */
+  it('restores focus to the real trigger button, not the dialog itself, after autoFocus fires', async () => {
+    useMapStore.setState({ provenancePanelOpen: false });
+    function Harness() {
+      const open = useMapStore((state) => state.provenancePanelOpen);
+      const openProvenancePanel = useMapStore((state) => state.openProvenancePanel);
+      return (
+        <>
+          <button
+            id="data-health-provenance-trigger"
+            onClick={(event) => {
+              captureProvenanceFocusTrigger(event.currentTarget);
+              openProvenancePanel();
+            }}
+          >
+            Xem chi tiết nguồn dữ liệu
+          </button>
+          {open && <DataProvenancePanel />}
+        </>
+      );
+    }
+    render(<Harness />);
+    const trigger = screen.getByRole('button', { name: 'Xem chi tiết nguồn dữ liệu' });
+    trigger.focus();
+    fireEvent.click(trigger);
+
+    const closeButton = await screen.findByRole('button', { name: 'Đóng bảng nguồn dữ liệu' });
+    // autoFocus has already moved focus to the close button by the time it's in the DOM.
+    expect(document.activeElement).toBe(closeButton);
+
+    fireEvent.click(closeButton);
+    await waitFor(() => expect(document.activeElement).toBe(trigger));
   });
 });

@@ -13,17 +13,22 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
+// Phase 2A made Executive Overview the default landing (no `view` param) — every test below that
+// exercises the 3D overview now navigates with an explicit `?view=3d` so it keeps testing exactly
+// what it always tested, instead of accidentally landing on Executive Overview. See
+// docs/adr/0001-project-centric-domain.md and the new 'Executive Overview (Phase 2A)' describe
+// block at the end of this file for landing-page-specific coverage.
 test.describe('dashboard smoke tests', () => {
   test('loads the terrain, controls, and sourced overview', async ({ page }) => {
     const runtimeErrors: string[] = [];
     const failedRequests: string[] = [];
     page.on('pageerror', (error) => runtimeErrors.push(error.message));
     page.on('requestfailed', (request) => failedRequests.push(request.url()));
-    await page.goto('./');
+    await page.goto('./?view=3d');
 
     await expect(page.getByRole('heading', { name: /Đắk Lắk/i })).toBeVisible();
     await expect(page.locator('canvas')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Tổng quan' })).toHaveAttribute(
+    await expect(page.getByRole('button', { name: 'Tổng quan', exact: true })).toHaveAttribute(
       'aria-pressed',
       'true',
     );
@@ -35,7 +40,7 @@ test.describe('dashboard smoke tests', () => {
   });
 
   test('switches all thematic modes and identifies illustrative data', async ({ page }) => {
-    await page.goto('./');
+    await page.goto('./?view=3d');
 
     for (const mode of ['Năng lượng', 'Heatmap']) {
       const tab = page.getByRole('button', { name: mode });
@@ -48,7 +53,7 @@ test.describe('dashboard smoke tests', () => {
   test('supports search, keyboard navigation, and shared selection in 2D mode', async ({
     page,
   }) => {
-    await page.goto('./');
+    await page.goto('./?view=3d');
     await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
     await openMobileDirectory(page);
 
@@ -69,12 +74,12 @@ test.describe('dashboard smoke tests', () => {
 
   test('disables automatic rotation when reduced motion is requested', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('./');
+    await page.goto('./?view=3d');
     await expect(page.getByRole('button', { name: 'Đã giảm chuyển động' })).toBeDisabled();
   });
 
   test('preserves native arrow-key behavior on interactive controls', async ({ page }) => {
-    await page.goto('./');
+    await page.goto('./?view=3d');
     await expect(page.locator('canvas')).toBeVisible();
     const switchView = page.getByRole('button', { name: 'Mở danh sách 2D' });
     const controlEventWasNotCancelled = await switchView.evaluate((element) =>
@@ -86,7 +91,7 @@ test.describe('dashboard smoke tests', () => {
   });
 
   test('shows a recovery path after WebGL context loss', async ({ page }) => {
-    await page.goto('./');
+    await page.goto('./?view=3d');
     const canvas = page.locator('canvas');
     await expect(canvas).toHaveAttribute('data-webgl-lifecycle', 'ready');
     await canvas.dispatchEvent('webglcontextlost', { cancelable: true });
@@ -99,7 +104,7 @@ test.describe('dashboard smoke tests', () => {
   test('matches the dashboard shell visual baseline', async ({ page }) => {
     test.skip(!test.info().project.name.includes('chromium'), 'Visual baselines are Chromium-only');
     await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.goto('./');
+    await page.goto('./?view=3d');
     await expect(page.locator('canvas')).toBeVisible();
     await page.waitForTimeout(800);
 
@@ -112,7 +117,7 @@ test.describe('dashboard smoke tests', () => {
   });
 
   test('has no serious automated accessibility violations in 3D and 2D views', async ({ page }) => {
-    await page.goto('./');
+    await page.goto('./?view=3d');
     const threeDimensionalResults = await new AxeBuilder({ page }).analyze();
     expect(
       threeDimensionalResults.violations.filter(
@@ -132,7 +137,7 @@ test.describe('dashboard smoke tests', () => {
     test.skip(!test.info().project.name.includes('chromium'), 'Asset loading is verified once');
     const responses: string[] = [];
     page.on('response', (response) => responses.push(response.url()));
-    await page.goto('./');
+    await page.goto('./?view=3d');
     await expect(page.locator('canvas')).toBeVisible();
     expect(
       responses.some((url) => /\/daklak-3d-dashboard\/assets\/AdministrativeMap-.*\.js/.test(url)),
@@ -176,7 +181,7 @@ test.describe('dashboard smoke tests', () => {
     test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
     const responses: string[] = [];
     page.on('response', (response) => responses.push(response.url()));
-    await page.goto('./');
+    await page.goto('./?view=3d');
     await expect(page.locator('canvas')).toBeVisible();
     expect(responses.some((url) => /\/assets\/maplibre-gl-.*\.js/.test(url))).toBe(false);
   });
@@ -280,7 +285,7 @@ test.describe('dashboard smoke tests', () => {
         return original.call(this, type, options as never);
       } as typeof HTMLCanvasElement.prototype.getContext;
     });
-    await page.goto('./');
+    await page.goto('./?view=3d');
     await expect(page.getByRole('heading', { name: 'Không thể hiển thị bản đồ 3D' })).toBeVisible();
     await page.locator('.map-fallback').getByRole('button', { name: 'Mở danh sách 2D' }).click();
     await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeFocused();
@@ -653,7 +658,7 @@ test.describe('Vietnamese detail name visual coverage', () => {
 
 test.describe('detail map (MapLibre)', () => {
   test('opens from the header, updates the URL, and restores on Back/Forward', async ({ page }) => {
-    await page.goto('./');
+    await page.goto('./?view=3d');
     await page.getByRole('button', { name: 'Mở bản đồ chi tiết' }).click();
     await expect(page.locator('#detail-map-viewport')).toBeVisible();
     await expect(page).toHaveURL(/view=map/);
@@ -796,5 +801,145 @@ test.describe('detail map (MapLibre)', () => {
     const panelBox = await panel.boundingBox();
     expect(panelBox).not.toBeNull();
     expect(panelBox!.width).toBeLessThanOrEqual(390);
+  });
+});
+
+test.describe('Executive Overview (Phase 2A)', () => {
+  test('lands on Executive Overview by default and discloses illustrative data', async ({
+    page,
+  }) => {
+    await page.goto('./');
+    await expect(
+      page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
+    ).toBeVisible();
+    // `.header-mock-badge` is desktop-only (hidden under ~1100px, see global.css) — assert on
+    // Executive Overview's own badge, which is always present regardless of viewport.
+    await expect(page.locator('.executive-overview__mock-badge')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Chỉ số tổng quan' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Dự án cần chú ý' })).toBeVisible();
+    // The 3D/2D/detail-map experiences must not be pulled in just to render the landing page.
+    await expect(page.locator('canvas')).toHaveCount(0);
+    await expect(page.locator('#detail-map-viewport')).toHaveCount(0);
+  });
+
+  test('keeps every pre-Phase-2A URL working exactly as before', async ({ page }) => {
+    await page.goto('./?view=3d');
+    await expect(page.locator('canvas')).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
+    ).toHaveCount(0);
+
+    await page.goto('./?view=2d');
+    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
+
+    await page.goto('./?view=map');
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+  });
+
+  test('reaches every primary destination by keyboard alone', async ({ page }, testInfo) => {
+    // `.primary-nav` is desktop-only by design (hidden under ~900px, see global.css) — on mobile,
+    // the same destinations are reachable via the compact header-meta toggle buttons instead
+    // (covered elsewhere, e.g. 'Mở danh sách 2D'/'Mở bản đồ chi tiết' clicks throughout this file),
+    // which are plain keyboard-focusable <button> elements too.
+    test.skip(testInfo.project.name.includes('mobile'), 'Primary nav is a desktop-only control');
+    await page.goto('./');
+    const threeD = page.getByRole('button', { name: '3D', exact: true });
+    await threeD.focus();
+    await threeD.press('Enter');
+    await expect(page.locator('canvas')).toBeVisible();
+
+    const overview = page.getByRole('button', { name: 'Tổng quan điều hành', exact: true });
+    await overview.focus();
+    await overview.press('Enter');
+    await expect(
+      page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
+    ).toBeVisible();
+
+    const table = page.getByRole('button', { name: 'Danh sách', exact: true });
+    await table.focus();
+    await table.press('Enter');
+    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
+  });
+
+  test('opens a project summary dialog and closes it with Escape, restoring focus', async ({
+    page,
+  }) => {
+    await page.goto('./');
+    const trigger = page.getByRole('button', { name: 'Xem tóm tắt' }).first();
+    await trigger.focus();
+    await trigger.click();
+    const dialog = page.getByRole('dialog');
+    await expect(dialog).toBeVisible();
+    await page.keyboard.press('Escape');
+    await expect(dialog).toHaveCount(0);
+    await expect(trigger).toBeFocused();
+  });
+
+  test('communicates stale data explicitly instead of hiding it', async ({ page }) => {
+    await page.goto('./');
+    await expect(page.getByRole('heading', { name: 'Sức khỏe dữ liệu' })).toBeVisible();
+    // The fixture seeds exactly one project with data older than the freshness SLA (see
+    // src/entities/project/mockPortfolio.ts, prj-007) — it must surface, not be silent.
+    await expect(page.getByText('Dữ liệu quá hạn cập nhật')).toBeVisible();
+  });
+
+  test('has no serious automated accessibility violations on Executive Overview', async ({
+    page,
+  }) => {
+    await page.goto('./');
+    await expect(
+      page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
+    ).toBeVisible();
+    const results = await new AxeBuilder({ page }).analyze();
+    expect(
+      results.violations.filter(({ impact }) => impact === 'critical' || impact === 'serious'),
+    ).toEqual([]);
+  });
+
+  // Heavy-chunk prefixes derived from the real build (see dist/.vite/manifest.json,
+  // AdministrativeMap-*.js / three-vendor-*.js / StatPanel-*.js / maplibre-gl-*.js /
+  // DetailMapViewport-*.js) — matched by filename prefix so this survives content-hash churn on
+  // every rebuild instead of pinning a specific hash.
+  const HEAVY_CHUNK_PATTERN =
+    /\/assets\/(AdministrativeMap|three-vendor|StatPanel|maplibre-gl|DetailMapViewport)-.*\.js/;
+
+  test('never fetches any heavy renderer (3D/ECharts/MapLibre/detail-map) landing on Executive Overview', async ({
+    page,
+  }) => {
+    test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
+    for (const url of ['./', './?view=overview']) {
+      const responses: string[] = [];
+      page.on('response', (response) => responses.push(response.url()));
+      await page.goto(url);
+      await expect(
+        page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
+      ).toBeVisible();
+      expect(responses.some((requestUrl) => HEAVY_CHUNK_PATTERN.test(requestUrl))).toBe(false);
+      page.removeAllListeners('response');
+    }
+  });
+
+  test('never fetches any heavy renderer landing directly on the accessible directory (?view=2d)', async ({
+    page,
+  }) => {
+    test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
+    const responses: string[] = [];
+    page.on('response', (response) => responses.push(response.url()));
+    await page.goto('./?view=2d');
+    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
+    expect(responses.some((requestUrl) => HEAVY_CHUNK_PATTERN.test(requestUrl))).toBe(false);
+  });
+
+  test('mobile: Executive Overview fits without horizontal overflow', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('./');
+    await expect(
+      page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
+    ).toBeVisible();
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      ),
+    ).toBe(false);
   });
 });

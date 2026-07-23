@@ -12,7 +12,12 @@ function hasSeenOnboarding() {
 }
 
 export function OnboardingOverlay() {
-  const [open, setOpen] = useState(() => !hasSeenOnboarding());
+  // Executive Overview (Phase 2A default landing) has no map gestures to explain — the auto-shown
+  // first-visit tour only makes sense once someone has actually opened a map experience. The `?`
+  // help button still opens it unconditionally from any view (see the helpSignal effect below).
+  const [open, setOpen] = useState(
+    () => !hasSeenOnboarding() && useMapStore.getState().viewMode !== 'overview',
+  );
   const previousFocus = useRef<HTMLElement | null>(null);
   const helpSignal = useMapStore((state) => state.helpSignal);
   const viewMode = useMapStore((state) => state.viewMode);
