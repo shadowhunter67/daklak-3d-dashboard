@@ -896,6 +896,40 @@ test.describe('Executive Overview (Phase 2A)', () => {
     ).toEqual([]);
   });
 
+  // Heavy-chunk prefixes derived from the real build (see dist/.vite/manifest.json,
+  // AdministrativeMap-*.js / three-vendor-*.js / StatPanel-*.js / maplibre-gl-*.js /
+  // DetailMapViewport-*.js) — matched by filename prefix so this survives content-hash churn on
+  // every rebuild instead of pinning a specific hash.
+  const HEAVY_CHUNK_PATTERN =
+    /\/assets\/(AdministrativeMap|three-vendor|StatPanel|maplibre-gl|DetailMapViewport)-.*\.js/;
+
+  test('never fetches any heavy renderer (3D/ECharts/MapLibre/detail-map) landing on Executive Overview', async ({
+    page,
+  }) => {
+    test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
+    for (const url of ['./', './?view=overview']) {
+      const responses: string[] = [];
+      page.on('response', (response) => responses.push(response.url()));
+      await page.goto(url);
+      await expect(
+        page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
+      ).toBeVisible();
+      expect(responses.some((requestUrl) => HEAVY_CHUNK_PATTERN.test(requestUrl))).toBe(false);
+      page.removeAllListeners('response');
+    }
+  });
+
+  test('never fetches any heavy renderer landing directly on the accessible directory (?view=2d)', async ({
+    page,
+  }) => {
+    test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
+    const responses: string[] = [];
+    page.on('response', (response) => responses.push(response.url()));
+    await page.goto('./?view=2d');
+    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
+    expect(responses.some((requestUrl) => HEAVY_CHUNK_PATTERN.test(requestUrl))).toBe(false);
+  });
+
   test('mobile: Executive Overview fits without horizontal overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('./');
