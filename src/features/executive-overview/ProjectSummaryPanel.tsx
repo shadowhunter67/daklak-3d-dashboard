@@ -1,6 +1,9 @@
 import { useEffect, useRef, type RefObject } from 'react';
 import { useMapStore } from '../../stores/mapStore';
-import { formatKpiValue } from './model/executiveOverviewSelectors';
+import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
+import { formatDate } from '../../i18n/formatters';
+import { formatKpiValueLocalized } from './model/executiveOverviewSelectors';
 import type { ProjectAttentionItem } from './model/executiveOverviewTypes';
 
 const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -26,10 +29,11 @@ export function ProjectSummaryPanel({
    * reads `.current` during render. */
   restoreFocusTo: RefObject<HTMLElement | null>;
 }) {
+  const { t, locale } = useTranslation();
   const panelRef = useRef<HTMLDivElement | null>(null);
   const setViewMode = useMapStore((state) => state.setViewMode);
   const setDetailMapCamera = useMapStore((state) => state.setDetailMapCamera);
-  const disbursement = formatKpiValue(item.disbursementRate);
+  const disbursement = formatKpiValueLocalized(item.disbursementRate, locale, t);
   const canViewOnMap = item.geometry?.type === 'Point';
 
   useEffect(() => {
@@ -94,56 +98,53 @@ export function ProjectSummaryPanel({
       >
         <div className="project-summary-card__header">
           <h2 id="project-summary-title">{item.projectName}</h2>
-          <button type="button" autoFocus onClick={onClose} aria-label="Đóng tóm tắt dự án">
-            Đóng
+          <button type="button" autoFocus onClick={onClose} aria-label={t('summary.closeAria')}>
+            {t('summary.close')}
           </button>
         </div>
         <dl>
           <div>
-            <dt>Mã dự án</dt>
+            <dt>{t('summary.code')}</dt>
             <dd>{item.projectCode}</dd>
           </div>
           <div>
-            <dt>Lĩnh vực</dt>
-            <dd>{item.sector}</dd>
+            <dt>{t('summary.sector')}</dt>
+            <dd>{t(`sector.${item.sector}` as MessageKey)}</dd>
           </div>
           <div>
-            <dt>Trạng thái</dt>
-            <dd>{item.statusLabel}</dd>
+            <dt>{t('summary.status')}</dt>
+            <dd>{t(`status.${item.status}` as MessageKey)}</dd>
           </div>
           <div>
-            <dt>Tiến độ khối lượng</dt>
+            <dt>{t('summary.progress')}</dt>
             <dd>{item.overallProgress}%</dd>
           </div>
           <div>
-            <dt>Tỷ lệ giải ngân</dt>
+            <dt>{t('summary.disbursementRate')}</dt>
             <dd>{disbursement.text}</dd>
           </div>
           <div>
-            <dt>Lý do cần chú ý</dt>
-            <dd>{item.primaryReason}</dd>
+            <dt>{t('summary.reason')}</dt>
+            <dd>{t(`reason.${item.reasonCategory}` as MessageKey)}</dd>
           </div>
           <div>
-            <dt>Địa bàn</dt>
-            <dd>{item.administrativeAreaCodes.join(', ') || 'Chưa gán địa bàn cụ thể'}</dd>
+            <dt>{t('summary.area')}</dt>
+            <dd>{item.administrativeAreaCodes.join(', ') || t('summary.noArea')}</dd>
           </div>
           <div>
-            <dt>Dữ liệu cập nhật lúc</dt>
-            <dd>{new Date(item.dataUpdatedAt).toLocaleDateString('vi-VN')}</dd>
+            <dt>{t('summary.dataUpdatedAt')}</dt>
+            <dd>{formatDate(item.dataUpdatedAt, locale)}</dd>
           </div>
         </dl>
         {canViewOnMap ? (
           <button type="button" onClick={viewOnMap} className="project-summary-card__map-action">
-            Xem trên bản đồ
+            {t('summary.viewOnMap')}
           </button>
         ) : (
-          <p className="project-summary-card__no-geometry">
-            Dự án này chưa có toạ độ để hiển thị trên bản đồ.
-          </p>
+          <p className="project-summary-card__no-geometry">{t('summary.noGeometry')}</p>
         )}
         <p className="project-summary-card__mock-notice">
-          DỮ LIỆU MINH HỌA — tính đến {asOf.toLocaleDateString('vi-VN')}, không dùng cho quyết định
-          quản lý thực tế.
+          {t('summary.mockNotice', { date: formatDate(asOf, locale) })}
         </p>
       </section>
     </div>

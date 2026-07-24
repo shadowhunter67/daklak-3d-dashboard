@@ -13,6 +13,7 @@ import { useMapStore } from './stores/mapStore';
 import { useHashRoute } from './routing/useHashRoute';
 import { serializePortfolioHash, serializeProjectDetailHash } from './routing/hashRoute';
 import type { PortfolioFilters } from './routing/hashRoute';
+import { useTranslation } from './i18n/useTranslation';
 
 // Lazy: Project Portfolio/Detail are their own feature chunks (spec Phase 2B1 D6) — neither one
 // may be pulled into the eager main chunk, and neither imports Three.js/MapLibre/ECharts, so they
@@ -29,10 +30,11 @@ const ProjectDetailView = lazy(() =>
 );
 
 function ProjectRouteLoading() {
+  const { t } = useTranslation();
   return (
     <section className="project-portfolio" aria-live="polite" aria-busy="true">
       <span className="map-loading__spinner" aria-hidden="true" />
-      <p>Đang tải…</p>
+      <p>{t('app.loading')}</p>
     </section>
   );
 }
@@ -58,14 +60,16 @@ const DataProvenancePanel = lazy(() =>
 );
 
 function ProvenancePanelLoading() {
+  const { t } = useTranslation();
   return (
     <div className="provenance-panel-backdrop" role="status" aria-live="polite">
-      Đang tải…
+      {t('app.loading')}
     </div>
   );
 }
 
 export default function App() {
+  const { t } = useTranslation();
   const viewMode = useMapStore((state) => state.viewMode);
   const setViewMode = useMapStore((state) => state.setViewMode);
   const selectedCode = useMapStore((state) => state.selectedCode);
@@ -102,7 +106,7 @@ export default function App() {
   if (datasetManifestIssues.length)
     return (
       <main className="app-fallback" role="alert">
-        <h1>Dữ liệu cấu hình không hợp lệ</h1>
+        <h1>{t('app.invalidConfig.title')}</h1>
         <p>{datasetManifestIssues.join('. ')}</p>
       </main>
     );
@@ -135,7 +139,7 @@ export default function App() {
   return (
     <main className="app-shell">
       <a href={`#${skipLinkTargetId}`} className="skip-link">
-        Bỏ qua để tới nội dung chính
+        {t('app.skipLink')}
       </a>
       <DashboardHeader />
       {isProjectRoute ? (
@@ -183,16 +187,16 @@ export default function App() {
       <p className="visually-hidden" aria-live="polite" aria-atomic="true">
         {isProjectRoute
           ? route.kind === 'portfolio'
-            ? 'Đã mở danh mục dự án.'
-            : 'Đã mở chi tiết dự án.'
+            ? t('app.live.openedPortfolio')
+            : t('app.live.openedProjectDetail')
           : viewMode === 'table'
-            ? 'Đã mở danh sách 2D.'
+            ? t('app.live.openedTable')
             : viewMode === 'map'
-              ? 'Đã mở bản đồ chi tiết.'
+              ? t('app.live.openedMap')
               : viewMode === 'overview'
-                ? 'Đã mở tổng quan điều hành.'
-                : 'Đã mở bản đồ 3D.'}{' '}
-        {selectedName ? `Đã chọn ${selectedName}.` : ''}
+                ? t('app.live.openedOverview')
+                : t('app.live.opened3d')}{' '}
+        {selectedName ? t('app.live.selected', { name: selectedName }) : ''}
       </p>
       <DatasetFooter />
     </main>

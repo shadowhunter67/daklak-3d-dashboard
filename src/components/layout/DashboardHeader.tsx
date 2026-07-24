@@ -2,11 +2,13 @@ import { useRef, useState } from 'react';
 import { datasetManifest } from '../../data/datasetManifest';
 import { captureProvenanceFocusTrigger } from '../provenance/provenanceFocusTrigger';
 import { useMapStore } from '../../stores/mapStore';
+import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
 
 const modes = [
-  ['overview', 'Tổng quan'],
-  ['energy', 'Năng lượng'],
-  ['heatmap', 'Heatmap'],
+  ['overview', 'header.mode.overview'],
+  ['energy', 'header.mode.energy'],
+  ['heatmap', 'header.mode.heatmap'],
 ] as const;
 
 // Primary navigation (Phase 2A): the four mutually-exclusive top-level experiences. Distinct from
@@ -16,24 +18,25 @@ const modes = [
 // with the `modes` data-mode tab of the same literal text — the two are unrelated concepts
 // (top-level view vs. 3D thematic overlay) and must resolve unambiguously by role+name in tests.
 const primaryViews = [
-  ['overview', 'Tổng quan điều hành'],
-  ['3d', '3D'],
-  ['table', 'Danh sách'],
-  ['map', 'Bản đồ chi tiết'],
-] as const;
+  ['overview', 'header.nav.overview'],
+  ['3d', 'header.nav.3d'],
+  ['table', 'header.nav.table'],
+  ['map', 'header.nav.map'],
+] as const satisfies ReadonlyArray<readonly [string, MessageKey]>;
 
 export function DashboardHeader() {
+  const { t, locale, setLocale } = useTranslation();
   const [shareStatus, setShareStatus] = useState('');
   const shareTimer = useRef(0);
   const shareDashboard = async () => {
     const url = window.location.href;
     try {
       await navigator.clipboard.writeText(url);
-      setShareStatus('Đã sao chép liên kết');
+      setShareStatus(t('header.share.status'));
       window.clearTimeout(shareTimer.current);
       shareTimer.current = window.setTimeout(() => setShareStatus(''), 2400);
     } catch {
-      window.prompt('Sao chép liên kết này:', url);
+      window.prompt(t('header.share.prompt'), url);
     }
   };
   const dataMode = useMapStore((state) => state.dataMode);
@@ -56,73 +59,89 @@ export function DashboardHeader() {
       <div className="dashboard-brand">
         <div className="brand-mark">ĐL</div>
         <div>
-          <p className="eyebrow">BẢN ĐỒ HÀNH CHÍNH TƯƠNG TÁC</p>
+          <p className="eyebrow">{t('header.eyebrow')}</p>
           <h1>
             ĐẮK LẮK <i>3D</i>
           </h1>
         </div>
       </div>
       <span className="header-mock-badge" role="note">
-        DỮ LIỆU MINH HỌA
+        {t('header.mockBadge')}
       </span>
-      <nav className="primary-nav" aria-label="Điều hướng chính">
-        {primaryViews.map(([mode, label]) => (
+      <nav className="primary-nav" aria-label={t('header.nav.ariaLabel')}>
+        {primaryViews.map(([mode, labelKey]) => (
           <button
             key={mode}
             className={viewMode === mode ? 'active' : ''}
             aria-current={viewMode === mode ? 'page' : undefined}
             onClick={() => setViewMode(mode)}
           >
-            {label}
+            {t(labelKey)}
           </button>
         ))}
       </nav>
-      <nav className="mode-tabs" aria-label="Chế độ dữ liệu">
-        {modes.map(([mode, label]) => (
+      <nav className="mode-tabs" aria-label={t('header.modeTabs.ariaLabel')}>
+        {modes.map(([mode, labelKey]) => (
           <button
             key={mode}
             className={dataMode === mode ? 'active' : ''}
             aria-pressed={dataMode === mode}
             onClick={() => changeDataMode(mode)}
           >
-            {label}
+            {t(labelKey)}
           </button>
         ))}
       </nav>
       <div className="header-meta">
-        <span>{datasetManifest.administrativeUnitCount} xã/phường</span>
+        <span>{t('header.unitsCount', { count: datasetManifest.administrativeUnitCount })}</span>
         <button
           onClick={() => setViewMode('overview')}
           aria-pressed={viewMode === 'overview'}
-          aria-label="Mở tổng quan điều hành"
+          aria-label={t('header.openOverview.ariaLabel')}
         >
-          <span className="control-label control-label--desktop">Tổng quan điều hành</span>
+          <span className="control-label control-label--desktop">
+            {t('header.openOverview.label')}
+          </span>
           <span className="control-label control-label--mobile" aria-hidden="true">
-            Tổng quan
+            {t('header.openOverview.shortLabel')}
           </span>
         </button>
         <button
           onClick={() => setViewMode(viewMode === '3d' ? 'table' : '3d')}
           aria-pressed={viewMode === 'table'}
-          aria-label={viewMode === '3d' ? 'Mở danh sách 2D' : 'Mở bản đồ 3D'}
+          aria-label={
+            viewMode === '3d'
+              ? t('header.toggle3dTable.ariaLabelOpenTable')
+              : t('header.toggle3dTable.ariaLabelOpen3d')
+          }
         >
           <span className="control-label control-label--desktop">
-            {viewMode === '3d' ? 'Danh sách 2D' : 'Bản đồ 3D'}
+            {viewMode === '3d'
+              ? t('header.toggle3dTable.label2d')
+              : t('header.toggle3dTable.label3d')}
           </span>
           <span className="control-label control-label--mobile" aria-hidden="true">
-            {viewMode === '3d' ? '2D' : '3D'}
+            {viewMode === '3d'
+              ? t('header.toggle3dTable.shortLabel2d')
+              : t('header.toggle3dTable.shortLabel3d')}
           </span>
         </button>
         <button
           onClick={() => setViewMode(viewMode === 'map' ? '3d' : 'map')}
           aria-pressed={viewMode === 'map'}
-          aria-label={viewMode === 'map' ? 'Thoát bản đồ chi tiết' : 'Mở bản đồ chi tiết'}
+          aria-label={
+            viewMode === 'map'
+              ? t('header.toggleDetailMap.ariaLabelClose')
+              : t('header.toggleDetailMap.ariaLabelOpen')
+          }
         >
           <span className="control-label control-label--desktop">
-            {viewMode === 'map' ? 'Thoát bản đồ chi tiết' : 'Bản đồ chi tiết'}
+            {viewMode === 'map'
+              ? t('header.toggleDetailMap.labelClose')
+              : t('header.toggleDetailMap.labelOpen')}
           </span>
           <span className="control-label control-label--mobile" aria-hidden="true">
-            Chi tiết
+            {t('header.toggleDetailMap.shortLabel')}
           </span>
         </button>
         <button
@@ -130,62 +149,80 @@ export function DashboardHeader() {
           aria-pressed={autoRotate}
           disabled={reducedMotion}
           aria-label={
-            reducedMotion ? 'Đã giảm chuyển động' : autoRotate ? 'Dừng xoay' : 'Xoay bản đồ'
+            reducedMotion
+              ? t('header.autoRotate.ariaLabelReducedMotion')
+              : autoRotate
+                ? t('header.autoRotate.ariaLabelStop')
+                : t('header.autoRotate.ariaLabelStart')
           }
-          title={reducedMotion ? 'Đã tắt do tùy chọn giảm chuyển động' : 'Xoay bản đồ 360 độ'}
+          title={
+            reducedMotion ? t('header.autoRotate.titleReducedMotion') : t('header.autoRotate.title')
+          }
         >
           <span className="control-label control-label--desktop">
-            {reducedMotion ? 'Đã giảm chuyển động' : autoRotate ? 'Dừng xoay' : 'Xoay 360°'}
+            {reducedMotion
+              ? t('header.autoRotate.labelReducedMotion')
+              : autoRotate
+                ? t('header.autoRotate.labelStop')
+                : t('header.autoRotate.labelStart')}
           </span>
           <span className="control-label control-label--mobile" aria-hidden="true">
-            Xoay
+            {t('header.autoRotate.shortLabel')}
           </span>
         </button>
         <button
           onClick={toggleRoads}
           aria-pressed={roadsVisible}
-          aria-label={roadsVisible ? 'Ẩn lớp đường giao thông' : 'Hiện lớp đường giao thông'}
+          aria-label={
+            roadsVisible ? t('header.roads.ariaLabelHide') : t('header.roads.ariaLabelShow')
+          }
         >
           <span className="control-label control-label--desktop">
-            {roadsVisible ? 'Ẩn' : 'Hiện'} đường
+            {roadsVisible ? t('header.roads.labelHide') : t('header.roads.labelShow')}
           </span>
           <span className="control-label control-label--mobile" aria-hidden="true">
-            Đường
+            {t('header.roads.shortLabel')}
           </span>
         </button>
         <button
           onClick={toggleLabels}
           aria-pressed={labelsVisible}
-          aria-label={labelsVisible ? 'Ẩn nhãn trung tâm' : 'Hiện nhãn trung tâm'}
+          aria-label={
+            labelsVisible
+              ? t('header.centerLabels.ariaLabelHide')
+              : t('header.centerLabels.ariaLabelShow')
+          }
         >
           <span className="control-label control-label--desktop">
-            {labelsVisible ? 'Ẩn' : 'Hiện'} nhãn trung tâm
+            {labelsVisible
+              ? t('header.centerLabels.labelHide')
+              : t('header.centerLabels.labelShow')}
           </span>
           <span className="control-label control-label--mobile" aria-hidden="true">
-            Nhãn
+            {t('header.centerLabels.shortLabel')}
           </span>
         </button>
         <button
           className="header-secondary-control"
           onClick={requestCameraReset}
-          aria-label="Đưa camera về toàn tỉnh"
-          title="Đưa camera về toàn tỉnh"
+          aria-label={t('header.resetCamera.ariaLabel')}
+          title={t('header.resetCamera.title')}
         >
-          Toàn tỉnh
+          {t('header.resetCamera.label')}
         </button>
         <button
           className="header-secondary-control"
           onClick={shareDashboard}
-          aria-label="Sao chép liên kết trạng thái hiện tại"
-          title="Sao chép liên kết"
+          aria-label={t('header.share.ariaLabel')}
+          title={t('header.share.title')}
         >
-          Chia sẻ
+          {t('header.share.label')}
         </button>
         <button
           className="header-secondary-control header-help-control"
           onClick={requestHelp}
-          aria-label="Mở hướng dẫn sử dụng"
-          title="Hướng dẫn sử dụng"
+          aria-label={t('header.help.ariaLabel')}
+          title={t('header.help.title')}
         >
           ?
         </button>
@@ -197,11 +234,31 @@ export function DashboardHeader() {
             captureProvenanceFocusTrigger(event.currentTarget);
             openProvenancePanel();
           }}
-          aria-label="Xem nguồn và chất lượng dữ liệu"
-          title="Nguồn dữ liệu"
+          aria-label={t('header.provenance.ariaLabel')}
+          title={t('header.provenance.title')}
         >
-          Nguồn dữ liệu
+          {t('header.provenance.label')}
         </button>
+        <div className="header-lang-switch" role="group" aria-label={t('header.lang.ariaLabel')}>
+          <button
+            type="button"
+            className="header-lang-button"
+            aria-pressed={locale === 'vi'}
+            aria-label={t('header.lang.viAriaLabel')}
+            onClick={() => setLocale('vi')}
+          >
+            {t('header.lang.vi')}
+          </button>
+          <button
+            type="button"
+            className="header-lang-button"
+            aria-pressed={locale === 'en'}
+            aria-label={t('header.lang.enAriaLabel')}
+            onClick={() => setLocale('en')}
+          >
+            {t('header.lang.en')}
+          </button>
+        </div>
       </div>
       <span className="share-status" role="status" aria-live="polite">
         {shareStatus}

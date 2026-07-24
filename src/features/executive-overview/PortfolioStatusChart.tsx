@@ -1,4 +1,5 @@
-import { PROJECT_STATUS_LABELS } from './model/buildExecutiveOverview';
+import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
 import type { ProjectStatus } from '../../entities/project/types';
 
 /** Chỉ những status thường gặp trong một danh mục đang vận hành mới có màu riêng trong biểu đồ —
@@ -19,24 +20,28 @@ export function PortfolioStatusChart({
 }: {
   statusDistribution: Record<ProjectStatus, number>;
 }) {
+  const { t } = useTranslation();
   const entries = (Object.entries(statusDistribution) as [ProjectStatus, number][]).filter(
     ([, count]) => count > 0,
   );
   const total = entries.reduce((sum, [, count]) => sum + count, 0);
+  const statusLabel = (status: ProjectStatus) => t(`status.${status}` as MessageKey);
 
   return (
     <section aria-labelledby="status-chart-heading" className="portfolio-status-chart">
-      <h3 id="status-chart-heading">Phân bố trạng thái dự án</h3>
+      <h3 id="status-chart-heading">{t('statusChart.heading')}</h3>
       {total === 0 ? (
-        <p>Chưa có dự án nào để hiển thị.</p>
+        <p>{t('statusChart.empty')}</p>
       ) : (
         <>
           {/* Biểu đồ trực quan — thuần CSS, không dùng thư viện chart (giữ initial bundle nhẹ). */}
           <div
             className="status-stacked-bar"
             role="img"
-            aria-label={`Phân bố trạng thái: ${entries
-              .map(([status, count]) => `${PROJECT_STATUS_LABELS[status]} ${count} dự án`)
+            aria-label={`${t('statusChart.ariaLabelPrefix')} ${entries
+              .map(([status, count]) =>
+                t('statusChart.segment', { label: statusLabel(status), count }),
+              )
               .join(', ')}.`}
           >
             {entries.map(([status, count]) => (
@@ -61,8 +66,11 @@ export function PortfolioStatusChart({
                   aria-hidden="true"
                 />
                 <span>
-                  {PROJECT_STATUS_LABELS[status]}: {count} dự án (
-                  {Math.round((count / total) * 100)}%)
+                  {t('statusChart.legendItem', {
+                    label: statusLabel(status),
+                    count,
+                    percent: Math.round((count / total) * 100),
+                  })}
                 </span>
               </li>
             ))}

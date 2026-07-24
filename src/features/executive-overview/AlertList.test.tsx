@@ -1,4 +1,5 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
+import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 import { afterEach, describe, expect, it } from 'vitest';
 import { AlertList } from './AlertList';
 import type { PortfolioAlert } from './model/executiveOverviewTypes';
@@ -7,7 +8,7 @@ describe('AlertList', () => {
   afterEach(cleanup);
 
   it('shows an empty-state message when there are no alerts', () => {
-    render(<AlertList alerts={[]} />);
+    renderWithI18n(<AlertList alerts={[]} />);
     expect(
       screen.getByText('Không có cảnh báo nào — danh mục dự án đang ổn định.'),
     ).toBeInTheDocument();
@@ -37,7 +38,7 @@ describe('AlertList', () => {
         message: 'Dữ liệu C cũ.',
       },
     ];
-    render(<AlertList alerts={alerts} />);
+    renderWithI18n(<AlertList alerts={alerts} />);
     expect(screen.getByRole('heading', { name: /Nghiêm trọng/ })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Cảnh báo \(1\)/ })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /Chất lượng dữ liệu/ })).toBeInTheDocument();
@@ -48,7 +49,7 @@ describe('AlertList', () => {
     const alerts: PortfolioAlert[] = [
       { id: '1', kind: 'business', severity: 'critical', category: 'schedule-delay', message: 'x' },
     ];
-    render(<AlertList alerts={alerts} />);
+    renderWithI18n(<AlertList alerts={alerts} />);
     expect(document.querySelector('.alert-item__severity')?.textContent).toBe('Nghiêm trọng');
   });
 
@@ -62,7 +63,7 @@ describe('AlertList', () => {
         message: 'x',
       },
     ];
-    render(<AlertList alerts={alerts} />);
+    renderWithI18n(<AlertList alerts={alerts} />);
     expect(document.querySelector('.alert-item__severity')?.textContent).toBe('Chất lượng dữ liệu');
     expect(screen.queryByRole('heading', { name: /Nghiêm trọng/ })).not.toBeInTheDocument();
   });

@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 import { afterEach, describe, expect, it } from 'vitest';
 import { useMapStore } from '../../stores/mapStore';
 import type { ProjectPortfolioProvenance } from '../../entities/project/adapters/ProjectPortfolioSource';
@@ -33,7 +34,7 @@ describe('DataHealthPanel', () => {
   afterEach(cleanup);
 
   it('renders record counts and confidence breakdown', () => {
-    render(<DataHealthPanel dataHealth={dataHealth} dataTimeline={dataTimeline} />);
+    renderWithI18n(<DataHealthPanel dataHealth={dataHealth} dataTimeline={dataTimeline} />);
     expect(screen.getByText('8 / 9')).toBeInTheDocument();
     expect(screen.getByText('Cao: 3 dự án')).toBeInTheDocument();
     expect(screen.getByText('Trung bình: 4 dự án')).toBeInTheDocument();
@@ -41,7 +42,7 @@ describe('DataHealthPanel', () => {
 
   it('opens the provenance panel via the store action, without navigating away', () => {
     useMapStore.setState({ provenancePanelOpen: false });
-    render(<DataHealthPanel dataHealth={dataHealth} dataTimeline={dataTimeline} />);
+    renderWithI18n(<DataHealthPanel dataHealth={dataHealth} dataTimeline={dataTimeline} />);
     fireEvent.click(screen.getByRole('button', { name: 'Xem chi tiết nguồn dữ liệu' }));
     expect(useMapStore.getState().provenancePanelOpen).toBe(true);
   });
