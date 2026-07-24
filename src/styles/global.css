@@ -1979,3 +1979,392 @@ footer a {
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------------------------------------- *
+ * Project Portfolio / Project Detail (Phase 2B1) — same shell/color language as
+ * .executive-overview above, not a new visual system.
+ * ------------------------------------------------------------------------------------------- */
+.project-portfolio,
+.project-detail {
+  position: absolute;
+  z-index: 4;
+  inset: 118px 0 0;
+  overflow-y: auto;
+  padding: 0 3.3vw 64px;
+  color: #dcebe5;
+  background: #071918;
+}
+.project-portfolio__back,
+.project-detail__back {
+  margin: 16px 0 4px;
+  padding: 6px 12px;
+  border: 1px solid #ffffff2a;
+  border-radius: 999px;
+  color: #a9c3ba;
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+.project-portfolio h2,
+.project-detail h2 {
+  margin: 8px 0 6px;
+  color: #f0cf7a;
+  font:
+    700 clamp(20px, 3.2vw, 28px)/1.2 Cambria,
+    'Noto Serif',
+    'DejaVu Serif',
+    serif;
+}
+.project-portfolio__mock-badge,
+.project-detail__mock-badge {
+  display: inline-flex;
+  margin: 0 0 12px;
+  padding: 5px 10px;
+  border: 1px solid #e4bc5e55;
+  border-radius: 999px;
+  color: #e4bc5e;
+  background: #e4bc5e12;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+.project-portfolio__description {
+  margin: 0 0 16px;
+  color: #a9c3ba;
+  font-size: 13px;
+}
+.project-portfolio__degraded-banner,
+.project-detail__degraded-banner {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border: 1px solid #f0cf7a55;
+  border-radius: 10px;
+  color: #f0cf7a;
+  background: #f0cf7a12;
+  font-size: 12px;
+}
+.project-portfolio__error,
+.project-detail__error,
+.project-detail__not-found {
+  max-width: 520px;
+  margin: 40px 0;
+  padding: 20px 22px;
+  border: 1px solid #f0836655;
+  border-radius: 12px;
+  background: #f0836612;
+}
+.project-portfolio__error button,
+.project-detail__error button,
+.project-detail__not-found button {
+  margin: 8px 8px 0 0;
+  border: 1px solid #d4a44688;
+  border-radius: 999px;
+  padding: 8px 16px;
+  color: #e7c471;
+  background: #d4a44612;
+  cursor: pointer;
+}
+.project-portfolio__empty {
+  padding: 24px 0;
+  color: #a9c3ba;
+}
+
+.project-portfolio__filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 14px 16px;
+  border: 1px solid #ffffff1a;
+  border-radius: 12px;
+  background: #ffffff08;
+}
+.project-portfolio__filter-field {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.project-portfolio__filter-field label {
+  color: #7fa39a;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+}
+.project-portfolio__filter-field input,
+.project-portfolio__filter-field select {
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid #ffffff2a;
+  border-radius: 8px;
+  color: #e9f2ed;
+  background: #05110f;
+  font-size: 13px;
+}
+.project-portfolio__clear-filters,
+.project-portfolio__clear-filters-inline {
+  align-self: end;
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid #ffffff2a;
+  border-radius: 999px;
+  color: #a9c3ba;
+  background: transparent;
+  cursor: pointer;
+}
+.project-portfolio__clear-filters:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.project-portfolio__result-count {
+  margin: 0 0 12px;
+  color: #a9c3ba;
+  font-size: 13px;
+}
+.project-portfolio__hash-hint {
+  margin: 20px 0 0;
+  color: #4c655e;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+.project-portfolio__code,
+.project-detail .project-portfolio__code {
+  color: #7fa39a;
+  font-size: 12px;
+}
+
+/* Desktop: accessible table. Mobile: accessible card list. Both are always in the DOM (spec D7 —
+   the table is not display:none'd via JS state that could desync from the actual viewport, and a
+   200%-zoomed desktop browser that crosses the breakpoint gets the card layout automatically). */
+.project-portfolio-table-wrap {
+  overflow-x: auto;
+}
+.project-portfolio-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.project-portfolio-table th,
+.project-portfolio-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #ffffff14;
+  text-align: left;
+  vertical-align: top;
+}
+.project-portfolio-table th {
+  color: #7fa39a;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.project-portfolio__row-link {
+  border: none;
+  background: none;
+  color: #e7c471;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.project-portfolio-cards {
+  display: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+@media (max-width: 767px) {
+  .project-portfolio-table-wrap {
+    display: none;
+  }
+  .project-portfolio-cards {
+    display: grid;
+    gap: 12px;
+  }
+}
+.project-portfolio-card {
+  padding: 14px 16px;
+  border: 1px solid #ffffff1a;
+  border-radius: 12px;
+  background: #ffffff08;
+}
+.project-portfolio-card__title {
+  display: block;
+  margin: 0 0 8px;
+  border: none;
+  background: none;
+  color: #e7c471;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.project-portfolio-card__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px 12px;
+  margin: 0;
+}
+.project-portfolio-card__grid dt {
+  color: #7fa39a;
+  font-size: 10px;
+}
+.project-portfolio-card__grid dd {
+  margin: 0;
+  color: #dcebe5;
+  font-size: 13px;
+}
+
+/* Project Detail */
+.project-detail__header-grid,
+.project-detail__summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px 16px;
+  margin: 12px 0 0;
+}
+.project-detail__header-grid dt,
+.project-detail__summary-grid dt {
+  color: #7fa39a;
+  font-size: 11px;
+}
+.project-detail__header-grid dd,
+.project-detail__summary-grid dd {
+  margin: 2px 0 0;
+  color: #e9f2ed;
+  font-size: 14px;
+}
+.project-detail__header,
+.project-detail__attention,
+.project-detail__summary,
+.project-detail__work-packages,
+.project-detail__milestones,
+.project-detail__progress-history,
+.project-detail__issues,
+.project-detail__geography,
+.project-detail__provenance {
+  margin: 0 0 24px;
+  padding: 16px 18px;
+  border: 1px solid #ffffff1a;
+  border-radius: 12px;
+  background: #ffffff08;
+}
+.project-detail__attention {
+  border-color: #f0cf7a55;
+  background: #f0cf7a0d;
+}
+.project-detail h3 {
+  margin: 0 0 10px;
+  color: #e9f2ed;
+  font-size: 15px;
+}
+.project-detail__card-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.project-detail__card {
+  padding: 12px 14px;
+  border: 1px solid #ffffff14;
+  border-radius: 10px;
+  background: #ffffff05;
+  font-size: 13px;
+}
+.project-detail__card p {
+  margin: 4px 0;
+}
+.project-detail__card-title {
+  margin: 0 0 4px;
+  color: #e9f2ed;
+  font-weight: 600;
+}
+.project-detail__issue-group {
+  margin: 0 0 16px;
+}
+.project-detail__issue-group h4 {
+  margin: 0 0 8px;
+  color: #a9c3ba;
+  font-size: 12px;
+}
+.project-detail__geography button {
+  margin-top: 8px;
+  border: 1px solid #d4a44688;
+  border-radius: 999px;
+  padding: 8px 16px;
+  color: #e7c471;
+  background: #d4a44612;
+  cursor: pointer;
+}
+
+.progress-history__chart {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+}
+.progress-history__axis {
+  stroke: #ffffff2a;
+  stroke-width: 1;
+}
+.progress-history__line {
+  fill: none;
+  stroke-width: 2;
+}
+.progress-history__line--planned {
+  stroke: #7fa39a;
+  stroke-dasharray: 4 3;
+}
+.progress-history__line--actual {
+  stroke: #e7c471;
+}
+.progress-history__point {
+  fill: #e7c471;
+}
+.progress-history__legend {
+  display: flex;
+  gap: 16px;
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+.progress-history__legend-item::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.progress-history__legend-item--planned::before {
+  background: #7fa39a;
+}
+.progress-history__legend-item--actual::before {
+  background: #e7c471;
+}
+
+.executive-overview__portfolio-link {
+  display: inline-flex;
+  margin: 4px 0 12px;
+  padding: 8px 16px;
+  border: 1px solid #e7c47155;
+  border-radius: 999px;
+  color: #e7c471;
+  background: #e7c47112;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
+  .project-portfolio,
+  .project-detail {
+    inset: calc(var(--mobile-header-height) + var(--mobile-tabs-height)) 0 0;
+    padding: 0 12px 32px;
+  }
+  .project-portfolio h2,
+  .project-detail h2 {
+    font-size: 19px;
+  }
+  .project-detail__header-grid,
+  .project-detail__summary-grid,
+  .project-portfolio-card__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

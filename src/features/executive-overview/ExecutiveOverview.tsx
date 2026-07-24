@@ -33,7 +33,15 @@ const ERROR_KIND_LABEL: Record<string, string> = {
  * test/story tiêm `FakeProjectPortfolioSource` để mô phỏng loading/degraded/error mà
  * `BundledProjectPortfolioSource` (luôn ok) không tự tạo ra được.
  */
-export function ExecutiveOverview({ source }: { source?: ProjectPortfolioSource }) {
+export function ExecutiveOverview({
+  source,
+  onOpenPortfolio,
+}: {
+  source?: ProjectPortfolioSource;
+  /** Phase 2B1: navigates to the Project Portfolio route (`#/projects`). Optional so existing
+   * tests/stories that only exercise Executive Overview in isolation keep working unchanged. */
+  onOpenPortfolio?: () => void;
+}) {
   const [retryToken, setRetryToken] = useState(0);
   const effectiveSource = useMemo(() => source ?? new BundledProjectPortfolioSource(), [source]);
   const state = useExecutiveOverview(effectiveSource, retryToken);
@@ -85,6 +93,15 @@ export function ExecutiveOverview({ source }: { source?: ProjectPortfolioSource 
         DỮ LIỆU MINH HỌA — không phải số liệu vận hành chính thức, không dùng cho quyết định quản lý
         thực tế.
       </p>
+      {onOpenPortfolio && (
+        <button
+          type="button"
+          className="executive-overview__portfolio-link"
+          onClick={onOpenPortfolio}
+        >
+          Xem danh mục dự án →
+        </button>
+      )}
       <p className="executive-overview__status" data-status={model.portfolioStatus}>
         Trạng thái danh mục: <strong>{PORTFOLIO_STATUS_LABEL[model.portfolioStatus]}</strong>
         <span aria-hidden="true"> · </span>

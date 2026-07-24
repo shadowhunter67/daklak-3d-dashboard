@@ -35,8 +35,15 @@ export function useDashboardUrlSync() {
   useEffect(() => {
     let applyingHistory = false;
     const current = useMapStore.getState();
-    const canonical = serializeFullUrl(current);
-    if (window.location.search !== canonical) window.history.replaceState(null, '', canonical);
+    // Preserve `location.hash` on every history write this hook performs (Phase 2B1,
+    // docs/adr/0002-static-host-routing.md): this hook only ever owns the `?view=`/`?mode=`/
+    // `?ward=` query string, never the `#/projects...` hash route — without appending the hash
+    // back on, `history.replaceState(null, '', '?view=...')` resolves relative to the current URL
+    // and silently drops whatever hash was present, which broke refresh/reload on a Project
+    // Detail URL (the hash disappeared the instant this effect ran on mount).
+    const canonical = serializeFullUrl(current) + window.location.hash;
+    if (window.location.search + window.location.hash !== canonical)
+      window.history.replaceState(null, '', canonical);
 
     const unsubscribe = useMapStore.subscribe((state, previous) => {
       if (applyingHistory) return;
@@ -50,7 +57,7 @@ export function useDashboardUrlSync() {
           !camerasApproximatelyEqual(state.detailMapCamera, previous.detailMapCamera));
       if (!baseChanged && !detailChanged) return;
 
-      const url = serializeFullUrl(state);
+      const url = serializeFullUrl(state) + window.location.hash;
       // A view/mode/ward change is push-worthy even when it happens together with a detail-map
       // layer/camera change; a layer toggle or camera move alone only ever replaces.
       if (baseChanged && decideDashboardHistoryAction(previous, state) === 'push') {
