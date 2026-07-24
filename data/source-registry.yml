@@ -31,6 +31,9 @@ sources:
     failurePolicy: 'keep-last-known-good'
     expectedContentType: application/json
     maxResponseBytes: 2000000
+    # Recorded fixture — never auto-merge-eligible regardless of risk level. See
+    # docs/adr/0004-public-data-ingestion.md section 10 and scripts/data-refresh/autoMergePolicy.mjs.
+    maturity: experimental
     compliance:
       robotsCheckedAt: '2026-07-24T00:00:00.000Z'
       termsCheckedAt: '2026-07-24T00:00:00.000Z'

@@ -34,6 +34,7 @@
         "failurePolicy",
         "expectedContentType",
         "maxResponseBytes",
+        "maturity",
         "compliance"
       ],
       "properties": {
@@ -71,6 +72,9 @@
         "failurePolicy": { "type": "string", "minLength": 1 },
         "expectedContentType": { "type": "string", "minLength": 1 },
         "maxResponseBytes": { "type": "number", "minimum": 1 },
+        "maturity": {
+          "enum": ["experimental", "review-required", "observed", "auto-merge-eligible"]
+        },
         "compliance": { "$ref": "#/definitions/compliance" }
       },
       "additionalProperties": false

@@ -15,6 +15,10 @@ import { checksumOf } from './checksum.mjs';
  *   recordCount: number,
  *   validationResult: 'passed'|'failed',
  *   evidenceReference: string,
+ *   schemaVersion: string,
+ *   redistributionPolicy: string,
+ *   complianceChecksum: string,
+ *   maturity: string,
  *   records: unknown,
  * }} input
  * @returns {object} the manifest, with `retrievedAt` set to now and `checksum` computed from `records`.

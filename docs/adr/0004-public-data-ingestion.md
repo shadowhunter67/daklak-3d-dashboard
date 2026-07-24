@@ -109,11 +109,84 @@ input `dryRun` để chạy thử không publish gì.
 PR trước), đọc một JSON tĩnh nhỏ do pipeline sinh ra (`src/assets/data/data-refresh-source-health.json`)
 — không tự fetch trực tiếp trong browser.
 
+## 10. Live commissioning và hardening (bổ sung)
+
+Phần này ghi lại các quyết định khi lần đầu chứng minh pipeline chạy thật trên GitHub Actions,
+trước khi kết nối bất kỳ nguồn mạng thật nào (xem PR "chore/data-refresh-live-commissioning").
+
+### Schedule
+
+Bỏ hẳn trigger `schedule` — chỉ còn `workflow_dispatch`. Lý do: nguồn duy nhất đã đăng ký là
+recorded fixture; chạy hàng tuần vô thời hạn với fixture đó chỉ tạo ra kết quả `no-change` lặp lại
+vô nghĩa (hoặc phải tắt lịch ngay khi có nguồn thật cần chu kỳ riêng). Lịch chạy tự động sẽ được
+thêm lại — theo từng `datasetId`, dùng đúng field `schedule` khai báo trong
+`data/source-registry.yml` — khi PR onboard nguồn thật đầu tiên landed.
+
+### Source maturity — tách khỏi risk engine
+
+Thêm `SourceMaturity` (`scripts/data-refresh/types.mjs`): `experimental` | `review-required` |
+`observed` | `auto-merge-eligible`. Đây là một **fact được khai báo bởi người** trong
+`data/source-registry.yml` (field `maturity`, bắt buộc), không phải điều risk engine
+(`diffRisk.mjs`) tự suy ra. `diffRisk.mjs` trả lời "run này có an toàn để mở PR không"; maturity trả
+lời một câu hỏi khác: "nguồn này đã đủ tin cậy để merge không người can thiệp chưa". Recorded
+fixture khai báo `maturity: experimental` — nó có thể luôn ra `low-risk` nhưng **không bao giờ**
+auto-merge.
+
+### Auto-merge policy — `scripts/data-refresh/autoMergePolicy.mjs`
+
+Một run chỉ auto-merge-eligible khi **tất cả** đúng: `maturity === 'auto-merge-eligible'`,
+`riskLevel === 'low-risk'`, và không có: schema đổi, adapter version đổi (chưa được review riêng),
+xoá bản ghi, identity-remap (heuristic: nội dung không đổi nhưng id đổi — xem
+`countLikelyIdentityRemaps` trong `run.mjs`, không bao quát mọi trường hợp), thay đổi trạng thái
+pháp lý/duyệt (heuristic trên field `status`/`legalStatus`/`approvalStatus`), phát hiện dữ liệu cá
+nhân, thay đổi compliance block, thay đổi `redistributionPolicy`, redirect ngoài domain đã duyệt,
+hoặc evidence-checksum conflict (chưa có kho evidence-checksum thật — luôn `false` cho tới khi đó
+được xây). Nếu bất kỳ điều kiện nào fail, PR vẫn được mở (nếu risk là `low-risk`) nhưng không
+auto-merge — gán `shadowhunter67`, mention trong PR body, gắn nhãn `manual-review-required`. Nếu
+GitHub repository chưa bật auto-merge ở settings, `gh pr merge --auto` fail không được coi là lỗi
+workflow — PR đã mở thành công là đủ.
+
+### Generated source health — không còn cập nhật thủ công
+
+`src/assets/data/data-refresh-source-health.json` không còn là file hand-edited. Canonical location
+là `data/published/source-health.json`, sinh ra từ `run.mjs` mỗi lần chạy (không dry-run) —
+`writeGeneratedSourceHealth()` giữ lại trạng thái của mọi dataset khác trong registry mà lần chạy
+này không đụng tới, và mirror y hệt nội dung sang `src/assets/data/data-refresh-source-health.json`
+để browser bundle đọc (Vite chỉ bundle được file trong `src/`). Không ai được sửa tay hai file này.
+
+### Schema drift guard thật
+
+`scripts/data-refresh/registrySchemaDriftGuard.test.mjs` thay thế cách kiểm tra cũ ("compile schema
+rồi validate một object cố định"). Với mỗi required field (entry-level và compliance-level) và mỗi
+enum field (`authority`, `classification`, `redistributionPolicy`, `maturity`), test tạo cả fixture
+hợp lệ (positive) và fixture phá field/giá trị đó (negative), rồi khẳng định **cả hai** validator
+(hand-written `validateRegistryShape` và AJV-compiled JSON Schema) đồng thuận — cùng accept, hoặc
+cùng reject. Việc viết test này lộ ra một lệch pha thật: `validateRegistryShape` trước đây không từ
+chối field lạ ở top-level/compliance dù schema có `additionalProperties: false` — đã fix trong cùng
+PR.
+
+### Workflow robustness
+
+- `run.mjs` ghi `reports/data-refresh/run-result.json` (machine-readable: `riskLevel`,
+  `autoMergeEligible`, `hasLastKnownGoodChange`, `maturity`, `dryRun`) — workflow đọc bằng `jq`,
+  không còn `grep -oP` parse console output.
+- Bước đầu workflow tự tạo nhãn `manual-review-required` (`gh label create --force`, idempotent) —
+  bỏ yêu cầu "tạo nhãn thủ công một lần" trong docs/public-data-refresh.md.
+- Cập nhật issue hard-stop hiện có cũng re-apply assignee/label (không chỉ comment) — phòng trường
+  hợp một trong hai bị gỡ giữa các lần chạy.
+- Input `commissioningScenario` (`none`/`low-risk`/`hard-stop`) trỏ tới hai fixture bổ sung
+  (`scripts/data-refresh/fixtures/commissioning-*.json`, vẫn hoàn toàn offline) để diễn tập PR/issue
+  pathway thật trên Actions mà không cần chờ nguồn thật.
+
 ## Phạm vi chưa làm (khuyến nghị phase sau)
 
-- Onboard nguồn thật (cần xác nhận robots.txt/terms/compliance officer trước).
+- Onboard nguồn thật (cần xác nhận robots.txt/terms/compliance officer trước) — xem
+  `docs/data-sources/*-assessment.md` khi có.
 - GitHub Release asset thật cho raw evidence.
-- Drift-guard test tự động đối chiếu `source-registry.yml` với schema (hiện chỉ có AJV validate một
-  fixture cố định trong test, chưa có cơ chế tự phát hiện lệch pha như
-  `schemaDriftGuard.test.ts` đã làm cho domain fixture).
+- Evidence-checksum store thật cho `autoMergePolicy.mjs`'s `evidenceChecksumConflict` (hiện luôn
+  `false`).
+- Identity-remap/legal-status-change detection hiện là heuristic đơn giản
+  (`countLikelyIdentityRemaps`/`hasLegalStatusChange` trong `run.mjs`) — không bao quát mọi trường
+  hợp một schema đa dạng hơn có thể gặp.
 - UI "Data Sources" đầy đủ (hiện là panel tối thiểu, không phải trang riêng).
+- Lịch chạy tự động theo từng dataset (xem mục 10 "Schedule") — chờ nguồn thật đầu tiên.

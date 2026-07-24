@@ -230,7 +230,17 @@ export const vi = {
   'dataSources.riskLabel': 'Mức rủi ro',
   'dataSources.riskLowRisk': 'Thấp — đủ điều kiện tự động cập nhật',
   'dataSources.riskHardStop': 'Cần người xem xét',
+  'dataSources.riskNotYetRun': 'Chưa chạy lần nào',
   'dataSources.staleWarning': 'Dữ liệu đã {days} ngày chưa cập nhật — vượt ngưỡng cho phép.',
+  'dataSources.neverPublished': 'Chưa từng publish',
+  'dataSources.neverPublishedWarning': 'Nguồn này chưa có lần publish nào được ghi nhận.',
+  'dataSources.scheduleLabel': 'Chu kỳ cập nhật',
+  'dataSources.scheduleValue': 'Cập nhật định kỳ (không phải thời gian thực)',
+  'dataSources.fixtureNotice': 'Nguồn kiểm thử nội bộ — không gọi mạng.',
+  'dataSources.maturity.experimental': 'Thử nghiệm',
+  'dataSources.maturity.reviewRequired': 'Cần xét duyệt',
+  'dataSources.maturity.observed': 'Đang theo dõi',
+  'dataSources.maturity.autoMergeEligible': 'Đủ điều kiện tự động cập nhật',
   'dataSources.footerNote':
     'Nền tảng ingestion tự động — hiện chỉ chạy với dữ liệu minh hoạ nội bộ, chưa nối nguồn thật. Xem docs/public-data-refresh.md.',
 } as const satisfies Record<string, string>;

@@ -1,21 +1,6 @@
 {
-  "manifest": {
-    "datasetId": "investment-opportunities-daklak-illustrative",
-    "effectiveAt": "2026-07-20T00:00:00.000Z",
-    "sourcePublishedAt": "2026-07-20T00:00:00.000Z",
-    "sourceUrl": "https://example.invalid/dak-lak-investment-opportunities",
-    "publisher": "Sở Kế hoạch và Đầu tư tỉnh Đắk Lắk (minh hoạ — fixture nội bộ)",
-    "adapterVersion": "recorded-fixture@1",
-    "recordCount": 3,
-    "validationResult": "passed",
-    "evidenceReference": "fixture://investment-opportunities-daklak-illustrative (no live evidence — see docs/adr/0004-public-data-ingestion.md)",
-    "schemaVersion": "1.0.0",
-    "redistributionPolicy": "allowed-with-attribution",
-    "complianceChecksum": "f31c9360de6277d4467b097e7a47c5ec1b710cb444f8cccd8916cae41b82e22b",
-    "maturity": "experimental",
-    "retrievedAt": "2026-07-24T08:48:30.161Z",
-    "checksum": "af957ca2a025b9489264148249c96381319ed6bb44d9e01b598710fbde011f41"
-  },
+  "_commissioningNote": "Not a real source response. Used only via --fixture-override for a one-time live commissioning test of the low-risk PR pathway on GitHub Actions (docs/adr/0004-public-data-ingestion.md section 10). Same 3 illustrative records as recorded-source-response.json plus one appended record — an append-only change, never a deletion or schema change.",
+  "sourcePublishedAt": "2026-07-24T00:00:00.000Z",
   "records": [
     {
       "id": "io-001",
@@ -49,6 +34,17 @@
       "estimatedInvestmentVndMin": 200000000000,
       "estimatedInvestmentVndMax": 300000000000,
       "proposalDeadline": "2026-10-15"
+    },
+    {
+      "id": "io-004",
+      "sourceCode": "DL-XTDT-2026-004",
+      "title": "Kêu gọi đầu tư trung tâm logistics Buôn Ma Thuột (minh hoạ, kiểm thử commissioning)",
+      "sector": "logistics",
+      "status": "announced",
+      "administrativeAreaCodes": ["24580"],
+      "estimatedInvestmentVndMin": 300000000000,
+      "estimatedInvestmentVndMax": 450000000000,
+      "proposalDeadline": "2027-06-30"
     }
   ]
 }

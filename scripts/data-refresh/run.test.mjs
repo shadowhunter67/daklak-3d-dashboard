@@ -46,4 +46,36 @@ describe('runDatasetRefresh (offline, recorded fixture)', () => {
     const after = readFileSync(path, 'utf8');
     expect(after).toBe(before);
   });
+
+  it('a dry run never touches the generated source-health snapshot', () => {
+    const canonicalPath = 'data/published/source-health.json';
+    const bundledPath = 'src/assets/data/data-refresh-source-health.json';
+    const canonicalBefore = readFileSync(canonicalPath, 'utf8');
+    const bundledBefore = readFileSync(bundledPath, 'utf8');
+    runDatasetRefresh({ datasetId: DATASET_ID, dryRun: true });
+    expect(readFileSync(canonicalPath, 'utf8')).toBe(canonicalBefore);
+    expect(readFileSync(bundledPath, 'utf8')).toBe(bundledBefore);
+  });
+
+  it('the recorded fixture (maturity: experimental) is never auto-merge eligible, even on a clean low-risk run', () => {
+    const result = runDatasetRefresh({ datasetId: DATASET_ID, dryRun: true });
+    expect(result.riskLevel).toBe('low-risk');
+    expect(result.autoMergeEligible).toBe(false);
+  });
+
+  it('writes a machine-readable reports/data-refresh/run-result.json for the workflow to read', () => {
+    runDatasetRefresh({ datasetId: DATASET_ID, dryRun: true });
+    const result = JSON.parse(readFileSync('reports/data-refresh/run-result.json', 'utf8'));
+    expect(result.datasetId).toBe(DATASET_ID);
+    expect(['low-risk', 'hard-stop']).toContain(result.riskLevel);
+    expect(typeof result.autoMergeEligible).toBe('boolean');
+    expect(typeof result.hasLastKnownGoodChange).toBe('boolean');
+    expect(result.dryRun).toBe(true);
+  });
+
+  it('the PR report mentions the owner and explains why manual review is required for a non-eligible maturity', () => {
+    const result = runDatasetRefresh({ datasetId: DATASET_ID, dryRun: true });
+    expect(result.prMarkdown).toContain('@shadowhunter67');
+    expect(result.prMarkdown).toContain('Manual review required');
+  });
 });

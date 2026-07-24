@@ -12,6 +12,18 @@ describe('DataSourcesPanel', () => {
     expect(screen.getByText('Thấp — đủ điều kiện tự động cập nhật')).toBeInTheDocument();
   });
 
+  it('shows the source maturity label and the internal-fixture notice for a recorded fixture', () => {
+    renderWithI18n(<DataSourcesPanel onClose={() => {}} />);
+    expect(screen.getByText('Thử nghiệm')).toBeInTheDocument();
+    expect(screen.getByText('Nguồn kiểm thử nội bộ — không gọi mạng.')).toBeInTheDocument();
+  });
+
+  it('describes the refresh cadence as scheduled, never as real-time', () => {
+    renderWithI18n(<DataSourcesPanel onClose={() => {}} />);
+    expect(screen.getByText('Cập nhật định kỳ (không phải thời gian thực)')).toBeInTheDocument();
+    expect(screen.queryByText(/thời gian thực$/)).not.toBeInTheDocument();
+  });
+
   it('calls onClose when the close button is activated', () => {
     const onClose = vi.fn();
     renderWithI18n(<DataSourcesPanel onClose={onClose} />);

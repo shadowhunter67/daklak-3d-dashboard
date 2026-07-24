@@ -16,3 +16,4 @@ downloads/
 reports/data-refresh/*.run-report.json
 reports/data-refresh/*.run-report.md
 reports/data-refresh/*.issue-body.md
+reports/data-refresh/run-result.json
