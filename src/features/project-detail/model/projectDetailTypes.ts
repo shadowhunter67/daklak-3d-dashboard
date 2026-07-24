@@ -10,6 +10,7 @@ import type {
 import type { KpiResult } from '../../../entities/project/kpi/types';
 import type { AttentionReasonCategory } from '../../../entities/project/attentionReason';
 import type { DatasetDescriptor } from '../../../data-platform/schemas/dataset';
+import type { ProjectPortfolioProvenance } from '../../../entities/project/adapters/ProjectPortfolioSource';
 
 export interface ProjectDetailProvenanceEntry {
   sourceDatasetId: string;
@@ -30,6 +31,9 @@ export interface ProjectDetailProgressPoint {
 
 export interface ProjectDetailModel {
   generatedAt: string;
+  /** Bốn+một mốc thời gian thật của snapshot dữ liệu (xem `ProjectPortfolioProvenance`) — không
+   * suy ra "cập nhật hôm nay" từ `generatedAt`, vốn chỉ là thời điểm tính lại view model. */
+  dataTimeline: ProjectPortfolioProvenance;
   header: {
     projectId: string;
     code: string;

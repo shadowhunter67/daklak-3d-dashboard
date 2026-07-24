@@ -1,6 +1,7 @@
 import { captureProvenanceFocusTrigger } from '../../components/provenance/provenanceFocusTrigger';
 import { useMapStore } from '../../stores/mapStore';
-import { formatRelativeUpdatedAt } from './model/executiveOverviewSelectors';
+import type { ProjectPortfolioProvenance } from '../../entities/project/adapters/ProjectPortfolioSource';
+import { formatAbsoluteDateTime } from './model/executiveOverviewSelectors';
 import type { DataHealthSummary } from './model/executiveOverviewTypes';
 
 const CONFIDENCE_LABELS: Record<string, string> = {
@@ -13,10 +14,10 @@ const CONFIDENCE_LABELS: Record<string, string> = {
 
 export function DataHealthPanel({
   dataHealth,
-  asOf,
+  dataTimeline,
 }: {
   dataHealth: DataHealthSummary;
-  asOf: Date;
+  dataTimeline: ProjectPortfolioProvenance;
 }) {
   const openProvenancePanel = useMapStore((state) => state.openProvenancePanel);
 
@@ -51,8 +52,16 @@ export function DataHealthPanel({
           <dd>{dataHealth.sourceAvailable ? 'Sẵn sàng' : 'Không sẵn sàng'}</dd>
         </div>
         <div>
-          <dt>Cập nhật lần cuối</dt>
-          <dd>{formatRelativeUpdatedAt(dataHealth.calculatedAt, asOf)}</dd>
+          <dt>Dữ liệu có hiệu lực</dt>
+          <dd>{formatAbsoluteDateTime(dataTimeline.effectiveAt)}</dd>
+        </div>
+        <div>
+          <dt>Nguồn công bố</dt>
+          <dd>{formatAbsoluteDateTime(dataTimeline.sourcePublishedAt)}</dd>
+        </div>
+        <div>
+          <dt>Hệ thống thu thập</dt>
+          <dd>{formatAbsoluteDateTime(dataTimeline.retrievedAt)}</dd>
         </div>
       </dl>
       <h3>Độ tin cậy dữ liệu</h3>

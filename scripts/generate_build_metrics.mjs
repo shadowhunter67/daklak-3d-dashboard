@@ -52,7 +52,7 @@ const report = {
   images: { transferBytes: sum(images, 'bytes'), count: images.length },
   largestAsset: largest,
   threeChunk: javascript.find(({ file }) => basename(file).startsWith('three-vendor-')) ?? null,
-  echartsChunk: javascript.find(({ file }) => basename(file).startsWith('StatPanel-')) ?? null,
+  statPanelChunk: javascript.find(({ file }) => basename(file).startsWith('StatPanel-')) ?? null,
   geometry: {
     canonical: await sourceAsset('daklak-wards.geojson'),
     render: await sourceAsset('daklak-wards-render.json'),
@@ -70,7 +70,7 @@ await writeFile(
   `${JSON.stringify(report, null, 2)}\n`,
 );
 const mb = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MiB`;
-const markdown = `# Build metrics\n\nGenerated: ${report.generatedAt}\n\n| Metric | Result |\n| --- | ---: |\n| JavaScript raw | ${mb(report.javascript.rawBytes)} |\n| JavaScript gzip | ${mb(report.javascript.gzipBytes)} |\n| CSS raw / gzip | ${mb(report.css.rawBytes)} / ${mb(report.css.gzipBytes)} |\n| Images/textures | ${mb(report.images.transferBytes)} |\n| JavaScript chunks | ${report.javascript.chunkCount} |\n| Largest asset | ${largest.file} (${mb(largest.bytes)}) |\n| Three.js chunk | ${report.threeChunk?.file ?? 'not found'} (${mb(report.threeChunk?.gzipBytes ?? 0)} gzip) |\n| ECharts chunk | ${report.echartsChunk?.file ?? 'not found'} (${mb(report.echartsChunk?.gzipBytes ?? 0)} gzip) |\n| Canonical GeoJSON | ${mb(report.geometry.canonical.bytes)} |\n| Render JSON | ${mb(report.geometry.render.bytes)} |\n| Budget | ${report.budget.status} |\n\nFPS, GPU memory and reliable LCP are not claimed because this CI does not provide representative physical GPU measurements.\n`;
+const markdown = `# Build metrics\n\nGenerated: ${report.generatedAt}\n\n| Metric | Result |\n| --- | ---: |\n| JavaScript raw | ${mb(report.javascript.rawBytes)} |\n| JavaScript gzip | ${mb(report.javascript.gzipBytes)} |\n| CSS raw / gzip | ${mb(report.css.rawBytes)} / ${mb(report.css.gzipBytes)} |\n| Images/textures | ${mb(report.images.transferBytes)} |\n| JavaScript chunks | ${report.javascript.chunkCount} |\n| Largest asset | ${largest.file} (${mb(largest.bytes)}) |\n| Three.js chunk | ${report.threeChunk?.file ?? 'not found'} (${mb(report.threeChunk?.gzipBytes ?? 0)} gzip) |\n| StatPanel chunk | ${report.statPanelChunk?.file ?? 'not found'} (${mb(report.statPanelChunk?.gzipBytes ?? 0)} gzip) |\n| Canonical GeoJSON | ${mb(report.geometry.canonical.bytes)} |\n| Render JSON | ${mb(report.geometry.render.bytes)} |\n| Budget | ${report.budget.status} |\n\nFPS, GPU memory and reliable LCP are not claimed because this CI does not provide representative physical GPU measurements.\n`;
 await writeFile(
   join(reportDirectory, 'build-metrics.md'),
   await format(markdown, { parser: 'markdown' }),

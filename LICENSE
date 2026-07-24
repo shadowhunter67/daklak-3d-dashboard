@@ -1,7 +1,114 @@
-MIT License
+Đắk Lắk 3D Dashboard — Source-Available Evaluation License (SAEL) v1.0
 
-Copyright (c) 2026 Dak Lak 3D Dashboard contributors
+Copyright (c) 2026 shadowhunter67 ("Licensor"). All rights reserved except as
+expressly granted below.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, subject to inclusion of this notice.
+This is NOT an open-source license as defined by the Open Source Initiative
+or the Free Software Foundation. Do not describe this project, or any
+version of it released under this license, as "open source" or "free
+software." See LICENSE-HISTORY.md for the versions that remain under the
+original MIT License, which are unaffected by this document.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+NOTICE — NOT LEGAL ADVICE
+
+This license text was drafted by the Licensor (with AI drafting assistance)
+for a small, single-owner project. It has NOT been reviewed by a lawyer and
+is NOT a substitute for legal advice. Anyone intending to rely on this
+license for a real commercial transaction, procurement process, or dispute
+— on either the Licensor's or a licensee's side — should have it reviewed by
+qualified legal counsel before doing so. The Licensor makes no claim that
+this text is complete, enforceable in every jurisdiction, or fit for any
+particular legal purpose.
+
+1. SCOPE
+
+This license applies to this repository's source code, configuration,
+build scripts, and original documentation (the "Software") as released
+under this file from the commit immediately following the `mit-final-1.0.0`
+tag onward. It does not apply to:
+
+  - any commit at or before the `mit-final-1.0.0` tag, which remains under
+    the MIT License in effect at that time (see LICENSE-HISTORY.md);
+  - third-party dependencies (npm/PyPI packages and similar), which remain
+    under their own respective licenses (see THIRD_PARTY_NOTICES.md);
+  - third-party data and imagery (administrative geometry, Sentinel-2
+    imagery, SRTM-derived terrain, OpenStreetMap road data, and similar),
+    which remain under their own respective licenses and attribution
+    requirements (see ATTRIBUTION.md and THIRD_PARTY_NOTICES.md).
+
+2. WHAT IS PERMITTED WITHOUT ANY SEPARATE AGREEMENT
+
+Subject to Section 3, the Licensor grants any person obtaining a copy of
+the Software a worldwide, royalty-free, non-exclusive, non-sublicensable
+license to:
+
+  a. view, read, and study the source code;
+  b. clone or fork the repository;
+  c. run the Software locally or in a private, non-public development
+     environment, for evaluation purposes;
+  d. use the Software for personal learning, coursework, academic research,
+     and other non-commercial testing/evaluation purposes;
+  e. modify the Software privately for the purposes above (a)-(d).
+
+3. WHAT REQUIRES A SEPARATE WRITTEN AGREEMENT WITH THE LICENSOR
+
+None of the following is permitted without a separate written agreement
+signed or otherwise explicitly agreed to by the Licensor (see
+COMMERCIAL-LICENSE.md for how to request one):
+
+  a. any commercial use, meaning use that is intended for or directed
+     toward commercial advantage or monetary compensation;
+  b. deploying the Software, or a modified version of it, to production or
+     to any publicly or internally reachable environment other than a
+     private evaluation environment;
+  c. offering the Software, or a modified/derived version of it, as a
+     hosted or managed service (SaaS) to any third party;
+  d. selling, renting, or otherwise monetizing the Software or access to
+     it;
+  e. sublicensing, relicensing, or otherwise granting any third party
+     rights to the Software beyond what this license grants them directly;
+  f. white-labeling or rebranding the Software for redistribution;
+  g. using the Software, in whole or in part, in paid client work,
+     consulting engagements, or procurement/tender responses;
+  h. using the Software to build or operate a product or service that
+     competes with the Licensor's product built from this repository;
+  i. redistributing the Software or derivative works of it, in source or
+     compiled form, to any third party, except as needed for permitted
+     evaluation collaboration within an organization already evaluating it
+     under Section 2;
+  j. removing or obscuring copyright, attribution, or trademark notices
+     from the Software.
+
+4. THIRD-PARTY MATERIALS
+
+Nothing in this license restricts rights already granted by the licenses
+of third-party dependencies, data, or imagery listed in
+THIRD_PARTY_NOTICES.md and ATTRIBUTION.md. Those materials remain governed
+solely by their own licenses regardless of this file.
+
+5. HISTORICAL MIT VERSIONS
+
+This license change is not retroactive. Anyone who obtained a copy of the
+Software at or before the `mit-final-1.0.0` tag may continue to use, modify,
+and redistribute that historical copy under the MIT License terms attached
+to it at the time. See LICENSE-HISTORY.md.
+
+6. TERMINATION
+
+Any use outside Section 2 without a separate written agreement immediately
+terminates the rights granted in Section 2 for the party engaging in that
+use. The Licensor may also terminate this license for a specific party upon
+written notice if that party materially breaches Section 3.
+
+7. NO WARRANTY
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+LICENSOR BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING FROM
+THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+8. COMMERCIAL LICENSING
+
+See COMMERCIAL-LICENSE.md for how to request permission for any use listed
+in Section 3.

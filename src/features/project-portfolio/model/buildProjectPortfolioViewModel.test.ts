@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import labels from '../../../assets/maps/daklak/daklak-labels.json';
-import { MOCK_PROJECT_BUNDLES, MOCK_REFERENCE_DATE } from '../../../entities/project/mockPortfolio';
+import {
+  MOCK_PROJECT_BUNDLES,
+  MOCK_REFERENCE_DATE,
+} from '../../../entities/project/illustrativeProjectPortfolio';
 import type { ProjectBundle } from '../../../entities/project/types';
 import { buildProjectPortfolioViewModel } from './buildProjectPortfolioViewModel';
 

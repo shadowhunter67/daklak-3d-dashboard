@@ -6,6 +6,7 @@ import type {
 } from '../../../entities/project/types';
 import type { KpiResult } from '../../../entities/project/kpi/types';
 import type { DataQualitySummary } from '../../../entities/project/dataQualitySummary';
+import type { ProjectPortfolioProvenance } from '../../../entities/project/adapters/ProjectPortfolioSource';
 
 export type PortfolioStatus = 'healthy' | 'attention' | 'critical' | 'degraded';
 
@@ -60,6 +61,10 @@ export interface DataHealthSummary extends DataQualitySummary {
 
 export interface ExecutiveOverviewModel {
   generatedAt: string;
+  /** Bốn+một mốc thời gian thật của snapshot dữ liệu (hiệu lực/nguồn công bố/hệ thống thu thập/
+   * publish lên dashboard/trình duyệt nạp) — không suy ra "cập nhật hôm nay" từ `generatedAt`,
+   * vốn chỉ là thời điểm tính toán lại view model, không phải thời điểm dữ liệu thay đổi. */
+  dataTimeline: ProjectPortfolioProvenance;
   portfolioStatus: PortfolioStatus;
   kpis: ExecutiveOverviewKpis;
   /** Số dự án hợp lệ theo từng `ProjectStatus` — nguồn cho biểu đồ phân bố trạng thái (spec §E).

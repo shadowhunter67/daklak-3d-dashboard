@@ -4,7 +4,7 @@
  * components, the map store and CSS — a validator that needs to know which administrative codes
  * are valid takes a `ReadonlySet<string>` (`ProjectValidationContext`/`DataQualityContext`), it
  * never imports `daklak-labels.json` itself. Only *test* files are allowed to build that set from
- * real data (see `mockPortfolio.test.ts`, `dataQualitySummary.test.ts`).
+ * real data (see `illustrativeProjectPortfolio.test.ts`, `dataQualitySummary.test.ts`).
  *
  * This is a plain-text static scan over source, in the same spirit as
  * `scripts/validate_public_build.mjs` — deliberately not a full parser (same documented scope

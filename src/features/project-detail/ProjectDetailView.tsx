@@ -2,7 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { BundledProjectPortfolioSource } from '../../data/projectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
 import type { ProjectGeometry } from '../../entities/project/types';
-import { formatKpiValue } from '../executive-overview/model/executiveOverviewSelectors';
+import {
+  formatAbsoluteDateTime,
+  formatKpiValue,
+} from '../executive-overview/model/executiveOverviewSelectors';
 import { useProjectDetail } from './data/useProjectDetail';
 import { ProgressHistorySparkline } from './ProgressHistorySparkline';
 
@@ -101,7 +104,6 @@ export function ProjectDetailView({
   }
 
   const { model } = state;
-  const asOf = new Date(model.generatedAt);
   const disbursement = formatKpiValue(model.summary.disbursementRate);
   const scheduleVariance = formatKpiValue(model.summary.scheduleVariance);
   const budgetVariance = formatKpiValue(model.summary.budgetVariance);
@@ -394,7 +396,20 @@ export function ProjectDetailView({
             ),
           )}
         </ul>
-        <p>Cập nhật lúc {asOf.toLocaleString('vi-VN')}.</p>
+        <dl className="project-detail__header-grid">
+          <div>
+            <dt>Dữ liệu có hiệu lực</dt>
+            <dd>{formatAbsoluteDateTime(model.dataTimeline.effectiveAt)}</dd>
+          </div>
+          <div>
+            <dt>Nguồn công bố</dt>
+            <dd>{formatAbsoluteDateTime(model.dataTimeline.sourcePublishedAt)}</dd>
+          </div>
+          <div>
+            <dt>Hệ thống thu thập</dt>
+            <dd>{formatAbsoluteDateTime(model.dataTimeline.retrievedAt)}</dd>
+          </div>
+        </dl>
       </section>
     </section>
   );
