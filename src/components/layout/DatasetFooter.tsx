@@ -1,7 +1,9 @@
 import { datasetManifest, formatSnapshotDate } from '../../data/datasetManifest';
 import { useMapStore } from '../../stores/mapStore';
+import { useTranslation } from '../../i18n/useTranslation';
 
 export function DatasetFooter() {
+  const { t } = useTranslation();
   const dataMode = useMapStore((state) => state.dataMode);
   return (
     <footer>
@@ -9,17 +11,17 @@ export function DatasetFooter() {
       <p>
         {dataMode === 'overview' ? (
           <>
-            Chỉ tiêu cấp tỉnh:{' '}
+            {t('datasetFooter.provincialIndicators')}{' '}
             <a href={datasetManifest.sourceUrl} target="_blank" rel="noopener noreferrer">
-              nguồn công bố {datasetManifest.sourceVersion}
+              {t('datasetFooter.publishedSource', { version: datasetManifest.sourceVersion })}
             </a>{' '}
-            · Chỉ tiêu cấp xã: dữ liệu minh họa.
+            {t('datasetFooter.communeIllustrative')}
           </>
         ) : (
-          'Lớp chuyên đề đang dùng dữ liệu minh họa có seed cố định.'
+          t('datasetFooter.thematicIllustrative')
         )}
       </p>
-      <span title={`Phiên bản cache ${datasetManifest.cacheVersion}`}>
+      <span title={t('datasetFooter.cacheVersionTitle', { version: datasetManifest.cacheVersion })}>
         SNAPSHOT {formatSnapshotDate(datasetManifest.snapshotDate)}
       </span>
     </footer>

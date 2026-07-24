@@ -6,39 +6,11 @@ import type { MessageKey } from '../../../i18n/messages';
 import { formatDateTime, formatNumber, formatPercent, formatVnd } from '../../../i18n/formatters';
 import type { PortfolioAlert, PortfolioAlertSeverity } from './executiveOverviewTypes';
 
-const vndFormatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 });
-const percentFormatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 1 });
-const numberFormatter = new Intl.NumberFormat('vi-VN');
-
-/**
- * Chuỗi hiển thị cho một KPI — spec: không hiển thị 0 cho unavailable, dùng text giải thích. Trả
- * cả `text` (hiển thị) và `isUnavailable` (để UI quyết định style/aria).
- *
- * Giữ nguyên tiếng Việt hard-code (không nhận `locale`) vì `ProjectDetailView`/`ProjectPortfolioView`
- * (chưa nằm trong phạm vi dịch của PR này — xem docs/adr/0003-internationalization.md) vẫn gọi hàm
- * này trực tiếp. Dùng `formatKpiValueLocalized` bên dưới cho mọi call site đã dịch (Executive
- * Overview) thay vì đổi chữ ký hàm này và buộc phải dịch lây sang những file chưa tới lượt.
- */
-export function formatKpiValue(kpi: KpiResult): { text: string; isUnavailable: boolean } {
-  if (kpi.status === 'unavailable' || kpi.value === null)
-    return { text: 'Chưa đủ dữ liệu', isUnavailable: true };
-  switch (kpi.unit) {
-    case 'VND':
-      return { text: `${vndFormatter.format(kpi.value)} ₫`, isUnavailable: false };
-    case '%':
-      return { text: `${percentFormatter.format(kpi.value)}%`, isUnavailable: false };
-    case 'count':
-      return { text: numberFormatter.format(kpi.value), isUnavailable: false };
-    case 'days':
-      return { text: `${numberFormatter.format(kpi.value)} ngày`, isUnavailable: false };
-    default:
-      return { text: numberFormatter.format(kpi.value), isUnavailable: false };
-  }
-}
-
 type Translate = (key: MessageKey, vars?: Record<string, string | number>) => string;
 
-/** Locale-aware counterpart of `formatKpiValue` — used by translated Executive Overview components. */
+/** Formats a KPI value for display — never a bare 0 for unavailable, an explanatory text instead
+ * (spec). Every UI surface (Executive Overview, Project Portfolio, Project Detail) is translated,
+ * so this is the only KPI formatter — locale-aware via the centralized `i18n/formatters.ts`. */
 export function formatKpiValueLocalized(
   kpi: KpiResult,
   locale: Locale,

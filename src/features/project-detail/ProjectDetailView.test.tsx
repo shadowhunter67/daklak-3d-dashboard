@@ -1,8 +1,9 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
 import { MOCK_PROJECT_BUNDLES } from '../../entities/project/illustrativeProjectPortfolio';
 import type { ProjectPortfolio } from '../../entities/project/adapters/ProjectPortfolioSource';
+import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 import {
   FakeProjectPortfolioSource,
   PendingProjectPortfolioSource,
@@ -29,7 +30,7 @@ describe('ProjectDetailView', () => {
   afterEach(cleanup);
 
   it('shows a loading state before the source resolves', () => {
-    render(
+    renderWithI18n(
       <ProjectDetailView
         source={new PendingProjectPortfolioSource()}
         projectId={MOCK_PROJECT_BUNDLES[0].project.id}
@@ -42,7 +43,7 @@ describe('ProjectDetailView', () => {
 
   it('renders header, summary and the illustrative-data disclaimer for a valid project', async () => {
     const target = MOCK_PROJECT_BUNDLES[0];
-    render(
+    renderWithI18n(
       <ProjectDetailView
         source={FakeProjectPortfolioSource.ok(portfolio())}
         projectId={target.project.id}
@@ -60,7 +61,7 @@ describe('ProjectDetailView', () => {
 
   it('shows a not-found state with a way back to Portfolio for an unknown id', async () => {
     const onBackToPortfolio = vi.fn();
-    render(
+    renderWithI18n(
       <ProjectDetailView
         source={FakeProjectPortfolioSource.ok(portfolio())}
         projectId="does-not-exist"
@@ -77,7 +78,7 @@ describe('ProjectDetailView', () => {
     const noGeometryProject = MOCK_PROJECT_BUNDLES.find((b) => !b.project.geometry);
     expect(noGeometryProject).toBeDefined();
     if (!noGeometryProject) return;
-    render(
+    renderWithI18n(
       <ProjectDetailView
         source={FakeProjectPortfolioSource.ok(portfolio())}
         projectId={noGeometryProject.project.id}
@@ -95,7 +96,7 @@ describe('ProjectDetailView', () => {
     expect(withGeometry).toBeDefined();
     if (!withGeometry) return;
     const onViewOnMap = vi.fn();
-    render(
+    renderWithI18n(
       <ProjectDetailView
         source={FakeProjectPortfolioSource.ok(portfolio())}
         projectId={withGeometry.project.id}
@@ -114,7 +115,7 @@ describe('ProjectDetailView', () => {
     );
     expect(withEverything).toBeDefined();
     if (!withEverything) return;
-    render(
+    renderWithI18n(
       <ProjectDetailView
         source={FakeProjectPortfolioSource.ok(portfolio())}
         projectId={withEverything.project.id}
@@ -137,7 +138,7 @@ describe('ProjectDetailView', () => {
       ...base,
       project: { ...base.project, approvedBudget: 0, disbursedAmount: 0 },
     };
-    render(
+    renderWithI18n(
       <ProjectDetailView
         source={FakeProjectPortfolioSource.ok(portfolio([zeroBudgetProject]))}
         projectId={zeroBudgetProject.project.id}
@@ -151,7 +152,7 @@ describe('ProjectDetailView', () => {
   });
 
   it('shows a friendly message and a retry button on error', async () => {
-    render(
+    renderWithI18n(
       <ProjectDetailView
         source={FakeProjectPortfolioSource.error('backend unreachable', 'network')}
         projectId="any-id"

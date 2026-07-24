@@ -38,21 +38,35 @@ the top-right of the header — no page reload. The choice is reflected in a sha
 `localStorage`; Back/Forward correctly undoes/redoes the most recent language switch. See
 [ADR 0003](docs/adr/0003-internationalization.md) for the full design.
 
-**Currently translated:** the app shell, header, and the entire Executive Overview page (KPIs,
-priority projects, alerts, data health, project summary dialog).
+**Currently translated:** the entire product — app shell, header, Executive Overview, Project
+Portfolio, Project Detail, the 3D map controls, the accessible 2D directory, the MapLibre detail
+map (layer panel, base map selector, local search, distance measurement), the onboarding tour, the
+Data Sources panel, and the data provenance/quality dialog. A static audit
+(`scripts/check_i18n_hardcoded_strings.mjs`, run in `npm test`) fails the build if any hard-coded
+Vietnamese UI string appears outside the translation dictionary, so this can't silently regress.
 
-**Not yet translated** (falls back to Vietnamese by design — this is not a bug, see ADR 0003):
-Project Portfolio, Project Detail, and the 3D/2D/detail map experiences. Translating those is the
-recommended next phase — they involve many scattered strings across camera controls, the layer
-panel, search, and measurement tools, and were deliberately scoped out of this PR rather than
-translated hastily.
+**Deliberately still Vietnamese-only, by design, never a bug:** proper nouns (place names, project
+names/codes from the illustrative fixture data), and any third-party/source content that has no
+English variant yet (e.g. a dataset's `title`/`description` sourced from a Vietnamese-only
+publisher document — see `resolveLocalizedText` in `src/i18n/`, which shows a small "Vietnamese
+source text" note in that case rather than a broken or half-translated sentence).
 
 ## Screenshot
 
 <p align="center">
   <img src="docs/images/readme-gallery/executive-overview-desktop-en.png" alt="Executive Overview in English on desktop 1440x900: portfolio KPI cards, projects needing attention, alert list, and the ILLUSTRATIVE DATA badge" width="70%">
 </p>
-<p align="center"><sub>Executive Overview in English — every other screenshot in <a href="README.md">README.md</a> is in Vietnamese, the app's default and most complete language.</sub></p>
+<p align="center">
+  <img src="docs/images/readme-gallery/project-portfolio-desktop-en.png" alt="Project Portfolio in English on desktop 1440x900: search/filter/sort controls and the project table, all translated" width="70%">
+</p>
+<p align="center">
+  <img src="docs/images/readme-gallery/project-detail-mobile-en.png" alt="Project Detail in English on a 390x844 mobile viewport: header, budget/progress summary, and work packages" width="35%">
+  <img src="docs/images/readme-gallery/directory-2d-mobile-en.png" alt="The accessible 2D directory in English on a 390x844 mobile viewport, with the Map/Directory pane switch" width="35%">
+</p>
+<p align="center">
+  <img src="docs/images/readme-gallery/detail-map-desktop-en.png" alt="The MapLibre detail map in English on desktop 1440x900, showing the translated toolbar and the honest awaiting-data notice (no PMTiles source configured yet)" width="70%">
+</p>
+<p align="center"><sub>Every other screenshot in <a href="README.md">README.md</a> is in Vietnamese, the app's default language — these five show the same views switched to English.</sub></p>
 
 ## Running the project
 

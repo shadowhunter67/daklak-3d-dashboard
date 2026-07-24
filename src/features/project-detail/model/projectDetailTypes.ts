@@ -19,7 +19,6 @@ export interface ProjectDetailProvenanceEntry {
 
 export interface ProjectDetailAttentionReason {
   category: AttentionReasonCategory;
-  label: string;
 }
 
 export interface ProjectDetailProgressPoint {
@@ -39,13 +38,10 @@ export interface ProjectDetailModel {
     code: string;
     name: string;
     sector: ProjectSector;
-    sectorLabel: string;
     status: ProjectStatus;
-    statusLabel: string;
     priority: ProjectPriority;
     dataUpdatedAt: string;
     confidence: string;
-    confidenceLabel: string;
   };
   summary: {
     approvedBudget: number;

@@ -1,3 +1,5 @@
+import { useTranslation } from '../../i18n/useTranslation';
+
 /**
  * A permanent, honest explanation shown over the (currently empty) map canvas when no real
  * PMTiles/vector source is configured — see readSourceAvailability() in DetailMapViewport.tsx.
@@ -6,13 +8,14 @@
  * layer-panel trigger underneath/around it.
  */
 export function DetailMapSourceNotice() {
+  const { t } = useTranslation();
   return (
     <div className="detail-map-source-notice">
-      <p className="eyebrow">Chế độ chờ dữ liệu</p>
+      <p className="eyebrow">{t('detailMapSourceNotice.eyebrow')}</p>
       <p>
-        Chưa cấu hình nguồn bản đồ (PMTiles) cho môi trường này nên nền bản đồ đang để trống có chủ
-        đích — không dùng dữ liệu giả thay thế. Mở <strong>Lớp bản đồ</strong> để xem từng lớp đang
-        chờ dữ liệu thật.
+        {t('detailMapSourceNotice.bodyBeforeLink')}{' '}
+        <strong>{t('detailMapSourceNotice.layerPanelLink')}</strong>{' '}
+        {t('detailMapSourceNotice.bodyAfterLink')}
       </p>
     </div>
   );

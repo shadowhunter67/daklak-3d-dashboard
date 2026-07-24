@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-07-24T09:01:03.895Z",
+  "generatedAt": "2026-07-24T15:16:51.842Z",
   "javascript": {
-    "rawBytes": 2864106,
-    "gzipBytes": 772646,
-    "chunkCount": 17
+    "rawBytes": 2898693,
+    "gzipBytes": 777967,
+    "chunkCount": 15
   },
   "css": {
     "rawBytes": 38534,
@@ -24,9 +24,9 @@
     "gzipBytes": 183290
   },
   "statPanelChunk": {
-    "file": "assets/StatPanel-CKLe6SIS.js",
-    "bytes": 3347,
-    "gzipBytes": 1492
+    "file": "assets/StatPanel-B6a0f8Uv.js",
+    "bytes": 3455,
+    "gzipBytes": 1161
   },
   "geometry": {
     "canonical": {
@@ -49,12 +49,12 @@
       "totalBuildBytes": 6400000
     },
     "actual": {
-      "totalJavaScriptBytes": 2864106,
-      "totalJavaScriptGzipBytes": 772646,
+      "totalJavaScriptBytes": 2898693,
+      "totalJavaScriptGzipBytes": 777967,
       "largestJavaScriptGzipBytes": 270835,
       "totalTextureBytes": 2813884,
       "largestAssetBytes": 1829459,
-      "totalBuildBytes": 5829102
+      "totalBuildBytes": 5863483
     },
     "failures": []
   },

@@ -140,4 +140,48 @@ test.describe('Internationalization (vi/en)', () => {
       'false',
     );
   });
+
+  test('Project Portfolio renders in English, not a Vietnamese fallback', async ({ page }) => {
+    await page.goto('./?lang=en#/projects');
+    await expect(page.getByRole('heading', { name: 'Key project portfolio' })).toBeVisible();
+    await expect(page.getByLabel('Search by project name or code')).toBeVisible();
+    await expect(page.locator('.project-portfolio__mock-badge')).toContainText('ILLUSTRATIVE DATA');
+  });
+
+  test('Project Detail renders in English, not a Vietnamese fallback', async ({ page }) => {
+    await page.goto('./?lang=en#/projects');
+    await page
+      .getByRole('button', { name: /DL-2026-/ })
+      .first()
+      .click();
+    await expect(page).toHaveURL(/#\/projects\/prj-/);
+    await expect(page.getByText('Budget and progress summary')).toBeVisible();
+    await expect(page.locator('.project-detail__mock-badge')).toContainText('ILLUSTRATIVE DATA');
+  });
+
+  test('the 2D directory renders in English', async ({ page }) => {
+    await page.goto('./?lang=en&view=2d');
+    const directoryToggle = page.getByRole('button', { name: 'Directory', exact: true });
+    if (await directoryToggle.isVisible()) await directoryToggle.click();
+    await expect(page.getByRole('heading', { name: 'List of communes/wards' })).toBeVisible();
+    await expect(page.getByLabel('Search by name or code')).toBeVisible();
+  });
+
+  test('the detail map layer panel renders in English', async ({ page }) => {
+    await page.goto('./?lang=en&view=map');
+    await page.getByRole('button', { name: 'Map layers' }).click();
+    await expect(page.getByRole('heading', { name: 'Information layers' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Map type' })).toBeVisible();
+  });
+
+  test('has no serious automated accessibility violations on Project Portfolio in English', async ({
+    page,
+  }) => {
+    await page.goto('./?lang=en#/projects');
+    await expect(page.getByRole('heading', { name: 'Key project portfolio' })).toBeVisible();
+    const results = await new AxeBuilder({ page }).analyze();
+    expect(
+      results.violations.filter(({ impact }) => impact === 'critical' || impact === 'serious'),
+    ).toEqual([]);
+  });
 });
