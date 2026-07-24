@@ -12,3 +12,4 @@ downloads/
 .vscode/
 .idea/
 .DS_Store
+.claude/
