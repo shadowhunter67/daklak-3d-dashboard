@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react';
+import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
 import type { ProjectAttentionItem } from './model/executiveOverviewTypes';
 import { ProjectSummaryPanel } from './ProjectSummaryPanel';
 
@@ -9,6 +11,7 @@ export function PriorityProjectList({
   items: readonly ProjectAttentionItem[];
   asOf: Date;
 }) {
+  const { t } = useTranslation();
   const [openProjectId, setOpenProjectId] = useState<string | null>(null);
   const openItem = items.find((item) => item.projectId === openProjectId) ?? null;
   // Captured at click time (guaranteed to be the real trigger) rather than read from
@@ -17,9 +20,9 @@ export function PriorityProjectList({
 
   return (
     <section aria-labelledby="priority-project-heading" className="priority-project-list">
-      <h3 id="priority-project-heading">Dự án cần chú ý</h3>
+      <h3 id="priority-project-heading">{t('priorityProjects.heading')}</h3>
       {items.length === 0 ? (
-        <p>Không có dự án nào cần chú ý đặc biệt tại thời điểm này.</p>
+        <p>{t('priorityProjects.empty')}</p>
       ) : (
         <ol>
           {items.map((item) => (
@@ -30,14 +33,15 @@ export function PriorityProjectList({
                   <span className="priority-project-item__code">({item.projectCode})</span>
                 </p>
                 <p className="priority-project-item__meta">
-                  <span>{item.sector}</span>
+                  <span>{t(`sector.${item.sector}` as MessageKey)}</span>
                   <span aria-hidden="true"> · </span>
-                  <span>{item.statusLabel}</span>
+                  <span>{t(`status.${item.status}` as MessageKey)}</span>
                   <span aria-hidden="true"> · </span>
-                  <span>Tiến độ {item.overallProgress}%</span>
+                  <span>{t('priorityProjects.progress', { value: item.overallProgress })}</span>
                 </p>
                 <p className="priority-project-item__reason">
-                  <strong>Lý do cần chú ý:</strong> {item.primaryReason}
+                  <strong>{t('priorityProjects.reasonLabel')}</strong>{' '}
+                  {t(`reason.${item.reasonCategory}` as MessageKey)}
                 </p>
               </div>
               <button
@@ -49,7 +53,7 @@ export function PriorityProjectList({
                 }}
                 aria-haspopup="dialog"
               >
-                Xem tóm tắt
+                {t('priorityProjects.viewSummary')}
               </button>
             </li>
           ))}

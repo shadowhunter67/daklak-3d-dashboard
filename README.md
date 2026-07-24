@@ -4,6 +4,8 @@
 [![Deploy GitHub Pages](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/deploy-pages.yml)
 [![Source available: commercial use requires a license](https://img.shields.io/badge/source--available-commercial%20use%20requires%20license-orange.svg)](LICENSE)
 
+**Tiếng Việt** (chính) · [**English**](README.en.md)
+
 Dashboard WebGL thể hiện 102 xã/phường của tỉnh Đắk Lắk sau sắp xếp năm 2025, từ cao nguyên Đắk Lắk cũ đến duyên hải Phú Yên cũ. Bản đồ sử dụng một bề mặt địa hình displacement từ SRTM, phủ ảnh Sentinel-2 và xác định đơn vị hành chính bằng hit-test polygon để hỗ trợ hover, click, selected state, hồ sơ nhanh và các lớp dữ liệu chuyên đề. Bốn trải nghiệm: **Tổng quan điều hành** (landing mặc định — KPI danh mục dự án, danh sách cần chú ý, cảnh báo, sức khỏe dữ liệu), tổng quan 3D, danh sách 2D accessible, và bản đồ chi tiết (`?view=map`) dùng **MapLibre GL JS + PMTiles tự host** — hoàn toàn không phụ thuộc Google Maps Platform, không cần API key hay billing. Xem [docs/detail-map-integration.md](docs/detail-map-integration.md).
 
 Dự án đang chuyển dần từ "dashboard bản đồ 3D" sang "nền tảng điều hành dự án trọng điểm cấp tỉnh, dùng bản đồ làm lớp ngữ cảnh" — xem [ADR 0001](docs/adr/0001-project-centric-domain.md) và [domain model](docs/domain-model.md). Từ Phase 2B1, nền tảng có thêm **Danh mục dự án** (tìm kiếm/lọc/sắp xếp toàn bộ dự án) và **Chi tiết dự án** (trang riêng, đầy đủ ngân sách/tiến độ/gói thầu/mốc/vướng mắc/nguồn dữ liệu) với URL riêng dùng hash routing — xem [ADR 0002](docs/adr/0002-static-host-routing.md). Tổng quan điều hành, Danh mục dự án và Chi tiết dự án hiện tại đều dùng **dữ liệu minh họa deterministic** cho 9 dự án mẫu (`src/entities/project/illustrativeProjectPortfolio.ts`), không phải số liệu vận hành thật — xem mục "Giới hạn và roadmap" bên dưới.
@@ -15,6 +17,14 @@ Dự án đang chuyển dần từ "dashboard bản đồ 3D" sang "nền tảng
 **Live demo:** https://shadowhunter67.github.io/daklak-3d-dashboard/
 
 > **Disclaimer:** toàn bộ dữ liệu dự án/gói thầu/mốc tiến độ/ngân sách/giải ngân/tiến độ/vướng mắc hiển thị trong Tổng quan điều hành và các trải nghiệm bản đồ đều là **dữ liệu minh họa deterministic** (seed cố định trong mã nguồn), không phải số liệu vận hành hay số liệu chính thức của cơ quan nhà nước, không dùng cho quyết định quản lý, phê duyệt hoặc báo cáo thực tế. Bản đồ là sản phẩm trực quan tham khảo, không dùng cho đất đai, đo đạc, quy hoạch pháp lý hoặc xác lập địa giới chính thức.
+
+## Ngôn ngữ
+
+Giao diện hỗ trợ **tiếng Việt** (mặc định) và **tiếng Anh**, chuyển đổi bằng nút "VI / EN" ở góc phải header, không reload trang. URL chia sẻ được (`?lang=vi`/`?lang=en`, tương thích với mọi `?view=`/`#/projects...` khác), lựa chọn được nhớ qua `localStorage`, Back/Forward hoàn tác đúng lần chuyển ngôn ngữ gần nhất — xem [ADR 0003](docs/adr/0003-internationalization.md).
+
+**Phạm vi dịch hiện tại:** app shell, header, và toàn bộ Tổng quan điều hành (KPI, dự án cần chú ý, cảnh báo, sức khỏe dữ liệu, hộp thoại tóm tắt). **Chưa dịch** (fallback đúng thiết kế về tiếng Việt, không lỗi): Danh mục dự án, Chi tiết dự án, bản đồ 3D/2D và bản đồ chi tiết — xem "Giới hạn và roadmap" và ADR 0003 mục "Phạm vi dịch trong PR này" để biết lý do và kế hoạch mở rộng.
+
+English documentation: [README.en.md](README.en.md).
 
 ## Điều hướng
 
@@ -100,7 +110,7 @@ Một route dự án (khi có mặt trong `location.hash`) luôn được ưu ti
 
 ## Stack và kiến trúc
 
-React 19, TypeScript strict, Vite, Three.js/React Three Fiber, Drei, D3 Geo, Zustand, MapLibre GL JS và PMTiles. GIS được xử lý offline bằng GeoPandas/Shapely/PyProj/Fiona; trình duyệt chỉ parse file tĩnh và dựng geometry. `maplibre-gl`/`pmtiles` chỉ tải khi mở bản đồ chi tiết (lazy chunk riêng, không nằm trong initial bundle hay bundle của tổng quan 3D). Các biểu đồ cột nhỏ (`StatPanel`) là SVG/CSS thuần, không dùng thư viện chart riêng.
+React 19, TypeScript strict, Vite, Three.js/React Three Fiber, Drei, D3 Geo, Zustand, MapLibre GL JS và PMTiles. GIS được xử lý offline bằng GeoPandas/Shapely/PyProj/Fiona; trình duyệt chỉ parse file tĩnh và dựng geometry. `maplibre-gl`/`pmtiles` chỉ tải khi mở bản đồ chi tiết (lazy chunk riêng, không nằm trong initial bundle hay bundle của tổng quan 3D). Các biểu đồ cột nhỏ (`StatPanel`) là SVG/CSS thuần, không dùng thư viện chart riêng. Song ngữ (`src/i18n/`) tự viết — Context + dictionary object, không dùng `react-i18next`; dictionary tiếng Anh lazy-load qua `import()`, không nằm trong bundle ban đầu — xem [ADR 0003](docs/adr/0003-internationalization.md).
 
 Luồng dữ liệu: snapshot MIT → chuẩn hóa/repair EPSG:4326 → GeoJSON + outline + borders + labels + metadata → DEM/ảnh bề mặt tiền xử lý → D3 projection → Three.js displacement terrain → polygon hit-test + Zustand → dashboard.
 
@@ -164,6 +174,7 @@ Mỗi production build sinh `dist/build-info.json` gồm version ứng dụng, c
 - [Benchmark thiết bị thật](docs/device-benchmark.md)
 - [Chính sách bảo mật](SECURITY.md) và [hướng dẫn đóng góp](CONTRIBUTING.md)
 - [Giấy phép](LICENSE) · [Cấp phép thương mại](COMMERCIAL-LICENSE.md) · [Lịch sử giấy phép](LICENSE-HISTORY.md) · [Thương hiệu](TRADEMARKS.md)
+- [ADR 0003 — Internationalization (vi/en)](docs/adr/0003-internationalization.md)
 - Nền tảng dữ liệu (`src/data-platform/`): [kiến trúc](docs/data-platform-architecture.md) ·
   [nguồn công khai](docs/public-data-sources.md) ·
   [phân loại dữ liệu](docs/data-classification.md) ·

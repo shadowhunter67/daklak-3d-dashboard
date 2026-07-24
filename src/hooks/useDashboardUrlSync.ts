@@ -13,6 +13,7 @@ import {
   serializeDetailMapParams,
 } from '../components/detail-map/detailMapUrl';
 import labels from '../assets/maps/daklak/daklak-labels.json';
+import { LOCALE_QUERY_PARAM } from '../i18n/locale';
 
 const validCodes = new Set(Object.keys(labels));
 
@@ -20,11 +21,17 @@ const validCodes = new Set(Object.keys(labels));
  * Builds the full shareable URL: the base view/mode/ward params, plus (only while viewMode is
  * 'map') the detail-map basemap/layer/camera params. Keeping the base canonical when not on the
  * detail map avoids leaking stale lat/lng/zoom into 3D-overview or directory URLs.
+ *
+ * Also carries over `?lang=` from the current URL (owned by `I18nProvider`, not by this hook) —
+ * this hook rebuilds the query string from scratch on every view/mode/ward change, which would
+ * otherwise silently drop the locale param (docs/adr/0003-internationalization.md "URL composition").
  */
 function serializeFullUrl(state: MapState): string {
   const base = serializeDashboardUrl(state);
-  if (state.viewMode !== 'map') return base;
   const params = new URLSearchParams(base.slice(1));
+  const currentLang = new URLSearchParams(window.location.search).get(LOCALE_QUERY_PARAM);
+  if (currentLang) params.set(LOCALE_QUERY_PARAM, currentLang);
+  if (state.viewMode !== 'map') return `?${params.toString()}`;
   serializeDetailMapParams(state.detailMapCamera, state.detailMapLayers).forEach((value, key) =>
     params.set(key, value),
   );

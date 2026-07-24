@@ -2,6 +2,15 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import App from './App';
 import { useMapStore } from './stores/mapStore';
+import { I18nProvider } from './i18n/I18nProvider';
+
+function renderApp() {
+  return render(
+    <I18nProvider>
+      <App />
+    </I18nProvider>,
+  );
+}
 
 // Real dynamic import() resolution time is not guaranteed to fit RTL's default 1000ms waitFor
 // window under load (e.g. the full suite transforming many files concurrently) — these lazy
@@ -45,14 +54,14 @@ describe('App', () => {
   });
 
   it('does not render the data provenance dialog on initial mount', () => {
-    render(<App />);
+    renderApp();
     expect(
       screen.queryByRole('dialog', { name: 'Nguồn và chất lượng dữ liệu' }),
     ).not.toBeInTheDocument();
   });
 
   it('opens the data provenance panel after its lazy chunk resolves, once the header button is clicked', async () => {
-    render(<App />);
+    renderApp();
     fireEvent.click(screen.getByRole('button', { name: 'Xem nguồn và chất lượng dữ liệu' }));
     expect(
       await screen.findByRole(
@@ -64,7 +73,7 @@ describe('App', () => {
   });
 
   it('never renders more than one provenance dialog even if the open action fires more than once', async () => {
-    render(<App />);
+    renderApp();
     act(() => useMapStore.getState().openProvenancePanel());
     act(() => useMapStore.getState().openProvenancePanel());
     await screen.findByRole('dialog', { name: 'Nguồn và chất lượng dữ liệu' }, LAZY_CHUNK_TIMEOUT);
@@ -72,7 +81,7 @@ describe('App', () => {
   });
 
   it('does not open the provenance panel on a Back/Forward (popstate) navigation', async () => {
-    render(<App />);
+    renderApp();
     act(() => {
       window.dispatchEvent(new PopStateEvent('popstate'));
     });
@@ -85,7 +94,7 @@ describe('App', () => {
   });
 
   it('mounts the detail map boundary only once viewMode becomes "map"', async () => {
-    render(<App />);
+    renderApp();
     expect(
       screen.queryByText(/không hỗ trợ WebGL nên không thể mở bản đồ chi tiết/),
     ).not.toBeInTheDocument();

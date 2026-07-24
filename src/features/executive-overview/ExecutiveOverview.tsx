@@ -3,6 +3,8 @@ import { BundledProjectPortfolioSource } from '../../data/projectPortfolioSource
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
 import type { PortfolioStatus } from './model/executiveOverviewTypes';
 import { formatAbsoluteDateTime } from './model/executiveOverviewSelectors';
+import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
 import { AlertList } from './AlertList';
 import { DataHealthPanel } from './DataHealthPanel';
 import { KpiCardGrid } from './KpiCardGrid';
@@ -10,22 +12,22 @@ import { PortfolioStatusChart } from './PortfolioStatusChart';
 import { PriorityProjectList } from './PriorityProjectList';
 import { useExecutiveOverview } from './data/useExecutiveOverview';
 
-const PORTFOLIO_STATUS_LABEL: Record<PortfolioStatus, string> = {
-  healthy: 'Ổn định',
-  attention: 'Cần chú ý',
-  critical: 'Nghiêm trọng',
-  degraded: 'Dữ liệu chưa đầy đủ',
+const PORTFOLIO_STATUS_MESSAGE_KEY: Record<PortfolioStatus, MessageKey> = {
+  healthy: 'portfolioStatus.healthy',
+  attention: 'portfolioStatus.attention',
+  critical: 'portfolioStatus.critical',
+  degraded: 'portfolioStatus.degraded',
 };
 
-const ERROR_KIND_LABEL: Record<string, string> = {
-  unauthorized: 'Cần đăng nhập để xem dữ liệu này.',
-  forbidden: 'Bạn không có quyền xem dữ liệu này.',
-  network: 'Không thể kết nối tới nguồn dữ liệu.',
-  timeout: 'Yêu cầu tải dữ liệu đã quá thời gian chờ.',
-  'schema-invalid': 'Dữ liệu nhận được không đúng định dạng.',
-  'source-unavailable': 'Nguồn dữ liệu hiện không khả dụng.',
-  'rate-limited': 'Hệ thống đang quá tải, vui lòng thử lại sau.',
-  unknown: 'Đã xảy ra lỗi không xác định.',
+const ERROR_KIND_MESSAGE_KEY: Record<string, MessageKey> = {
+  unauthorized: 'executiveOverview.error.kind.unauthorized',
+  forbidden: 'executiveOverview.error.kind.forbidden',
+  network: 'executiveOverview.error.kind.network',
+  timeout: 'executiveOverview.error.kind.timeout',
+  'schema-invalid': 'executiveOverview.error.kind.schemaInvalid',
+  'source-unavailable': 'executiveOverview.error.kind.sourceUnavailable',
+  'rate-limited': 'executiveOverview.error.kind.rateLimited',
+  unknown: 'executiveOverview.error.kind.unknown',
 };
 
 /**
@@ -43,6 +45,7 @@ export function ExecutiveOverview({
    * tests/stories that only exercise Executive Overview in isolation keep working unchanged. */
   onOpenPortfolio?: () => void;
 }) {
+  const { t, locale } = useTranslation();
   const [retryToken, setRetryToken] = useState(0);
   const effectiveSource = useMemo(() => source ?? new BundledProjectPortfolioSource(), [source]);
   const state = useExecutiveOverview(effectiveSource, retryToken);
@@ -57,7 +60,7 @@ export function ExecutiveOverview({
         tabIndex={-1}
       >
         <span className="map-loading__spinner" aria-hidden="true" />
-        <p>Đang tải tổng quan danh mục dự án…</p>
+        <p>{t('executiveOverview.loading')}</p>
       </section>
     );
   }
@@ -66,12 +69,14 @@ export function ExecutiveOverview({
     return (
       <section id="executive-overview" className="executive-overview" tabIndex={-1}>
         <div className="executive-overview__error" role="alert">
-          <h2>Không thể tải dữ liệu dự án</h2>
-          <p>{ERROR_KIND_LABEL[state.error.kind] ?? ERROR_KIND_LABEL.unknown}</p>
+          <h2>{t('executiveOverview.error.title')}</h2>
+          <p>{t(ERROR_KIND_MESSAGE_KEY[state.error.kind] ?? ERROR_KIND_MESSAGE_KEY.unknown)}</p>
           <p className="executive-overview__error-detail">{state.error.message}</p>
-          {state.error.requestId && <p>Mã yêu cầu: {state.error.requestId}</p>}
+          {state.error.requestId && (
+            <p>{t('executiveOverview.error.requestId', { id: state.error.requestId })}</p>
+          )}
           <button type="button" onClick={() => setRetryToken((token) => token + 1)}>
-            Thử lại
+            {t('executiveOverview.error.retry')}
           </button>
         </div>
       </section>
@@ -89,10 +94,9 @@ export function ExecutiveOverview({
       aria-labelledby="executive-overview-heading"
       tabIndex={-1}
     >
-      <h2 id="executive-overview-heading">Tổng quan điều hành dự án trọng điểm</h2>
+      <h2 id="executive-overview-heading">{t('executiveOverview.heading')}</h2>
       <p className="executive-overview__mock-badge" role="note">
-        DỮ LIỆU MINH HỌA — không phải số liệu vận hành chính thức, không dùng cho quyết định quản lý
-        thực tế.
+        {t('executiveOverview.mockBadge')}
       </p>
       {onOpenPortfolio && (
         <button
@@ -100,24 +104,23 @@ export function ExecutiveOverview({
           className="executive-overview__portfolio-link"
           onClick={onOpenPortfolio}
         >
-          Xem danh mục dự án →
+          {t('executiveOverview.openPortfolio')}
         </button>
       )}
       <p className="executive-overview__status" data-status={model.portfolioStatus}>
-        Trạng thái danh mục: <strong>{PORTFOLIO_STATUS_LABEL[model.portfolioStatus]}</strong>
+        {t('executiveOverview.statusLabel')}{' '}
+        <strong>{t(PORTFOLIO_STATUS_MESSAGE_KEY[model.portfolioStatus])}</strong>
         <span aria-hidden="true"> · </span>
-        Dữ liệu có hiệu lực: {formatAbsoluteDateTime(model.dataTimeline.effectiveAt)}
+        {t('executiveOverview.dataEffectiveLabel')}{' '}
+        {formatAbsoluteDateTime(model.dataTimeline.effectiveAt, locale)}
       </p>
       {state.status === 'degraded' && (
         <p role="alert" className="executive-overview__degraded-banner">
-          Một phần dữ liệu hiện không tải được ({state.sourceIssues.join('; ')}) — các số liệu bên
-          dưới chỉ tính trên phần dữ liệu đã tải thành công.
+          {t('executiveOverview.degradedBanner', { issues: state.sourceIssues.join('; ') })}
         </p>
       )}
       {isEmpty ? (
-        <p className="executive-overview__empty">
-          Chưa có dự án nào trong danh mục. Khi có dữ liệu, tổng quan sẽ hiển thị tại đây.
-        </p>
+        <p className="executive-overview__empty">{t('executiveOverview.empty')}</p>
       ) : (
         <>
           <KpiCardGrid kpis={model.kpis} />
