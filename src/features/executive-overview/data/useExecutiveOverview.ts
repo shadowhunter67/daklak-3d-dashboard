@@ -47,6 +47,7 @@ export function useExecutiveOverview(
         const model = buildExecutiveOverview({
           bundles: result.data.bundles,
           context: { validAdministrativeCodes: result.data.validAdministrativeCodes, asOf },
+          provenance: result.data.provenance,
           sourceStatus: result.status === 'degraded' ? 'degraded' : 'ok',
         });
         if (result.status === 'degraded')

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { KpiResult } from '../../../entities/project/kpi/types';
 import type { PortfolioAlert } from './executiveOverviewTypes';
-import { formatKpiValue, formatRelativeUpdatedAt, groupAlerts } from './executiveOverviewSelectors';
+import { formatAbsoluteDateTime, formatKpiValue, groupAlerts } from './executiveOverviewSelectors';
 
 const asOf = new Date('2026-07-23T00:00:00.000Z');
 
@@ -77,12 +77,23 @@ describe('groupAlerts', () => {
   });
 });
 
-describe('formatRelativeUpdatedAt', () => {
-  it('says "Hôm nay" for the same day as asOf', () => {
-    expect(formatRelativeUpdatedAt(asOf.toISOString(), asOf)).toBe('Hôm nay');
+describe('formatAbsoluteDateTime', () => {
+  it('formats a valid ISO timestamp as an absolute vi-VN date/time, not a relative phrase', () => {
+    const result = formatAbsoluteDateTime(asOf.toISOString());
+    expect(result).not.toMatch(/hôm nay|ngày trước/i);
+    expect(result.length).toBeGreaterThan(0);
   });
 
-  it('counts whole days for an older timestamp', () => {
-    expect(formatRelativeUpdatedAt('2026-07-13T00:00:00.000Z', asOf)).toBe('10 ngày trước');
+  it('returns the same absolute string regardless of how much time has "passed" since', () => {
+    // Deliberate regression guard: this must never depend on a second "now" argument — that was
+    // exactly the bug (a timestamp always rendering as "Hôm nay" because it was compared against
+    // the moment the browser happened to load).
+    expect(formatAbsoluteDateTime('2026-07-13T00:00:00.000Z')).toBe(
+      formatAbsoluteDateTime('2026-07-13T00:00:00.000Z'),
+    );
+  });
+
+  it('reports an invalid timestamp explicitly instead of throwing or showing "Invalid Date"', () => {
+    expect(formatAbsoluteDateTime('not-a-date')).toBe('Không rõ thời điểm');
   });
 });

@@ -16,7 +16,7 @@ import {
   MOCK_EVIDENCE,
   MOCK_PROJECT_BUNDLES,
   MOCK_REFERENCE_DATE,
-} from './mockPortfolio';
+} from './illustrativeProjectPortfolio';
 
 const validAdministrativeCodes = new Set(Object.keys(labels));
 

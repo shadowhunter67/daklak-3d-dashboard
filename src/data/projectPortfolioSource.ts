@@ -1,6 +1,6 @@
 /**
  * `BundledProjectPortfolioSource` — nguồn dữ liệu Phase 2A duy nhất: bundled fixture minh hoạ đóng
- * gói cùng ứng dụng (`src/entities/project/mockPortfolio.ts`), giống cách
+ * gói cùng ứng dụng (`src/entities/project/illustrativeProjectPortfolio.ts`), giống cách
  * `src/data/datasetManifest.ts` và `loadRoads.ts` đã bọc asset GIS thành API tiêu thụ được — không
  * component nào import fixture trực tiếp (spec Phase 2A "Data access boundary").
  *
@@ -16,7 +16,10 @@
  * `FakeMapProvider.ts` đã dùng cho detail map.
  */
 import labels from '../assets/maps/daklak/daklak-labels.json';
-import { MOCK_PROJECT_BUNDLES } from '../entities/project/mockPortfolio';
+import {
+  MOCK_PORTFOLIO_PROVENANCE,
+  MOCK_PROJECT_BUNDLES,
+} from '../entities/project/illustrativeProjectPortfolio';
 import type {
   ProjectPortfolioLoadResult,
   ProjectPortfolioSource,
@@ -31,7 +34,9 @@ export class BundledProjectPortfolioSource implements ProjectPortfolioSource {
       data: {
         bundles: MOCK_PROJECT_BUNDLES,
         validAdministrativeCodes,
-        loadedAt: new Date().toISOString(),
+        // `loadedInBrowserAt` là mốc runtime hợp lệ DUY NHẤT ở đây — bốn mốc còn lại đến từ
+        // snapshot deterministic, không phải giờ hệ thống (xem ProjectPortfolioProvenance).
+        provenance: { ...MOCK_PORTFOLIO_PROVENANCE, loadedInBrowserAt: new Date().toISOString() },
       },
     };
   }

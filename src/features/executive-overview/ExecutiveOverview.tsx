@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { BundledProjectPortfolioSource } from '../../data/projectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
 import type { PortfolioStatus } from './model/executiveOverviewTypes';
+import { formatAbsoluteDateTime } from './model/executiveOverviewSelectors';
 import { AlertList } from './AlertList';
 import { DataHealthPanel } from './DataHealthPanel';
 import { KpiCardGrid } from './KpiCardGrid';
@@ -105,7 +106,7 @@ export function ExecutiveOverview({
       <p className="executive-overview__status" data-status={model.portfolioStatus}>
         Trạng thái danh mục: <strong>{PORTFOLIO_STATUS_LABEL[model.portfolioStatus]}</strong>
         <span aria-hidden="true"> · </span>
-        Dữ liệu cập nhật lúc {asOf.toLocaleString('vi-VN')}
+        Dữ liệu có hiệu lực: {formatAbsoluteDateTime(model.dataTimeline.effectiveAt)}
       </p>
       {state.status === 'degraded' && (
         <p role="alert" className="executive-overview__degraded-banner">
@@ -125,7 +126,7 @@ export function ExecutiveOverview({
             <div className="executive-overview__side-column">
               <AlertList alerts={model.alerts} />
               <PortfolioStatusChart statusDistribution={model.statusDistribution} />
-              <DataHealthPanel dataHealth={model.dataHealth} asOf={asOf} />
+              <DataHealthPanel dataHealth={model.dataHealth} dataTimeline={model.dataTimeline} />
             </div>
           </div>
         </>

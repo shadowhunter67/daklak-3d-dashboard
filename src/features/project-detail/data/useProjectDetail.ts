@@ -38,6 +38,7 @@ export function useProjectDetail(
         const lookup = lookupProjectDetail({
           bundles: result.data.bundles,
           context: { validAdministrativeCodes: result.data.validAdministrativeCodes, asOf },
+          provenance: result.data.provenance,
           projectId,
         });
         if (lookup.status === 'not-found') {

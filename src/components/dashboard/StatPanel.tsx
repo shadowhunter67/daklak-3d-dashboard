@@ -1,59 +1,80 @@
-import ReactEChartsCoreImport from 'echarts-for-react/lib/core';
-import { BarChart, type BarSeriesOption } from 'echarts/charts';
-import { GridComponent, type GridComponentOption } from 'echarts/components';
-import * as echarts from 'echarts/core';
-import { SVGRenderer } from 'echarts/renderers';
-import type { ComposeOption } from 'echarts/core';
 import metadata from '../../assets/maps/daklak/daklak-metadata.json';
 import metrics from '../../assets/maps/daklak/daklak-metrics.json';
 import { formatNumber } from '../../utils/geo';
 import dashboardData from '../../assets/data/dashboard-sources.json';
 import { useMapStore } from '../../stores/mapStore';
 
-echarts.use([BarChart, GridComponent, SVGRenderer]);
+const CHART_HEIGHT = 105;
+const CHART_LABEL_ROW_HEIGHT = 22;
+const BAR_WIDTH = 15;
+const BAR_AREA_HEIGHT = CHART_HEIGHT - CHART_LABEL_ROW_HEIGHT;
+const CHART_VIEWBOX_WIDTH = 150;
 
-// Vite 8/Rolldown preserves the CommonJS default wrapper from echarts-for-react.
-const ReactEChartsCore =
-  typeof ReactEChartsCoreImport === 'function'
-    ? ReactEChartsCoreImport
-    : (ReactEChartsCoreImport as unknown as { default: typeof ReactEChartsCoreImport }).default;
-
-type ChartOption = ComposeOption<BarSeriesOption | GridComponentOption>;
+/**
+ * Bar chart nội bộ vẽ bằng SVG thuần — thay cho ECharts (core+BarChart+GridComponent+SVGRenderer+
+ * echarts-for-react), vốn nặng ~172KB gzip riêng cho việc vẽ đúng 3 cột. Ba chỉ số theo mode luôn
+ * đơn giản (3 danh mục, 1 series) nên không cần một thư viện chart tổng quát. Xem
+ * docs/performance.md cho số byte trước/sau.
+ */
+function MiniBarChart({ bars }: { bars: { label: string; value: number }[] }) {
+  const maxValue = Math.max(...bars.map((b) => b.value), 1);
+  const gap = CHART_VIEWBOX_WIDTH / bars.length;
+  return (
+    <svg
+      viewBox={`0 0 ${CHART_VIEWBOX_WIDTH} ${CHART_HEIGHT}`}
+      width="100%"
+      height={CHART_HEIGHT}
+      role="presentation"
+      focusable="false"
+    >
+      {bars.map((bar, index) => {
+        const barHeight = (bar.value / maxValue) * BAR_AREA_HEIGHT;
+        const x = gap * index + (gap - BAR_WIDTH) / 2;
+        const y = BAR_AREA_HEIGHT - barHeight;
+        return (
+          <g key={bar.label}>
+            <rect x={x} y={y} width={BAR_WIDTH} height={barHeight} rx={4} ry={4} fill="#d4a446" />
+            <text
+              x={x + BAR_WIDTH / 2}
+              y={CHART_HEIGHT - 6}
+              textAnchor="middle"
+              fontSize="10"
+              fill="#8eaaa3"
+            >
+              {bar.label}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
 
 export function StatPanel() {
   const dataMode = useMapStore((state) => state.dataMode);
   const values = Object.values(metrics);
   const population = values.reduce((s, v) => s + v.population, 0);
-  const option: ChartOption = {
-    backgroundColor: 'transparent',
-    grid: { left: 4, right: 5, top: 8, bottom: 18, containLabel: true },
-    xAxis: {
-      type: 'category',
-      data:
-        dataMode === 'energy'
-          ? ['Thủy điện', 'Tái tạo', 'Phụ tải']
-          : dataMode === 'heatmap'
-            ? ['Thấp', 'Trung bình', 'Cao']
-            : ['Tây', 'Trung tâm', 'Đông'],
-      axisLine: { show: false },
-      axisTick: { show: false },
-      axisLabel: { color: '#8eaaa3', fontSize: 10 },
-    },
-    yAxis: { type: 'value', show: false },
-    series: [
-      {
-        type: 'bar',
-        data:
-          dataMode === 'energy'
-            ? [83, 76, 92]
-            : dataMode === 'heatmap'
-              ? [42, 68, 94]
-              : [62, 84, 73],
-        barWidth: 15,
-        itemStyle: { color: '#d4a446', borderRadius: [8, 8, 0, 0] },
-      },
-    ],
-  };
+  const bars =
+    dataMode === 'energy'
+      ? [
+          { label: 'Thủy điện', value: 83 },
+          { label: 'Tái tạo', value: 76 },
+          { label: 'Phụ tải', value: 92 },
+        ]
+      : dataMode === 'heatmap'
+        ? [
+            { label: 'Thấp', value: 42 },
+            { label: 'Trung bình', value: 68 },
+            { label: 'Cao', value: 94 },
+          ]
+        : [
+            { label: 'Tây', value: 62 },
+            { label: 'Trung tâm', value: 84 },
+            { label: 'Đông', value: 73 },
+          ];
+  const chartAriaLabel = `Biểu đồ cột tóm tắt ba nhóm chỉ số đang hiển thị: ${bars
+    .map((bar) => `${bar.label} ${bar.value}`)
+    .join(', ')}.`;
   return (
     <aside className="stat-panel glass">
       <p className="eyebrow">
@@ -130,13 +151,8 @@ export function StatPanel() {
             ? 'Cường độ phân bố'
             : 'Chỉ số tiếp cận dịch vụ'}
       </div>
-      <div role="img" aria-label="Biểu đồ cột tóm tắt ba nhóm chỉ số đang hiển thị">
-        <ReactEChartsCore
-          echarts={echarts}
-          option={option}
-          style={{ height: 105 }}
-          opts={{ renderer: 'svg' }}
-        />
+      <div role="img" aria-label={chartAriaLabel}>
+        <MiniBarChart bars={bars} />
       </div>
       <p className="mock-note">
         {dataMode === 'overview'

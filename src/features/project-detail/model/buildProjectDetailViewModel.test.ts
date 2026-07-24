@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import labels from '../../../assets/maps/daklak/daklak-labels.json';
-import { MOCK_PROJECT_BUNDLES, MOCK_REFERENCE_DATE } from '../../../entities/project/mockPortfolio';
+import {
+  MOCK_PORTFOLIO_PROVENANCE,
+  MOCK_PROJECT_BUNDLES,
+  MOCK_REFERENCE_DATE,
+} from '../../../entities/project/illustrativeProjectPortfolio';
 import type { ProjectBundle } from '../../../entities/project/types';
 import { lookupProjectDetail } from './buildProjectDetailViewModel';
 
 const validAdministrativeCodes = new Set(Object.keys(labels));
 const asOf = new Date(MOCK_REFERENCE_DATE);
 const context = { validAdministrativeCodes, asOf };
+const provenance = { ...MOCK_PORTFOLIO_PROVENANCE, loadedInBrowserAt: asOf.toISOString() };
 
 describe('lookupProjectDetail', () => {
   it('finds an existing project by id', () => {
@@ -14,6 +19,7 @@ describe('lookupProjectDetail', () => {
     const result = lookupProjectDetail({
       bundles: MOCK_PROJECT_BUNDLES,
       context,
+      provenance,
       projectId: target.project.id,
     });
     expect(result.status).toBe('found');
@@ -27,13 +33,19 @@ describe('lookupProjectDetail', () => {
     const result = lookupProjectDetail({
       bundles: MOCK_PROJECT_BUNDLES,
       context,
+      provenance,
       projectId: 'does-not-exist',
     });
     expect(result.status).toBe('not-found');
   });
 
   it('returns not-found for an empty/malformed id', () => {
-    const result = lookupProjectDetail({ bundles: MOCK_PROJECT_BUNDLES, context, projectId: '' });
+    const result = lookupProjectDetail({
+      bundles: MOCK_PROJECT_BUNDLES,
+      context,
+      provenance,
+      projectId: '',
+    });
     expect(result.status).toBe('not-found');
   });
 
@@ -45,6 +57,7 @@ describe('lookupProjectDetail', () => {
     const result = lookupProjectDetail({
       bundles: [broken, ...MOCK_PROJECT_BUNDLES.slice(1)],
       context,
+      provenance,
       projectId: broken.project.id,
     });
     expect(result.status).toBe('not-found');
@@ -55,11 +68,13 @@ describe('lookupProjectDetail', () => {
     const first = lookupProjectDetail({
       bundles: MOCK_PROJECT_BUNDLES,
       context,
+      provenance,
       projectId: target.project.id,
     });
     const second = lookupProjectDetail({
       bundles: MOCK_PROJECT_BUNDLES,
       context,
+      provenance,
       projectId: target.project.id,
     });
     expect(first).toEqual(second);
@@ -70,6 +85,7 @@ describe('lookupProjectDetail', () => {
     const result = lookupProjectDetail({
       bundles: MOCK_PROJECT_BUNDLES,
       context,
+      provenance,
       projectId: target.project.id,
     });
     expect(result.status).toBe('found');
@@ -88,6 +104,7 @@ describe('lookupProjectDetail', () => {
     const result = lookupProjectDetail({
       bundles: MOCK_PROJECT_BUNDLES,
       context,
+      provenance,
       projectId: noGeometryProject.project.id,
     });
     expect(result.status).toBe('found');
@@ -104,6 +121,7 @@ describe('lookupProjectDetail', () => {
     const result = lookupProjectDetail({
       bundles: MOCK_PROJECT_BUNDLES,
       context,
+      provenance,
       projectId: delayedProject.project.id,
     });
     expect(result.status).toBe('found');
@@ -122,6 +140,7 @@ describe('lookupProjectDetail', () => {
     const result = lookupProjectDetail({
       bundles: MOCK_PROJECT_BUNDLES,
       context,
+      provenance,
       projectId: withIssues.project.id,
     });
     expect(result.status).toBe('found');

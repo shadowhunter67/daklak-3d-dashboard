@@ -21,6 +21,7 @@ import { PROJECT_SECTOR_LABELS, PROJECT_STATUS_LABELS } from '../../../entities/
 import { getDatasetById } from '../../../data-platform/catalog/datasets';
 import type { ProjectBundle, ProjectIssue } from '../../../entities/project/types';
 import type { DataQualityContext } from '../../../entities/project/validation/dataQualityRules';
+import type { ProjectPortfolioProvenance } from '../../../entities/project/adapters/ProjectPortfolioSource';
 import type { ProjectDetailLookupResult, ProjectDetailModel } from './projectDetailTypes';
 
 const CONFIDENCE_LABEL: Record<string, string> = {
@@ -36,6 +37,7 @@ const ISSUE_SEVERITIES: ProjectIssue['severity'][] = ['critical', 'high', 'mediu
 export interface LookupProjectDetailInput {
   bundles: readonly ProjectBundle[];
   context: DataQualityContext;
+  provenance: ProjectPortfolioProvenance;
   projectId: string;
 }
 
@@ -58,6 +60,7 @@ function groupIssuesBySeverity(
 export function lookupProjectDetail({
   bundles,
   context,
+  provenance,
   projectId,
 }: LookupProjectDetailInput): ProjectDetailLookupResult {
   const bundle = bundles.find((b) => b.project.id === projectId);
@@ -88,6 +91,7 @@ export function lookupProjectDetail({
 
   const model: ProjectDetailModel = {
     generatedAt: asOf.toISOString(),
+    dataTimeline: provenance,
     header: {
       projectId: project.id,
       code: project.code,

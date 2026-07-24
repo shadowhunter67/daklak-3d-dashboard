@@ -7,7 +7,7 @@ import {
   MOCK_EVIDENCE,
   MOCK_PROJECT_BUNDLES,
   MOCK_REFERENCE_DATE,
-} from './mockPortfolio';
+} from './illustrativeProjectPortfolio';
 import type { ProjectBundle } from './types';
 
 const validAdministrativeCodes = new Set(Object.keys(labels));

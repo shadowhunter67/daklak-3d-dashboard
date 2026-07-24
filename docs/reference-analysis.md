@@ -7,9 +7,9 @@
 
 ## Kiến trúc độc lập
 
-Project chọn pipeline GIS offline → artifacts tĩnh có contract nhỏ → scene component hóa theo domain → Zustand lưu interaction code-based → ECharts chỉ đọc metric map. Kiến trúc này tách việc topology nặng khỏi browser, cho phép validation tái lập, giảm coupling và tránh import bất kỳ source nào từ `references` vào runtime.
+Project chọn pipeline GIS offline → artifacts tĩnh có contract nhỏ → scene component hóa theo domain → Zustand lưu interaction code-based → biểu đồ tóm tắt SVG/CSS thuần chỉ đọc metric map (không dùng thư viện chart riêng — xem [docs/performance.md](performance.md)). Kiến trúc này tách việc topology nặng khỏi browser, cho phép validation tái lập, giảm coupling và tránh import bất kỳ source nào từ `references` vào runtime.
 
-Thư viện chính thức: React, TypeScript, Vite, Three.js, React Three Fiber, Drei, d3-geo, Zustand, ECharts, GeoPandas, Shapely, PyProj và Fiona.
+Thư viện chính thức: React, TypeScript, Vite, Three.js, React Three Fiber, Drei, d3-geo, Zustand, GeoPandas, Shapely, PyProj và Fiona.
 
 ## Rủi ro và kiểm soát
 

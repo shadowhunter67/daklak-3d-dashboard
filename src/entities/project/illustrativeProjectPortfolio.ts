@@ -3,7 +3,7 @@
  * deterministic cho 9 dự án trọng điểm minh hoạ, trải nhiều lĩnh vực theo đúng yêu cầu spec (giao
  * thông, năng lượng, thuỷ lợi, y tế, giáo dục, đô thị, chuyển đổi số). File này nằm ngoài
  * `/fixtures/` và không có tên "mock"/"fixture" một cách vô tình — nó vẫn được đặt tên
- * `mockPortfolio.ts` (đã đổi tên từ `fixtures/projects.mock.ts` sang đây) vì
+ * `illustrativeProjectPortfolio.ts` (đã đổi tên từ `fixtures/projects.mock.ts` sang đây) vì
  * `scripts/validate_public_build.mjs` cấm production code import từ bất kỳ path `/fixtures/`
  * nào; đặt file ở đây là quyết định có chủ đích để dữ liệu minh hoạ này được phép nằm trong bundle
  * công khai (`BundledProjectPortfolioSource` import trực tiếp file này ở `src/data/`).
@@ -22,8 +22,22 @@
  * minh `MOCK_REFERENCE_DATE` làm `now`, để kết quả test ổn định vĩnh viễn bất kể ngày chạy thật.
  */
 import type { Agency, Contractor, Evidence, ProjectBundle } from './types';
+import type { ProjectPortfolioProvenance } from './adapters/ProjectPortfolioSource';
 
 export const MOCK_REFERENCE_DATE = '2026-07-23T00:00:00.000Z';
+
+/**
+ * Bốn mốc thời gian deterministic của snapshot minh hoạ này (không bao gồm `loadedInBrowserAt`,
+ * vốn chỉ hợp lệ khi gán tại runtime bởi adapter — xem `BundledProjectPortfolioSource`). Cố định
+ * theo mã nguồn, không phải `new Date()`, để UI không thể vô tình hiển thị "cập nhật hôm nay" chỉ
+ * vì phiên trình duyệt hiện tại mới mở.
+ */
+export const MOCK_PORTFOLIO_PROVENANCE: Omit<ProjectPortfolioProvenance, 'loadedInBrowserAt'> = {
+  effectiveAt: MOCK_REFERENCE_DATE,
+  sourcePublishedAt: '2026-07-20T00:00:00.000Z',
+  retrievedAt: '2026-07-21T00:00:00.000Z',
+  publishedToDashboardAt: '2026-07-23T00:00:00.000Z',
+};
 const PROJECT_PORTFOLIO_DATASET_ID = 'project-portfolio-illustrative';
 const PROJECT_PROGRESS_DATASET_ID = 'project-progress-illustrative';
 const PROJECT_ISSUES_DATASET_ID = 'project-issues-illustrative';
@@ -640,7 +654,7 @@ export const MOCK_PROJECT_BUNDLES: ProjectBundle[] = [
       geometry: { type: 'Point', coordinates: [108.35, 12.75] },
       // Cố tình cũ hơn 90 ngày so với MOCK_REFERENCE_DATE (2026-07-23) để minh hoạ scenario "dữ
       // liệu quá hạn" (stale-data) trong data-quality summary/Executive Overview — xem
-      // mockPortfolio.test.ts và dataQualityRules.ts rule §9.
+      // illustrativeProjectPortfolio.test.ts và dataQualityRules.ts rule §9.
       dataUpdatedAt: '2026-02-01T00:00:00.000Z',
       dataOwner: MOCK_DATA_OWNER,
       sourceDatasetId: PROJECT_PORTFOLIO_DATASET_ID,

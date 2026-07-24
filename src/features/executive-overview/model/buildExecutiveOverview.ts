@@ -23,6 +23,7 @@ import {
 import { summarizeDataQuality } from '../../../entities/project/dataQualitySummary';
 import { PROJECT_STATUS_LABELS } from '../../../entities/project/labels';
 import type { DataQualityContext } from '../../../entities/project/validation/dataQualityRules';
+import type { ProjectPortfolioProvenance } from '../../../entities/project/adapters/ProjectPortfolioSource';
 import type {
   DataHealthSummary,
   ExecutiveOverviewModel,
@@ -38,6 +39,9 @@ export { PROJECT_STATUS_LABELS };
 export interface BuildExecutiveOverviewInput {
   bundles: readonly ProjectBundle[];
   context: DataQualityContext;
+  /** Bốn+một mốc thời gian thật của snapshot (xem `ProjectPortfolioProvenance`) — được truyền
+   * nguyên vẹn vào `ExecutiveOverviewModel.dataTimeline`, không tính lại từ `asOf`. */
+  provenance: ProjectPortfolioProvenance;
   /** Trạng thái nguồn dữ liệu (từ `ProjectPortfolioLoadResult`) — `'degraded'` bắt buộc
    * `portfolioStatus: 'degraded'` bất kể nội dung dữ liệu, vì người dùng cần biết ngay là bức
    * tranh đang thiếu một phần, trước khi quan tâm tới việc phần còn lại tốt hay xấu. */
@@ -152,6 +156,7 @@ function buildDataHealth(
 export function buildExecutiveOverview({
   bundles,
   context,
+  provenance,
   sourceStatus = 'ok',
 }: BuildExecutiveOverviewInput): ExecutiveOverviewModel {
   const { asOf } = context;
@@ -176,6 +181,7 @@ export function buildExecutiveOverview({
 
   return {
     generatedAt: asOf.toISOString(),
+    dataTimeline: provenance,
     portfolioStatus: derivePortfolioStatus(alerts, sourceStatus),
     kpis: {
       totalProjects: availableKpi(

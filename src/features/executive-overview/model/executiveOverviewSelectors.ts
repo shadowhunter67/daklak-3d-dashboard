@@ -50,11 +50,19 @@ export function severityLabel(severity: PortfolioAlertSeverity): string {
   return severity === 'critical' ? 'Nghiêm trọng' : 'Cảnh báo';
 }
 
-export function formatRelativeUpdatedAt(iso: string, asOf: Date): string {
-  const updated = new Date(iso);
-  if (Number.isNaN(updated.getTime())) return 'Không rõ thời điểm';
-  const days = Math.round((asOf.getTime() - updated.getTime()) / (24 * 60 * 60 * 1000));
-  if (days <= 0) return 'Hôm nay';
-  if (days === 1) return '1 ngày trước';
-  return `${days} ngày trước`;
+const dateTimeFormatter = new Intl.DateTimeFormat('vi-VN', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+});
+
+/**
+ * Định dạng một mốc thời gian dữ liệu (effectiveAt/sourcePublishedAt/retrievedAt/
+ * publishedToDashboardAt) thành chuỗi tuyệt đối, không tương đối — cố tình tránh dạng "Hôm nay"/"N
+ * ngày trước" vì các mốc này là thuộc tính deterministic của snapshot, không phải thời điểm phiên
+ * trình duyệt hiện tại mở trang (xem `ProjectPortfolioProvenance`).
+ */
+export function formatAbsoluteDateTime(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return 'Không rõ thời điểm';
+  return dateTimeFormatter.format(date);
 }

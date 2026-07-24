@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
-import { MOCK_PROJECT_BUNDLES } from '../../entities/project/mockPortfolio';
+import { MOCK_PROJECT_BUNDLES } from '../../entities/project/illustrativeProjectPortfolio';
 import type { ProjectPortfolio } from '../../entities/project/adapters/ProjectPortfolioSource';
 import {
   FakeProjectPortfolioSource,
@@ -12,7 +12,17 @@ import { ExecutiveOverview } from './ExecutiveOverview';
 const validAdministrativeCodes = new Set(Object.keys(labels));
 
 function portfolio(bundles = MOCK_PROJECT_BUNDLES): ProjectPortfolio {
-  return { bundles, validAdministrativeCodes, loadedAt: new Date().toISOString() };
+  return {
+    bundles,
+    validAdministrativeCodes,
+    provenance: {
+      effectiveAt: new Date().toISOString(),
+      sourcePublishedAt: new Date().toISOString(),
+      retrievedAt: new Date().toISOString(),
+      publishedToDashboardAt: new Date().toISOString(),
+      loadedInBrowserAt: new Date().toISOString(),
+    },
+  };
 }
 
 describe('ExecutiveOverview', () => {
