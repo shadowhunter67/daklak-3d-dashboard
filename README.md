@@ -205,12 +205,19 @@ Danh mục **`InvestmentOpportunity`** (cơ hội xúc tiến đầu tư, `src/e
 do pipeline này sinh ra **hoàn toàn tách biệt** khỏi danh mục **`Project`** (dự án trọng điểm đang
 vận hành) — không bao giờ trộn hai domain này.
 
-`.github/workflows/public-data-refresh.yml` chạy hàng tuần + `workflow_dispatch` thủ công: kết quả
-`low-risk` mở PR cập nhật `reports/data-refresh/last-known-good/` và bật auto-merge (vẫn cần
-`quality` xanh); kết quả `hard-stop`/cần xem xét thì cập nhật **một** issue theo dõi sức khỏe nguồn
-duy nhất, gán `shadowhunter67`, gắn nhãn `manual-review-required` — không tự commit thẳng vào
-`main`, không spam issue mới mỗi lần chạy. Panel "Cập nhật tự động" trên header hiển thị tình trạng
-nguồn dữ liệu (song ngữ) từ một snapshot JSON tĩnh, không tự fetch trong trình duyệt.
+`.github/workflows/public-data-refresh.yml` hiện là **`workflow_dispatch`-only** — không có
+`schedule` (xem [ADR 0004 mục 10](docs/adr/0004-public-data-ingestion.md#10-live-commissioning-và-hardening-bổ-sung)
+cho lý do). Mỗi nguồn khai báo `maturity` (`experimental`/`review-required`/`observed`/
+`auto-merge-eligible`) trong `data/source-registry.yml`; một run chỉ tự động merge khi nguồn đã
+được khai báo `auto-merge-eligible` **và** risk là `low-risk` **và** mọi điều kiện cứng khác
+(`scripts/data-refresh/autoMergePolicy.mjs`) pass — nguồn fixture hiện tại là `experimental`, không
+bao giờ auto-merge. Kết quả `low-risk` kèm thay đổi mở PR cập nhật
+`reports/data-refresh/last-known-good/` và `data/published/source-health.json`; kết quả
+`hard-stop`/cần xem xét thì cập nhật **một** issue theo dõi sức khỏe nguồn duy nhất, gán
+`shadowhunter67`, gắn nhãn `manual-review-required` — không tự commit thẳng vào `main`, không spam
+issue mới mỗi lần chạy. Panel "Cập nhật tự động" trên header hiển thị tình trạng nguồn dữ liệu
+(song ngữ, có nhãn mức độ trưởng thành nguồn) từ một snapshot JSON do chính pipeline sinh ra
+(`data/published/source-health.json`), không tự fetch trong trình duyệt, không ai sửa tay.
 
 ## Xây lại GIS
 

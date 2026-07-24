@@ -9,14 +9,23 @@ export const SOURCE_HEALTH_ISSUE_MARKER = '<!-- daklak-data-refresh-source-healt
 /**
  * @param {{ datasetId: string, riskLevel: 'low-risk'|'hard-stop', reasons: string[],
  *   diff: { added: unknown[], removed: unknown[], changed: unknown[], unchangedCount: number },
- *   runStatus: string }} input
+ *   runStatus: string, maturity: string, autoMergeEligible: boolean, autoMergeReasons: string[] }} input
  */
 export function buildPrReportMarkdown(input) {
-  const { datasetId, riskLevel, reasons, diff, runStatus } = input;
+  const {
+    datasetId,
+    riskLevel,
+    reasons,
+    diff,
+    runStatus,
+    maturity,
+    autoMergeEligible,
+    autoMergeReasons,
+  } = input;
   const lines = [
     `# Data refresh: ${datasetId}`,
     '',
-    `**Run status:** \`${runStatus}\` · **Risk:** \`${riskLevel}\``,
+    `**Run status:** \`${runStatus}\` · **Risk:** \`${riskLevel}\` · **Source maturity:** \`${maturity}\``,
     '',
     '## Diff summary',
     `- Added: ${diff.added.length}`,
@@ -25,9 +34,20 @@ export function buildPrReportMarkdown(input) {
     `- Unchanged: ${diff.unchangedCount}`,
   ];
   if (reasons.length > 0) {
-    lines.push('', '## Reasons this is not auto-merged', ...reasons.map((reason) => `- ${reason}`));
+    lines.push(
+      '',
+      '## Reasons this run is not low-risk',
+      ...reasons.map((reason) => `- ${reason}`),
+    );
+  }
+  lines.push('', autoMergeEligible ? '## Auto-merge' : '## Manual review required');
+  if (autoMergeEligible) {
+    lines.push('This run is eligible for auto-merge — no hard conditions failed.');
   } else {
-    lines.push('', 'No hard-stop conditions found — eligible for auto-merge.');
+    lines.push(
+      `@shadowhunter67 — this run requires manual review before merge:`,
+      ...autoMergeReasons.map((reason) => `- ${reason}`),
+    );
   }
   lines.push(
     '',
@@ -44,6 +64,8 @@ export function buildSourceHealthIssueBody(input) {
   const lines = [
     SOURCE_HEALTH_ISSUE_MARKER,
     `# Source health: ${datasetId}`,
+    '',
+    `@shadowhunter67 — this source needs manual review.`,
     '',
     `Last checked: ${checkedAt}`,
     `Status: \`${riskLevel}\``,

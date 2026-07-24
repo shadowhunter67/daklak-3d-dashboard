@@ -21,6 +21,15 @@ const AUTHORITIES = new Set([
   'unknown',
 ]);
 
+// Kept in sync by hand with SOURCE_MATURITIES in types.mjs — see that file for what each value
+// means and why maturity is a registry-declared fact, not something the risk engine infers.
+export const MATURITIES = new Set([
+  'experimental',
+  'review-required',
+  'observed',
+  'auto-merge-eligible',
+]);
+
 const REQUIRED_ENTRY_FIELDS = [
   'datasetId',
   'recordKind',
@@ -40,6 +49,7 @@ const REQUIRED_ENTRY_FIELDS = [
   'failurePolicy',
   'expectedContentType',
   'maxResponseBytes',
+  'maturity',
   'compliance',
 ];
 
@@ -97,6 +107,9 @@ export function validateRegistryShape(registry) {
     if (Array.isArray(entry.sourceUrls) && entry.sourceUrls.length === 0) {
       issues.push(`${label}.sourceUrls must not be empty`);
     }
+    if (entry.maturity !== undefined && !MATURITIES.has(entry.maturity)) {
+      issues.push(`${label}.maturity "${entry.maturity}" is not a recognized source maturity`);
+    }
     if (entry.compliance !== undefined) {
       if (typeof entry.compliance !== 'object' || entry.compliance === null) {
         issues.push(`${label}.compliance must be an object`);
@@ -118,6 +131,19 @@ export function validateRegistryShape(registry) {
             `${label}.compliance.redistributionPolicy "${entry.compliance.redistributionPolicy}" is not recognized`,
           );
         }
+        for (const field of Object.keys(entry.compliance)) {
+          if (!REQUIRED_COMPLIANCE_FIELDS.includes(field)) {
+            issues.push(`${label}.compliance has an unexpected extra field "${field}"`);
+          }
+        }
+      }
+    }
+    // Mirrors the schema's additionalProperties: false — an unrecognized field is exactly the
+    // kind of drift the schema-vs-hand-written-validator guard exists to catch (see
+    // registrySchemaDriftGuard.test.mjs).
+    for (const field of Object.keys(entry)) {
+      if (!REQUIRED_ENTRY_FIELDS.includes(field)) {
+        issues.push(`${label} has an unexpected extra field "${field}"`);
       }
     }
   }

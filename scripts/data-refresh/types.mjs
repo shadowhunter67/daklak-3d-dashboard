@@ -58,3 +58,19 @@ export function buildDatasetQuality(input) {
 export function buildBusinessAlert(input) {
   return { raisedAt: new Date().toISOString(), ...input };
 }
+
+/**
+ * How much a source-registry entry has "earned" unattended automation — deliberately declared by
+ * a human in the registry, never inferred by the risk engine (docs/adr/0004-public-data-ingestion.md
+ * section 10 "Source maturity"). `diffRisk.mjs`'s low-risk/hard-stop classification answers "is
+ * *this run* safe"; maturity answers "has this *source* earned unattended merges at all" — a
+ * recorded fixture can produce a low-risk run forever and still never auto-merge because it's
+ * `experimental`.
+ * @typedef {'experimental'|'review-required'|'observed'|'auto-merge-eligible'} SourceMaturity
+ */
+export const SOURCE_MATURITIES = /** @type {const} */ ([
+  'experimental',
+  'review-required',
+  'observed',
+  'auto-merge-eligible',
+]);

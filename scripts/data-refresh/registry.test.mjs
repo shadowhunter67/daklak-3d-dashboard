@@ -21,6 +21,7 @@ const VALID_ENTRY = {
   failurePolicy: 'keep-last-known-good',
   expectedContentType: 'application/json',
   maxResponseBytes: 2000000,
+  maturity: 'experimental',
   compliance: {
     robotsCheckedAt: '2026-07-24T00:00:00.000Z',
     termsCheckedAt: '2026-07-24T00:00:00.000Z',
@@ -110,6 +111,7 @@ sources:
     failurePolicy: keep-last-known-good
     expectedContentType: application/json
     maxResponseBytes: 1000
+    maturity: experimental
     compliance:
       robotsCheckedAt: '2026-01-01T00:00:00.000Z'
       termsCheckedAt: '2026-01-01T00:00:00.000Z'

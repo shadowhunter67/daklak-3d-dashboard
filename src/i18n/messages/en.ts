@@ -227,8 +227,18 @@ export const en: Partial<Record<MessageKey, string>> = {
   'dataSources.riskLabel': 'Risk level',
   'dataSources.riskLowRisk': 'Low — eligible for automated update',
   'dataSources.riskHardStop': 'Needs human review',
+  'dataSources.riskNotYetRun': 'Not run yet',
   'dataSources.staleWarning':
     'Data has not been updated in {days} days — past the allowed threshold.',
+  'dataSources.neverPublished': 'Never published',
+  'dataSources.neverPublishedWarning': 'This source has no recorded publish yet.',
+  'dataSources.scheduleLabel': 'Refresh cadence',
+  'dataSources.scheduleValue': 'Scheduled refresh (not real-time)',
+  'dataSources.fixtureNotice': 'Internal test source — no network calls made.',
+  'dataSources.maturity.experimental': 'Experimental',
+  'dataSources.maturity.reviewRequired': 'Review required',
+  'dataSources.maturity.observed': 'Observed',
+  'dataSources.maturity.autoMergeEligible': 'Auto-update eligible',
   'dataSources.footerNote':
     'Automated ingestion foundation — currently runs only against internal illustrative data, no real source connected yet. See docs/public-data-refresh.md.',
 };
