@@ -145,9 +145,7 @@ test.describe('Internationalization (vi/en)', () => {
     await page.goto('./?lang=en#/projects');
     await expect(page.getByRole('heading', { name: 'Key project portfolio' })).toBeVisible();
     await expect(page.getByLabel('Search by project name or code')).toBeVisible();
-    await expect(page.locator('.project-portfolio__mock-badge')).toContainText(
-      'ILLUSTRATIVE DATA',
-    );
+    await expect(page.locator('.project-portfolio__mock-badge')).toContainText('ILLUSTRATIVE DATA');
   });
 
   test('Project Detail renders in English, not a Vietnamese fallback', async ({ page }) => {
