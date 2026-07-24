@@ -1,12 +1,14 @@
 import type { DataStatusCounts } from '../../data-platform/catalog/freshness';
+import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
 
-const LABELS: Record<keyof Omit<DataStatusCounts, 'total'>, string> = {
-  current: 'Còn mới',
-  aging: 'Sắp cũ',
-  stale: 'Đã cũ',
-  unknown: 'Chưa rõ',
-  illustrative: 'Minh họa',
-  unavailable: 'Không khả dụng',
+const LABEL_KEYS: Record<keyof Omit<DataStatusCounts, 'total'>, MessageKey> = {
+  current: 'dataStatus.current',
+  aging: 'dataStatus.aging',
+  stale: 'dataStatus.stale',
+  unknown: 'dataStatus.unknown',
+  illustrative: 'dataStatus.illustrative',
+  unavailable: 'dataStatus.unavailable',
 };
 
 /**
@@ -14,15 +16,16 @@ const LABELS: Record<keyof Omit<DataStatusCounts, 'total'>, string> = {
  * turning this into one) — just enough for someone to notice "2 nguồn đã cũ" at a glance.
  */
 export function DataStatusSummary({ counts }: { counts: DataStatusCounts }) {
+  const { t } = useTranslation();
   return (
-    <ul className="data-status-summary" aria-label="Tóm tắt trạng thái dữ liệu">
-      {(Object.keys(LABELS) as Array<keyof typeof LABELS>).map((key) => (
+    <ul className="data-status-summary" aria-label={t('dataStatus.summaryAria')}>
+      {(Object.keys(LABEL_KEYS) as Array<keyof typeof LABEL_KEYS>).map((key) => (
         <li key={key} data-status={key}>
-          <strong>{counts[key]}</strong> {LABELS[key]}
+          <strong>{counts[key]}</strong> {t(LABEL_KEYS[key])}
         </li>
       ))}
       <li className="data-status-summary__total">
-        Tổng <strong>{counts.total}</strong> nguồn dữ liệu
+        {t('dataStatus.total', { count: counts.total })}
       </li>
     </ul>
   );

@@ -1,5 +1,6 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
+import { renderWithI18n as render } from '../../i18n/tests/renderWithI18n';
 import type { DataStatusCounts } from '../../data-platform/catalog/freshness';
 import { DataStatusSummary } from './DataStatusSummary';
 

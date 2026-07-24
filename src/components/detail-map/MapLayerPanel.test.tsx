@@ -1,5 +1,6 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { renderWithI18n as render } from '../../i18n/tests/renderWithI18n';
 import { DEFAULT_DETAIL_MAP_LAYER_STATE } from './detailMapTypes';
 import { MapLayerPanel } from './MapLayerPanel';
 

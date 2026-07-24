@@ -1,8 +1,9 @@
 import metadata from '../../assets/maps/daklak/daklak-metadata.json';
 import metrics from '../../assets/maps/daklak/daklak-metrics.json';
-import { formatNumber } from '../../utils/geo';
 import dashboardData from '../../assets/data/dashboard-sources.json';
 import { useMapStore } from '../../stores/mapStore';
+import { useTranslation } from '../../i18n/useTranslation';
+import { formatNumber } from '../../i18n/formatters';
 
 const CHART_HEIGHT = 105;
 const CHART_LABEL_ROW_HEIGHT = 22;
@@ -51,41 +52,44 @@ function MiniBarChart({ bars }: { bars: { label: string; value: number }[] }) {
 }
 
 export function StatPanel() {
+  const { t, locale } = useTranslation();
   const dataMode = useMapStore((state) => state.dataMode);
   const values = Object.values(metrics);
   const population = values.reduce((s, v) => s + v.population, 0);
   const bars =
     dataMode === 'energy'
       ? [
-          { label: 'Thủy điện', value: 83 },
-          { label: 'Tái tạo', value: 76 },
-          { label: 'Phụ tải', value: 92 },
+          { label: t('statPanel.bar.hydro'), value: 83 },
+          { label: t('statPanel.bar.renewable'), value: 76 },
+          { label: t('statPanel.bar.load'), value: 92 },
         ]
       : dataMode === 'heatmap'
         ? [
-            { label: 'Thấp', value: 42 },
-            { label: 'Trung bình', value: 68 },
-            { label: 'Cao', value: 94 },
+            { label: t('statPanel.bar.low'), value: 42 },
+            { label: t('statPanel.bar.medium'), value: 68 },
+            { label: t('statPanel.bar.high'), value: 94 },
           ]
         : [
-            { label: 'Tây', value: 62 },
-            { label: 'Trung tâm', value: 84 },
-            { label: 'Đông', value: 73 },
+            { label: t('statPanel.bar.west'), value: 62 },
+            { label: t('statPanel.bar.central'), value: 84 },
+            { label: t('statPanel.bar.east'), value: 73 },
           ];
-  const chartAriaLabel = `Biểu đồ cột tóm tắt ba nhóm chỉ số đang hiển thị: ${bars
-    .map((bar) => `${bar.label} ${bar.value}`)
-    .join(', ')}.`;
+  const chartAriaLabel = t('statPanel.chartAria', {
+    summary: bars.map((bar) => `${bar.label} ${bar.value}`).join(', '),
+  });
   return (
     <aside className="stat-panel glass">
       <p className="eyebrow">
         {dataMode === 'energy'
-          ? 'NĂNG LƯỢNG'
+          ? t('statPanel.eyebrow.energy')
           : dataMode === 'heatmap'
-            ? 'PHÂN BỐ MINH HỌA'
-            : 'TỔNG QUAN 2025'}
+            ? t('statPanel.eyebrow.heatmap')
+            : t('statPanel.eyebrow.overview')}
       </p>
       <span className="data-badge">
-        {dataMode === 'overview' ? 'SỐ LIỆU CẤP TỈNH CÓ NGUỒN' : 'DỮ LIỆU MINH HỌA'}
+        {dataMode === 'overview'
+          ? t('statPanel.badge.overview')
+          : t('statPanel.badge.illustrative')}
       </span>
       <div className="hero-stat">
         <strong>
@@ -97,21 +101,21 @@ export function StatPanel() {
         </strong>
         <span>
           {dataMode === 'overview'
-            ? 'đơn vị hành chính'
+            ? t('statPanel.heroLabel.overview')
             : dataMode === 'energy'
-              ? 'điểm năng lượng'
-              : 'điểm cường độ cao'}
+              ? t('statPanel.heroLabel.energy')
+              : t('statPanel.heroLabel.heatmap')}
         </span>
       </div>
       {dataMode === 'overview' && (
         <div className="stat-pair">
           <div>
             <b>{metadata.communeCount}</b>
-            <small>xã</small>
+            <small>{t('statPanel.communeUnit')}</small>
           </div>
           <div>
             <b>{metadata.wardCount}</b>
-            <small>phường</small>
+            <small>{t('statPanel.wardUnit')}</small>
           </div>
         </div>
       )}
@@ -119,45 +123,48 @@ export function StatPanel() {
       <div className={dataMode === 'overview' ? 'metric' : 'metric metric--mock'}>
         <span>
           {dataMode === 'overview'
-            ? 'GRDP 2025'
+            ? t('statPanel.metricLabel.grdp')
             : dataMode === 'energy'
-              ? 'Trạng thái dữ liệu'
-              : 'Chỉ tiêu hiển thị'}
+              ? t('statPanel.metricLabel.energyStatus')
+              : t('statPanel.metricLabel.heatmapIndicator')}
         </span>
         <b>
           {dataMode === 'overview'
             ? `+${dashboardData.overview.grdpGrowthPercent}%`
             : dataMode === 'energy'
-              ? 'Minh họa'
-              : 'Dân số giả lập'}
+              ? t('statPanel.metricValue.illustrative')
+              : t('statPanel.metricValue.simulatedPopulation')}
         </b>
       </div>
       {dataMode === 'overview' && (
         <div className="metric">
-          <span>Doanh nghiệp thành lập mới</span>
-          <b>{formatNumber(dashboardData.overview.newBusinesses)}</b>
+          <span>{t('statPanel.newBusinesses')}</span>
+          <b>{formatNumber(dashboardData.overview.newBusinesses, locale)}</b>
         </div>
       )}
       {dataMode === 'overview' && (
         <div className="metric metric--mock">
-          <span>Dân số cấp xã</span>
-          <b>Minh họa</b>
+          <span>{t('statPanel.communePopulation')}</span>
+          <b>{t('statPanel.metricValue.illustrative')}</b>
         </div>
       )}
       <div className="chart-title">
         {dataMode === 'energy'
-          ? 'Chỉ số theo nhóm điểm'
+          ? t('statPanel.chartTitle.energy')
           : dataMode === 'heatmap'
-            ? 'Cường độ phân bố'
-            : 'Chỉ số tiếp cận dịch vụ'}
+            ? t('statPanel.chartTitle.heatmap')
+            : t('statPanel.chartTitle.overview')}
       </div>
       <div role="img" aria-label={chartAriaLabel}>
         <MiniBarChart bars={bars} />
       </div>
       <p className="mock-note">
         {dataMode === 'overview'
-          ? `GRDP và doanh nghiệp: ${dashboardData.overview.sourceName}. Dân số cấp xã (${formatNumber(population)}) là dữ liệu minh họa.`
-          : 'Các điểm và chỉ số chuyên đề dùng dữ liệu minh họa có seed cố định, chưa phải dữ liệu vận hành thời gian thực.'}
+          ? t('statPanel.mockNote.overview', {
+              source: dashboardData.overview.sourceName,
+              population: formatNumber(population, locale),
+            })
+          : t('statPanel.mockNote.other')}
       </p>
     </aside>
   );

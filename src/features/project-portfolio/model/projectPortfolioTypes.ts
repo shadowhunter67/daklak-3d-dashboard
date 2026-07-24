@@ -12,22 +12,21 @@ export interface ProjectPortfolioRow {
   code: string;
   name: string;
   sector: ProjectSector;
-  sectorLabel: string;
   status: ProjectStatus;
-  statusLabel: string;
   plannedProgress: number;
   overallProgress: number;
   disbursementRate: KpiResult;
   plannedCompletionDate: string | null;
   dataFreshnessDays: KpiResult;
-  primaryReason: string | null;
   reasonCategory: AttentionReasonCategory | null;
   administrativeAreaCodes: string[];
 }
 
+/** `value` is the raw enum/code — components resolve its display label via `t()` (e.g.
+ * `status.${value}`/`sector.${value}`), never a pre-baked Vietnamese string (see docs/adr/
+ * 0003-internationalization.md and `ProjectPortfolioView.tsx`). */
 export interface ProjectPortfolioFilterOption {
   value: string;
-  label: string;
   count: number;
 }
 

@@ -13,24 +13,12 @@ import {
   scheduleVariance,
 } from '../../../entities/project/kpi';
 import { assessPortfolio } from '../../../entities/project/portfolioAssessment';
-import {
-  pickPrimaryReason,
-  ATTENTION_REASON_LABEL,
-} from '../../../entities/project/attentionReason';
-import { PROJECT_SECTOR_LABELS, PROJECT_STATUS_LABELS } from '../../../entities/project/labels';
+import { pickPrimaryReason } from '../../../entities/project/attentionReason';
 import { getDatasetById } from '../../../data-platform/catalog/datasets';
 import type { ProjectBundle, ProjectIssue } from '../../../entities/project/types';
 import type { DataQualityContext } from '../../../entities/project/validation/dataQualityRules';
 import type { ProjectPortfolioProvenance } from '../../../entities/project/adapters/ProjectPortfolioSource';
 import type { ProjectDetailLookupResult, ProjectDetailModel } from './projectDetailTypes';
-
-const CONFIDENCE_LABEL: Record<string, string> = {
-  verified: 'Đã xác thực',
-  high: 'Cao',
-  medium: 'Trung bình',
-  low: 'Thấp',
-  unknown: 'Chưa rõ',
-};
 
 const ISSUE_SEVERITIES: ProjectIssue['severity'][] = ['critical', 'high', 'medium', 'low'];
 
@@ -75,9 +63,7 @@ export function lookupProjectDetail({
   if (isInvalid) return { status: 'not-found' };
 
   const reasonCategory = pickPrimaryReason(projectId, assessment);
-  const attentionReasons = reasonCategory
-    ? [{ category: reasonCategory, label: ATTENTION_REASON_LABEL[reasonCategory] }]
-    : [];
+  const attentionReasons = reasonCategory ? [{ category: reasonCategory }] : [];
 
   const dataQualityIssueCount = assessment.qualityIssues.filter(
     (i) => i.entityType === 'project' && i.entityId === projectId,
@@ -97,13 +83,10 @@ export function lookupProjectDetail({
       code: project.code,
       name: project.name,
       sector: project.sector,
-      sectorLabel: PROJECT_SECTOR_LABELS[project.sector],
       status: project.status,
-      statusLabel: PROJECT_STATUS_LABELS[project.status],
       priority: project.priority,
       dataUpdatedAt: project.dataUpdatedAt,
       confidence: project.confidence,
-      confidenceLabel: CONFIDENCE_LABEL[project.confidence] ?? project.confidence,
     },
     summary: {
       approvedBudget: project.approvedBudget,

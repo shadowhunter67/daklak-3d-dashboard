@@ -73,30 +73,55 @@ nhau.
   bàn phím, không mất focus sau khi chuyển.
 - `document.documentElement.lang` cập nhật đồng bộ với locale.
 
-## Phạm vi dịch trong PR này
+## Phạm vi dịch
 
-Dịch đầy đủ: app shell (skip link, live region, not-found), `DashboardHeader` (nav/mode
-tabs/controls), toàn bộ Executive Overview (KPI, dự án cần chú ý, cảnh báo, sức khỏe dữ liệu, hộp
-thoại tóm tắt), status/sector/attention-reason label dùng chung.
+Dịch đầy đủ toàn bộ UI sản phẩm (cập nhật ở `feat/i18n-complete-vi-en`, xem thêm mục "Hoàn tất dịch
+toàn bộ UI" bên dưới): app shell, `DashboardHeader`, toàn bộ Executive Overview, Project Portfolio,
+Project Detail, 3D map controls, danh sách 2D accessible, bản đồ chi tiết MapLibre (layer panel,
+base map selector, local search, đo khoảng cách), onboarding, Data Sources panel,
+DataProvenancePanel/DataStatusSummary — cùng mọi domain enum dùng chung (status/sector/attention-
+reason/work-package-status/milestone-status/issue-status/issue-severity/authority/classification/
+evidence-level/verification-status/geometry-status/data-freshness).
 
-**Chưa dịch trong PR này** (fallback về tiếng Việt đúng như thiết kế, không lỗi): Project
-Portfolio, Project Detail, bản đồ 3D/2D và bản đồ chi tiết (MapLibre) — các trải nghiệm bản đồ có
-rất nhiều chuỗi rải rác qua nhiều file (camera controls, layer panel, tìm kiếm, đo khoảng cách,
-danh sách accessible). Dịch các phần này là phase tiếp theo được khuyến nghị rõ trong README/PR,
-không gộp vào phạm vi "làm xong hết" của PR này để tránh dịch vội/thiếu nhất quán.
+Chỉ trừ: tên riêng (địa danh, tên/mã dự án minh hoạ), và nội dung nguồn chỉ có tiếng Việt chưa có
+bản tiếng Anh (ví dụ `title`/`description` của một dataset lấy từ văn bản công bố tiếng Việt) — xem
+`resolveLocalizedText` bên dưới.
+
+## Hoàn tất dịch toàn bộ UI (feat/i18n-complete-vi-en)
+
+- `scripts/check_i18n_hardcoded_strings.mjs` (chạy trong `npm test` qua
+  `check_i18n_hardcoded_strings.test.mjs`): audit tĩnh bằng TypeScript compiler API (đi qua JSX
+  text node + một số attribute hiển thị được chọn lọc — `aria-label`/`title`/`alt`/`placeholder`),
+  không phải regex quét thô toàn bộ source (tránh false-positive lớn). Có allowlist nhỏ, mỗi mục
+  đều ghi lý do (proper noun/brand, domain label table).
+- `src/i18n/dictionaryParity.test.ts`: đối chiếu `vi.ts` (nguồn key duy nhất) và `en.ts` (partial) —
+  fail khi thiếu key, key thừa, placeholder `{...}` lệch giữa hai bản dịch, hoặc giá trị rỗng.
+- `src/i18n/resolveLocalizedText.ts`: helper cho nội dung tự do có thể chỉ tồn tại tiếng Việt (khác
+  `MessageKey`, vốn luôn là UI copy do chính app sở hữu và dịch được toàn bộ). Không bao giờ dịch
+  máy lúc runtime; thiếu bản tiếng Anh → hiển thị nguyên văn tiếng Việt, kèm chú thích nhỏ "Vietnamese
+  source text" khi hữu ích cho người đọc tiếng Anh (áp dụng cho tiêu đề/mô tả dataset trong
+  `DataProvenancePanel`).
+- Domain enum không còn baked label tiếng Việt trong view model: `ProjectPortfolioRow`/
+  `ProjectDetailModel` chỉ giữ giá trị enum thô (`sector`, `status`, `reasonCategory`...), component
+  tự resolve nhãn qua `t(`sector.${value}`)` v.v. tại thời điểm render — theo đúng pattern
+  `PriorityProjectList.tsx` đã có từ Executive Overview.
+- Class component (React error boundary — không có hook) dùng `src/i18n/staticTranslate.ts`, đọc
+  `document.documentElement.lang` (đã được `I18nProvider` đồng bộ) thay vì nhận `locale` qua props.
 
 ## Formatters
 
 `src/i18n/formatters.ts` cung cấp factory theo locale cho number/percent/date/date-time/VND/compact
 money — thay cho `toLocaleString('vi-VN')`/`Intl.NumberFormat('vi-VN', ...)` rải rác trong
-component. Các formatter hiện có trong `executiveOverviewSelectors.ts` (vốn hard-code `vi-VN`) được
-port sang factory này khi component đó được dịch.
+component. Toàn bộ formatter còn hard-code `vi-VN` (kể cả `formatKpiValue` không nhận locale trong
+`executiveOverviewSelectors.ts`, và `formatNumber`/`formatUnitType` trong `utils/geo.ts`) đã được
+loại bỏ; mọi call site giờ dùng factory theo locale này.
 
 ## Hệ quả
 
 - Không thêm framework i18n nặng.
 - Không tăng bundle đáng kể: dictionary tiếng Việt (eager) là một object nhỏ; dictionary tiếng Anh
   lazy-load qua `import()` chỉ khi locale thật sự là `'en'`.
-- Domain string (tên dự án/gói thầu minh hoạ, nhãn Nghị quyết/Quyết định) không tự động dịch — xem
-  `LocalizedText` (README/`docs/domain-model.md` cập nhật) cho DTO shape hỗ trợ tiêu đề/mô tả song
-  ngữ ở tầng domain khi cần, không bắt buộc đổi ngay mọi field.
+- Domain string (tên dự án/gói thầu minh hoạ, nhãn Nghị quyết/Quyết định) không tự động dịch —
+  `src/i18n/resolveLocalizedText.ts` cung cấp `LocalizedText` (`{ vi: string; en?: string }`) cho
+  DTO nào cần tiêu đề/mô tả song ngữ ở tầng domain, không bắt buộc đổi ngay mọi field (hiện áp dụng
+  cho `entry.dataset.title`/`description` trong `DataProvenancePanel`/`ProjectDetailView`).

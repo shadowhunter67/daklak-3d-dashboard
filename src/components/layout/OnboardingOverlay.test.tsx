@@ -1,5 +1,6 @@
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { renderWithI18n as render } from '../../i18n/tests/renderWithI18n';
 import { useMapStore } from '../../stores/mapStore';
 import { OnboardingOverlay } from './OnboardingOverlay';
 

@@ -1,4 +1,6 @@
 import type { ProjectDetailProgressPoint } from './model/projectDetailTypes';
+import { useTranslation } from '../../i18n/useTranslation';
+import { formatDate } from '../../i18n/formatters';
 
 /**
  * Lightweight SVG progress-history visualization (spec D4: "a lightweight SVG/HTML visualization
@@ -15,8 +17,9 @@ export function ProgressHistorySparkline({
 }: {
   points: readonly ProjectDetailProgressPoint[];
 }) {
+  const { t, locale } = useTranslation();
   if (points.length === 0) {
-    return <p>Chưa có lịch sử tiến độ được ghi nhận cho dự án này.</p>;
+    return <p>{t('progressHistory.empty')}</p>;
   }
 
   const width = 480;
@@ -40,7 +43,7 @@ export function ProgressHistorySparkline({
       <svg
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label={`Biểu đồ lịch sử tiến độ khối lượng thực tế so với kế hoạch, ${points.length} điểm quan sát`}
+        aria-label={t('progressHistory.chartAria', { count: points.length })}
         className="progress-history__chart"
       >
         <line
@@ -70,26 +73,26 @@ export function ProgressHistorySparkline({
       </svg>
       <p className="progress-history__legend">
         <span className="progress-history__legend-item progress-history__legend-item--planned">
-          Kế hoạch
+          {t('progressHistory.legendPlanned')}
         </span>
         <span className="progress-history__legend-item progress-history__legend-item--actual">
-          Thực tế
+          {t('progressHistory.legendActual')}
         </span>
       </p>
       <table className="visually-hidden">
-        <caption>Lịch sử tiến độ dự án (bảng dữ liệu thay thế cho biểu đồ)</caption>
+        <caption>{t('progressHistory.tableCaption')}</caption>
         <thead>
           <tr>
-            <th scope="col">Thời điểm</th>
-            <th scope="col">Tiến độ kế hoạch (%)</th>
-            <th scope="col">Tiến độ thực tế (%)</th>
-            <th scope="col">Tiến độ tài chính (%)</th>
+            <th scope="col">{t('progressHistory.col.observedAt')}</th>
+            <th scope="col">{t('progressHistory.col.plannedProgress')}</th>
+            <th scope="col">{t('progressHistory.col.actualProgress')}</th>
+            <th scope="col">{t('progressHistory.col.financialProgress')}</th>
           </tr>
         </thead>
         <tbody>
           {points.map((p) => (
             <tr key={p.observedAt}>
-              <td>{new Date(p.observedAt).toLocaleDateString('vi-VN')}</td>
+              <td>{formatDate(p.observedAt, locale)}</td>
               <td>{p.plannedPhysicalProgress}</td>
               <td>{p.physicalProgress}</td>
               <td>{p.financialProgress}</td>
