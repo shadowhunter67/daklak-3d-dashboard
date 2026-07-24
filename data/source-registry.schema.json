@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data/source-registry.schema.json",
+  "title": "Public-data source registry entry",
+  "description": "Mirrors the shape scripts/data-refresh/registry.mjs's hand-written validator enforces over data/source-registry.yml — kept in sync by hand (see docs/adr/0004-public-data-ingestion.md). Used only to AJV-validate a fixture in tests, never at runtime in the browser bundle.",
+  "type": "object",
+  "required": ["sources"],
+  "properties": {
+    "sources": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/sourceEntry" }
+    }
+  },
+  "additionalProperties": false,
+  "definitions": {
+    "sourceEntry": {
+      "type": "object",
+      "required": [
+        "datasetId",
+        "recordKind",
+        "publisher",
+        "authority",
+        "sourceUrls",
+        "acquisitionType",
+        "adapter",
+        "schedule",
+        "schemaVersion",
+        "classification",
+        "redistributionPolicy",
+        "attribution",
+        "owner",
+        "staleAfterDays",
+        "reviewPolicy",
+        "failurePolicy",
+        "expectedContentType",
+        "maxResponseBytes",
+        "compliance"
+      ],
+      "properties": {
+        "datasetId": { "type": "string", "minLength": 1 },
+        "recordKind": { "type": "string", "minLength": 1 },
+        "publisher": { "type": "string", "minLength": 1 },
+        "authority": {
+          "enum": [
+            "official",
+            "authoritative-third-party",
+            "open-community",
+            "illustrative",
+            "unknown"
+          ]
+        },
+        "sourceUrls": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1
+        },
+        "acquisitionType": { "type": "string", "minLength": 1 },
+        "adapter": { "type": "string", "minLength": 1 },
+        "schedule": { "type": "string", "minLength": 1 },
+        "schemaVersion": { "type": "string", "minLength": 1 },
+        "classification": {
+          "enum": ["public", "internal", "confidential", "restricted"]
+        },
+        "redistributionPolicy": {
+          "enum": ["allowed", "allowed-with-attribution", "not-allowed", "unknown"]
+        },
+        "attribution": { "type": "string" },
+        "owner": { "type": "string", "minLength": 1 },
+        "staleAfterDays": { "type": "number", "minimum": 1 },
+        "reviewPolicy": { "type": "string", "minLength": 1 },
+        "failurePolicy": { "type": "string", "minLength": 1 },
+        "expectedContentType": { "type": "string", "minLength": 1 },
+        "maxResponseBytes": { "type": "number", "minimum": 1 },
+        "compliance": { "$ref": "#/definitions/compliance" }
+      },
+      "additionalProperties": false
+    },
+    "compliance": {
+      "type": "object",
+      "required": [
+        "robotsCheckedAt",
+        "termsCheckedAt",
+        "redistributionPolicy",
+        "attributionRequired",
+        "personalDataExpected",
+        "automatedAccessApproved"
+      ],
+      "properties": {
+        "robotsCheckedAt": { "type": "string", "minLength": 1 },
+        "termsCheckedAt": { "type": "string", "minLength": 1 },
+        "redistributionPolicy": {
+          "enum": ["allowed", "allowed-with-attribution", "not-allowed", "unknown"]
+        },
+        "attributionRequired": { "type": "boolean" },
+        "personalDataExpected": { "type": "boolean" },
+        "automatedAccessApproved": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -83,6 +83,13 @@
       "delivery": "public-static-asset",
       "checksum": "7dbdc16218fd9dfc3f8b9ce4b30982ec1037ec34cc6e5623e7136b637a286ce8",
       "note": "Gzip-compressed road geometry fetched at runtime by src/data/loadRoads.ts; Vite copies public/ verbatim, so this is not bundled into a JS chunk."
+    },
+    {
+      "path": "src/assets/data/data-refresh-source-health.json",
+      "datasetIds": ["investment-opportunities-daklak-illustrative"],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "note": "Curated snapshot of scripts/data-refresh/run.mjs output, hand-updated alongside reports/data-refresh/last-known-good/ — no fixed checksum since content changes whenever the pipeline updates last-known-good (see docs/public-data-refresh.md)."
     }
   ]
 }

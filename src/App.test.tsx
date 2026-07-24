@@ -80,6 +80,21 @@ describe('App', () => {
     expect(screen.getAllByRole('dialog', { name: 'Nguồn và chất lượng dữ liệu' })).toHaveLength(1);
   });
 
+  it('lazily mounts the data-sources panel when its store flag is set, distinct from the provenance panel', async () => {
+    renderApp();
+    act(() => useMapStore.getState().openDataSourcesPanel());
+    expect(
+      await screen.findByRole(
+        'region',
+        { name: 'Tình trạng nguồn dữ liệu tự động' },
+        LAZY_CHUNK_TIMEOUT,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('dialog', { name: 'Nguồn và chất lượng dữ liệu' }),
+    ).not.toBeInTheDocument();
+  });
+
   it('does not open the provenance panel on a Back/Forward (popstate) navigation', async () => {
     renderApp();
     act(() => {

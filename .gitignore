@@ -13,3 +13,6 @@ downloads/
 .idea/
 .DS_Store
 .claude/
+reports/data-refresh/*.run-report.json
+reports/data-refresh/*.run-report.md
+reports/data-refresh/*.issue-body.md

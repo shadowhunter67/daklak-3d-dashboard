@@ -53,6 +53,7 @@ export function DashboardHeader() {
   const requestCameraReset = useMapStore((state) => state.requestCameraReset);
   const requestHelp = useMapStore((state) => state.requestHelp);
   const openProvenancePanel = useMapStore((state) => state.openProvenancePanel);
+  const openDataSourcesPanel = useMapStore((state) => state.openDataSourcesPanel);
 
   return (
     <header className="dashboard-header">
@@ -238,6 +239,16 @@ export function DashboardHeader() {
           title={t('header.provenance.title')}
         >
           {t('header.provenance.label')}
+        </button>
+        <button
+          id="open-data-sources-panel"
+          className="header-secondary-control"
+          aria-haspopup="true"
+          onClick={openDataSourcesPanel}
+          aria-label={t('header.dataSources.ariaLabel')}
+          title={t('header.dataSources.title')}
+        >
+          {t('header.dataSources.label')}
         </button>
         <div className="header-lang-switch" role="group" aria-label={t('header.lang.ariaLabel')}>
           <button

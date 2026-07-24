@@ -385,6 +385,44 @@ export const PROJECT_ISSUES_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
   access: { delivery: 'bundled-static', requiresAuthentication: false },
 };
 
+/**
+ * Provenance for the public-data refresh pipeline foundation (docs/adr/0004-public-data-ingestion.md).
+ * `src/entities/investment-opportunity/` is a domain **separate from** `Project` — this dataset
+ * backs `InvestmentOpportunity` records, never `ProjectPortfolioSource`. The one entry in
+ * `data/source-registry.yml` (adapter `recorded-fixture`) produces the bundled
+ * `src/assets/data/data-refresh-source-health.json` snapshot the `DataSourcesPanel` reads; see
+ * docs/public-data-refresh.md for how the pipeline itself runs.
+ */
+export const INVESTMENT_OPPORTUNITIES_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
+  id: 'investment-opportunities-daklak-illustrative',
+  title: 'Cơ hội đầu tư tỉnh Đắk Lắk (minh họa)',
+  description:
+    'Danh mục cơ hội xúc tiến đầu tư minh họa, sinh bởi pipeline ingestion tự động (adapter fixture nội bộ, chưa nối nguồn thật). Không phải danh mục dự án trọng điểm đang vận hành (Project) và không phải số liệu xúc tiến đầu tư thật.',
+  domain: 'economy',
+  classification: 'public',
+  authority: 'illustrative',
+  publicationStatus: 'published',
+  administrativeLevel: 'commune',
+  temporalResolution: 'static',
+  spatialRepresentation: 'none',
+  source: {
+    organization: 'Sở Kế hoạch và Đầu tư tỉnh Đắk Lắk (minh hoạ — fixture nội bộ)',
+    repositoryPath: 'scripts/data-refresh/fixtures/recorded-source-response.json',
+  },
+  version: '1.0.0',
+  period: { label: 'demo' },
+  refreshPolicy: { mode: 'scheduled', expectedInterval: 'weekly' },
+  quality: {
+    status: 'unverified',
+    knownLimitations: [
+      'Dữ liệu minh họa từ adapter fixture nội bộ (recorded-fixture) — chưa có nguồn thật nào được onboard, xem docs/public-data-refresh.md.',
+      'Không được dùng làm căn cứ cho bất kỳ quyết định đầu tư hay quản lý thực tế nào.',
+      'Không tính checksum cố định — nội dung thay đổi mỗi khi pipeline cập nhật last-known-good.',
+    ],
+  },
+  access: { delivery: 'bundled-static', requiresAuthentication: false },
+};
+
 export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   ADMINISTRATIVE_UNITS_DATASET,
   PROVINCE_OVERVIEW_INDICATORS_DATASET,
@@ -397,6 +435,7 @@ export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   PROJECT_PORTFOLIO_ILLUSTRATIVE_DATASET,
   PROJECT_PROGRESS_ILLUSTRATIVE_DATASET,
   PROJECT_ISSUES_ILLUSTRATIVE_DATASET,
+  INVESTMENT_OPPORTUNITIES_ILLUSTRATIVE_DATASET,
 ];
 
 export function getDatasetById(id: string): DatasetDescriptor | undefined {
