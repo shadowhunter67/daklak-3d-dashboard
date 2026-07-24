@@ -4,7 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 export default tseslint.config(
-  { ignores: ['dist', 'src/assets/maps/**/*.json', 'src/assets/maps/**/*.geojson'] },
+  { ignores: ['dist', '.claude/**', 'src/assets/maps/**/*.json', 'src/assets/maps/**/*.geojson'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ['**/*.{ts,tsx}'],
