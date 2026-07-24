@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-24T08:48:30.163Z",
+  "generatedAt": "2026-07-24T09:14:35.816Z",
   "sources": [
     {
       "datasetId": "investment-opportunities-daklak-illustrative",
@@ -7,21 +7,19 @@
       "sourceUrl": "https://example.invalid/dak-lak-investment-opportunities",
       "attribution": "Dữ liệu minh hoạ nội bộ — không phải số liệu vận hành thật.",
       "staleAfterDays": 90,
-      "recordCount": 3,
+      "recordCount": 4,
       "maturity": "experimental",
       "isRecordedFixture": true,
       "availability": "available",
-      "lastCheckedAt": "2026-07-24T08:48:30.163Z",
-      "lastSuccessfulAt": "2026-07-24T08:48:30.163Z",
-      "lastPublishedAt": "2026-07-24T08:48:30.161Z",
+      "lastCheckedAt": "2026-07-24T09:14:35.816Z",
+      "lastSuccessfulAt": "2026-07-24T09:14:35.816Z",
+      "lastPublishedAt": "2026-07-24T09:14:35.815Z",
       "consecutiveFailures": 0,
       "freshness": "published",
-      "publishedChecksum": "af957ca2a025b9489264148249c96381319ed6bb44d9e01b598710fbde011f41",
+      "publishedChecksum": "8e367ec0569fae9fb1bca719d322a2d7cbf70246a6d99605a0546fcfde824a81",
       "status": "low-risk",
       "warnings": [
-        "source maturity is \"experimental\", not \"auto-merge-eligible\" — a human must declare a source auto-merge-eligible in data/source-registry.yml before any run of it can merge unattended",
-        "the registry compliance block changed since the last published run",
-        "redistributionPolicy changed"
+        "source maturity is \"experimental\", not \"auto-merge-eligible\" — a human must declare a source auto-merge-eligible in data/source-registry.yml before any run of it can merge unattended"
       ]
     }
   ]
