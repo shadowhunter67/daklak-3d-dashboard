@@ -1,0 +1,17 @@
+{
+  "generatedByPipelineNote": "Curated snapshot of scripts/data-refresh/run.mjs output for the one registered fixture source — not fetched at runtime by the browser. See docs/public-data-refresh.md.",
+  "sources": [
+    {
+      "datasetId": "investment-opportunities-daklak-illustrative",
+      "publisher": "Sở Kế hoạch và Đầu tư tỉnh Đắk Lắk (minh hoạ — fixture nội bộ)",
+      "sourceUrl": "https://example.invalid/dak-lak-investment-opportunities",
+      "authority": "illustrative",
+      "attribution": "Dữ liệu minh hoạ nội bộ — không phải số liệu vận hành thật.",
+      "recordCount": 3,
+      "lastSuccessfulRefreshAt": "2026-07-24T07:34:00.722Z",
+      "publishedVersion": "recorded-fixture@1",
+      "riskLevel": "low-risk",
+      "staleAfterDays": 90
+    }
+  ]
+}

@@ -86,6 +86,16 @@ describe('DashboardHeader', () => {
     expect(useMapStore.getState().selectedCode).toBe('24580');
   });
 
+  it('opens the automated data-sources panel, distinct from the data provenance panel', () => {
+    useMapStore.setState({ dataSourcesPanelOpen: false, provenancePanelOpen: false });
+    renderHeader();
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Xem tình trạng nguồn dữ liệu tự động cập nhật' }),
+    );
+    expect(useMapStore.getState().dataSourcesPanelOpen).toBe(true);
+    expect(useMapStore.getState().provenancePanelOpen).toBe(false);
+  });
+
   describe('language switcher', () => {
     it('defaults to Vietnamese with VI marked as the current selection', () => {
       renderHeader();

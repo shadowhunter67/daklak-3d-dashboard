@@ -1,0 +1,40 @@
+# Source registry for the public-data refresh pipeline foundation (docs/adr/0004-public-data-ingestion.md).
+#
+# Every field here is required unless the schema (source-registry.schema.json) marks it optional.
+# An entry with redistributionPolicy: unknown, or with robotsCheckedAt/termsCheckedAt/
+# automatedAccessApproved missing or false, is rejected at validation time (hard stop) — see
+# scripts/data-refresh/compliance.mjs. Do not add a real live source here until an actual
+# robots.txt/terms review has been done and recorded with real dates.
+#
+# The one entry below is a RECORDED FIXTURE, not a live source: adapter "recorded-fixture" never
+# makes a network request — it reads scripts/data-refresh/fixtures/recorded-source-response.json.
+# This exists so the whole pipeline (fetch → validate → privacy/compliance → diff → risk → report)
+# can be exercised end-to-end offline, per docs/adr/0004 section 9.
+
+sources:
+  - datasetId: investment-opportunities-daklak-illustrative
+    recordKind: investment-opportunity
+    publisher: 'Sở Kế hoạch và Đầu tư tỉnh Đắk Lắk (minh hoạ — fixture nội bộ)'
+    authority: illustrative
+    sourceUrls:
+      - https://example.invalid/dak-lak-investment-opportunities
+    acquisitionType: recorded-fixture
+    adapter: recorded-fixture
+    schedule: 'weekly'
+    schemaVersion: '1.0.0'
+    classification: public
+    redistributionPolicy: allowed-with-attribution
+    attribution: 'Dữ liệu minh hoạ nội bộ — không phải số liệu vận hành thật.'
+    owner: shadowhunter67
+    staleAfterDays: 90
+    reviewPolicy: 'auto-merge-if-low-risk'
+    failurePolicy: 'keep-last-known-good'
+    expectedContentType: application/json
+    maxResponseBytes: 2000000
+    compliance:
+      robotsCheckedAt: '2026-07-24T00:00:00.000Z'
+      termsCheckedAt: '2026-07-24T00:00:00.000Z'
+      redistributionPolicy: allowed-with-attribution
+      attributionRequired: true
+      personalDataExpected: false
+      automatedAccessApproved: true

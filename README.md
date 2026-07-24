@@ -188,6 +188,29 @@ Mỗi production build sinh `dist/build-info.json` gồm version ứng dụng, c
   [ADR 0001 — Project là entity trung tâm](docs/adr/0001-project-centric-domain.md) ·
   [ADR 0002 — Hash routing cho Danh mục/Chi tiết dự án](docs/adr/0002-static-host-routing.md) ·
   [domain model](docs/domain-model.md)
+- Pipeline ingestion dữ liệu công khai tự động (`scripts/data-refresh/`, nền tảng — chưa nối nguồn
+  thật): [ADR 0004](docs/adr/0004-public-data-ingestion.md) ·
+  [hướng dẫn vận hành](docs/public-data-refresh.md)
+
+## Cập nhật dữ liệu công khai tự động (nền tảng)
+
+`scripts/data-refresh/` là nền tảng ingestion tự động cho dữ liệu công khai — **scheduled refresh**
+theo lịch khai báo trong `data/source-registry.yml`, không phải "thời gian thực". PR nền tảng này
+chỉ chạy với **một adapter fixture nội bộ** (`recorded-fixture`, đọc file, không gọi mạng) — chưa
+onboard nguồn thật nào, vì chưa xác nhận robots.txt/terms của bất kỳ nguồn nào. Xem
+[ADR 0004](docs/adr/0004-public-data-ingestion.md) và
+[hướng dẫn vận hành](docs/public-data-refresh.md) cho kiến trúc đầy đủ.
+
+Danh mục **`InvestmentOpportunity`** (cơ hội xúc tiến đầu tư, `src/entities/investment-opportunity/`)
+do pipeline này sinh ra **hoàn toàn tách biệt** khỏi danh mục **`Project`** (dự án trọng điểm đang
+vận hành) — không bao giờ trộn hai domain này.
+
+`.github/workflows/public-data-refresh.yml` chạy hàng tuần + `workflow_dispatch` thủ công: kết quả
+`low-risk` mở PR cập nhật `reports/data-refresh/last-known-good/` và bật auto-merge (vẫn cần
+`quality` xanh); kết quả `hard-stop`/cần xem xét thì cập nhật **một** issue theo dõi sức khỏe nguồn
+duy nhất, gán `shadowhunter67`, gắn nhãn `manual-review-required` — không tự commit thẳng vào
+`main`, không spam issue mới mỗi lần chạy. Panel "Cập nhật tự động" trên header hiển thị tình trạng
+nguồn dữ liệu (song ngữ) từ một snapshot JSON tĩnh, không tự fetch trong trình duyệt.
 
 ## Xây lại GIS
 

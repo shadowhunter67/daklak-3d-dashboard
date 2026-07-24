@@ -1,0 +1,93 @@
+name: Public data refresh (foundation)
+
+# Runs the offline recorded-fixture pipeline (docs/adr/0004-public-data-ingestion.md) on a schedule
+# and on demand. This PR ships only the "recorded-fixture" adapter — no real network source is
+# onboarded yet, so every scheduled run exercises the same fixture end-to-end without ever
+# fetching anything live. Never commits directly to main: a low-risk result opens a PR with
+# auto-merge enabled (still gated by the `quality` workflow passing); anything else updates one
+# tracked issue instead of spamming a new one.
+
+on:
+  schedule:
+    - cron: '17 3 * * 1' # weekly, Monday — arbitrary offset to avoid the top-of-hour GH Actions rush
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: 'Dry run — never writes last-known-good or opens a PR'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: public-data-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+
+      - name: Run the offline recorded-fixture pipeline
+        id: run
+        run: |
+          FLAGS=""
+          if [ "${{ inputs.dryRun }}" = "true" ]; then FLAGS="--dry-run"; fi
+          node scripts/data-refresh/run.mjs --dataset=investment-opportunities-daklak-illustrative $FLAGS | tee run-output.txt
+          RISK=$(grep -oP 'riskLevel=\K\S+' run-output.txt)
+          echo "risk=$RISK" >> "$GITHUB_OUTPUT"
+
+      - name: Upload run report
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: data-refresh-report
+          path: reports/data-refresh/*.run-report.*
+          retention-days: 30
+
+      - name: Open or update a PR for a low-risk change (skipped on dry run)
+        if: steps.run.outputs.risk == 'low-risk' && inputs.dryRun != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- reports/data-refresh/last-known-good; then
+            echo "No last-known-good change — nothing to open a PR for."
+            exit 0
+          fi
+          BRANCH="data-refresh/investment-opportunities-daklak-illustrative-$(date +%s)"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git add reports/data-refresh/last-known-good
+          git commit -m "chore(data-refresh): update investment-opportunities-daklak-illustrative (low-risk)"
+          git push origin "$BRANCH"
+          PR_URL=$(gh pr create --title "chore(data-refresh): low-risk update — investment-opportunities-daklak-illustrative" \
+            --body-file reports/data-refresh/investment-opportunities-daklak-illustrative.run-report.md \
+            --base main --head "$BRANCH")
+          gh pr merge "$PR_URL" --auto --squash || echo "auto-merge could not be enabled (branch protection may require it to be enabled manually) — PR is still open for review."
+
+      - name: Update the single tracked source-health issue on hard-stop
+        if: steps.run.outputs.risk == 'hard-stop' && inputs.dryRun != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          MARKER='<!-- daklak-data-refresh-source-health -->'
+          EXISTING=$(gh issue list --search "$MARKER in:body" --state open --json number --jq '.[0].number')
+          BODY_FILE="reports/data-refresh/investment-opportunities-daklak-illustrative.issue-body.md"
+          if [ -n "$EXISTING" ] && [ "$EXISTING" != "null" ]; then
+            gh issue comment "$EXISTING" --body-file "$BODY_FILE"
+          else
+            gh issue create --title "Data source health: investment-opportunities-daklak-illustrative" \
+              --body-file "$BODY_FILE" \
+              --assignee shadowhunter67 \
+              --label manual-review-required
+          fi

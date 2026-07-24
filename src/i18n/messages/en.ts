@@ -77,6 +77,9 @@ export const en: Partial<Record<MessageKey, string>> = {
   'header.provenance.ariaLabel': 'View data sources and quality',
   'header.provenance.title': 'Data sources',
   'header.provenance.label': 'Data sources',
+  'header.dataSources.ariaLabel': 'View automated data-refresh source status',
+  'header.dataSources.title': 'Automated data source status',
+  'header.dataSources.label': 'Auto-refresh',
   'header.lang.ariaLabel': 'Display language',
   'header.lang.viAriaLabel': 'Chuyển sang tiếng Việt',
   'header.lang.enAriaLabel': 'Switch to English',
@@ -213,4 +216,19 @@ export const en: Partial<Record<MessageKey, string>> = {
   'reason.at-risk': 'At risk of delay',
   'reason.stale-data': 'Data is overdue for an update',
   'reason.budget-exposure': 'Disbursement ahead of physical progress',
+
+  // Data Sources panel (public-data refresh pipeline foundation)
+  'dataSources.heading': 'Automated data source status',
+  'dataSources.close': 'Close',
+  'dataSources.closeAria': 'Close the data source status panel',
+  'dataSources.recordCount': 'Record count',
+  'dataSources.lastRefresh': 'Last successful refresh',
+  'dataSources.publishedVersion': 'Published version',
+  'dataSources.riskLabel': 'Risk level',
+  'dataSources.riskLowRisk': 'Low — eligible for automated update',
+  'dataSources.riskHardStop': 'Needs human review',
+  'dataSources.staleWarning':
+    'Data has not been updated in {days} days — past the allowed threshold.',
+  'dataSources.footerNote':
+    'Automated ingestion foundation — currently runs only against internal illustrative data, no real source connected yet. See docs/public-data-refresh.md.',
 };

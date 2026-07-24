@@ -79,6 +79,9 @@ export const vi = {
   'header.provenance.ariaLabel': 'Xem nguồn và chất lượng dữ liệu',
   'header.provenance.title': 'Nguồn dữ liệu',
   'header.provenance.label': 'Nguồn dữ liệu',
+  'header.dataSources.ariaLabel': 'Xem tình trạng nguồn dữ liệu tự động cập nhật',
+  'header.dataSources.title': 'Tình trạng nguồn dữ liệu tự động',
+  'header.dataSources.label': 'Cập nhật tự động',
   'header.lang.ariaLabel': 'Ngôn ngữ hiển thị',
   'header.lang.viAriaLabel': 'Chuyển sang tiếng Việt',
   'header.lang.enAriaLabel': 'Switch to English',
@@ -216,4 +219,18 @@ export const vi = {
   'reason.at-risk': 'Có nguy cơ chậm tiến độ',
   'reason.stale-data': 'Dữ liệu đã quá hạn cập nhật',
   'reason.budget-exposure': 'Giải ngân vượt tiến độ khối lượng',
+
+  // Data Sources panel (public-data refresh pipeline foundation)
+  'dataSources.heading': 'Tình trạng nguồn dữ liệu tự động',
+  'dataSources.close': 'Đóng',
+  'dataSources.closeAria': 'Đóng panel tình trạng nguồn dữ liệu',
+  'dataSources.recordCount': 'Số bản ghi',
+  'dataSources.lastRefresh': 'Lần cập nhật thành công gần nhất',
+  'dataSources.publishedVersion': 'Phiên bản đã publish',
+  'dataSources.riskLabel': 'Mức rủi ro',
+  'dataSources.riskLowRisk': 'Thấp — đủ điều kiện tự động cập nhật',
+  'dataSources.riskHardStop': 'Cần người xem xét',
+  'dataSources.staleWarning': 'Dữ liệu đã {days} ngày chưa cập nhật — vượt ngưỡng cho phép.',
+  'dataSources.footerNote':
+    'Nền tảng ingestion tự động — hiện chỉ chạy với dữ liệu minh hoạ nội bộ, chưa nối nguồn thật. Xem docs/public-data-refresh.md.',
 } as const satisfies Record<string, string>;
