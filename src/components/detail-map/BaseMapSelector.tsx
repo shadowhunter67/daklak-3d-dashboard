@@ -1,13 +1,15 @@
 import type { DetailBaseMap, DetailMapSourceAvailability } from './detailMapTypes';
+import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
 
 const options: Array<{
   value: DetailBaseMap;
-  label: string;
+  labelKey: MessageKey;
   disabledReason?: keyof DetailMapSourceAvailability;
 }> = [
-  { value: 'default', label: 'Mặc định' },
-  { value: 'terrain', label: 'Địa hình', disabledReason: 'terrain' },
-  { value: 'satellite', label: 'Vệ tinh', disabledReason: 'satellite' },
+  { value: 'default', labelKey: 'baseMap.default' },
+  { value: 'terrain', labelKey: 'baseMap.terrain', disabledReason: 'terrain' },
+  { value: 'satellite', labelKey: 'baseMap.satellite', disabledReason: 'satellite' },
 ];
 
 export function BaseMapSelector({
@@ -19,8 +21,9 @@ export function BaseMapSelector({
   sourceAvailability: DetailMapSourceAvailability;
   onChange: (baseMap: DetailBaseMap) => void;
 }) {
+  const { t } = useTranslation();
   return (
-    <div role="radiogroup" aria-label="Loại bản đồ" className="detail-map-basemap-selector">
+    <div role="radiogroup" aria-label={t('baseMap.aria')} className="detail-map-basemap-selector">
       {options.map((option) => {
         const disabled = Boolean(
           option.disabledReason && !sourceAvailability[option.disabledReason],
@@ -29,7 +32,7 @@ export function BaseMapSelector({
           <label
             key={option.value}
             className={disabled ? 'basemap-option basemap-option--disabled' : 'basemap-option'}
-            title={disabled ? 'Chưa cấu hình nguồn dữ liệu cho loại bản đồ này' : undefined}
+            title={disabled ? t('baseMap.disabledReason') : undefined}
           >
             <input
               type="radio"
@@ -40,10 +43,10 @@ export function BaseMapSelector({
               onChange={() => onChange(option.value)}
               aria-describedby={disabled ? `basemap-${option.value}-disabled-reason` : undefined}
             />
-            {option.label}
+            {t(option.labelKey)}
             {disabled && (
               <span id={`basemap-${option.value}-disabled-reason`} className="visually-hidden">
-                Chưa cấu hình nguồn dữ liệu cho loại bản đồ này
+                {t('baseMap.disabledReason')}
               </span>
             )}
           </label>

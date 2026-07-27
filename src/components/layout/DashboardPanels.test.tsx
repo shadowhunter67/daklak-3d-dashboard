@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useMapStore } from '../../stores/mapStore';
+import { renderWithI18n as render } from '../../i18n/tests/renderWithI18n';
 import { DashboardPanels } from './DashboardPanels';
 
 describe('DashboardPanels', () => {

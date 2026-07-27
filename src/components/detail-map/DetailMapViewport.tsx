@@ -20,6 +20,7 @@ import type {
   MapInteractionMode,
 } from './detailMapTypes';
 import type { LocalSearchEntry } from './localSearchIndex';
+import { useTranslation } from '../../i18n/useTranslation';
 
 type LoadStatus = 'loading' | 'ready' | 'error';
 
@@ -48,6 +49,7 @@ function createProvider(): DetailedMapProvider {
 }
 
 export function DetailMapViewport() {
+  const { t } = useTranslation();
   const layers = useMapStore((state) => state.detailMapLayers);
   const camera = useMapStore((state) => state.detailMapCamera);
   const selectedCode = useMapStore((state) => state.selectedCode);
@@ -178,8 +180,8 @@ export function DetailMapViewport() {
   if (!webGLSupported) {
     return (
       <MapFallback
-        reason="Trình duyệt hoặc thiết bị này không hỗ trợ WebGL nên không thể mở bản đồ chi tiết. Danh sách 2D vẫn khả dụng."
-        actionLabel="Mở danh sách 2D"
+        reason={t('detailMapViewport.webglUnsupportedReason')}
+        actionLabel={t('detailMapViewport.open2dList')}
         onRetry={openDirectory}
       />
     );
@@ -188,17 +190,17 @@ export function DetailMapViewport() {
   if (status === 'error') {
     return (
       <div className="detail-map-error" role="alert">
-        <h2>Không thể tải bản đồ chi tiết</h2>
-        <p>Đã có lỗi khi khởi tạo bản đồ chi tiết. Bạn có thể thử lại hoặc chọn chế độ khác.</p>
+        <h2>{t('detailMapViewport.errorHeading')}</h2>
+        <p>{t('detailMapViewport.errorBody')}</p>
         <div className="detail-map-error__actions">
           <button type="button" onClick={retry}>
-            Thử lại
+            {t('detailMapViewport.retry')}
           </button>
           <button type="button" onClick={backToOverview}>
-            Quay về tổng quan 3D
+            {t('detailMapViewport.backTo3d')}
           </button>
           <button type="button" onClick={openDirectory}>
-            Mở danh sách 2D
+            {t('detailMapViewport.open2dList')}
           </button>
         </div>
       </div>
@@ -209,7 +211,7 @@ export function DetailMapViewport() {
     <section
       id="detail-map-viewport"
       className="detail-map-viewport"
-      aria-label="Bản đồ chi tiết"
+      aria-label={t('detailMapViewport.aria')}
       tabIndex={-1}
     >
       <div ref={containerRef} className="detail-map-canvas" key={generation} />

@@ -2,32 +2,18 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { BundledProjectPortfolioSource } from '../../data/projectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
 import type { ProjectGeometry } from '../../entities/project/types';
+import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
+import { formatDate, formatDateTime, formatVnd } from '../../i18n/formatters';
 import {
   formatAbsoluteDateTime,
-  formatKpiValue,
+  formatKpiValueLocalized,
 } from '../executive-overview/model/executiveOverviewSelectors';
 import { useProjectDetail } from './data/useProjectDetail';
 import { ProgressHistorySparkline } from './ProgressHistorySparkline';
+import { resolveLocalizedText } from '../../i18n/resolveLocalizedText';
 
-const vndFormatter = new Intl.NumberFormat('vi-VN', { maximumFractionDigits: 0 });
-
-const ERROR_KIND_LABEL: Record<string, string> = {
-  unauthorized: 'Cần đăng nhập để xem dữ liệu này.',
-  forbidden: 'Bạn không có quyền xem dữ liệu này.',
-  network: 'Không thể kết nối tới nguồn dữ liệu.',
-  timeout: 'Yêu cầu tải dữ liệu đã quá thời gian chờ.',
-  'schema-invalid': 'Dữ liệu nhận được không đúng định dạng.',
-  'source-unavailable': 'Nguồn dữ liệu hiện không khả dụng.',
-  'rate-limited': 'Hệ thống đang quá tải, vui lòng thử lại sau.',
-  unknown: 'Đã xảy ra lỗi không xác định.',
-};
-
-const SEVERITY_LABEL: Record<string, string> = {
-  critical: 'Nghiêm trọng',
-  high: 'Cao',
-  medium: 'Trung bình',
-  low: 'Thấp',
-};
+const ISSUE_SEVERITIES = ['critical', 'high', 'medium', 'low'] as const;
 
 export function ProjectDetailView({
   source,
@@ -40,6 +26,7 @@ export function ProjectDetailView({
   onBackToPortfolio: () => void;
   onViewOnMap: (geometry: ProjectGeometry) => void;
 }) {
+  const { t, locale } = useTranslation();
   const [retryToken, setRetryToken] = useState(0);
   const effectiveSource = useMemo(() => source ?? new BundledProjectPortfolioSource(), [source]);
   const state = useProjectDetail(effectiveSource, projectId, retryToken);
@@ -59,7 +46,7 @@ export function ProjectDetailView({
         tabIndex={-1}
       >
         <span className="map-loading__spinner" aria-hidden="true" />
-        <p>Đang tải chi tiết dự án…</p>
+        <p>{t('detail.loading')}</p>
       </section>
     );
   }
@@ -69,14 +56,11 @@ export function ProjectDetailView({
       <section id="project-detail" className="project-detail" tabIndex={-1}>
         <div className="project-detail__not-found" role="alert">
           <h2 ref={headingRef} tabIndex={-1}>
-            Không tìm thấy dự án
+            {t('detail.notFoundHeading')}
           </h2>
-          <p>
-            Không có dự án nào với mã <code>{projectId}</code> trong danh mục, hoặc dữ liệu dự án
-            này không hợp lệ.
-          </p>
+          <p>{t('detail.notFoundBody', { projectId })}</p>
           <button type="button" onClick={onBackToPortfolio}>
-            ← Quay lại Danh mục dự án
+            {t('detail.backToPortfolio')}
           </button>
         </div>
       </section>
@@ -88,15 +72,15 @@ export function ProjectDetailView({
       <section id="project-detail" className="project-detail" tabIndex={-1}>
         <div className="project-detail__error" role="alert">
           <h2 ref={headingRef} tabIndex={-1}>
-            Không thể tải chi tiết dự án
+            {t('detail.loadErrorHeading')}
           </h2>
-          <p>{ERROR_KIND_LABEL[state.error.kind] ?? ERROR_KIND_LABEL.unknown}</p>
+          <p>{t(`errorKind.${state.error.kind}` as MessageKey)}</p>
           <p className="project-detail__error-detail">{state.error.message}</p>
-          <button type="button" onClick={() => setRetryToken((t) => t + 1)}>
-            Thử lại
+          <button type="button" onClick={() => setRetryToken((n) => n + 1)}>
+            {t('detail.retry')}
           </button>
           <button type="button" onClick={onBackToPortfolio}>
-            ← Quay lại Danh mục dự án
+            {t('detail.backToPortfolio')}
           </button>
         </div>
       </section>
@@ -104,11 +88,11 @@ export function ProjectDetailView({
   }
 
   const { model } = state;
-  const disbursement = formatKpiValue(model.summary.disbursementRate);
-  const scheduleVariance = formatKpiValue(model.summary.scheduleVariance);
-  const budgetVariance = formatKpiValue(model.summary.budgetVariance);
-  const forecastDelay = formatKpiValue(model.summary.forecastDelayInDays);
-  const overdueIssues = formatKpiValue(model.issues.overdueIssueCount);
+  const disbursement = formatKpiValueLocalized(model.summary.disbursementRate, locale, t);
+  const scheduleVariance = formatKpiValueLocalized(model.summary.scheduleVariance, locale, t);
+  const budgetVariance = formatKpiValueLocalized(model.summary.budgetVariance, locale, t);
+  const forecastDelay = formatKpiValueLocalized(model.summary.forecastDelayInDays, locale, t);
+  const overdueIssues = formatKpiValueLocalized(model.issues.overdueIssueCount, locale, t);
 
   return (
     <section
@@ -118,13 +102,12 @@ export function ProjectDetailView({
       tabIndex={-1}
     >
       <button type="button" className="project-detail__back" onClick={onBackToPortfolio}>
-        ← Danh mục dự án
+        {t('detail.backToPortfolioShort')}
       </button>
 
       {state.status === 'degraded' && (
         <p role="alert" className="project-detail__degraded-banner">
-          Một phần dữ liệu hiện không tải được ({state.sourceIssues.join('; ')}) — nội dung bên dưới
-          chỉ tính trên phần dữ liệu đã tải thành công.
+          {t('detail.degradedBanner', { issues: state.sourceIssues.join('; ') })}
         </p>
       )}
 
@@ -137,33 +120,34 @@ export function ProjectDetailView({
           {model.header.name}
         </h2>
         <p className="project-detail__mock-badge" role="note">
-          DỮ LIỆU MINH HỌA — không phải số liệu vận hành chính thức, không dùng cho quyết định quản
-          lý thực tế.
+          {t('detail.illustrativeBadge')}
         </p>
         <dl className="project-detail__header-grid">
           <div>
-            <dt>Mã dự án</dt>
+            <dt>{t('detail.header.code')}</dt>
             <dd>{model.header.code}</dd>
           </div>
           <div>
-            <dt>Lĩnh vực</dt>
-            <dd>{model.header.sectorLabel}</dd>
+            <dt>{t('detail.header.sector')}</dt>
+            <dd>{t(`sector.${model.header.sector}` as MessageKey)}</dd>
           </div>
           <div>
-            <dt>Trạng thái</dt>
-            <dd>{model.header.statusLabel}</dd>
+            <dt>{t('detail.header.status')}</dt>
+            <dd>{t(`status.${model.header.status}` as MessageKey)}</dd>
           </div>
           <div>
-            <dt>Mức ưu tiên</dt>
-            <dd>{model.header.priority}</dd>
+            <dt>{t('detail.header.priority')}</dt>
+            {/* ProjectPriority and issue severity share the same critical/high/medium/low values —
+                reusing issueSeverity.* rather than a duplicate priority.* dictionary entry per value. */}
+            <dd>{t(`issueSeverity.${model.header.priority}` as MessageKey)}</dd>
           </div>
           <div>
-            <dt>Dữ liệu cập nhật lúc</dt>
-            <dd>{new Date(model.header.dataUpdatedAt).toLocaleString('vi-VN')}</dd>
+            <dt>{t('detail.header.updatedAt')}</dt>
+            <dd>{formatDateTime(model.header.dataUpdatedAt, locale)}</dd>
           </div>
           <div>
-            <dt>Độ tin cậy dữ liệu</dt>
-            <dd>{model.header.confidenceLabel}</dd>
+            <dt>{t('detail.header.confidence')}</dt>
+            <dd>{t(`confidence.${model.header.confidence}` as MessageKey)}</dd>
           </div>
         </dl>
       </div>
@@ -173,70 +157,70 @@ export function ProjectDetailView({
           aria-labelledby="project-detail-attention-heading"
           className="project-detail__attention"
         >
-          <h3 id="project-detail-attention-heading">Vì sao dự án này cần chú ý</h3>
+          <h3 id="project-detail-attention-heading">{t('detail.attentionHeading')}</h3>
           <ul>
             {model.attentionReasons.map((reason) => (
-              <li key={reason.category}>{reason.label}</li>
+              <li key={reason.category}>{t(`reason.${reason.category}` as MessageKey)}</li>
             ))}
           </ul>
         </section>
       )}
 
       <section aria-labelledby="project-detail-summary-heading" className="project-detail__summary">
-        <h3 id="project-detail-summary-heading">Tóm tắt ngân sách và tiến độ</h3>
+        <h3 id="project-detail-summary-heading">{t('detail.summaryHeading')}</h3>
         <dl className="project-detail__summary-grid">
           <div>
-            <dt>Ngân sách phê duyệt</dt>
-            <dd>{vndFormatter.format(model.summary.approvedBudget)} ₫</dd>
+            <dt>{t('detail.summary.approvedBudget')}</dt>
+            <dd>{formatVnd(model.summary.approvedBudget, locale)}</dd>
           </div>
           <div>
-            <dt>Ngân sách điều chỉnh</dt>
+            <dt>{t('detail.summary.adjustedBudget')}</dt>
             <dd>
               {model.summary.adjustedBudget !== null
-                ? `${vndFormatter.format(model.summary.adjustedBudget)} ₫`
-                : 'Chưa điều chỉnh'}
+                ? formatVnd(model.summary.adjustedBudget, locale)
+                : t('detail.summary.adjustedBudgetNone')}
             </dd>
           </div>
           <div>
-            <dt>Đã giải ngân</dt>
-            <dd>{vndFormatter.format(model.summary.disbursedAmount)} ₫</dd>
+            <dt>{t('detail.summary.disbursedAmount')}</dt>
+            <dd>{formatVnd(model.summary.disbursedAmount, locale)}</dd>
           </div>
           <div>
-            <dt>Tỷ lệ giải ngân</dt>
+            <dt>{t('detail.summary.disbursementRate')}</dt>
             <dd>{disbursement.text}</dd>
           </div>
           <div>
-            <dt>Tiến độ khối lượng / kế hoạch</dt>
+            <dt>{t('detail.summary.progress')}</dt>
             <dd>
               {model.summary.overallProgress}% / {model.summary.plannedProgress}%
             </dd>
           </div>
           <div>
-            <dt>Chênh lệch tiến độ</dt>
+            <dt>{t('detail.summary.scheduleVariance')}</dt>
             <dd>{scheduleVariance.text}</dd>
           </div>
           <div>
-            <dt>Chênh lệch ngân sách</dt>
+            <dt>{t('detail.summary.budgetVariance')}</dt>
             <dd>{budgetVariance.text}</dd>
           </div>
           <div>
-            <dt>Kế hoạch hoàn thành</dt>
+            <dt>{t('detail.summary.plannedCompletion')}</dt>
             <dd>
               {model.summary.plannedCompletionDate
-                ? new Date(model.summary.plannedCompletionDate).toLocaleDateString('vi-VN')
-                : 'Chưa xác định'}
+                ? formatDate(model.summary.plannedCompletionDate, locale)
+                : t('portfolio.notDetermined')}
             </dd>
           </div>
           <div>
-            <dt>Dự báo hoàn thành</dt>
+            <dt>{t('detail.summary.forecastCompletion')}</dt>
             <dd>
               {model.summary.forecastCompletionDate
-                ? new Date(model.summary.forecastCompletionDate).toLocaleDateString('vi-VN')
-                : 'Chưa có dự báo'}
+                ? formatDate(model.summary.forecastCompletionDate, locale)
+                : t('detail.summary.forecastCompletionNone')}
             </dd>
           </div>
           <div>
-            <dt>Chậm dự báo so với kế hoạch</dt>
+            <dt>{t('detail.summary.forecastDelay')}</dt>
             <dd>{forecastDelay.text}</dd>
           </div>
         </dl>
@@ -246,9 +230,11 @@ export function ProjectDetailView({
         aria-labelledby="project-detail-workpackages-heading"
         className="project-detail__work-packages"
       >
-        <h3 id="project-detail-workpackages-heading">Gói thầu ({model.workPackages.length})</h3>
+        <h3 id="project-detail-workpackages-heading">
+          {t('detail.workPackagesHeading', { count: model.workPackages.length })}
+        </h3>
         {model.workPackages.length === 0 ? (
-          <p>Chưa có gói thầu nào được ghi nhận.</p>
+          <p>{t('detail.workPackagesEmpty')}</p>
         ) : (
           <ul className="project-detail__card-list">
             {model.workPackages.map((wp) => (
@@ -256,17 +242,28 @@ export function ProjectDetailView({
                 <p className="project-detail__card-title">
                   {wp.name} <span className="project-portfolio__code">({wp.code})</span>
                 </p>
-                <p>Trạng thái: {wp.status}</p>
                 <p>
-                  Tiến độ: {wp.actualProgress}% (kế hoạch {wp.plannedProgress}%)
+                  {t('detail.workPackage.status', {
+                    status: t(`workPackageStatus.${wp.status}` as MessageKey),
+                  })}
                 </p>
                 <p>
-                  Kế hoạch: {new Date(wp.plannedStart).toLocaleDateString('vi-VN')} –{' '}
-                  {new Date(wp.plannedEnd).toLocaleDateString('vi-VN')}
+                  {t('detail.workPackage.progress', {
+                    actual: wp.actualProgress,
+                    planned: wp.plannedProgress,
+                  })}
                 </p>
                 <p>
-                  Ngân sách: {vndFormatter.format(wp.budget)} ₫ — đã thanh toán{' '}
-                  {vndFormatter.format(wp.paidAmount)} ₫
+                  {t('detail.workPackage.planned', {
+                    start: formatDate(wp.plannedStart, locale),
+                    end: formatDate(wp.plannedEnd, locale),
+                  })}
+                </p>
+                <p>
+                  {t('detail.workPackage.budget', {
+                    budget: formatVnd(wp.budget, locale),
+                    paid: formatVnd(wp.paidAmount, locale),
+                  })}
                 </p>
               </li>
             ))}
@@ -278,23 +275,36 @@ export function ProjectDetailView({
         aria-labelledby="project-detail-milestones-heading"
         className="project-detail__milestones"
       >
-        <h3 id="project-detail-milestones-heading">Mốc tiến độ ({model.milestones.length})</h3>
+        <h3 id="project-detail-milestones-heading">
+          {t('detail.milestonesHeading', { count: model.milestones.length })}
+        </h3>
         {model.milestones.length === 0 ? (
-          <p>Chưa có mốc tiến độ nào được ghi nhận.</p>
+          <p>{t('detail.milestonesEmpty')}</p>
         ) : (
           <ul className="project-detail__card-list">
             {model.milestones.map((m) => (
               <li key={m.id} className="project-detail__card">
                 <p className="project-detail__card-title">
-                  {m.name} {m.critical && <span aria-label="Mốc trọng yếu">⚑ Trọng yếu</span>}
+                  {m.name}{' '}
+                  {m.critical && (
+                    <span aria-label={t('detail.milestone.criticalAria')}>
+                      {t('detail.milestone.criticalBadge')}
+                    </span>
+                  )}
                 </p>
-                <p>Trạng thái: {m.status}</p>
-                <p>Kế hoạch: {new Date(m.plannedDate).toLocaleDateString('vi-VN')}</p>
+                <p>
+                  {t('detail.milestone.status', {
+                    status: t(`milestoneStatus.${m.status}` as MessageKey),
+                  })}
+                </p>
+                <p>{t('detail.milestone.planned', { date: formatDate(m.plannedDate, locale) })}</p>
                 {m.forecastDate && (
-                  <p>Dự báo: {new Date(m.forecastDate).toLocaleDateString('vi-VN')}</p>
+                  <p>
+                    {t('detail.milestone.forecast', { date: formatDate(m.forecastDate, locale) })}
+                  </p>
                 )}
                 {m.actualDate && (
-                  <p>Thực tế: {new Date(m.actualDate).toLocaleDateString('vi-VN')}</p>
+                  <p>{t('detail.milestone.actual', { date: formatDate(m.actualDate, locale) })}</p>
                 )}
               </li>
             ))}
@@ -306,24 +316,30 @@ export function ProjectDetailView({
         aria-labelledby="project-detail-progress-history-heading"
         className="project-detail__progress-history"
       >
-        <h3 id="project-detail-progress-history-heading">Lịch sử tiến độ</h3>
+        <h3 id="project-detail-progress-history-heading">{t('detail.progressHistoryHeading')}</h3>
         <ProgressHistorySparkline points={model.progressHistory} />
       </section>
 
       <section aria-labelledby="project-detail-issues-heading" className="project-detail__issues">
         <h3 id="project-detail-issues-heading">
-          Vướng mắc ({model.issues.all.length}) — quá hạn: {overdueIssues.text}
+          {t('detail.issuesHeading', {
+            count: model.issues.all.length,
+            overdue: overdueIssues.text,
+          })}
         </h3>
         {model.issues.all.length === 0 ? (
-          <p>Không có vướng mắc nào được ghi nhận cho dự án này.</p>
+          <p>{t('detail.issuesEmpty')}</p>
         ) : (
-          (['critical', 'high', 'medium', 'low'] as const).map((severity) => {
+          ISSUE_SEVERITIES.map((severity) => {
             const issues = model.issues.bySeverity[severity];
             if (issues.length === 0) return null;
             return (
               <div key={severity} className="project-detail__issue-group">
                 <h4>
-                  {SEVERITY_LABEL[severity]} ({issues.length})
+                  {t('detail.issueGroupHeading', {
+                    severity: t(`issueSeverity.${severity}` as MessageKey),
+                    count: issues.length,
+                  })}
                 </h4>
                 <ul className="project-detail__card-list">
                   {issues.map((issue) => (
@@ -331,10 +347,12 @@ export function ProjectDetailView({
                       <p className="project-detail__card-title">{issue.title}</p>
                       <p>{issue.description}</p>
                       <p>
-                        Trạng thái: {issue.status} — Mở lúc{' '}
-                        {new Date(issue.openedAt).toLocaleDateString('vi-VN')}
+                        {t('detail.issue.statusOpened', {
+                          status: t(`issueStatus.${issue.status}` as MessageKey),
+                          openedAt: formatDate(issue.openedAt, locale),
+                        })}
                         {issue.dueAt &&
-                          ` — Hạn xử lý ${new Date(issue.dueAt).toLocaleDateString('vi-VN')}`}
+                          t('detail.issue.due', { dueAt: formatDate(issue.dueAt, locale) })}
                       </p>
                     </li>
                   ))}
@@ -349,19 +367,21 @@ export function ProjectDetailView({
         aria-labelledby="project-detail-geography-heading"
         className="project-detail__geography"
       >
-        <h3 id="project-detail-geography-heading">Vị trí</h3>
+        <h3 id="project-detail-geography-heading">{t('detail.geographyHeading')}</h3>
         <p>
-          Địa bàn hành chính:{' '}
-          {model.geography.administrativeAreaCodes.length > 0
-            ? model.geography.administrativeAreaCodes.join(', ')
-            : 'Chưa gán địa bàn cụ thể'}
+          {t('detail.geography.area', {
+            areas:
+              model.geography.administrativeAreaCodes.length > 0
+                ? model.geography.administrativeAreaCodes.join(', ')
+                : t('detail.geography.areaNone'),
+          })}
         </p>
         {model.geography.hasGeometry && model.geography.geometry ? (
           <button type="button" onClick={() => onViewOnMap(model.geography.geometry!)}>
-            Xem trên bản đồ
+            {t('detail.geography.viewOnMap')}
           </button>
         ) : (
-          <p>Chưa có dữ liệu vị trí.</p>
+          <p>{t('detail.geography.noGeometry')}</p>
         )}
       </section>
 
@@ -369,15 +389,38 @@ export function ProjectDetailView({
         aria-labelledby="project-detail-provenance-heading"
         className="project-detail__provenance"
       >
-        <h3 id="project-detail-provenance-heading">Nguồn dữ liệu</h3>
+        <h3 id="project-detail-provenance-heading">{t('detail.provenanceHeading')}</h3>
         <ul className="project-detail__card-list">
-          {model.provenance.map((entry) =>
-            entry.dataset ? (
+          {model.provenance.map((entry) => {
+            if (!entry.dataset) {
+              return (
+                <li key={entry.sourceDatasetId} className="project-detail__card">
+                  <p>{t('detail.provenance.missing', { datasetId: entry.sourceDatasetId })}</p>
+                </li>
+              );
+            }
+            // Dataset title/description are Vietnamese-only publisher content today — resolved via
+            // resolveLocalizedText rather than a MessageKey, since these are not this app's own UI
+            // copy (see src/i18n/resolveLocalizedText.ts).
+            const title = resolveLocalizedText(entry.dataset.title, locale);
+            const description = resolveLocalizedText(entry.dataset.description, locale);
+            return (
               <li key={entry.sourceDatasetId} className="project-detail__card">
-                <p className="project-detail__card-title">{entry.dataset.title}</p>
-                <p>{entry.dataset.description}</p>
+                <p className="project-detail__card-title">
+                  {title.text}
+                  {title.isFallback && (
+                    <span className="project-detail__localized-fallback-note">
+                      {' '}
+                      ({t('resolveLocalizedText.fallbackNote')})
+                    </span>
+                  )}
+                </p>
+                <p>{description.text}</p>
                 <p>
-                  Chất lượng: {entry.dataset.quality.status} — Phiên bản {entry.dataset.version}
+                  {t('detail.provenance.quality', {
+                    status: entry.dataset.quality.status,
+                    version: entry.dataset.version,
+                  })}
                 </p>
                 {entry.dataset.quality.knownLimitations && (
                   <ul>
@@ -387,27 +430,21 @@ export function ProjectDetailView({
                   </ul>
                 )}
               </li>
-            ) : (
-              <li key={entry.sourceDatasetId} className="project-detail__card">
-                <p>
-                  Không tìm thấy mô tả nguồn dữ liệu cho <code>{entry.sourceDatasetId}</code>.
-                </p>
-              </li>
-            ),
-          )}
+            );
+          })}
         </ul>
         <dl className="project-detail__header-grid">
           <div>
-            <dt>Dữ liệu có hiệu lực</dt>
-            <dd>{formatAbsoluteDateTime(model.dataTimeline.effectiveAt)}</dd>
+            <dt>{t('detail.dataTimeline.effectiveAt')}</dt>
+            <dd>{formatAbsoluteDateTime(model.dataTimeline.effectiveAt, locale)}</dd>
           </div>
           <div>
-            <dt>Nguồn công bố</dt>
-            <dd>{formatAbsoluteDateTime(model.dataTimeline.sourcePublishedAt)}</dd>
+            <dt>{t('detail.dataTimeline.sourcePublishedAt')}</dt>
+            <dd>{formatAbsoluteDateTime(model.dataTimeline.sourcePublishedAt, locale)}</dd>
           </div>
           <div>
-            <dt>Hệ thống thu thập</dt>
-            <dd>{formatAbsoluteDateTime(model.dataTimeline.retrievedAt)}</dd>
+            <dt>{t('detail.dataTimeline.retrievedAt')}</dt>
+            <dd>{formatAbsoluteDateTime(model.dataTimeline.retrievedAt, locale)}</dd>
           </div>
         </dl>
       </section>

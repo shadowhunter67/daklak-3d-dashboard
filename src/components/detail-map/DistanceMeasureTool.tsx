@@ -3,6 +3,7 @@ import {
   totalMeasurementDistanceMeters,
   type MeasurementPoint,
 } from './distanceMeasurement';
+import { useTranslation } from '../../i18n/useTranslation';
 
 export function DistanceMeasureTool({
   active,
@@ -17,28 +18,29 @@ export function DistanceMeasureTool({
   onUndo: () => void;
   onClear: () => void;
 }) {
+  const { t } = useTranslation();
   const totalDistance = totalMeasurementDistanceMeters(points);
   return (
     <div className="distance-measure-tool">
       <button type="button" aria-pressed={active} onClick={onToggle}>
-        {active ? 'Thoát đo khoảng cách' : 'Đo khoảng cách'}
+        {active ? t('distanceMeasure.exit') : t('distanceMeasure.start')}
       </button>
       {active && (
         <div className="distance-measure-tool__panel">
-          <p id="distance-measure-instructions">
-            Chạm vào bản đồ để thêm điểm đo. Nhấn Escape để thoát.
-          </p>
+          <p id="distance-measure-instructions">{t('distanceMeasure.instructions')}</p>
           <p role="status" aria-live="polite">
             {points.length < 2
-              ? 'Chưa đủ điểm để tính khoảng cách.'
-              : `Tổng khoảng cách: ${formatMeasurementDistance(totalDistance)}`}
+              ? t('distanceMeasure.notEnoughPoints')
+              : t('distanceMeasure.totalDistance', {
+                  distance: formatMeasurementDistance(totalDistance),
+                })}
           </p>
           <div className="distance-measure-tool__actions">
             <button type="button" onClick={onUndo} disabled={points.length === 0}>
-              Hoàn tác điểm cuối
+              {t('distanceMeasure.undoLast')}
             </button>
             <button type="button" onClick={onClear} disabled={points.length === 0}>
-              Xóa toàn bộ
+              {t('distanceMeasure.clearAll')}
             </button>
           </div>
         </div>

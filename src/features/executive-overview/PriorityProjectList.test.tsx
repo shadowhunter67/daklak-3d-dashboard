@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
+import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 import { afterEach, describe, expect, it } from 'vitest';
 import { useMapStore } from '../../stores/mapStore';
 import type { ProjectAttentionItem } from './model/executiveOverviewTypes';
@@ -36,14 +37,14 @@ describe('PriorityProjectList', () => {
   afterEach(cleanup);
 
   it('shows a message when there are no priority projects', () => {
-    render(<PriorityProjectList items={[]} asOf={asOf} />);
+    renderWithI18n(<PriorityProjectList items={[]} asOf={asOf} />);
     expect(
       screen.getByText('Không có dự án nào cần chú ý đặc biệt tại thời điểm này.'),
     ).toBeInTheDocument();
   });
 
   it('opens a project summary dialog and moves focus into it', async () => {
-    render(<PriorityProjectList items={[makeItem()]} asOf={asOf} />);
+    renderWithI18n(<PriorityProjectList items={[makeItem()]} asOf={asOf} />);
     const trigger = screen.getByRole('button', { name: 'Xem tóm tắt' });
     trigger.focus();
     fireEvent.click(trigger);
@@ -57,7 +58,7 @@ describe('PriorityProjectList', () => {
   });
 
   it('returns focus to the trigger button when the summary dialog closes', async () => {
-    render(<PriorityProjectList items={[makeItem()]} asOf={asOf} />);
+    renderWithI18n(<PriorityProjectList items={[makeItem()]} asOf={asOf} />);
     const trigger = screen.getByRole('button', { name: 'Xem tóm tắt' });
     // fireEvent.click alone does not move real DOM focus in jsdom — prime it explicitly, matching
     // the convention already used by DataProvenancePanel.test.tsx's equivalent focus-restore test.
@@ -70,7 +71,7 @@ describe('PriorityProjectList', () => {
   });
 
   it('closes the summary dialog on Escape', async () => {
-    render(<PriorityProjectList items={[makeItem()]} asOf={asOf} />);
+    renderWithI18n(<PriorityProjectList items={[makeItem()]} asOf={asOf} />);
     fireEvent.click(screen.getByRole('button', { name: 'Xem tóm tắt' }));
     await screen.findByRole('dialog');
     fireEvent.keyDown(document, { key: 'Escape' });
@@ -78,7 +79,7 @@ describe('PriorityProjectList', () => {
   });
 
   it('offers a "Xem trên bản đồ" action only when the project has Point geometry', async () => {
-    render(
+    renderWithI18n(
       <PriorityProjectList
         items={[makeItem({ geometry: { type: 'Point', coordinates: [108.03, 12.66] } })]}
         asOf={asOf}
@@ -90,7 +91,7 @@ describe('PriorityProjectList', () => {
   });
 
   it('does not offer a map action for a project without geometry', async () => {
-    render(<PriorityProjectList items={[makeItem({ geometry: undefined })]} asOf={asOf} />);
+    renderWithI18n(<PriorityProjectList items={[makeItem({ geometry: undefined })]} asOf={asOf} />);
     fireEvent.click(screen.getByRole('button', { name: 'Xem tóm tắt' }));
     await screen.findByRole('dialog');
     expect(screen.queryByRole('button', { name: 'Xem trên bản đồ' })).not.toBeInTheDocument();
@@ -101,7 +102,7 @@ describe('PriorityProjectList', () => {
 
   it('navigates to the detail map centered on the project when "Xem trên bản đồ" is clicked', async () => {
     useMapStore.setState({ viewMode: 'overview' });
-    render(
+    renderWithI18n(
       <PriorityProjectList
         items={[makeItem({ geometry: { type: 'Point', coordinates: [108.03, 12.66] } })]}
         asOf={asOf}

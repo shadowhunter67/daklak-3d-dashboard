@@ -3,9 +3,10 @@ import metrics from '../../assets/maps/daklak/daklak-metrics.json';
 import wards from '../../assets/maps/daklak/daklak-wards-render.json';
 import { useMapStore } from '../../stores/mapStore';
 import type { Metric, WardCollection } from '../../types/map';
-import { formatNumber, formatUnitType } from '../../utils/geo';
 import { normalizeSearchText } from '../../utils/search';
 import { sortAdministrativeUnits } from '../../utils/administrativeUnits';
+import { useTranslation } from '../../i18n/useTranslation';
+import { formatNumber } from '../../i18n/formatters';
 
 const collection = wards as WardCollection;
 const metricMap = metrics as Record<string, Metric>;
@@ -14,6 +15,7 @@ const sortedUnits = sortAdministrativeUnits(
 );
 
 export function AccessibleDirectory() {
+  const { t, locale } = useTranslation();
   const [query, setQuery] = useState('');
   const selectedCode = useMapStore((state) => state.selectedCode);
   const select = useMapStore((state) => state.select);
@@ -72,33 +74,33 @@ export function AccessibleDirectory() {
     <section className="accessible-directory" aria-labelledby="directory-title">
       <div className="directory-heading">
         <div>
-          <p className="eyebrow">CHẾ ĐỘ TRUY CẬP 2D</p>
+          <p className="eyebrow">{t('directory.eyebrow')}</p>
           <h2 id="directory-title" tabIndex={-1}>
-            Danh sách xã, phường
+            {t('directory.heading')}
           </h2>
         </div>
         <label>
-          <span>Tìm theo tên hoặc mã</span>
+          <span>{t('directory.searchLabel')}</span>
           <input
             id="directory-search"
             name="directory-search"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Ví dụ: Buôn Ma Thuột"
+            placeholder={t('directory.searchPlaceholder')}
           />
         </label>
       </div>
       <p className="directory-status" role="status" aria-live="polite">
-        Tìm thấy {filtered.length} đơn vị. Dùng phím mũi tên lên/xuống để duyệt.
+        {t('directory.status', { count: filtered.length })}
       </p>
       <div ref={tableRef} className="directory-table" role="table" aria-rowcount={filtered.length}>
         <div ref={headerRef} className="directory-row directory-header" role="row">
-          <span role="columnheader">Đơn vị</span>
-          <span role="columnheader">Loại</span>
-          <span role="columnheader">Diện tích</span>
-          <span role="columnheader">Dân số minh họa</span>
-          <span role="columnheader">Tiếp cận dịch vụ</span>
+          <span role="columnheader">{t('directory.col.unit')}</span>
+          <span role="columnheader">{t('directory.col.type')}</span>
+          <span role="columnheader">{t('directory.col.area')}</span>
+          <span role="columnheader">{t('directory.col.illustrativePopulation')}</span>
+          <span role="columnheader">{t('directory.col.serviceAccess')}</span>
         </div>
         {filtered.map((properties, index) => {
           const metric = metricMap[properties.code];
@@ -118,10 +120,14 @@ export function AccessibleDirectory() {
               onKeyDown={(event) => moveFocus(event, index)}
             >
               <strong role="cell">{properties.name}</strong>
-              <span role="cell">{formatUnitType(properties.type)}</span>
-              <span role="cell">{formatNumber(properties.areaKm2)} km²</span>
-              <span role="cell">{metric ? formatNumber(metric.population) : 'Chưa có'}</span>
-              <span role="cell">{metric ? `${metric.coverage}%` : 'Chưa có'}</span>
+              <span role="cell">
+                {t(properties.type === 'phuong' ? 'unitType.ward' : 'unitType.commune')}
+              </span>
+              <span role="cell">{formatNumber(properties.areaKm2, locale)} km²</span>
+              <span role="cell">
+                {metric ? formatNumber(metric.population, locale) : t('directory.noData')}
+              </span>
+              <span role="cell">{metric ? `${metric.coverage}%` : t('directory.noData')}</span>
             </button>
           );
         })}

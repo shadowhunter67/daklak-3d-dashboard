@@ -1,7 +1,16 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render as rtlRender, screen } from '@testing-library/react';
+import type { ReactElement } from 'react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useMapStore } from '../../stores/mapStore';
+import { I18nProvider } from '../../i18n/I18nProvider';
 import { AdministrativeMap2D } from './AdministrativeMap2D';
+
+// `render`'s `wrapper` option (rather than `renderWithI18n`) so `rerender()` re-applies the same
+// I18nProvider wrapper — renderWithI18n's plain JSX-wrapping approach doesn't survive a
+// `rerender(<Child />)` call, which would otherwise re-render outside the provider.
+function render(ui: ReactElement) {
+  return rtlRender(ui, { wrapper: I18nProvider });
+}
 
 describe('AdministrativeMap2D', () => {
   beforeEach(() =>

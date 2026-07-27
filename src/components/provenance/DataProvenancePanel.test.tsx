@@ -1,5 +1,6 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+import { renderWithI18n as render } from '../../i18n/tests/renderWithI18n';
 import { useMapStore } from '../../stores/mapStore';
 import { DataProvenancePanel } from './DataProvenancePanel';
 import { captureProvenanceFocusTrigger } from './provenanceFocusTrigger';

@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-07-24T08:48:30.163Z",
+  "sources": [
+    {
+      "datasetId": "investment-opportunities-daklak-illustrative",
+      "publisher": "Sở Kế hoạch và Đầu tư tỉnh Đắk Lắk (minh hoạ — fixture nội bộ)",
+      "sourceUrl": "https://example.invalid/dak-lak-investment-opportunities",
+      "attribution": "Dữ liệu minh hoạ nội bộ — không phải số liệu vận hành thật.",
+      "staleAfterDays": 90,
+      "recordCount": 3,
+      "maturity": "experimental",
+      "isRecordedFixture": true,
+      "availability": "available",
+      "lastCheckedAt": "2026-07-24T08:48:30.163Z",
+      "lastSuccessfulAt": "2026-07-24T08:48:30.163Z",
+      "lastPublishedAt": "2026-07-24T08:48:30.161Z",
+      "consecutiveFailures": 0,
+      "freshness": "published",
+      "publishedChecksum": "af957ca2a025b9489264148249c96381319ed6bb44d9e01b598710fbde011f41",
+      "status": "low-risk",
+      "warnings": [
+        "source maturity is \"experimental\", not \"auto-merge-eligible\" — a human must declare a source auto-merge-eligible in data/source-registry.yml before any run of it can merge unattended",
+        "the registry compliance block changed since the last published run",
+        "redistributionPolicy changed"
+      ]
+    }
+  ]
+}

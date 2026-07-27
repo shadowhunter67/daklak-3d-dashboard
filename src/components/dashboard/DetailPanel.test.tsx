@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import wards from '../../assets/maps/daklak/daklak-wards-render.json';
 import { useMapStore } from '../../stores/mapStore';
 import type { WardCollection } from '../../types/map';
 import { normalizeDisplayName, splitDisplayNameWords } from '../../utils/displayName';
+import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 import { DetailPanel } from './DetailPanel';
 
 const data = wards as WardCollection;
@@ -28,7 +29,7 @@ describe('DetailPanel unit names', () => {
       normalizeDisplayName(sourceName).normalize('NFC'),
     );
 
-    render(<DetailPanel />);
+    renderWithI18n(<DetailPanel />);
     const heading = screen.getByRole('heading', { name: sourceName });
     expect(heading).toHaveTextContent(sourceName);
     expect(heading.textContent).toBe(sourceName);

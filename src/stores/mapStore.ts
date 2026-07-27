@@ -78,6 +78,10 @@ export interface MapState {
    * starts existing once the lazy component itself mounts — see App.tsx).
    */
   provenancePanelOpen: boolean;
+  /** Same lazy-boundary-safe pattern as `provenancePanelOpen` above, for `DataSourcesPanel`
+   * (the public-data refresh pipeline's own "Data Sources" panel — distinct from the
+   * `DataProvenancePanel` this flag's sibling controls). */
+  dataSourcesPanelOpen: boolean;
   insetsChangeSignal: number;
   detailMapLayers: DetailMapLayerState;
   detailMapCamera: DetailMapCameraState;
@@ -94,6 +98,8 @@ export interface MapState {
   requestHelp: () => void;
   openProvenancePanel: () => void;
   closeProvenancePanel: () => void;
+  openDataSourcesPanel: () => void;
+  closeDataSourcesPanel: () => void;
   notifyInsetsChanged: () => void;
   setDetailMapBaseMap: (baseMap: DetailBaseMap) => void;
   toggleDetailMapLayer: (layer: ToggleableDetailMapLayer) => void;
@@ -125,6 +131,7 @@ export function createMapStore(
     resetCameraSignal: 0,
     helpSignal: 0,
     provenancePanelOpen: false,
+    dataSourcesPanelOpen: false,
     insetsChangeSignal: 0,
     detailMapLayers: initialUrlState.detailMapLayers ?? DEFAULT_DETAIL_MAP_LAYER_STATE,
     detailMapCamera: initialUrlState.detailMapCamera ?? DEFAULT_DETAIL_MAP_CAMERA,
@@ -150,6 +157,8 @@ export function createMapStore(
     requestHelp: () => set((state) => ({ helpSignal: state.helpSignal + 1 })),
     openProvenancePanel: () => set({ provenancePanelOpen: true }),
     closeProvenancePanel: () => set({ provenancePanelOpen: false }),
+    openDataSourcesPanel: () => set({ dataSourcesPanelOpen: true }),
+    closeDataSourcesPanel: () => set({ dataSourcesPanelOpen: false }),
     notifyInsetsChanged: () =>
       set((state) => ({ insetsChangeSignal: state.insetsChangeSignal + 1 })),
     setDetailMapBaseMap: (baseMap) =>

@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { tStatic } from '../../i18n/staticTranslate';
 
 interface Props {
   children: ReactNode;
@@ -21,7 +22,7 @@ export class MapErrorBoundary extends Component<Props, State> {
 
   render() {
     if (this.state.failed) {
-      return <MapFallback reason="Bản đồ 3D gặp lỗi khi tải dữ liệu hoặc khởi tạo đồ họa." />;
+      return <MapFallback reason={tStatic('errorBoundary.map3dDefaultReason')} />;
     }
     return this.props.children;
   }
@@ -42,10 +43,10 @@ export class AppErrorBoundary extends Component<Props, State> {
     if (this.state.failed) {
       return (
         <main className="app-fallback" role="alert">
-          <h1>Dashboard gặp lỗi</h1>
-          <p>Không thể đọc cấu hình hoặc dữ liệu của ứng dụng.</p>
+          <h1>{tStatic('errorBoundary.dashboardHeading')}</h1>
+          <p>{tStatic('errorBoundary.dashboardBody')}</p>
           <button type="button" onClick={() => window.location.reload()}>
-            Thử tải lại
+            {tStatic('errorBoundary.reload')}
           </button>
         </main>
       );
@@ -56,7 +57,7 @@ export class AppErrorBoundary extends Component<Props, State> {
 
 export function MapFallback({
   reason,
-  actionLabel = 'Thử tải lại',
+  actionLabel,
   onRetry = () => window.location.reload(),
 }: {
   reason: string;
@@ -66,10 +67,10 @@ export function MapFallback({
   return (
     <div className="map-fallback" role="alert">
       <span aria-hidden="true">◇</span>
-      <h2>Không thể hiển thị bản đồ 3D</h2>
+      <h2>{tStatic('errorBoundary.map3dHeading')}</h2>
       <p>{reason}</p>
       <button type="button" onClick={onRetry}>
-        {actionLabel}
+        {actionLabel ?? tStatic('errorBoundary.reload')}
       </button>
     </div>
   );
@@ -79,7 +80,7 @@ export function MapLoading() {
   return (
     <div className="map-loading" role="status" aria-live="polite">
       <span aria-hidden="true" />
-      Đang tải địa hình và lớp bản đồ…
+      {tStatic('mapLoading.text')}
     </div>
   );
 }

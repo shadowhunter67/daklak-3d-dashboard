@@ -1,0 +1,28 @@
+{
+  "_commissioningNote": "Not a real source response. Used only via --fixture-override for a one-time live commissioning test of the hard-stop issue pathway on GitHub Actions (docs/adr/0004-public-data-ingestion.md section 10). Deliberately drops io-002 relative to recorded-source-response.json — diffRisk.mjs hard-stops on any record deletion, which is the deterministic scenario this fixture exists to exercise.",
+  "sourcePublishedAt": "2026-07-24T00:00:00.000Z",
+  "records": [
+    {
+      "id": "io-001",
+      "sourceCode": "DL-XTDT-2026-001",
+      "title": "Kêu gọi đầu tư khu công nghiệp Ea Kar (minh hoạ)",
+      "sector": "industrial-zone",
+      "status": "open-for-proposals",
+      "administrativeAreaCodes": ["24580"],
+      "estimatedInvestmentVndMin": 500000000000,
+      "estimatedInvestmentVndMax": 800000000000,
+      "proposalDeadline": "2026-12-31"
+    },
+    {
+      "id": "io-003",
+      "sourceCode": "DL-XTDT-2026-003",
+      "title": "Kêu gọi đầu tư khu du lịch sinh thái hồ Lắk (minh hoạ)",
+      "sector": "tourism",
+      "status": "under-review",
+      "administrativeAreaCodes": ["24580"],
+      "estimatedInvestmentVndMin": 200000000000,
+      "estimatedInvestmentVndMax": 300000000000,
+      "proposalDeadline": "2026-10-15"
+    }
+  ]
+}

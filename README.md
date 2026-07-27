@@ -4,6 +4,8 @@
 [![Deploy GitHub Pages](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/deploy-pages.yml)
 [![Source available: commercial use requires a license](https://img.shields.io/badge/source--available-commercial%20use%20requires%20license-orange.svg)](LICENSE)
 
+**Tiếng Việt** (chính) · [**English**](README.en.md)
+
 Dashboard WebGL thể hiện 102 xã/phường của tỉnh Đắk Lắk sau sắp xếp năm 2025, từ cao nguyên Đắk Lắk cũ đến duyên hải Phú Yên cũ. Bản đồ sử dụng một bề mặt địa hình displacement từ SRTM, phủ ảnh Sentinel-2 và xác định đơn vị hành chính bằng hit-test polygon để hỗ trợ hover, click, selected state, hồ sơ nhanh và các lớp dữ liệu chuyên đề. Bốn trải nghiệm: **Tổng quan điều hành** (landing mặc định — KPI danh mục dự án, danh sách cần chú ý, cảnh báo, sức khỏe dữ liệu), tổng quan 3D, danh sách 2D accessible, và bản đồ chi tiết (`?view=map`) dùng **MapLibre GL JS + PMTiles tự host** — hoàn toàn không phụ thuộc Google Maps Platform, không cần API key hay billing. Xem [docs/detail-map-integration.md](docs/detail-map-integration.md).
 
 Dự án đang chuyển dần từ "dashboard bản đồ 3D" sang "nền tảng điều hành dự án trọng điểm cấp tỉnh, dùng bản đồ làm lớp ngữ cảnh" — xem [ADR 0001](docs/adr/0001-project-centric-domain.md) và [domain model](docs/domain-model.md). Từ Phase 2B1, nền tảng có thêm **Danh mục dự án** (tìm kiếm/lọc/sắp xếp toàn bộ dự án) và **Chi tiết dự án** (trang riêng, đầy đủ ngân sách/tiến độ/gói thầu/mốc/vướng mắc/nguồn dữ liệu) với URL riêng dùng hash routing — xem [ADR 0002](docs/adr/0002-static-host-routing.md). Tổng quan điều hành, Danh mục dự án và Chi tiết dự án hiện tại đều dùng **dữ liệu minh họa deterministic** cho 9 dự án mẫu (`src/entities/project/illustrativeProjectPortfolio.ts`), không phải số liệu vận hành thật — xem mục "Giới hạn và roadmap" bên dưới.
@@ -15,6 +17,14 @@ Dự án đang chuyển dần từ "dashboard bản đồ 3D" sang "nền tảng
 **Live demo:** https://shadowhunter67.github.io/daklak-3d-dashboard/
 
 > **Disclaimer:** toàn bộ dữ liệu dự án/gói thầu/mốc tiến độ/ngân sách/giải ngân/tiến độ/vướng mắc hiển thị trong Tổng quan điều hành và các trải nghiệm bản đồ đều là **dữ liệu minh họa deterministic** (seed cố định trong mã nguồn), không phải số liệu vận hành hay số liệu chính thức của cơ quan nhà nước, không dùng cho quyết định quản lý, phê duyệt hoặc báo cáo thực tế. Bản đồ là sản phẩm trực quan tham khảo, không dùng cho đất đai, đo đạc, quy hoạch pháp lý hoặc xác lập địa giới chính thức.
+
+## Ngôn ngữ
+
+Giao diện hỗ trợ **tiếng Việt** (mặc định) và **tiếng Anh**, chuyển đổi bằng nút "VI / EN" ở góc phải header, không reload trang. URL chia sẻ được (`?lang=vi`/`?lang=en`, tương thích với mọi `?view=`/`#/projects...` khác), lựa chọn được nhớ qua `localStorage`, Back/Forward hoàn tác đúng lần chuyển ngôn ngữ gần nhất — xem [ADR 0003](docs/adr/0003-internationalization.md).
+
+**Phạm vi dịch:** toàn bộ giao diện sản phẩm — app shell, header, Tổng quan điều hành, Danh mục dự án, Chi tiết dự án, điều khiển bản đồ 3D, danh sách 2D accessible, bản đồ chi tiết MapLibre (layer panel, tìm kiếm, đo khoảng cách), onboarding, panel Nguồn dữ liệu, và hộp thoại nguồn/chất lượng dữ liệu. Một audit tĩnh tự động (`scripts/check_i18n_hardcoded_strings.mjs`, chạy trong `npm test`) chặn build nếu có chuỗi tiếng Việt hard-code lọt ra ngoài dictionary dịch. Chỉ trừ tên riêng (địa danh, tên/mã dự án minh hoạ) và nội dung nguồn chỉ có tiếng Việt chưa có bản tiếng Anh — xem ADR 0003 mục "Phạm vi dịch".
+
+English documentation: [README.en.md](README.en.md).
 
 ## Điều hướng
 
@@ -100,7 +110,7 @@ Một route dự án (khi có mặt trong `location.hash`) luôn được ưu ti
 
 ## Stack và kiến trúc
 
-React 19, TypeScript strict, Vite, Three.js/React Three Fiber, Drei, D3 Geo, Zustand, MapLibre GL JS và PMTiles. GIS được xử lý offline bằng GeoPandas/Shapely/PyProj/Fiona; trình duyệt chỉ parse file tĩnh và dựng geometry. `maplibre-gl`/`pmtiles` chỉ tải khi mở bản đồ chi tiết (lazy chunk riêng, không nằm trong initial bundle hay bundle của tổng quan 3D). Các biểu đồ cột nhỏ (`StatPanel`) là SVG/CSS thuần, không dùng thư viện chart riêng.
+React 19, TypeScript strict, Vite, Three.js/React Three Fiber, Drei, D3 Geo, Zustand, MapLibre GL JS và PMTiles. GIS được xử lý offline bằng GeoPandas/Shapely/PyProj/Fiona; trình duyệt chỉ parse file tĩnh và dựng geometry. `maplibre-gl`/`pmtiles` chỉ tải khi mở bản đồ chi tiết (lazy chunk riêng, không nằm trong initial bundle hay bundle của tổng quan 3D). Các biểu đồ cột nhỏ (`StatPanel`) là SVG/CSS thuần, không dùng thư viện chart riêng. Song ngữ (`src/i18n/`) tự viết — Context + dictionary object, không dùng `react-i18next`; dictionary tiếng Anh lazy-load qua `import()`, không nằm trong bundle ban đầu — xem [ADR 0003](docs/adr/0003-internationalization.md).
 
 Luồng dữ liệu: snapshot MIT → chuẩn hóa/repair EPSG:4326 → GeoJSON + outline + borders + labels + metadata → DEM/ảnh bề mặt tiền xử lý → D3 projection → Three.js displacement terrain → polygon hit-test + Zustand → dashboard.
 
@@ -164,6 +174,7 @@ Mỗi production build sinh `dist/build-info.json` gồm version ứng dụng, c
 - [Benchmark thiết bị thật](docs/device-benchmark.md)
 - [Chính sách bảo mật](SECURITY.md) và [hướng dẫn đóng góp](CONTRIBUTING.md)
 - [Giấy phép](LICENSE) · [Cấp phép thương mại](COMMERCIAL-LICENSE.md) · [Lịch sử giấy phép](LICENSE-HISTORY.md) · [Thương hiệu](TRADEMARKS.md)
+- [ADR 0003 — Internationalization (vi/en)](docs/adr/0003-internationalization.md)
 - Nền tảng dữ liệu (`src/data-platform/`): [kiến trúc](docs/data-platform-architecture.md) ·
   [nguồn công khai](docs/public-data-sources.md) ·
   [phân loại dữ liệu](docs/data-classification.md) ·
@@ -177,6 +188,40 @@ Mỗi production build sinh `dist/build-info.json` gồm version ứng dụng, c
   [ADR 0001 — Project là entity trung tâm](docs/adr/0001-project-centric-domain.md) ·
   [ADR 0002 — Hash routing cho Danh mục/Chi tiết dự án](docs/adr/0002-static-host-routing.md) ·
   [domain model](docs/domain-model.md)
+- Pipeline ingestion dữ liệu công khai tự động (`scripts/data-refresh/`, nền tảng — chưa nối nguồn
+  thật): [ADR 0004](docs/adr/0004-public-data-ingestion.md) ·
+  [hướng dẫn vận hành](docs/public-data-refresh.md)
+
+## Cập nhật dữ liệu công khai tự động (nền tảng)
+
+`scripts/data-refresh/` là nền tảng ingestion tự động cho dữ liệu công khai — **scheduled refresh**
+theo lịch khai báo trong `data/source-registry.yml`, không phải "thời gian thực". PR nền tảng này
+chỉ chạy với **một adapter fixture nội bộ** (`recorded-fixture`, đọc file, không gọi mạng) — chưa
+onboard nguồn thật nào, vì chưa xác nhận robots.txt/terms của bất kỳ nguồn nào. Xem
+[ADR 0004](docs/adr/0004-public-data-ingestion.md) và
+[hướng dẫn vận hành](docs/public-data-refresh.md) cho kiến trúc đầy đủ.
+
+Danh mục **`InvestmentOpportunity`** (cơ hội xúc tiến đầu tư, `src/entities/investment-opportunity/`)
+do pipeline này sinh ra **hoàn toàn tách biệt** khỏi danh mục **`Project`** (dự án trọng điểm đang
+vận hành) — không bao giờ trộn hai domain này. Nguồn thật đầu tiên **chưa onboard được** — xem
+[đánh giá nguồn](docs/data-sources/investment-opportunities-daklak-assessment.md): các nguồn chính
+thức tỉnh Đắk Lắk đã kiểm tra đều là danh sách tin tức không có cấu trúc (chỉ tiêu đề + ngày, không
+có trường sector/vốn/trạng thái) hoặc không truy cập được, nên chưa có adapter/parser deterministic
+khả thi. Chưa có route UI riêng cho danh mục này vì chưa có dữ liệu thật để hiển thị.
+
+`.github/workflows/public-data-refresh.yml` hiện là **`workflow_dispatch`-only** — không có
+`schedule` (xem [ADR 0004 mục 10](docs/adr/0004-public-data-ingestion.md#10-live-commissioning-và-hardening-bổ-sung)
+cho lý do). Mỗi nguồn khai báo `maturity` (`experimental`/`review-required`/`observed`/
+`auto-merge-eligible`) trong `data/source-registry.yml`; một run chỉ tự động merge khi nguồn đã
+được khai báo `auto-merge-eligible` **và** risk là `low-risk` **và** mọi điều kiện cứng khác
+(`scripts/data-refresh/autoMergePolicy.mjs`) pass — nguồn fixture hiện tại là `experimental`, không
+bao giờ auto-merge. Kết quả `low-risk` kèm thay đổi mở PR cập nhật
+`reports/data-refresh/last-known-good/` và `data/published/source-health.json`; kết quả
+`hard-stop`/cần xem xét thì cập nhật **một** issue theo dõi sức khỏe nguồn duy nhất, gán
+`shadowhunter67`, gắn nhãn `manual-review-required` — không tự commit thẳng vào `main`, không spam
+issue mới mỗi lần chạy. Panel "Cập nhật tự động" trên header hiển thị tình trạng nguồn dữ liệu
+(song ngữ, có nhãn mức độ trưởng thành nguồn) từ một snapshot JSON do chính pipeline sinh ra
+(`data/published/source-health.json`), không tự fetch trong trình duyệt, không ai sửa tay.
 
 ## Xây lại GIS
 

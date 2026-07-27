@@ -1,8 +1,9 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
 import { MOCK_PROJECT_BUNDLES } from '../../entities/project/illustrativeProjectPortfolio';
 import type { ProjectPortfolio } from '../../entities/project/adapters/ProjectPortfolioSource';
+import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 import {
   FakeProjectPortfolioSource,
   PendingProjectPortfolioSource,
@@ -29,7 +30,7 @@ function renderPortfolio(props: Partial<React.ComponentProps<typeof ProjectPortf
   const onFiltersChange = vi.fn();
   const onOpenProject = vi.fn();
   const onBackToOverview = vi.fn();
-  render(
+  renderWithI18n(
     <ProjectPortfolioView
       source={FakeProjectPortfolioSource.ok(portfolio())}
       filters={{}}
@@ -46,7 +47,7 @@ describe('ProjectPortfolioView', () => {
   afterEach(cleanup);
 
   it('shows a loading state before the source resolves', () => {
-    render(
+    renderWithI18n(
       <ProjectPortfolioView
         source={new PendingProjectPortfolioSource()}
         filters={{}}

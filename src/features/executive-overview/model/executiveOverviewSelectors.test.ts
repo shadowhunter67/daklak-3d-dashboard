@@ -1,7 +1,25 @@
 import { describe, expect, it } from 'vitest';
 import type { KpiResult } from '../../../entities/project/kpi/types';
+import type { MessageKey } from '../../../i18n/messages';
+import { vi as viDictionary } from '../../../i18n/messages/vi';
 import type { PortfolioAlert } from './executiveOverviewTypes';
-import { formatAbsoluteDateTime, formatKpiValue, groupAlerts } from './executiveOverviewSelectors';
+import {
+  formatAbsoluteDateTime,
+  formatKpiValueLocalized,
+  groupAlerts,
+} from './executiveOverviewSelectors';
+
+function t(key: MessageKey, vars?: Record<string, string | number>): string {
+  const template = viDictionary[key];
+  if (!vars) return template;
+  return template.replace(/\{(\w+)\}/g, (match, token: string) =>
+    token in vars ? String(vars[token]) : match,
+  );
+}
+
+function formatKpiValue(kpi: KpiResult) {
+  return formatKpiValueLocalized(kpi, 'vi', t);
+}
 
 const asOf = new Date('2026-07-23T00:00:00.000Z');
 

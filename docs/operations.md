@@ -45,3 +45,13 @@ For missing or corrupt textures, check the network response under the configured
 GitHub Pages is static hosting: there is no server-side authorization, dynamic API, database, runtime rollback switch, custom origin logic, or arbitrary HTTP security-header configuration. The meta CSP is useful but cannot replace a response header or enforce header-only directives. If strict CSP/security headers become mandatory, serve the same static artifact through a host/CDN that supports reviewed response-header rules.
 
 No external telemetry or error-monitoring service is integrated. Before adding one, document purpose, data fields, retention, processor/location, consent or legal basis, opt-out behavior, access controls, and a privacy notice. Never collect selected wards, IP-derived location, or device fingerprints without an explicit product/privacy decision.
+
+## Public-data refresh pipeline
+
+See [`docs/public-data-refresh.md`](public-data-refresh.md) and [ADR 0004](adr/0004-public-data-ingestion.md) for the pipeline itself. Operational notes:
+
+- The workflow (`.github/workflows/public-data-refresh.yml`) is `workflow_dispatch`-only — there is no `schedule` trigger yet (see ADR 0004 section 10). Run it manually from the Actions tab or `gh workflow run public-data-refresh.yml`.
+- `commissioningScenario: low-risk` / `hard-stop` inputs force a deliberate, still fully-offline fixture scenario (`scripts/data-refresh/fixtures/commissioning-*.json`) — use only to verify the pipeline's PR/issue pathways on a real Actions runner, never against a real source.
+- A `hard-stop` run updates one tracked issue (marker `<!-- daklak-data-refresh-source-health -->`), assigns `shadowhunter67`, and labels it `manual-review-required` — the workflow creates that label itself if it doesn't already exist.
+- `DataSourcesPanel` reads only `data/published/source-health.json` (mirrored to `src/assets/data/data-refresh-source-health.json` for the bundle) — both files are pipeline-generated on every run; never hand-edit them.
+- A run is only auto-merge-eligible when the source's registry entry declares `maturity: auto-merge-eligible` **and** the run itself is `low-risk` **and** every hard condition in `scripts/data-refresh/autoMergePolicy.mjs` passes. The one registered source today (`investment-opportunities-daklak-illustrative`) is `maturity: experimental` and will never auto-merge.

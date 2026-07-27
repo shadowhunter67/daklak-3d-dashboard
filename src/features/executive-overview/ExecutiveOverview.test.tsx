@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
+import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 import { afterEach, describe, expect, it } from 'vitest';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
 import { MOCK_PROJECT_BUNDLES } from '../../entities/project/illustrativeProjectPortfolio';
@@ -29,12 +30,12 @@ describe('ExecutiveOverview', () => {
   afterEach(cleanup);
 
   it('shows a loading state before the source resolves', () => {
-    render(<ExecutiveOverview source={new PendingProjectPortfolioSource()} />);
+    renderWithI18n(<ExecutiveOverview source={new PendingProjectPortfolioSource()} />);
     expect(screen.getByText('Đang tải tổng quan danh mục dự án…')).toBeInTheDocument();
   });
 
   it('renders KPI cards, priority projects and the illustrative-data disclaimer once loaded', async () => {
-    render(<ExecutiveOverview source={FakeProjectPortfolioSource.ok(portfolio())} />);
+    renderWithI18n(<ExecutiveOverview source={FakeProjectPortfolioSource.ok(portfolio())} />);
     await screen.findByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' });
     expect(screen.getByText(/DỮ LIỆU MINH HỌA/)).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Chỉ số tổng quan' })).toBeInTheDocument();
@@ -42,7 +43,7 @@ describe('ExecutiveOverview', () => {
   });
 
   it('shows an explicit empty state for a portfolio with zero projects, not a blank/zeroed KPI grid', async () => {
-    render(<ExecutiveOverview source={FakeProjectPortfolioSource.ok(portfolio([]))} />);
+    renderWithI18n(<ExecutiveOverview source={FakeProjectPortfolioSource.ok(portfolio([]))} />);
     await screen.findByText(
       'Chưa có dự án nào trong danh mục. Khi có dữ liệu, tổng quan sẽ hiển thị tại đây.',
     );
@@ -55,7 +56,7 @@ describe('ExecutiveOverview', () => {
       ...base,
       project: { ...base.project, approvedBudget: 0, disbursedAmount: 0 },
     };
-    render(
+    renderWithI18n(
       <ExecutiveOverview source={FakeProjectPortfolioSource.ok(portfolio([zeroBudgetProject]))} />,
     );
     await screen.findByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' });
@@ -66,7 +67,7 @@ describe('ExecutiveOverview', () => {
   });
 
   it('shows a degraded banner and still renders the partial data when the source is degraded', async () => {
-    render(
+    renderWithI18n(
       <ExecutiveOverview
         source={FakeProjectPortfolioSource.degraded(portfolio(), ['issues dataset unavailable'])}
       />,
@@ -79,7 +80,7 @@ describe('ExecutiveOverview', () => {
   });
 
   it('shows a friendly message and a retry button on error, without crashing the rest of the app', async () => {
-    render(
+    renderWithI18n(
       <ExecutiveOverview
         source={FakeProjectPortfolioSource.error('backend unreachable', 'network')}
       />,
@@ -90,7 +91,7 @@ describe('ExecutiveOverview', () => {
   });
 
   it('retries loading when the retry button is clicked', async () => {
-    render(<ExecutiveOverview source={FakeProjectPortfolioSource.error('x', 'network')} />);
+    renderWithI18n(<ExecutiveOverview source={FakeProjectPortfolioSource.error('x', 'network')} />);
     await screen.findByRole('heading', { name: 'Không thể tải dữ liệu dự án' });
     fireEvent.click(screen.getByRole('button', { name: 'Thử lại' }));
     // Re-fires the same (still-erroring) fake source — proves the retry path re-triggers the
@@ -107,7 +108,7 @@ describe('ExecutiveOverview', () => {
       ...MOCK_PROJECT_BUNDLES[0],
       project: { ...MOCK_PROJECT_BUNDLES[0].project, id: 'broken', overallProgress: 999 },
     };
-    render(
+    renderWithI18n(
       <ExecutiveOverview
         source={FakeProjectPortfolioSource.ok(portfolio([...MOCK_PROJECT_BUNDLES, broken]))}
       />,

@@ -1,5 +1,6 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, screen, waitFor } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { renderWithI18n as render } from '../../i18n/tests/renderWithI18n';
 
 const hasWebGLSupportMock = vi.fn();
 vi.mock('../map/webglLifecycle', () => ({

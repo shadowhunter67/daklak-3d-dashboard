@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react';
 import labels from '../../assets/maps/daklak/daklak-labels.json';
 import { buildLocalSearchIndex, searchLocalIndex, type LocalSearchEntry } from './localSearchIndex';
+import { useTranslation } from '../../i18n/useTranslation';
 
 const DEBOUNCE_MS = 250;
 
@@ -10,6 +11,7 @@ const DEBOUNCE_MS = 250;
  * point, and docs/detail-map-integration.md for why Nominatim/Places are out of scope here.
  */
 export function LocalSearch({ onSelect }: { onSelect: (entry: LocalSearchEntry) => void }) {
+  const { t } = useTranslation();
   const index = useMemo(() => buildLocalSearchIndex(labels), []);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<LocalSearchEntry[]>([]);
@@ -57,13 +59,13 @@ export function LocalSearch({ onSelect }: { onSelect: (entry: LocalSearchEntry) 
       aria-haspopup="listbox"
     >
       <label htmlFor="detail-map-local-search-input" className="visually-hidden">
-        Tìm xã, phường hoặc địa danh
+        {t('localSearch.label')}
       </label>
       <input
         id="detail-map-local-search-input"
         type="search"
         value={query}
-        placeholder="Tìm xã, phường, địa danh..."
+        placeholder={t('localSearch.placeholder')}
         onChange={(event) => runSearch(event.target.value)}
         onKeyDown={onKeyDown}
         role="searchbox"
@@ -71,7 +73,11 @@ export function LocalSearch({ onSelect }: { onSelect: (entry: LocalSearchEntry) 
         aria-activedescendant={activeIndex >= 0 ? `local-search-result-${activeIndex}` : undefined}
       />
       {results.length > 0 && (
-        <ul id="detail-map-local-search-results" role="listbox" aria-label="Kết quả tìm kiếm">
+        <ul
+          id="detail-map-local-search-results"
+          role="listbox"
+          aria-label={t('localSearch.resultsAria')}
+        >
           {results.map((entry, index) => (
             <li
               key={entry.code}
@@ -87,7 +93,7 @@ export function LocalSearch({ onSelect }: { onSelect: (entry: LocalSearchEntry) 
       )}
       {query.trim() && results.length === 0 && (
         <p role="status" className="local-search__empty">
-          Không tìm thấy kết quả cho “{query}”.
+          {t('localSearch.noResults', { query })}
         </p>
       )}
     </div>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMapStore } from '../../stores/mapStore';
+import { useTranslation } from '../../i18n/useTranslation';
 
 const STORAGE_KEY = 'daklak-dashboard:onboarding-dismissed';
 
@@ -12,6 +13,7 @@ function hasSeenOnboarding() {
 }
 
 export function OnboardingOverlay() {
+  const { t } = useTranslation();
   // Executive Overview (Phase 2A default landing) has no map gestures to explain — the auto-shown
   // first-visit tour only makes sense once someone has actually opened a map experience. The `?`
   // help button still opens it unconditionally from any view (see the helpSignal effect below).
@@ -65,42 +67,40 @@ export function OnboardingOverlay() {
         aria-modal="true"
         aria-labelledby="onboarding-title"
       >
-        <p className="eyebrow">KHÁM PHÁ ĐẮK LẮK 2025</p>
+        <p className="eyebrow">{t('onboarding.eyebrow')}</p>
         <h2 id="onboarding-title">
-          {isDetailMap
-            ? '102 xã, phường trên bản đồ chi tiết'
-            : '102 xã, phường trong một bản đồ tương tác'}
+          {isDetailMap ? t('onboarding.headingDetailMap') : t('onboarding.headingInteractiveMap')}
         </h2>
-        <p>Chọn một khu vực để xem hồ sơ nhanh, hoặc mở danh sách 2D để tìm bằng tên và mã.</p>
+        <p>{t('onboarding.body')}</p>
         {isDetailMap ? (
           <ul>
             <li>
-              <strong>Kéo</strong> để di chuyển bản đồ
+              <strong>{t('onboarding.dragAction')}</strong> {t('onboarding.dragToPan')}
             </li>
             <li>
-              <strong>Cuộn hoặc chụm</strong> để thu phóng
+              <strong>{t('onboarding.scrollAction')}</strong> {t('onboarding.scrollToZoom')}
             </li>
             <li>
-              <strong>Lớp bản đồ</strong> để bật/tắt từng lớp hiển thị
+              <strong>{t('onboarding.layersAction')}</strong> {t('onboarding.layersToToggle')}
             </li>
           </ul>
         ) : (
           <ul>
             <li>
-              <strong>Kéo</strong> để xoay góc nhìn
+              <strong>{t('onboarding.dragAction')}</strong> {t('onboarding.dragToRotate')}
             </li>
             <li>
-              <strong>Cuộn hoặc chụm</strong> để thu phóng
+              <strong>{t('onboarding.scrollAction')}</strong> {t('onboarding.scrollToZoom')}
             </li>
             <li>
-              <strong>Chạm</strong> một khu vực để xem chi tiết
+              <strong>{t('onboarding.tapAction')}</strong> {t('onboarding.tapForDetail')}
             </li>
           </ul>
         )}
         <button type="button" autoFocus onClick={dismiss}>
-          Bắt đầu khám phá
+          {t('onboarding.start')}
         </button>
-        <small>Dữ liệu chuyên đề là dữ liệu minh họa; bản đồ không phải hồ sơ pháp lý.</small>
+        <small>{t('onboarding.disclaimer')}</small>
       </section>
     </div>
   );

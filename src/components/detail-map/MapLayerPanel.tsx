@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { getLayerDescriptor } from '../../data-platform/catalog/layers';
 import { BaseMapSelector } from './BaseMapSelector';
+import { useTranslation } from '../../i18n/useTranslation';
 import type {
   DetailBaseMap,
   DetailMapLayerState,
@@ -52,6 +53,7 @@ export function MapLayerPanel({
    */
   suppressEscapeClose?: boolean;
 }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -80,17 +82,17 @@ export function MapLayerPanel({
         aria-controls="detail-map-layer-panel-content"
         onClick={() => setOpen((value) => !value)}
       >
-        Lớp bản đồ
+        {t('layerPanel.trigger')}
       </button>
       {open && (
         <div
           id="detail-map-layer-panel-content"
           ref={panelRef}
           className="detail-map-layer-panel__content"
-          aria-label="Tùy chọn lớp bản đồ"
+          aria-label={t('layerPanel.contentAria')}
         >
           <section aria-labelledby="detail-map-layer-panel-layers-heading">
-            <h3 id="detail-map-layer-panel-layers-heading">Lớp thông tin</h3>
+            <h3 id="detail-map-layer-panel-layers-heading">{t('layerPanel.layersHeading')}</h3>
             {layerToggles.map((toggle) => {
               const unavailable = !sourceAvailability[toggle.unavailableWhen];
               const reasonId = `layer-${toggle.key}-unavailable-reason`;
@@ -105,11 +107,7 @@ export function MapLayerPanel({
                     className={
                       unavailable ? 'layer-toggle layer-toggle--unavailable' : 'layer-toggle'
                     }
-                    title={
-                      unavailable
-                        ? 'Lựa chọn vẫn được lưu và áp dụng ngay khi có nguồn dữ liệu; hiện chưa hiển thị trên bản đồ.'
-                        : undefined
-                    }
+                    title={unavailable ? t('layerPanel.unavailableTitle') : undefined}
                   >
                     <input
                       type="checkbox"
@@ -120,14 +118,13 @@ export function MapLayerPanel({
                     {label}
                     {unavailable && (
                       <span aria-hidden="true" className="layer-toggle__note">
-                        (chưa có dữ liệu)
+                        {t('layerPanel.unavailableNote')}
                       </span>
                     )}
                   </label>
                   {unavailable && (
                     <span id={reasonId} className="visually-hidden">
-                      Lựa chọn vẫn được lưu và áp dụng ngay khi có nguồn dữ liệu; hiện chưa có dữ
-                      liệu để hiển thị trên bản đồ.
+                      {t('layerPanel.unavailableReason')}
                     </span>
                   )}
                 </div>
@@ -135,7 +132,7 @@ export function MapLayerPanel({
             })}
           </section>
           <section aria-labelledby="detail-map-layer-panel-basemap-heading">
-            <h3 id="detail-map-layer-panel-basemap-heading">Loại bản đồ</h3>
+            <h3 id="detail-map-layer-panel-basemap-heading">{t('layerPanel.baseMapHeading')}</h3>
             <BaseMapSelector
               value={layers.baseMap}
               sourceAvailability={sourceAvailability}
@@ -144,7 +141,7 @@ export function MapLayerPanel({
           </section>
           {toolsSlot && (
             <section aria-labelledby="detail-map-layer-panel-tools-heading">
-              <h3 id="detail-map-layer-panel-tools-heading">Công cụ</h3>
+              <h3 id="detail-map-layer-panel-tools-heading">{t('layerPanel.toolsHeading')}</h3>
               {toolsSlot}
             </section>
           )}

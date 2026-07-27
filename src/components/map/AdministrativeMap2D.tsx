@@ -7,6 +7,7 @@ import { useMapStore } from '../../stores/mapStore';
 import type { Metric, WardCollection } from '../../types/map';
 import { RoadLayer2D } from './RoadLayer2D';
 import { layoutMapLabels } from './labelLayout';
+import { useTranslation } from '../../i18n/useTranslation';
 
 const collection = wards as WardCollection;
 const metricMap = metrics as Record<string, Metric>;
@@ -25,6 +26,7 @@ function fillFor(code: string, mode: 'overview' | 'energy' | 'heatmap') {
 }
 
 export function AdministrativeMap2D() {
+  const { t } = useTranslation();
   const [compactLabels, setCompactLabels] = useState(() => window.innerWidth < 600);
   const dataMode = useMapStore((state) => state.dataMode);
   const selectedCode = useMapStore((state) => state.selectedCode);
@@ -67,22 +69,22 @@ export function AdministrativeMap2D() {
     <section className="administrative-map-2d" aria-labelledby="map-2d-title">
       <div className="map-2d-heading">
         <div>
-          <p className="eyebrow">BẢN ĐỒ HÀNH CHÍNH 2D</p>
+          <p className="eyebrow">{t('map2d.eyebrow')}</p>
           <h2 id="map-2d-title" tabIndex={-1}>
-            102 xã, phường
+            {t('map2d.heading')}
           </h2>
         </div>
         <p aria-live="polite">
           {selectedCode
-            ? `Đang chọn ${labelMap[selectedCode]?.name ?? selectedCode}.`
-            : 'Chưa chọn đơn vị.'}
+            ? t('map2d.selected', { name: labelMap[selectedCode]?.name ?? selectedCode })
+            : t('map2d.noneSelected')}
         </p>
       </div>
       <svg
         className="administrative-map-2d__svg"
         viewBox={`0 0 ${width} ${height}`}
         role="img"
-        aria-label={`Bản đồ hành chính 2D gồm ${collection.features.length} đơn vị. Dùng danh sách để truy cập bằng bàn phím.`}
+        aria-label={t('map2d.svgAria', { count: collection.features.length })}
         onPointerLeave={() => setHovered(null)}
       >
         <g className={`map-2d-polygons map-2d-polygons--${dataMode}`}>
@@ -121,25 +123,23 @@ export function AdministrativeMap2D() {
         )}
       </svg>
       {roadsVisible && (
-        <aside className="road-legend" aria-label="Chú giải đường giao thông">
+        <aside className="road-legend" aria-label={t('map2d.roadLegendAria')}>
           <span>
             <i className="road-key road-key--national" />
-            Quốc lộ
+            {t('map2d.roadNational')}
           </span>
           <span>
             <i className="road-key road-key--provincial" />
-            Tỉnh lộ
+            {t('map2d.roadProvincial')}
           </span>
           <span>
             <i className="road-key road-key--district" />
-            Đường huyện
+            {t('map2d.roadDistrict')}
           </span>
-          <small>© OpenStreetMap contributors · ODbL 1.0 · dữ liệu tham khảo</small>
+          <small>{t('map2d.osmAttribution')}</small>
         </aside>
       )}
-      {dataMode !== 'overview' && (
-        <p className="map-2d-note">Lớp màu sử dụng cùng bộ chỉ số minh họa với chế độ 3D.</p>
-      )}
+      {dataMode !== 'overview' && <p className="map-2d-note">{t('map2d.colorNote')}</p>}
     </section>
   );
 }

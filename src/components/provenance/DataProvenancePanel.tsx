@@ -8,42 +8,44 @@ import type {
   DocumentReference,
 } from '../../data-platform/schemas/dataset';
 import { useMapStore } from '../../stores/mapStore';
+import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
 import { DataStatusSummary } from './DataStatusSummary';
 import { consumeProvenanceFocusTrigger } from './provenanceFocusTrigger';
 
-const CLASSIFICATION_LABELS: Record<DatasetDescriptor['classification'], string> = {
-  public: 'Công khai',
-  internal: 'Nội bộ',
-  confidential: 'Bảo mật',
-  restricted: 'Hạn chế',
+const CLASSIFICATION_KEYS: Record<DatasetDescriptor['classification'], MessageKey> = {
+  public: 'classification.public',
+  internal: 'classification.internal',
+  confidential: 'classification.confidential',
+  restricted: 'classification.restricted',
 };
 
-const AUTHORITY_LABELS: Record<DatasetDescriptor['authority'], string> = {
-  official: 'Chính thức',
-  'authoritative-third-party': 'Bên thứ ba có thẩm quyền',
-  'open-community': 'Cộng đồng mở',
-  illustrative: 'Minh họa',
-  unknown: 'Chưa xác định',
+const AUTHORITY_KEYS: Record<DatasetDescriptor['authority'], MessageKey> = {
+  official: 'authority.official',
+  'authoritative-third-party': 'authority.authoritative-third-party',
+  'open-community': 'authority.open-community',
+  illustrative: 'authority.illustrative',
+  unknown: 'authority.unknown',
 };
 
-const EVIDENCE_LEVEL_LABELS: Record<DocumentEvidenceLevel, string> = {
-  'official-primary-document': 'Văn bản gốc chính thức',
-  'official-publication-reference': 'Bài công bố chính thức',
-  'authoritative-secondary-reference': 'Nguồn tham chiếu có thẩm quyền',
-  unverified: 'Chưa xác minh',
+const EVIDENCE_LEVEL_KEYS: Record<DocumentEvidenceLevel, MessageKey> = {
+  'official-primary-document': 'evidenceLevel.official-primary-document',
+  'official-publication-reference': 'evidenceLevel.official-publication-reference',
+  'authoritative-secondary-reference': 'evidenceLevel.authoritative-secondary-reference',
+  unverified: 'evidenceLevel.unverified',
 };
 
-const VERIFICATION_STATUS_LABELS: Record<DocumentReference['verificationStatus'], string> = {
-  verified: 'Đã xác minh',
-  'research-needed': 'Cần xác minh thêm',
+const VERIFICATION_STATUS_KEYS: Record<DocumentReference['verificationStatus'], MessageKey> = {
+  verified: 'verificationStatus.verified',
+  'research-needed': 'verificationStatus.research-needed',
 };
 
-const FRESHNESS_LABELS = {
-  current: 'Còn mới',
-  aging: 'Sắp cũ',
-  stale: 'Đã cũ',
-  unknown: 'Chưa rõ',
-} as const;
+const FRESHNESS_KEYS = {
+  current: 'dataStatus.current',
+  aging: 'dataStatus.aging',
+  stale: 'dataStatus.stale',
+  unknown: 'dataStatus.unknown',
+} as const satisfies Record<string, MessageKey>;
 
 /** Never render a raw `<a href>` to a non-HTTP(S) scheme (e.g. a fake `internal://` URI) —
  * see `source.repositoryPath` for how in-repo sources are represented instead. */
@@ -52,6 +54,7 @@ function isHttpsUrl(url: string): boolean {
 }
 
 function SourceReference({ source }: { source: DatasetDescriptor['source'] }) {
+  const { t } = useTranslation();
   if (source.sourceUrl && isHttpsUrl(source.sourceUrl)) {
     return (
       <a href={source.sourceUrl} target="_blank" rel="noopener noreferrer">
@@ -62,7 +65,8 @@ function SourceReference({ source }: { source: DatasetDescriptor['source'] }) {
   if (source.repositoryPath) {
     return (
       <>
-        {source.organization} — nguồn trong repository: <code>{source.repositoryPath}</code>
+        {t('provenance.repositorySourcePrefix', { organization: source.organization })}{' '}
+        <code>{source.repositoryPath}</code>
       </>
     );
   }
@@ -70,11 +74,12 @@ function SourceReference({ source }: { source: DatasetDescriptor['source'] }) {
 }
 
 function AuthorityFields({ dataset }: { dataset: DatasetDescriptor }) {
+  const { t } = useTranslation();
   if (!dataset.authorityDetail) {
     return (
       <div>
-        <dt>Trạng thái</dt>
-        <dd>{AUTHORITY_LABELS[dataset.authority]}</dd>
+        <dt>{t('provenance.status')}</dt>
+        <dd>{t(AUTHORITY_KEYS[dataset.authority])}</dd>
       </div>
     );
   }
@@ -83,25 +88,25 @@ function AuthorityFields({ dataset }: { dataset: DatasetDescriptor }) {
     <>
       {identityAuthority && (
         <div>
-          <dt>Tên/mã hành chính</dt>
-          <dd>{AUTHORITY_LABELS[identityAuthority]}</dd>
+          <dt>{t('provenance.administrativeNameCode')}</dt>
+          <dd>{t(AUTHORITY_KEYS[identityAuthority])}</dd>
         </div>
       )}
       {geometryAuthority && (
         <div>
           <dt>Geometry</dt>
           <dd>
-            {AUTHORITY_LABELS[geometryAuthority]}
+            {t(AUTHORITY_KEYS[geometryAuthority])}
             {dataset.quality.geometryStatus === 'reference'
-              ? ' — dữ liệu tham khảo, không phải địa giới pháp lý'
+              ? t('provenance.geometryReferenceNote')
               : ''}
           </dd>
         </div>
       )}
       {metricAuthority && (
         <div>
-          <dt>Chỉ số</dt>
-          <dd>{AUTHORITY_LABELS[metricAuthority]}</dd>
+          <dt>{t('provenance.indicator')}</dt>
+          <dd>{t(AUTHORITY_KEYS[metricAuthority])}</dd>
         </div>
       )}
     </>
@@ -109,6 +114,7 @@ function AuthorityFields({ dataset }: { dataset: DatasetDescriptor }) {
 }
 
 function DatasetCard({ dataset }: { dataset: DatasetDescriptor }) {
+  const { t } = useTranslation();
   const freshness = computeFreshness(dataset);
   return (
     <li className="provenance-dataset-card" data-classification={dataset.classification}>
@@ -116,48 +122,50 @@ function DatasetCard({ dataset }: { dataset: DatasetDescriptor }) {
       <p>{dataset.description}</p>
       <dl>
         <div>
-          <dt>Nguồn</dt>
+          <dt>{t('provenance.source')}</dt>
           <dd>
             <SourceReference source={dataset.source} />
           </dd>
         </div>
         {dataset.period && (
           <div>
-            <dt>Kỳ dữ liệu</dt>
+            <dt>{t('provenance.period')}</dt>
             <dd>{dataset.period.label}</dd>
           </div>
         )}
         {dataset.source.retrievalDate && (
           <div>
-            <dt>Ngày truy xuất</dt>
+            <dt>{t('provenance.retrievalDate')}</dt>
             <dd>{dataset.source.retrievalDate}</dd>
           </div>
         )}
         <AuthorityFields dataset={dataset} />
         <div>
-          <dt>Phân loại</dt>
-          <dd>{CLASSIFICATION_LABELS[dataset.classification]}</dd>
+          <dt>{t('provenance.classification')}</dt>
+          <dd>{t(CLASSIFICATION_KEYS[dataset.classification])}</dd>
         </div>
         {dataset.source.license && (
           <div>
-            <dt>Giấy phép</dt>
+            <dt>{t('provenance.license')}</dt>
             <dd>{dataset.source.license}</dd>
           </div>
         )}
         {dataset.quality.geometryStatus && (
           <div>
-            <dt>Trạng thái geometry</dt>
-            <dd>{dataset.quality.geometryStatus}</dd>
+            <dt>{t('provenance.geometryStatus')}</dt>
+            <dd>{t(`geometryStatus.${dataset.quality.geometryStatus}` as MessageKey)}</dd>
           </div>
         )}
         <div>
-          <dt>Độ mới</dt>
-          <dd>{FRESHNESS_LABELS[freshness]}</dd>
+          <dt>{t('provenance.freshness')}</dt>
+          <dd>{t(FRESHNESS_KEYS[freshness])}</dd>
         </div>
       </dl>
       {dataset.quality.knownLimitations.length > 0 && (
         <details>
-          <summary>Giới hạn đã biết ({dataset.quality.knownLimitations.length})</summary>
+          <summary>
+            {t('provenance.knownLimitations', { count: dataset.quality.knownLimitations.length })}
+          </summary>
           <ul>
             {dataset.quality.knownLimitations.map((limitation) => (
               <li key={limitation}>{limitation}</li>
@@ -170,47 +178,48 @@ function DatasetCard({ dataset }: { dataset: DatasetDescriptor }) {
 }
 
 function DocumentReferenceCard({ doc }: { doc: DocumentReference }) {
+  const { t } = useTranslation();
   const evidenceLevel = doc.evidenceLevel ?? 'unverified';
   return (
     <li className="provenance-dataset-card" data-classification="public">
       <h4>{doc.title}</h4>
       <dl>
         <div>
-          <dt>Cơ quan ban hành</dt>
+          <dt>{t('provenance.issuingAuthority')}</dt>
           <dd>{doc.issuingAuthority}</dd>
         </div>
         {doc.documentNumber && (
           <div>
-            <dt>Số văn bản</dt>
+            <dt>{t('provenance.documentNumber')}</dt>
             <dd>{doc.documentNumber}</dd>
           </div>
         )}
         {doc.issuedDate && (
           <div>
-            <dt>Ngày ban hành</dt>
+            <dt>{t('provenance.issuedDate')}</dt>
             <dd>{doc.issuedDate}</dd>
           </div>
         )}
         <div>
-          <dt>Trạng thái xác minh</dt>
-          <dd>{VERIFICATION_STATUS_LABELS[doc.verificationStatus]}</dd>
+          <dt>{t('provenance.verificationStatus')}</dt>
+          <dd>{t(VERIFICATION_STATUS_KEYS[doc.verificationStatus])}</dd>
         </div>
         <div>
-          <dt>Mức bằng chứng</dt>
-          <dd>{EVIDENCE_LEVEL_LABELS[evidenceLevel]}</dd>
+          <dt>{t('provenance.evidenceLevel')}</dt>
+          <dd>{t(EVIDENCE_LEVEL_KEYS[evidenceLevel])}</dd>
         </div>
       </dl>
       <p>{doc.applicability}</p>
       {doc.sourceUrl && isHttpsUrl(doc.sourceUrl) && (
         <p>
           <a href={doc.sourceUrl} target="_blank" rel="noopener noreferrer">
-            Xem văn bản trên nguồn: {doc.issuingAuthority}
+            {t('provenance.viewSourceDocument', { authority: doc.issuingAuthority })}
           </a>
         </p>
       )}
       {doc.note && (
         <details>
-          <summary>Ghi chú</summary>
+          <summary>{t('provenance.note')}</summary>
           <ul>
             <li>{doc.note}</li>
           </ul>
@@ -232,6 +241,7 @@ const FOCUSABLE_SELECTOR =
  * the boolean lives in the always-loaded store, not in a ref inside this component.
  */
 export function DataProvenancePanel() {
+  const { t } = useTranslation();
   const panelRef = useRef<HTMLDivElement | null>(null);
   const closeProvenancePanel = useMapStore((state) => state.closeProvenancePanel);
 
@@ -304,14 +314,14 @@ export function DataProvenancePanel() {
         ref={panelRef}
       >
         <div className="provenance-panel-header">
-          <h2 id="provenance-panel-title">Nguồn và chất lượng dữ liệu</h2>
+          <h2 id="provenance-panel-title">{t('provenance.panelHeading')}</h2>
           <button
             type="button"
             autoFocus
             onClick={closeProvenancePanel}
-            aria-label="Đóng bảng nguồn dữ liệu"
+            aria-label={t('provenance.closeAria')}
           >
-            Đóng
+            {t('provenance.close')}
           </button>
         </div>
         <DataStatusSummary counts={counts} />
@@ -320,7 +330,7 @@ export function DataProvenancePanel() {
             <DatasetCard key={dataset.id} dataset={dataset} />
           ))}
         </ul>
-        <h3>Văn bản quy hoạch tham chiếu</h3>
+        <h3>{t('provenance.referenceDocumentsHeading')}</h3>
         <ul className="provenance-dataset-list">
           {DOCUMENT_REFERENCES.map((doc) => (
             <DocumentReferenceCard key={doc.id} doc={doc} />

@@ -7,11 +7,8 @@
  */
 import { dataFreshness, disbursementRate } from '../../../entities/project/kpi';
 import { assessPortfolio } from '../../../entities/project/portfolioAssessment';
-import {
-  pickPrimaryReason,
-  ATTENTION_REASON_LABEL,
-} from '../../../entities/project/attentionReason';
-import { PROJECT_SECTOR_LABELS, PROJECT_STATUS_LABELS } from '../../../entities/project/labels';
+import { pickPrimaryReason } from '../../../entities/project/attentionReason';
+import { PROJECT_SECTORS, PROJECT_STATUSES } from '../../../entities/project/types';
 import type { ProjectBundle } from '../../../entities/project/types';
 import type { DataQualityContext } from '../../../entities/project/validation/dataQualityRules';
 import type {
@@ -50,15 +47,12 @@ export function buildProjectPortfolioViewModel({
       code: project.code,
       name: project.name,
       sector: project.sector,
-      sectorLabel: PROJECT_SECTOR_LABELS[project.sector],
       status: project.status,
-      statusLabel: PROJECT_STATUS_LABELS[project.status],
       plannedProgress: project.plannedProgress,
       overallProgress: project.overallProgress,
       disbursementRate: disbursementRate(bundle, asOf),
       plannedCompletionDate: project.plannedCompletionDate ?? null,
       dataFreshnessDays: dataFreshness(bundle, asOf),
-      primaryReason: reasonCategory ? ATTENTION_REASON_LABEL[reasonCategory] : null,
       reasonCategory,
       administrativeAreaCodes: project.administrativeAreaCodes,
     };
@@ -68,14 +62,17 @@ export function buildProjectPortfolioViewModel({
   const sectorCounts = countBy(rows.map((r) => r.sector));
   const areaCounts = countBy(rows.flatMap((r) => r.administrativeAreaCodes));
 
-  const statusOptions: ProjectPortfolioFilterOption[] = [...statusCounts.entries()]
-    .map(([value, count]) => ({ value, label: PROJECT_STATUS_LABELS[value], count }))
-    .sort((a, b) => a.label.localeCompare(b.label, 'vi'));
-  const sectorOptions: ProjectPortfolioFilterOption[] = [...sectorCounts.entries()]
-    .map(([value, count]) => ({ value, label: PROJECT_SECTOR_LABELS[value], count }))
-    .sort((a, b) => a.label.localeCompare(b.label, 'vi'));
+  // Ordered by the domain's own declared enum order (PROJECT_STATUSES/PROJECT_SECTORS) rather than
+  // a locale-aware label sort — the label is resolved per-locale at render time (`t('status.'+…)`),
+  // so a single fixed domain order avoids re-sorting per locale for what is a stable, small list.
+  const statusOptions: ProjectPortfolioFilterOption[] = PROJECT_STATUSES.filter((value) =>
+    statusCounts.has(value),
+  ).map((value) => ({ value, count: statusCounts.get(value)! }));
+  const sectorOptions: ProjectPortfolioFilterOption[] = PROJECT_SECTORS.filter((value) =>
+    sectorCounts.has(value),
+  ).map((value) => ({ value, count: sectorCounts.get(value)! }));
   const areaOptions: ProjectPortfolioFilterOption[] = [...areaCounts.entries()]
-    .map(([value, count]) => ({ value, label: value, count }))
+    .map(([value, count]) => ({ value, count }))
     .sort((a, b) => a.value.localeCompare(b.value, 'vi'));
 
   return {

@@ -1,4 +1,5 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
+import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 import { afterEach, describe, expect, it } from 'vitest';
 import type { KpiResult } from '../../entities/project/kpi/types';
 import { KpiCardGrid } from './KpiCardGrid';
@@ -43,20 +44,20 @@ describe('KpiCardGrid', () => {
   afterEach(cleanup);
 
   it('renders a heading and one card per KPI', () => {
-    render(<KpiCardGrid kpis={kpis} />);
+    renderWithI18n(<KpiCardGrid kpis={kpis} />);
     expect(screen.getByRole('heading', { name: 'Chỉ số tổng quan' })).toBeInTheDocument();
     expect(screen.getAllByRole('listitem')).toHaveLength(7);
   });
 
   it('shows the explanatory text for an unavailable KPI instead of a number', () => {
-    render(<KpiCardGrid kpis={kpis} />);
+    renderWithI18n(<KpiCardGrid kpis={kpis} />);
     const card = screen.getByText('Tỷ lệ giải ngân').closest('li')!;
     expect(card.textContent).toContain('Không có ngân sách hợp lệ.');
     expect(card.getAttribute('data-unavailable')).toBe('true');
   });
 
   it('renders an available count KPI as a plain number', () => {
-    render(<KpiCardGrid kpis={kpis} />);
+    renderWithI18n(<KpiCardGrid kpis={kpis} />);
     const card = screen.getByText('Đúng tiến độ').closest('li')!;
     expect(card.textContent).toContain('4');
     expect(card.getAttribute('data-unavailable')).toBeNull();
