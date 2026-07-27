@@ -33,6 +33,16 @@ const FORBIDDEN_IMPORT_PATTERNS: Array<{ pattern: RegExp; reason: string }> = [
   { pattern: /\bstores\/mapStore/, reason: 'ward/map Zustand store' },
   { pattern: /\.css['"]/, reason: 'stylesheet' },
   { pattern: /\bApp(\.tsx)?['"]/, reason: 'application composition root' },
+  {
+    pattern: /data\/projectPortfolioSource['"]/,
+    reason:
+      'concrete IllustrativeProjectPortfolioSource/BundledProjectPortfolioSource (Phase 2) — domain must stay independent of any concrete data-access adapter, only the composition root (src/app/) picks one',
+  },
+  {
+    pattern: /data\/generatedJsonProjectPortfolioSource['"]/,
+    reason:
+      'concrete GeneratedJsonProjectPortfolioSource (Phase 2) — domain must stay independent of any concrete data-access adapter, only the composition root (src/app/) picks one',
+  },
 ];
 
 function listProductionSourceFiles(dir: string): string[] {

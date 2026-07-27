@@ -29,13 +29,66 @@ export interface ProjectPortfolioProvenance {
   loadedInBrowserAt: string;
 }
 
+/** Loại nguồn cụ thể đang cung cấp portfolio — chỉ dùng để hiển thị (Data Readiness UI), KHÔNG được
+ * dùng để rẽ nhánh logic nghiệp vụ/KPI/validation (xem docs/project-data-import/01-target-architecture.md
+ * §4). `'http'` cố tình có mặt trong union dù chưa implementation nào tồn tại — xem
+ * `HttpProjectPortfolioSourceContract.ts`. */
+export type PortfolioSourceKind = 'illustrative' | 'generated-json' | 'http';
+
+/** Ba data mode tĩnh (build-time) mà một nguồn có thể tương thích — trục KHÁC với "public"/"secure"
+ * của docs/deployment-profiles.md (trục auth). Xem docs/project-data-import/04-deployment-profiles-design.md. */
+export type PortfolioDeploymentMode = 'demo' | 'internal-static' | 'public-static';
+
+/**
+ * Metadata mô tả CHÍNH nguồn (identity) — không phải một dự án/bản ghi cụ thể. Trả đồng bộ qua
+ * `ProjectPortfolioSource.getMetadata()` (không cần `await loadPortfolio()` trước) vì cả hai
+ * implementation hiện có (Phase 2: illustrative, generated-json) đều 100% static/không network —
+ * không có rủi ro "mô tả một lần load khác" mà một nguồn HTTP thật trong tương lai mới gặp phải (xem
+ * ghi chú trong docs/project-data-import/01-target-architecture.md về quyết định này). Cũng là field
+ * DUY NHẤT còn dùng được khi `loadPortfolio()` trả `status: 'error'` (không có `data` để đọc).
+ *
+ * Không bắt buộc mọi field phải có giá trị cụ thể — dùng `null` khi nguồn chưa/không xác định được
+ * (ví dụ một nguồn tương lai chưa load lần nào có thể chưa biết `bundleVersion` thật), không dùng
+ * chuỗi rỗng hay giá trị giả để lấp chỗ trống.
+ */
+export interface ProjectPortfolioSourceMetadata {
+  /** Định danh ổn định của CHÍNH instance nguồn này (không phải của bundle) — vd 'illustrative',
+   * 'generated-json'. Hai instance cùng loại (vd hai file generated JSON khác nhau) có thể khác
+   * `sourceId` dù cùng `sourceKind`. */
+  sourceId: string;
+  sourceKind: PortfolioSourceKind;
+  /** Tên hiển thị cho Data Readiness UI, đã qua i18n key hoặc chuỗi tiếng Việt sẵn sàng hiển thị. */
+  displayName: string;
+  /** Dataset id (resolve qua `src/data-platform/catalog/datasets.ts`) đã góp phần vào bundle này. */
+  datasetIds: readonly string[];
+  /** Version của CẤU TRÚC wire-format bundle — khác `DatasetDescriptor.version` (version của từng
+   * dataset). `null` nếu nguồn không có khái niệm bundle version (chưa xảy ra ở Phase 2). */
+  schemaVersion: string | null;
+  /** Tăng mỗi lần bundle được sinh/ghi lại — khác `schemaVersion` (chỉ đổi khi cấu trúc đổi). */
+  bundleVersion: string | null;
+  /** Điểm neo nghiệp vụ "số liệu tính đến ngày nào" — deterministic, không phải `Date.now()`. */
+  asOf: string | null;
+  /** Thời điểm bundle được sinh ra (importer chạy, hoặc thời điểm fixture được viết) — khác `asOf`. */
+  generatedAt: string | null;
+  /** `true` khi và chỉ khi `sourceKind === 'illustrative'` — tách field riêng (thay vì suy ra tại
+   * nơi dùng) để Data Readiness UI không phải biết quy tắc suy luận này. */
+  isIllustrative: boolean;
+  /** Data mode nào nguồn này được thiết kế để phục vụ — xem `PortfolioDeploymentMode`. Một nguồn
+   * generated-json cụ thể có thể CHỈ tương thích `internal-static` (bundle chưa lọc public) dù class
+   * adapter giống hệt một bundle khác đã lọc và tương thích `public-static`. */
+  deploymentCompatibility: readonly PortfolioDeploymentMode[];
+}
+
 export interface ProjectPortfolio {
   bundles: readonly ProjectBundle[];
   /** Mã hành chính hợp lệ tại thời điểm load — cần cho `DataQualityContext`, nguồn từ
    * layer GIS/administrative-units, không phải thứ `ProjectPortfolioSource` tự biết cách tạo ra;
-   * adapter cụ thể (ví dụ `BundledProjectPortfolioSource`) chịu trách nhiệm cung cấp giá trị này. */
+   * adapter cụ thể (ví dụ `IllustrativeProjectPortfolioSource`) chịu trách nhiệm cung cấp giá trị này. */
   validAdministrativeCodes: ReadonlySet<string>;
   provenance: ProjectPortfolioProvenance;
+  /** Bằng đúng giá trị `getMetadata()` trả tại thời điểm load này thành công — cho phép UI đọc
+   * metadata từ một kết quả `loadPortfolio()` đã có trong tay mà không cần gọi lại `getMetadata()`. */
+  metadata: ProjectPortfolioSourceMetadata;
 }
 
 export type ProjectDataErrorKind =
@@ -61,4 +114,6 @@ export type ProjectPortfolioLoadResult =
 
 export interface ProjectPortfolioSource {
   loadPortfolio(signal?: AbortSignal): Promise<ProjectPortfolioLoadResult>;
+  /** Đồng bộ — xem JSDoc của `ProjectPortfolioSourceMetadata` về lý do không phải `Promise`. */
+  getMetadata(): ProjectPortfolioSourceMetadata;
 }

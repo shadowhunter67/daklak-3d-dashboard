@@ -7,6 +7,7 @@ describe('createBuildInfo', () => {
     buildTimestamp: '2026-07-16T12:00:00+07:00',
     datasetVersion: '1253e2ad7933bcc59a5b68a03a81b532cd939e3e',
     datasetSnapshot: '2026-07-16',
+    portfolioDataMode: 'demo' as const,
   };
 
   it('normalizes metadata to a deploy-verifiable representation', () => {
@@ -19,5 +20,13 @@ describe('createBuildInfo', () => {
 
   it('uses an explicit marker when git metadata is unavailable', () => {
     expect(createBuildInfo({ ...base, gitCommit: undefined }).gitCommit).toBe('unknown');
+  });
+
+  it('passes the portfolio data mode through unchanged, for each valid mode', () => {
+    for (const portfolioDataMode of ['demo', 'internal-static', 'public-static'] as const) {
+      expect(
+        createBuildInfo({ ...base, gitCommit: 'abc123', portfolioDataMode }).portfolioDataMode,
+      ).toBe(portfolioDataMode);
+    }
   });
 });

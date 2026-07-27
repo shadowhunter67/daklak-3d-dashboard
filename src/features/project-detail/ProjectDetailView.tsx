@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BundledProjectPortfolioSource } from '../../data/projectPortfolioSource';
+import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
 import type { ProjectGeometry } from '../../entities/project/types';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -28,7 +28,7 @@ export function ProjectDetailView({
 }) {
   const { t, locale } = useTranslation();
   const [retryToken, setRetryToken] = useState(0);
-  const effectiveSource = useMemo(() => source ?? new BundledProjectPortfolioSource(), [source]);
+  const effectiveSource = useMemo(() => source ?? defaultProjectPortfolioSource, [source]);
   const state = useProjectDetail(effectiveSource, projectId, retryToken);
   const headingRef = useRef<HTMLHeadingElement | null>(null);
 

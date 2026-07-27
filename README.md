@@ -152,7 +152,38 @@ Hoặc chạy toàn bộ bằng `npm run quality:frontend` (lint, format, typech
 
 Dashboard đồng bộ `view`, `mode` và `ward` vào query string để URL có thể chia sẻ, refresh và dùng Back/Forward mà không cần router. `npm run build:metrics` sinh [JSON](reports/build-metrics.json) và [bảng Markdown](reports/build-metrics.md) từ build thật; FPS, GPU memory và LCP không được tuyên bố vì CI không đại diện cho GPU thiết bị thật.
 
-Mỗi production build sinh `dist/build-info.json` gồm version ứng dụng, commit SHA, thời điểm build và phiên bản dataset. Trên site đã deploy, mở `/daklak-3d-dashboard/build-info.json` để đối chiếu release đang chạy.
+Mỗi production build sinh `dist/build-info.json` gồm version ứng dụng, commit SHA, thời điểm build, phiên bản dataset và `portfolioDataMode` (xem mục dưới). Trên site đã deploy, mở `/daklak-3d-dashboard/build-info.json` để đối chiếu release đang chạy.
+
+## Data mode: demo / internal-static / public-static
+
+Ba lệnh build khác nhau chỉ ở **nguồn dữ liệu danh mục dự án** (`Project`/`WorkPackage`/... — xem
+[docs/project-data-import/](docs/project-data-import/)), KHÔNG liên quan tới trục "public/secure"
+(auth) của [docs/deployment-profiles.md](docs/deployment-profiles.md) — hai trục độc lập, một build
+luôn thuộc `public` (không auth) và đồng thời thuộc một trong ba mode dưới đây:
+
+```bash
+npm run build                    # = build:demo — dữ liệu minh hoạ (mặc định, không đổi hành vi cũ)
+npm run build:internal-static    # dùng generated-json bundle (Phase 2: fixture kiểm thử, chưa phải importer thật)
+npm run build:public-static      # Phase 2: dùng CHUNG bundle với internal-static, chưa có bước lọc public-projection
+```
+
+- **`demo`** — nguồn `IllustrativeProjectPortfolioSource`, 9 dự án minh hoạ hiện có, hành vi giống
+  hệt trước đây. Đây là build deploy GitHub Pages.
+- **`internal-static`** — nguồn `GeneratedJsonProjectPortfolioSource`, đọc một bundle JSON đã chuẩn
+  hoá sẵn. **Không tự động chứa dữ liệu minh hoạ** — build này bị kiểm tra bằng
+  `npm run verify:portfolio-data-modes` để đảm bảo `illustrativeProjectPortfolio.ts` không lọt vào
+  `dist/`. Dùng để triển khai tĩnh trong mạng/máy chủ nội bộ có kiểm soát truy cập — **không phải cơ
+  chế bảo vệ dữ liệu mật**: static build không có đăng nhập, không có server, ai truy cập được vào
+  nơi host file tĩnh này đều đọc được toàn bộ dữ liệu. Dữ liệu thật/nhạy cảm phải được triển khai
+  trong môi trường có kiểm soát truy cập ở tầng mạng, không phải trông cậy vào frontend.
+- **`public-static`** — Phase 2 dùng cùng adapter/bundle với `internal-static` (chưa có allowlist lọc
+  field/record công khai — đó là việc của Phase 6). Không tuyên bố mode này đã sẵn sàng công khai dữ
+  liệu thật cho tới khi cơ chế lọc đó tồn tại.
+
+Không cần database cho bất kỳ mode nào ở trên — cả ba đều là static site đọc dữ liệu bundled/generated
+tại build time, không có backend, không có runtime query. Xem
+[docs/project-data-import/04-deployment-profiles-design.md](docs/project-data-import/04-deployment-profiles-design.md)
+để biết chi tiết thiết kế và giới hạn từng mode.
 
 ## Khả năng tiếp cận và hiệu năng
 
@@ -188,6 +219,9 @@ Mỗi production build sinh `dist/build-info.json` gồm version ứng dụng, c
   [ADR 0001 — Project là entity trung tâm](docs/adr/0001-project-centric-domain.md) ·
   [ADR 0002 — Hash routing cho Danh mục/Chi tiết dự án](docs/adr/0002-static-host-routing.md) ·
   [domain model](docs/domain-model.md)
+- Nhập dữ liệu dự án nội bộ thật (`docs/project-data-import/`, Phase 1-2 hoàn thành, Phase 3+ chưa
+  triển khai): [chỉ mục](docs/project-data-import/README.md) ·
+  [ADR 0005 — Project portfolio source abstraction và static data modes](docs/adr/0005-project-portfolio-source-abstraction.md)
 - Pipeline ingestion dữ liệu công khai tự động (`scripts/data-refresh/`, nền tảng — chưa nối nguồn
   thật): [ADR 0004](docs/adr/0004-public-data-ingestion.md) ·
   [hướng dẫn vận hành](docs/public-data-refresh.md)
