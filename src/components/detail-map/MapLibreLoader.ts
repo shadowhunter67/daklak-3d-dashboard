@@ -13,7 +13,7 @@ let modulesPromise: Promise<MapLibreModules> | null = null;
 
 export function loadMapLibreModules(): Promise<MapLibreModules> {
   modulesPromise ??= Promise.all([import('maplibre-gl'), import('pmtiles')])
-    .then(([maplibregl, pmtiles]) => ({ maplibregl: maplibregl.default, pmtiles }))
+    .then(([maplibregl, pmtiles]) => ({ maplibregl, pmtiles }))
     .catch((error: unknown) => {
       modulesPromise = null;
       throw error;

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('maplibre-gl', () => ({ default: { fakeMaplibre: true } }));
+vi.mock('maplibre-gl', () => ({ fakeMaplibre: true }));
 vi.mock('pmtiles', () => ({ Protocol: class {}, fakePmtiles: true }));
 
 describe('loadMapLibreModules', () => {
