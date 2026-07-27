@@ -82,7 +82,12 @@ export default defineConfig(({ mode }) => {
       },
     },
     test: {
-      include: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'scripts/**/*.test.mjs'],
+      include: [
+        'src/**/*.test.ts',
+        'src/**/*.test.tsx',
+        'scripts/**/*.test.mjs',
+        'scripts/**/*.test.ts',
+      ],
       environment: 'jsdom',
       setupFiles: './src/test/setup.ts',
     },

@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-07-27T09:26:33.529Z",
+  "generatedAt": "2026-07-27T10:21:52.453Z",
   "limits": {
     "totalJavaScriptBytes": 3400000,
     "totalJavaScriptGzipBytes": 950000,
@@ -10,16 +10,16 @@
     "totalBuildBytes": 6400000
   },
   "actual": {
-    "totalJavaScriptBytes": 2901331,
-    "totalJavaScriptGzipBytes": 778613,
-    "largestJavaScriptGzipBytes": 270835,
+    "totalJavaScriptBytes": 2847465,
+    "totalJavaScriptGzipBytes": 757967,
+    "largestJavaScriptGzipBytes": 250272,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 5866152
+    "totalBuildBytes": 5812286
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-D4THRSdM.js",
+      "file": "assets/AdministrativeMap--Uz0nYuf.js",
       "bytes": 201548,
       "gzipBytes": 63737
     },
@@ -45,24 +45,24 @@
       "bytes": 719308
     },
     {
-      "file": "assets/DataProvenancePanel-DhZM2htY.js",
+      "file": "assets/DataProvenancePanel-BVzKIaXB.js",
       "bytes": 10492,
-      "gzipBytes": 3409
+      "gzipBytes": 3411
     },
     {
-      "file": "assets/datasets-DeqNJFhn.js",
+      "file": "assets/datasets-CSDGvCiM.js",
       "bytes": 17869,
-      "gzipBytes": 5063
+      "gzipBytes": 5065
     },
     {
-      "file": "assets/DataSourcesPanel-Vfj9UN4o.js",
+      "file": "assets/DataSourcesPanel-BC3jfKgK.js",
       "bytes": 3833,
-      "gzipBytes": 1478
+      "gzipBytes": 1479
     },
     {
-      "file": "assets/DetailMapViewport-CeLZORHv.js",
-      "bytes": 17905,
-      "gzipBytes": 5679
+      "file": "assets/DetailMapViewport-DGN4m_Ko.js",
+      "bytes": 17712,
+      "gzipBytes": 5588
     },
     {
       "file": "assets/en-DBmnnzE8.js",
@@ -75,26 +75,26 @@
       "gzipBytes": 7222
     },
     {
-      "file": "assets/index-D95zglTU.js",
+      "file": "assets/index-C13RKHMG.js",
       "bytes": 817056,
-      "gzipBytes": 220828
+      "gzipBytes": 220826
     },
     {
       "file": "assets/index-O5yb1JNH.css",
       "bytes": 38534
     },
     {
-      "file": "assets/maplibre-gl-2DjS9JS6.js",
-      "bytes": 1027752,
-      "gzipBytes": 270835
+      "file": "assets/maplibre-gl-Bee-HVIi.js",
+      "bytes": 974079,
+      "gzipBytes": 250272
     },
     {
-      "file": "assets/ProjectDetailView-Dqs8jvYi.js",
+      "file": "assets/ProjectDetailView-DyZCwDi_.js",
       "bytes": 16766,
-      "gzipBytes": 3954
+      "gzipBytes": 3957
     },
     {
-      "file": "assets/ProjectPortfolioView-DyARbiZV.js",
+      "file": "assets/ProjectPortfolioView-ISTFoNe1.js",
       "bytes": 12053,
       "gzipBytes": 3166
     },
@@ -104,9 +104,9 @@
       "gzipBytes": 422
     },
     {
-      "file": "assets/StatPanel-DmcDRPtc.js",
+      "file": "assets/StatPanel-DfyB2htT.js",
       "bytes": 3455,
-      "gzipBytes": 1160
+      "gzipBytes": 1162
     },
     {
       "file": "assets/three-vendor-BiGAt4_t.js",

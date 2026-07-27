@@ -1,10 +1,12 @@
-# Nhập dữ liệu dự án nội bộ thật — tài liệu thiết kế (Phase 1) + triển khai (Phase 2-3)
+# Nhập dữ liệu dự án nội bộ thật — tài liệu thiết kế (Phase 1) + triển khai (Phase 2-4)
 
-Trạng thái: **Phase 1 (assessment/design), Phase 2 (source abstraction and profiles) và Phase 3
-(canonical JSON schemas and data templates) đã hoàn thành.** Phase 4-6 vẫn là đề xuất, chưa triển
-khai. Xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md) (Phase 2) và
-[ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md) (Phase 3) cho quyết định đã
-chốt + sai lệch phát hiện so với thiết kế Phase 1 (ghi chú trực tiếp trong 01/02/04/05-*.md).
+Trạng thái: **Phase 1 (assessment/design), Phase 2 (source abstraction and profiles), Phase 3
+(canonical JSON schemas and data templates) và Phase 4 (offline importer CLI) đã hoàn thành.** Phase
+5-6 vẫn là đề xuất, chưa triển khai. Xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md)
+(Phase 2), [ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md) (Phase 3) và
+[ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md) (Phase 4) cho
+quyết định đã chốt + sai lệch phát hiện so với thiết kế Phase 1 (ghi chú trực tiếp trong
+01/02/03/04/05-*.md).
 
 Mục tiêu tổng thể: biến repo thành một static production-shaped demo, sẵn sàng tiếp nhận dữ liệu dự
 án nội bộ thật (Excel/CSV/JSON) qua một importer/adapter, mà không cần viết lại UI/KPI/validation/
@@ -24,9 +26,13 @@ domain/bản đồ, và **không** thêm database, backend, hay authentication.
    `docs/deployment-profiles.md`.
 6. [05-implementation-backlog.md](05-implementation-backlog.md) — backlog cụ thể theo Phase 2 → 6.
 
-Tài liệu Phase 3 (mới): [canonical-data-dictionary.md](canonical-data-dictionary.md) — field list
+Tài liệu Phase 3: [canonical-data-dictionary.md](canonical-data-dictionary.md) — field list
 đầy đủ 10 dataset · [schema-versioning-policy.md](schema-versioning-policy.md) ·
 [geometry-contract.md](geometry-contract.md) · [null-and-missing-semantics.md](null-and-missing-semantics.md).
+
+Tài liệu Phase 4 (mới): [import-runbook.md](import-runbook.md) — cách chạy CLI thật ·
+[csv-contract.md](csv-contract.md) · [importer-error-codes.md](importer-error-codes.md) ·
+[importer-security-notes.md](importer-security-notes.md) · [last-known-good-policy.md](last-known-good-policy.md).
 
 ## Điều quan trọng nhất rút ra từ Phase 1
 
@@ -61,13 +67,26 @@ bundle thật qua mapper tường minh (`groupCanonicalDatasetsIntoProjectBundle
 `npm run validate:project-data-contract` (wired vào `quality:frontend`). Xem
 [ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md) cho chi tiết đầy đủ.
 
-## Điều chưa làm, cố ý (Phase 4 trở đi)
+## Phase 4 — đã triển khai
 
-- Importer CLI (CSV/XLSX parsing), scenario factory, Data Readiness UI, integration kit — vẫn là đề
-  xuất trong 03-importer-design.md/05-implementation-backlog.md, chưa có code.
+`npm run import:data` (`scripts/import-data/`, chạy qua `tsx`) — nhận canonical JSON bundle HOẶC thư
+mục CSV (9 dataset, header canonical từ Phase 3), qua pipeline discover → checksum → parse → normalize
+→ assemble → schema-version gate → JSON Schema (Layer 1) → mapper (Phase 3, không viết lại) → domain
+validator (Layer 2, không viết lại) → cross-record quality rule (Layer 3, không viết lại) + một
+orphan-reference check bổ sung (bù khoảng trống thật phát hiện ở mapper Phase 3) → 6 output file
+(`project-portfolio.bundle.json` + 5 report) ghi atomic, all-or-nothing (không partial-import).
+`npm run stage:internal-portfolio` đưa bundle đã validate vào vị trí `build:internal-static` đọc,
+không tự commit. Xem [ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md)
+cho chi tiết đầy đủ + [import-runbook.md](import-runbook.md) cho hướng dẫn vận hành.
+
+## Điều chưa làm, cố ý (Phase 5 trở đi)
+
+- XLSX input, CSV header alias mapping, per-record partial-import, `geometry_json` CSV cell — xem
+  05-implementation-backlog.md "Phase 5, mục 0" cho danh sách đầy đủ việc Phase 4 hoãn có chủ đích.
+- Scenario factory, Data Readiness UI, integration kit — vẫn là đề xuất trong
+  05-implementation-backlog.md, chưa có code.
 - `HttpProjectPortfolioSourceContract` vẫn chỉ là interface — không implementation, không API thật.
 - `public-static` dùng chung bundle với `internal-static` — chưa có bước lọc public-projection
-  (Phase 6).
+  (Phase 6). Importer output KHÔNG tự động là public-approved output.
 - Không có `DatasetDescriptor` riêng cho 9/10 dataset (chỉ dataset tổng cho fixture generated-json
-  đã đăng ký từ Phase 2) — đủ cho `GeneratedJsonProjectPortfolioSource` hoạt động, chưa cần thêm ở
-  Phase 3.
+  đã đăng ký từ Phase 2) — đủ cho `GeneratedJsonProjectPortfolioSource` hoạt động.
