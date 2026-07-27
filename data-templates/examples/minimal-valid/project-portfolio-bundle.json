@@ -1,0 +1,46 @@
+{
+  "schemaVersion": "1.0.0",
+  "bundleVersion": "example-minimal-1",
+  "metadata": {
+    "generatedAt": "2026-07-27T00:00:00.000Z",
+    "asOf": "2026-07-20T00:00:00.000Z",
+    "sourceDatasetIds": ["project-portfolio-generated-fixture-demo"],
+    "administrativeCodeVersion": "daklak-labels-v1",
+    "classification": "public",
+    "producer": "phase3-manual-example"
+  },
+  "datasets": {
+    "agencies": [],
+    "contractors": [],
+    "projects": [
+      {
+        "id": "project-minimal-001",
+        "code": "MIN-001",
+        "name": "Dự án tối thiểu (ví dụ)",
+        "description": "Bundle nhỏ nhất hợp lệ — không có description dài dòng, không có field optional nào ngoài các field bắt buộc.",
+        "sector": "transport",
+        "status": "active",
+        "priority": "medium",
+        "managingAuthorityId": "agency-minimal-001",
+        "investorId": "agency-minimal-001",
+        "approvedBudget": 1000000000,
+        "disbursedAmount": 0,
+        "overallProgress": 0,
+        "plannedProgress": 0,
+        "financialProgress": 0,
+        "administrativeAreaCodes": ["22165"],
+        "dataUpdatedAt": "2026-07-20T00:00:00.000Z",
+        "dataOwner": "Example",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "confidence": "medium",
+        "verificationStatus": "validated-automatically"
+      }
+    ],
+    "workPackages": [],
+    "milestones": [],
+    "projectIssues": [],
+    "progressSnapshots": [],
+    "evidence": [],
+    "referenceDocuments": []
+  }
+}

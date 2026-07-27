@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "bundleVersion": "example-invalid-9",
+  "metadata": {
+    "generatedAt": "2026-07-27T00:00:00.000Z",
+    "asOf": "2026-07-20T00:00:00.000Z",
+    "sourceDatasetIds": ["project-portfolio-generated-fixture-demo"],
+    "administrativeCodeVersion": "daklak-labels-v1",
+    "classification": "public",
+    "producer": "phase3-manual-example",
+    "description": "FAIL cả Layer 1 (JSON Schema longitude range) lẫn Layer 2 (isValidProjectGeometry) — longitude 500 ngoài phạm vi -180..180. Không phải một ranh giới Layer 1 vs Layer 2 mơ hồ; cả hai lớp đều có trách nhiệm chặn geometry sai cấu trúc."
+  },
+  "datasets": {
+    "agencies": [],
+    "contractors": [],
+    "projects": [
+      {
+        "id": "project-invalid-geometry",
+        "code": "INV-GEO-001",
+        "name": "Dự án geometry không hợp lệ (ví dụ invalid)",
+        "description": "geometry.coordinates có longitude ngoài phạm vi hợp lệ.",
+        "sector": "transport",
+        "status": "active",
+        "priority": "medium",
+        "managingAuthorityId": "agency-x",
+        "investorId": "agency-x",
+        "approvedBudget": 1000000000,
+        "disbursedAmount": 0,
+        "overallProgress": 0,
+        "plannedProgress": 0,
+        "financialProgress": 0,
+        "administrativeAreaCodes": ["22165"],
+        "geometry": { "type": "Point", "coordinates": [500, 12.68] },
+        "dataUpdatedAt": "2026-07-20T00:00:00.000Z",
+        "dataOwner": "Example",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "confidence": "medium",
+        "verificationStatus": "validated-automatically"
+      }
+    ],
+    "workPackages": [],
+    "milestones": [],
+    "projectIssues": [],
+    "progressSnapshots": [],
+    "evidence": [],
+    "referenceDocuments": []
+  }
+}

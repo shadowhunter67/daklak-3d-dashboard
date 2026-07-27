@@ -1,0 +1,202 @@
+{
+  "schemaVersion": "1.0.0",
+  "bundleVersion": "example-representative-1",
+  "metadata": {
+    "generatedAt": "2026-07-27T00:00:00.000Z",
+    "asOf": "2026-07-20T00:00:00.000Z",
+    "sourceDatasetIds": ["project-portfolio-generated-fixture-demo"],
+    "administrativeCodeVersion": "daklak-labels-v1",
+    "classification": "public",
+    "producer": "phase3-manual-example",
+    "description": "Bundle ví dụ bao phủ nhiều scenario: point + line geometry, work package, milestone, issue, nhiều giai đoạn xác thực progress, evidence/reference document, dữ liệu optional bị thiếu hợp lệ (KPI unavailable), provenance đầy đủ."
+  },
+  "datasets": {
+    "agencies": [
+      {
+        "id": "agency-example-001",
+        "name": "Sở Giao thông Vận tải (ví dụ)",
+        "type": "managing-authority"
+      },
+      { "id": "agency-example-002", "name": "Ban Quản lý dự án (ví dụ)", "type": "investor" }
+    ],
+    "contractors": [
+      {
+        "id": "contractor-example-001",
+        "name": "Công ty Xây dựng Đắk Lắk (ví dụ)",
+        "taxCode": "6000000123"
+      }
+    ],
+    "projects": [
+      {
+        "id": "project-example-point",
+        "code": "EX-POINT-001",
+        "name": "Trạm y tế xã (ví dụ — point geometry)",
+        "description": "Dự án điểm — có đầy đủ field optional, dùng để đối chiếu với dự án thiếu dữ liệu bên dưới.",
+        "sector": "health",
+        "status": "active",
+        "priority": "high",
+        "managingAuthorityId": "agency-example-001",
+        "investorId": "agency-example-002",
+        "projectManagerId": "user-example-001",
+        "startDate": "2026-01-01",
+        "plannedCompletionDate": "2027-01-01",
+        "forecastCompletionDate": "2027-02-15",
+        "approvedBudget": 15000000000,
+        "adjustedBudget": 16000000000,
+        "disbursedAmount": 5000000000,
+        "overallProgress": 35,
+        "plannedProgress": 40,
+        "financialProgress": 31,
+        "administrativeAreaCodes": ["22165"],
+        "geometry": { "type": "Point", "coordinates": [108.05, 12.68] },
+        "geometryMetadata": { "source": "surveyed", "confidence": "high", "approximate": false },
+        "dataUpdatedAt": "2026-07-15T00:00:00.000Z",
+        "dataOwner": "Ví dụ — không phải dữ liệu vận hành thật",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "confidence": "high",
+        "verificationStatus": "reviewed"
+      },
+      {
+        "id": "project-example-line",
+        "code": "EX-LINE-001",
+        "name": "Tuyến đường liên xã (ví dụ — line geometry, thiếu dữ liệu optional hợp lệ)",
+        "description": "Dự án tuyến — KHÔNG có forecastCompletionDate/adjustedBudget (hợp lệ, không phải lỗi) để minh hoạ KPI 'forecastDelayInDays' ở trạng thái unavailable khi thiếu input, không suy ra 0.",
+        "sector": "transport",
+        "status": "at-risk",
+        "priority": "critical",
+        "managingAuthorityId": "agency-example-001",
+        "investorId": "agency-example-002",
+        "startDate": "2026-02-01",
+        "plannedCompletionDate": "2027-06-01",
+        "approvedBudget": 42000000000,
+        "disbursedAmount": 8000000000,
+        "overallProgress": 15,
+        "plannedProgress": 25,
+        "financialProgress": 19,
+        "administrativeAreaCodes": ["22165", "24133"],
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [108.02, 12.6],
+            [108.06, 12.65],
+            [108.09, 12.7]
+          ]
+        },
+        "geometryMetadata": {
+          "source": "approximate-manual",
+          "confidence": "low",
+          "approximate": true,
+          "legalStatusDisclaimer": "Tuyến minh hoạ gần đúng, không phải ranh giới thu hồi đất pháp lý chính thức."
+        },
+        "dataUpdatedAt": "2026-07-18T00:00:00.000Z",
+        "dataOwner": "Ví dụ — không phải dữ liệu vận hành thật",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "confidence": "medium",
+        "verificationStatus": "submitted"
+      }
+    ],
+    "workPackages": [
+      {
+        "id": "wp-example-001",
+        "projectId": "project-example-point",
+        "code": "WP-01",
+        "name": "Xây dựng khối nhà chính (ví dụ)",
+        "contractorId": "contractor-example-001",
+        "plannedStart": "2026-01-01",
+        "plannedEnd": "2026-10-01",
+        "actualStart": "2026-01-10",
+        "plannedProgress": 40,
+        "actualProgress": 35,
+        "budget": 10000000000,
+        "paidAmount": 3500000000,
+        "status": "active",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "ms-example-001",
+        "projectId": "project-example-point",
+        "workPackageId": "wp-example-001",
+        "name": "Cất nóc (ví dụ)",
+        "plannedDate": "2026-08-01",
+        "critical": true,
+        "status": "on-track"
+      }
+    ],
+    "projectIssues": [
+      {
+        "id": "issue-example-001",
+        "projectId": "project-example-line",
+        "category": "land-clearance",
+        "severity": "critical",
+        "title": "Vướng giải phóng mặt bằng đoạn Km3-Km5 (ví dụ)",
+        "description": "5 hộ dân chưa đồng ý phương án đền bù — ví dụ, không phải dữ liệu thật.",
+        "ownerAgencyId": "agency-example-001",
+        "openedAt": "2026-03-01T00:00:00.000Z",
+        "dueAt": "2026-06-01T00:00:00.000Z",
+        "status": "in-progress",
+        "evidenceIds": ["evidence-example-001"],
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo"
+      }
+    ],
+    "progressSnapshots": [
+      {
+        "projectId": "project-example-point",
+        "observedAt": "2026-06-01T00:00:00.000Z",
+        "plannedPhysicalProgress": 35,
+        "physicalProgress": 30,
+        "financialProgress": 27,
+        "disbursedAmount": 4200000000,
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "sourceRecordId": "snap-example-001-submitted",
+        "importedAt": "2026-06-05T00:00:00.000Z",
+        "verificationStatus": "submitted"
+      },
+      {
+        "projectId": "project-example-point",
+        "observedAt": "2026-06-01T00:00:00.000Z",
+        "plannedPhysicalProgress": 35,
+        "physicalProgress": 30,
+        "financialProgress": 27,
+        "disbursedAmount": 4200000000,
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "sourceRecordId": "snap-example-001-approved",
+        "importedAt": "2026-06-20T00:00:00.000Z",
+        "verificationStatus": "approved"
+      },
+      {
+        "projectId": "project-example-point",
+        "observedAt": "2026-07-01T00:00:00.000Z",
+        "plannedPhysicalProgress": 40,
+        "physicalProgress": 35,
+        "financialProgress": 31,
+        "disbursedAmount": 5000000000,
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "sourceRecordId": "snap-example-002",
+        "importedAt": "2026-07-15T00:00:00.000Z",
+        "verificationStatus": "reviewed"
+      }
+    ],
+    "evidence": [
+      {
+        "id": "evidence-example-001",
+        "title": "Biên bản làm việc với hộ dân (ví dụ)",
+        "kind": "document",
+        "capturedAt": "2026-03-05T00:00:00.000Z",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo"
+      }
+    ],
+    "referenceDocuments": [
+      {
+        "id": "refdoc-example-001",
+        "title": "Quyết định phê duyệt chủ trương đầu tư (ví dụ)",
+        "issuingAuthority": "UBND tỉnh Đắk Lắk (ví dụ)",
+        "documentNumber": "1234/QD-UBND-example",
+        "issuedDate": "2025-10-01",
+        "legalStatus": "in-effect",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo"
+      }
+    ]
+  }
+}

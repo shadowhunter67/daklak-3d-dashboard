@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data-templates/schemas/definitions/progress-snapshot.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "projectId",
+    "observedAt",
+    "plannedPhysicalProgress",
+    "physicalProgress",
+    "financialProgress",
+    "disbursedAmount",
+    "sourceDatasetId",
+    "sourceRecordId",
+    "importedAt",
+    "verificationStatus"
+  ],
+  "properties": {
+    "projectId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "observedAt": { "$ref": "common.schema.json#/definitions/isoDateTime" },
+    "plannedPhysicalProgress": { "$ref": "common.schema.json#/definitions/percentage" },
+    "physicalProgress": { "$ref": "common.schema.json#/definitions/percentage" },
+    "financialProgress": { "$ref": "common.schema.json#/definitions/percentage" },
+    "disbursedAmount": { "$ref": "common.schema.json#/definitions/vndAmount" },
+    "sourceDatasetId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "sourceRecordId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "importedAt": { "$ref": "common.schema.json#/definitions/isoDateTime" },
+    "verificationStatus": { "$ref": "common.schema.json#/definitions/verificationStatus" },
+    "confidence": { "$ref": "common.schema.json#/definitions/dataConfidence" },
+    "dataOwner": { "type": "string" }
+  }
+}

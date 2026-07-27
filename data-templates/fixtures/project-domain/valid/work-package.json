@@ -1,0 +1,15 @@
+{
+  "id": "wp-fixture-001",
+  "projectId": "project-fixture-001",
+  "code": "WP-01",
+  "name": "Gói thầu minh hoạ (fixture)",
+  "contractorId": "contractor-fixture-001",
+  "plannedStart": "2026-01-01",
+  "plannedEnd": "2026-12-01",
+  "plannedProgress": 25,
+  "actualProgress": 20,
+  "budget": 8000000000,
+  "paidAmount": 1500000000,
+  "status": "active",
+  "sourceDatasetId": "project-portfolio-generated-fixture-demo"
+}

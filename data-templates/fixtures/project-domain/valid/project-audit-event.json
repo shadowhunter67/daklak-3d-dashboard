@@ -1,0 +1,8 @@
+{
+  "eventId": "audit-fixture-001",
+  "eventType": "dataset_view",
+  "action": "dataset_view",
+  "result": "success",
+  "requestId": "req-fixture-001",
+  "occurredAt": "2026-07-20T00:00:00.000Z"
+}

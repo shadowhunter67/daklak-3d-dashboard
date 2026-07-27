@@ -1,0 +1,2 @@
+id,project_id,category,severity,title,description,owner_agency_id,owner_user_id,opened_at,due_at,resolved_at,status,evidence_ids,source_dataset_id,verification_status,confidence,data_owner
+issue-example-001,project-example-001,land-clearance,critical,"Ví dụ: vướng giải phóng mặt bằng","Mô tả chi tiết — thay bằng dữ liệu thật",agency-001,,2026-03-01T00:00:00.000Z,2026-06-01T00:00:00.000Z,,in-progress,evidence-example-001,REPLACE_WITH_REAL_DATASET_ID,,,

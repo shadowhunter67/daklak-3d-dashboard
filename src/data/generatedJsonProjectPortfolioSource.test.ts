@@ -25,23 +25,28 @@ const VALID_PROJECT = {
   verificationStatus: 'validated-automatically',
 };
 
-const VALID_BUNDLE_FILE = {
+const VALID_CANONICAL_BUNDLE = {
   schemaVersion: '1.0.0',
   bundleVersion: 'test-1',
-  generatedAt: '2026-07-20T00:00:00.000Z',
-  asOf: '2026-07-20T00:00:00.000Z',
-  sourceId: 'generated-json-fixture-demo',
-  datasetIds: ['project-portfolio-generated-fixture-demo'],
-  validAdministrativeCodes: ['22165'],
-  provenance: {
-    effectiveAt: '2026-07-20T00:00:00.000Z',
-    sourcePublishedAt: '2026-07-20T00:00:00.000Z',
-    retrievedAt: '2026-07-20T00:00:00.000Z',
-    publishedToDashboardAt: '2026-07-20T00:00:00.000Z',
+  metadata: {
+    generatedAt: '2026-07-20T00:00:00.000Z',
+    asOf: '2026-07-20T00:00:00.000Z',
+    sourceDatasetIds: ['project-portfolio-generated-fixture-demo'],
+    administrativeCodeVersion: 'daklak-labels-v1',
+    classification: 'public',
+    producer: 'test',
   },
-  bundles: [
-    { project: VALID_PROJECT, workPackages: [], milestones: [], issues: [], progressSnapshots: [] },
-  ],
+  datasets: {
+    agencies: [],
+    contractors: [],
+    projects: [VALID_PROJECT],
+    workPackages: [],
+    milestones: [],
+    projectIssues: [],
+    progressSnapshots: [],
+    evidence: [],
+    referenceDocuments: [],
+  },
 };
 
 describe('GeneratedJsonProjectPortfolioSource', () => {
@@ -50,7 +55,7 @@ describe('GeneratedJsonProjectPortfolioSource', () => {
     vi.doUnmock(FIXTURE_MODULE_PATH);
   });
 
-  it('resolves ok with the real checked-in Phase 2 fixture (no mock — end-to-end sanity)', async () => {
+  it('resolves ok with the real checked-in Phase 3 canonical fixture (no mock — end-to-end sanity)', async () => {
     const { GeneratedJsonProjectPortfolioSource } =
       await import('./generatedJsonProjectPortfolioSource');
     const source = new GeneratedJsonProjectPortfolioSource();
@@ -58,12 +63,13 @@ describe('GeneratedJsonProjectPortfolioSource', () => {
     expect(result.status).toBe('ok');
     if (result.status !== 'ok') throw new Error('expected ok');
     expect(result.data.bundles.length).toBeGreaterThan(0);
+    expect(result.data.validAdministrativeCodes.size).toBeGreaterThan(0);
     expect(result.data.metadata.sourceKind).toBe('generated-json');
     expect(result.data.metadata.isIllustrative).toBe(false);
     expect(result.data.metadata.deploymentCompatibility).toEqual(['internal-static']);
   });
 
-  it('never claims public-static compatibility for the unfiltered Phase 2 fixture', async () => {
+  it('never claims public-static compatibility for the unfiltered Phase 3 fixture', async () => {
     const { GeneratedJsonProjectPortfolioSource } =
       await import('./generatedJsonProjectPortfolioSource');
     const metadata = new GeneratedJsonProjectPortfolioSource().getMetadata();
@@ -80,12 +86,25 @@ describe('GeneratedJsonProjectPortfolioSource', () => {
     expect(result.error.kind).toBe('schema-invalid');
   });
 
+  it('returns a schema-invalid error for an unsupported schemaVersion — does not parse it best-effort', async () => {
+    vi.doMock(FIXTURE_MODULE_PATH, () => ({
+      default: { ...VALID_CANONICAL_BUNDLE, schemaVersion: '9.9.9' },
+    }));
+    const { GeneratedJsonProjectPortfolioSource } =
+      await import('./generatedJsonProjectPortfolioSource');
+    const result = await new GeneratedJsonProjectPortfolioSource().loadPortfolio();
+    expect(result.status).toBe('error');
+    if (result.status !== 'error') throw new Error('expected error');
+    expect(result.error.kind).toBe('unsupported-schema-version');
+    expect(result.error.message).toContain('9.9.9');
+  });
+
   it('returns degraded (not error, not silently ok) when a record fails existing domain validation', async () => {
     const invalidProject = { ...VALID_PROJECT, overallProgress: 250 }; // out of 0-100 range
     vi.doMock(FIXTURE_MODULE_PATH, () => ({
       default: {
-        ...VALID_BUNDLE_FILE,
-        bundles: [{ ...VALID_BUNDLE_FILE.bundles[0], project: invalidProject }],
+        ...VALID_CANONICAL_BUNDLE,
+        datasets: { ...VALID_CANONICAL_BUNDLE.datasets, projects: [invalidProject] },
       },
     }));
     const { GeneratedJsonProjectPortfolioSource } =
@@ -95,6 +114,34 @@ describe('GeneratedJsonProjectPortfolioSource', () => {
     if (result.status !== 'degraded') throw new Error('expected degraded');
     expect(result.issues.length).toBeGreaterThan(0);
     expect(result.issues.some((issue) => issue.includes('overallProgress'))).toBe(true);
+  });
+
+  it('groups dataset-oriented work packages/milestones/issues/snapshots back onto their project', async () => {
+    const workPackage = {
+      id: 'wp-1',
+      projectId: 'gen-test-001',
+      code: 'WP-01',
+      name: 'WP',
+      plannedStart: '2026-01-01',
+      plannedEnd: '2026-06-01',
+      plannedProgress: 10,
+      actualProgress: 10,
+      budget: 10,
+      paidAmount: 1,
+      status: 'active',
+    };
+    vi.doMock(FIXTURE_MODULE_PATH, () => ({
+      default: {
+        ...VALID_CANONICAL_BUNDLE,
+        datasets: { ...VALID_CANONICAL_BUNDLE.datasets, workPackages: [workPackage] },
+      },
+    }));
+    const { GeneratedJsonProjectPortfolioSource } =
+      await import('./generatedJsonProjectPortfolioSource');
+    const result = await new GeneratedJsonProjectPortfolioSource().loadPortfolio();
+    expect(result.status).toBe('ok');
+    if (result.status !== 'ok') throw new Error('expected ok');
+    expect(result.data.bundles[0]?.workPackages).toEqual([workPackage]);
   });
 
   it('getMetadata() still returns sensible fallback values when the bundle shape is malformed', async () => {

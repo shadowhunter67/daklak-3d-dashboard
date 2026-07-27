@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data-templates/schemas/definitions/project-issue.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "projectId",
+    "category",
+    "severity",
+    "title",
+    "description",
+    "openedAt",
+    "status",
+    "evidenceIds",
+    "sourceDatasetId"
+  ],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "projectId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "category": {
+      "enum": [
+        "land-clearance",
+        "procurement",
+        "design",
+        "financing",
+        "contractor-performance",
+        "permitting",
+        "environment",
+        "social",
+        "technical",
+        "other"
+      ]
+    },
+    "severity": { "enum": ["low", "medium", "high", "critical"] },
+    "title": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "description": { "type": "string" },
+    "ownerAgencyId": { "type": "string" },
+    "ownerUserId": { "type": "string" },
+    "openedAt": { "$ref": "common.schema.json#/definitions/isoDateTime" },
+    "dueAt": { "$ref": "common.schema.json#/definitions/isoDateTime" },
+    "resolvedAt": { "$ref": "common.schema.json#/definitions/isoDateTime" },
+    "status": { "enum": ["open", "acknowledged", "in-progress", "blocked", "resolved", "closed"] },
+    "relatedGeometry": { "$ref": "common.schema.json#/definitions/projectGeometry" },
+    "evidenceIds": { "type": "array", "items": { "type": "string" } },
+    "sourceDatasetId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "verificationStatus": { "$ref": "common.schema.json#/definitions/verificationStatus" },
+    "confidence": { "$ref": "common.schema.json#/definitions/dataConfidence" },
+    "dataOwner": { "type": "string" }
+  }
+}

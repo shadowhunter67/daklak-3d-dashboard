@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data-templates/schemas/definitions/milestone.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "projectId", "name", "plannedDate", "critical", "status"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "projectId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "workPackageId": { "type": "string" },
+    "name": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "plannedDate": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "forecastDate": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "actualDate": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "critical": { "type": "boolean" },
+    "status": {
+      "enum": ["planned", "on-track", "at-risk", "delayed", "achieved", "cancelled", "unknown"]
+    },
+    "sourceDatasetId": { "type": "string" },
+    "sourceRecordId": { "type": "string" },
+    "observedAt": { "$ref": "common.schema.json#/definitions/isoDateTime" },
+    "verificationStatus": { "$ref": "common.schema.json#/definitions/verificationStatus" },
+    "confidence": { "$ref": "common.schema.json#/definitions/dataConfidence" },
+    "dataOwner": { "type": "string" }
+  }
+}

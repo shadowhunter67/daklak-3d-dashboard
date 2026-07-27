@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "bundleVersion": "example-invalid-8",
+  "metadata": {
+    "generatedAt": "2026-07-27T00:00:00.000Z",
+    "asOf": "2026-07-20T00:00:00.000Z",
+    "sourceDatasetIds": ["project-portfolio-generated-fixture-demo"],
+    "administrativeCodeVersion": "daklak-labels-v1",
+    "classification": "public",
+    "producer": "phase3-manual-example",
+    "description": "PASS JSON Schema (Layer 1) — '00000' là một chuỗi hợp lệ. FAIL ở Layer 3 (data-quality: unmapped-administrative-code) — '00000' không tồn tại trong daklak-labels.json thật."
+  },
+  "datasets": {
+    "agencies": [],
+    "contractors": [],
+    "projects": [
+      {
+        "id": "project-invalid-admin-code",
+        "code": "INV-ADMIN-001",
+        "name": "Dự án mã hành chính không map được (ví dụ invalid)",
+        "description": "administrativeAreaCodes chứa mã không có thật.",
+        "sector": "transport",
+        "status": "active",
+        "priority": "medium",
+        "managingAuthorityId": "agency-x",
+        "investorId": "agency-x",
+        "approvedBudget": 1000000000,
+        "disbursedAmount": 0,
+        "overallProgress": 0,
+        "plannedProgress": 0,
+        "financialProgress": 0,
+        "administrativeAreaCodes": ["00000"],
+        "dataUpdatedAt": "2026-07-20T00:00:00.000Z",
+        "dataOwner": "Example",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "confidence": "medium",
+        "verificationStatus": "validated-automatically"
+      }
+    ],
+    "workPackages": [],
+    "milestones": [],
+    "projectIssues": [],
+    "progressSnapshots": [],
+    "evidence": [],
+    "referenceDocuments": []
+  }
+}

@@ -1,8 +1,13 @@
 # Canonical schema proposal — 10 dataset (Phase 1 design)
 
-Trạng thái: **đề xuất, chưa triển khai**. Không có `data-templates/schemas/project-domain/*` hay thay
-đổi `src/entities/project/types.ts` nào được tạo trong Phase 1 — tài liệu này chỉ định hình field
-list, để Phase 3 triển khai theo đúng pattern `data-templates/` đã có.
+Trạng thái: **Phase 3 đã triển khai** — xem
+[ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md) và
+[canonical-data-dictionary.md](canonical-data-dictionary.md) cho field list thật (khớp gần như
+hoàn toàn với đề xuất dưới đây — sai lệch duy nhất đáng chú ý: canonical bundle KHÔNG mang
+`validAdministrativeCodes`, dùng trực tiếp `daklak-labels.json` thay vì nhúng bản sao — xem ADR 0006
+quyết định 1). Thư mục thật là `data-templates/schemas/definitions/` + `project-portfolio-bundle.schema.json`
+(không phải `data-templates/schemas/project-domain/*` như dự kiến ban đầu). Phần còn lại của tài
+liệu Phase 1 dưới đây giữ nguyên làm hồ sơ thiết kế.
 
 ## 1. Nguyên tắc bao trùm
 

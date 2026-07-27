@@ -1,0 +1,12 @@
+{
+  "projectId": "project-fixture-001",
+  "observedAt": "2026-07-01T00:00:00.000Z",
+  "plannedPhysicalProgress": 25,
+  "physicalProgress": 20,
+  "financialProgress": 20,
+  "disbursedAmount": 2000000000,
+  "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+  "sourceRecordId": "snap-fixture-001",
+  "importedAt": "2026-07-20T00:00:00.000Z",
+  "verificationStatus": "validated-automatically"
+}

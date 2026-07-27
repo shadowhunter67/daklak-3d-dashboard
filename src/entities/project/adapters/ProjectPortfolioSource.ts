@@ -99,7 +99,11 @@ export type ProjectDataErrorKind =
   | 'schema-invalid'
   | 'source-unavailable'
   | 'rate-limited'
-  | 'unknown';
+  | 'unknown'
+  /** Phase 3 — additive. `schemaVersion` không nằm trong `SUPPORTED_CANONICAL_SCHEMA_VERSIONS`
+   * (`src/entities/project/canonicalBundle.ts`) — khác `schema-invalid` (sai HÌNH DẠNG); đây là
+   * đúng hình dạng nhưng version không được hỗ trợ, không parse "best-effort". */
+  | 'unsupported-schema-version';
 
 export interface ProjectDataError {
   kind: ProjectDataErrorKind;

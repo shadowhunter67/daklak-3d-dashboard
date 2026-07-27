@@ -122,7 +122,42 @@ export interface ProjectPolygonGeometry {
   coordinates: [number, number][][];
 }
 
-export type ProjectGeometry = ProjectPointGeometry | ProjectPolygonGeometry;
+/**
+ * Thêm ở Phase 3 (docs/project-data-import/) cho "dự án tuyến" (đường giao thông, đường điện, kênh
+ * mương...) — trước đó `ProjectGeometry` chỉ có Point/Polygon nên dự án tuyến không biểu diễn được
+ * ở mức type, không chỉ thiếu dữ liệu mẫu. Additive: mở rộng union, không đổi hai thành viên cũ.
+ */
+export interface ProjectLineGeometry {
+  type: 'LineString';
+  coordinates: [number, number][];
+}
+
+export type ProjectGeometry = ProjectPointGeometry | ProjectLineGeometry | ProjectPolygonGeometry;
+
+export const GEOMETRY_SOURCES = [
+  'surveyed',
+  'design-drawing',
+  'administrative-boundary-derived',
+  'approximate-manual',
+  'unknown',
+] as const;
+export type GeometrySource = (typeof GEOMETRY_SOURCES)[number];
+
+/**
+ * Metadata MÔ TẢ geometry (không phải bản thân geometry) — field riêng, không lồng vào trong
+ * `ProjectGeometry` để `project.geometry` giữ nguyên là GeoJSON thuần (component render bản đồ tiếp
+ * tục dùng trực tiếp làm GeoJSON mà không cần bóc tách field lạ trước). `confidence` tái dùng
+ * `DataConfidence` đã có — không tạo enum "geometry confidence" riêng cho cùng một khái niệm.
+ */
+export interface ProjectGeometryMetadata {
+  source: GeometrySource;
+  confidence: DataConfidence;
+  approximate: boolean;
+  /** Bắt buộc có nội dung khi `approximate: true` — "ranh giới minh hoạ, không phải ranh giới pháp
+   * lý chính thức". Domain không tự suy luận câu chữ này (xem `validateProjectRecord`); importer/
+   * fixture cung cấp text đã duyệt. */
+  legalStatusDisclaimer?: string;
+}
 
 // ---------------------------------------------------------------------------------------------
 // Supporting entities
@@ -132,12 +167,21 @@ export interface Agency {
   id: string;
   name: string;
   type: 'managing-authority' | 'line-department' | 'investor' | 'other';
+  /** Phase 3 — additive, optional. Agency/Contractor là dữ liệu tham chiếu (danh mục), không phải
+   * quan sát tại một thời điểm — không thêm observedAt/verificationStatus đầy đủ như ProgressSnapshot
+   * (sẽ là field vô nghĩa cho một danh mục cơ quan). Chỉ thêm đủ để trace nguồn:
+   * xem docs/project-data-import/02-canonical-schema-proposal.md §3. */
+  sourceDatasetId?: string;
+  dataOwner?: string;
 }
 
 export interface Contractor {
   id: string;
   name: string;
   taxCode?: string;
+  /** Phase 3 — additive, optional. Xem ghi chú ở `Agency.sourceDatasetId`. */
+  sourceDatasetId?: string;
+  dataOwner?: string;
 }
 
 export interface Evidence {
@@ -148,6 +192,8 @@ export interface Evidence {
   capturedAt?: string;
   sourceDatasetId?: string;
   note?: string;
+  /** Phase 3 — additive, optional. */
+  dataOwner?: string;
 }
 
 export type ReferenceDocumentLegalStatus = 'draft' | 'in-effect' | 'superseded' | 'unknown';
@@ -160,6 +206,12 @@ export interface ReferenceDocument {
   issuedDate?: string;
   legalStatus: ReferenceDocumentLegalStatus;
   sourceUrl?: string;
+  /** Phase 3 — additive, optional. `verificationStatus` ở đây là trục ĐỘC LẬP với `legalStatus`
+   * (legalStatus mô tả hiệu lực pháp lý của văn bản; verificationStatus mô tả ai đã xác nhận record
+   * này đúng — cùng nguyên tắc "Evidence level vs verification status" trong
+   * docs/data-classification.md, áp dụng tương tự cho domain dự án). */
+  sourceDatasetId?: string;
+  verificationStatus?: VerificationStatus;
 }
 
 export interface DataQualityIssue {
@@ -241,6 +293,9 @@ export interface Project {
   financialProgress: number;
   administrativeAreaCodes: string[];
   geometry?: ProjectGeometry;
+  /** Phase 3 — additive, optional. Chỉ có ý nghĩa khi `geometry` có mặt; không validate nếu
+   * `geometry` vắng mặt (xem `validateProjectRecord`). */
+  geometryMetadata?: ProjectGeometryMetadata;
   dataUpdatedAt: string;
   dataOwner: string;
   sourceDatasetId: string;
@@ -265,6 +320,18 @@ export interface WorkPackage {
   /** Cùng đơn vị/ràng buộc với `budget`. */
   paidAmount: number;
   status: WorkPackageStatus;
+  /**
+   * Phase 3 — additive, optional (docs/project-data-import/02-canonical-schema-proposal.md §2-3).
+   * Trước Phase 3, `WorkPackage` không có field provenance nào — gap thật khi dữ liệu đến từ nguồn
+   * ngoài (Phase 4 importer): không cách nào biết record đến từ dataset/dòng CSV nào. Optional (không
+   * required) để không buộc sửa `illustrativeProjectPortfolio.ts` — Phase 4 điền khi có dữ liệu thật.
+   */
+  sourceDatasetId?: string;
+  sourceRecordId?: string;
+  observedAt?: string;
+  verificationStatus?: VerificationStatus;
+  confidence?: DataConfidence;
+  dataOwner?: string;
 }
 
 export interface Milestone {
@@ -277,6 +344,13 @@ export interface Milestone {
   actualDate?: string;
   critical: boolean;
   status: MilestoneStatus;
+  /** Phase 3 — additive, optional. Xem ghi chú tương ứng ở `WorkPackage`. */
+  sourceDatasetId?: string;
+  sourceRecordId?: string;
+  observedAt?: string;
+  verificationStatus?: VerificationStatus;
+  confidence?: DataConfidence;
+  dataOwner?: string;
 }
 
 export interface ProjectIssue {
@@ -299,6 +373,12 @@ export interface ProjectIssue {
    * Thêm ở Phase 1.5 để mọi record trong domain đều truy vết được provenance, cùng nguyên tắc với
    * `Project.sourceDatasetId`/`ProgressSnapshot.sourceDatasetId`. */
   sourceDatasetId: string;
+  /** Phase 3 — additive, optional. `observedAt` không thêm riêng ở đây — `openedAt` đã đóng vai trò
+   * điểm neo thời gian quan sát ban đầu của issue; thêm một field `observedAt` riêng sẽ tạo hai
+   * nguồn sự thật cho cùng một khái niệm. */
+  verificationStatus?: VerificationStatus;
+  confidence?: DataConfidence;
+  dataOwner?: string;
 }
 
 export interface ProgressSnapshot {
@@ -313,6 +393,9 @@ export interface ProgressSnapshot {
   sourceRecordId: string;
   importedAt: string;
   verificationStatus: VerificationStatus;
+  /** Phase 3 — additive, optional. */
+  confidence?: DataConfidence;
+  dataOwner?: string;
 }
 
 /**

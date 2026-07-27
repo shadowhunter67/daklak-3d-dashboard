@@ -1,0 +1,38 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data-templates/schemas/definitions/project-audit-event.schema.json",
+  "description": "project-audit-events-demo — deferred/optional dataset, xem ADR 0006 mục 'auditEvents deferred'. Không có emitter thật trong repo, chỉ demo/mô phỏng.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["eventId", "eventType", "action", "result", "requestId", "occurredAt"],
+  "properties": {
+    "eventId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "eventType": { "$ref": "#/definitions/auditAction" },
+    "actorId": { "type": "string" },
+    "actorAgencyId": { "type": "string" },
+    "datasetId": { "type": "string" },
+    "projectId": { "type": "string" },
+    "resourceType": { "type": "string" },
+    "resourceId": { "type": "string" },
+    "action": { "$ref": "#/definitions/auditAction" },
+    "result": { "enum": ["success", "denied", "error"] },
+    "requestId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "occurredAt": { "$ref": "common.schema.json#/definitions/isoDateTime" },
+    "purpose": { "type": "string" },
+    "note": { "type": "string" }
+  },
+  "definitions": {
+    "auditAction": {
+      "enum": [
+        "dataset_view",
+        "dataset_export",
+        "project_update",
+        "progress_submission",
+        "progress_approval",
+        "issue_update",
+        "restricted_layer_enable",
+        "access_denied"
+      ]
+    }
+  }
+}

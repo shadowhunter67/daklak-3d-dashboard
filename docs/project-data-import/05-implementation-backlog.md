@@ -31,7 +31,16 @@ giữ nguyên làm hồ sơ — đối chiếu với ADR 0005 để biết phầ
 9. Chạy `npm run quality` đầy đủ trước khi merge — không bỏ qua bước này (00-gap-analysis.md §6 ghi
    rõ lần chạy đầy đủ gần nhất đã xanh, nhưng Phase 2 thay đổi code thật nên phải chạy lại).
 
-## Phase 3 — Canonical schemas and templates
+## Phase 3 — Canonical schemas and templates — ĐÃ LÀM
+
+Triển khai thật khớp gần hoàn toàn danh sách gốc dưới đây, trừ: (a) không đăng ký `DatasetDescriptor`
+riêng cho work-packages/milestones/agencies/contractors/evidence/reference-documents/audit-events —
+canonical schema đủ để `GeneratedJsonProjectPortfolioSource` hoạt động mà không cần 7 descriptor mới
+(chỉ 1 descriptor tổng cho fixture generated-json, đã có từ Phase 2); (b) thư mục schema thật là
+`data-templates/schemas/definitions/` (không phải `.../project-domain/`); (c) `data-templates/README.md`
+KHÔNG được sửa (tài liệu Phase 3 mới nằm ở `docs/project-data-import/` thay vì mở rộng file đó) — xem
+[ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md) cho đầy đủ lý do từng quyết
+định. Danh sách gốc giữ nguyên làm hồ sơ:
 
 1. Thêm field provenance additive vào `types.ts`: `WorkPackage`/`Milestone` (mới hoàn toàn),
    `ProjectIssue`/`ProgressSnapshot` (bổ sung phần thiếu), `Agency`/`Contractor` (tối giản),

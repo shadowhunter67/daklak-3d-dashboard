@@ -1,0 +1,14 @@
+{
+  "id": "issue-fixture-001",
+  "projectId": "project-fixture-001",
+  "category": "land-clearance",
+  "severity": "high",
+  "title": "Vướng mắc minh hoạ (fixture)",
+  "description": "Chưa hoàn tất giải phóng mặt bằng đoạn Km5-Km7 (fixture, không phải dữ liệu thật).",
+  "ownerAgencyId": "agency-fixture-001",
+  "openedAt": "2026-02-01T00:00:00.000Z",
+  "dueAt": "2026-05-01T00:00:00.000Z",
+  "status": "open",
+  "evidenceIds": ["evidence-fixture-001"],
+  "sourceDatasetId": "project-portfolio-generated-fixture-demo"
+}

@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data-templates/schemas/definitions/project.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "code",
+    "name",
+    "description",
+    "sector",
+    "status",
+    "priority",
+    "managingAuthorityId",
+    "investorId",
+    "approvedBudget",
+    "disbursedAmount",
+    "overallProgress",
+    "plannedProgress",
+    "financialProgress",
+    "administrativeAreaCodes",
+    "dataUpdatedAt",
+    "dataOwner",
+    "sourceDatasetId",
+    "confidence",
+    "verificationStatus"
+  ],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "code": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "name": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "description": { "type": "string" },
+    "sector": {
+      "enum": [
+        "transport",
+        "energy",
+        "irrigation",
+        "health",
+        "education",
+        "urban-development",
+        "digital-transformation"
+      ]
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "preparing",
+        "approved",
+        "procurement",
+        "active",
+        "at-risk",
+        "delayed",
+        "suspended",
+        "completed",
+        "cancelled",
+        "unknown"
+      ]
+    },
+    "priority": { "enum": ["critical", "high", "medium", "low"] },
+    "managingAuthorityId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "investorId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "projectManagerId": { "type": "string" },
+    "approvalDecision": { "type": "string" },
+    "startDate": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "plannedCompletionDate": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "forecastCompletionDate": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "actualCompletionDate": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "approvedBudget": { "$ref": "common.schema.json#/definitions/vndAmount" },
+    "adjustedBudget": { "$ref": "common.schema.json#/definitions/vndAmount" },
+    "disbursedAmount": { "$ref": "common.schema.json#/definitions/vndAmount" },
+    "overallProgress": { "$ref": "common.schema.json#/definitions/percentage" },
+    "plannedProgress": { "$ref": "common.schema.json#/definitions/percentage" },
+    "financialProgress": { "$ref": "common.schema.json#/definitions/percentage" },
+    "administrativeAreaCodes": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "geometry": { "$ref": "common.schema.json#/definitions/projectGeometry" },
+    "geometryMetadata": { "$ref": "common.schema.json#/definitions/geometryMetadata" },
+    "dataUpdatedAt": { "$ref": "common.schema.json#/definitions/isoDateTime" },
+    "dataOwner": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "sourceDatasetId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "confidence": { "$ref": "common.schema.json#/definitions/dataConfidence" },
+    "verificationStatus": { "$ref": "common.schema.json#/definitions/verificationStatus" }
+  }
+}
