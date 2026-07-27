@@ -180,8 +180,11 @@ PR.
 
 ## Phạm vi chưa làm (khuyến nghị phase sau)
 
-- Onboard nguồn thật (cần xác nhận robots.txt/terms/compliance officer trước) — xem
-  `docs/data-sources/*-assessment.md` khi có.
+- Onboard nguồn thật (cần xác nhận robots.txt/terms/compliance officer trước) — **đã thử và bị
+  chặn** cho `investment-opportunities-daklak`, xem
+  [`docs/data-sources/investment-opportunities-daklak-assessment.md`](../data-sources/investment-opportunities-daklak-assessment.md):
+  các nguồn chính thức đã kiểm tra không có cấu trúc dữ liệu deterministic-parseable hoặc không truy
+  cập được.
 - GitHub Release asset thật cho raw evidence.
 - Evidence-checksum store thật cho `autoMergePolicy.mjs`'s `evidenceChecksumConflict` (hiện luôn
   `false`).

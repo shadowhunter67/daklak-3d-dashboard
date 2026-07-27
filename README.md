@@ -203,7 +203,11 @@ onboard nguồn thật nào, vì chưa xác nhận robots.txt/terms của bất 
 
 Danh mục **`InvestmentOpportunity`** (cơ hội xúc tiến đầu tư, `src/entities/investment-opportunity/`)
 do pipeline này sinh ra **hoàn toàn tách biệt** khỏi danh mục **`Project`** (dự án trọng điểm đang
-vận hành) — không bao giờ trộn hai domain này.
+vận hành) — không bao giờ trộn hai domain này. Nguồn thật đầu tiên **chưa onboard được** — xem
+[đánh giá nguồn](docs/data-sources/investment-opportunities-daklak-assessment.md): các nguồn chính
+thức tỉnh Đắk Lắk đã kiểm tra đều là danh sách tin tức không có cấu trúc (chỉ tiêu đề + ngày, không
+có trường sector/vốn/trạng thái) hoặc không truy cập được, nên chưa có adapter/parser deterministic
+khả thi. Chưa có route UI riêng cho danh mục này vì chưa có dữ liệu thật để hiển thị.
 
 `.github/workflows/public-data-refresh.yml` hiện là **`workflow_dispatch`-only** — không có
 `schedule` (xem [ADR 0004 mục 10](docs/adr/0004-public-data-ingestion.md#10-live-commissioning-và-hardening-bổ-sung)
