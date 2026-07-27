@@ -22,7 +22,7 @@ Dự án đang chuyển dần từ "dashboard bản đồ 3D" sang "nền tảng
 
 Giao diện hỗ trợ **tiếng Việt** (mặc định) và **tiếng Anh**, chuyển đổi bằng nút "VI / EN" ở góc phải header, không reload trang. URL chia sẻ được (`?lang=vi`/`?lang=en`, tương thích với mọi `?view=`/`#/projects...` khác), lựa chọn được nhớ qua `localStorage`, Back/Forward hoàn tác đúng lần chuyển ngôn ngữ gần nhất — xem [ADR 0003](docs/adr/0003-internationalization.md).
 
-**Phạm vi dịch hiện tại:** app shell, header, và toàn bộ Tổng quan điều hành (KPI, dự án cần chú ý, cảnh báo, sức khỏe dữ liệu, hộp thoại tóm tắt). **Chưa dịch** (fallback đúng thiết kế về tiếng Việt, không lỗi): Danh mục dự án, Chi tiết dự án, bản đồ 3D/2D và bản đồ chi tiết — xem "Giới hạn và roadmap" và ADR 0003 mục "Phạm vi dịch trong PR này" để biết lý do và kế hoạch mở rộng.
+**Phạm vi dịch:** toàn bộ giao diện sản phẩm — app shell, header, Tổng quan điều hành, Danh mục dự án, Chi tiết dự án, điều khiển bản đồ 3D, danh sách 2D accessible, bản đồ chi tiết MapLibre (layer panel, tìm kiếm, đo khoảng cách), onboarding, panel Nguồn dữ liệu, và hộp thoại nguồn/chất lượng dữ liệu. Một audit tĩnh tự động (`scripts/check_i18n_hardcoded_strings.mjs`, chạy trong `npm test`) chặn build nếu có chuỗi tiếng Việt hard-code lọt ra ngoài dictionary dịch. Chỉ trừ tên riêng (địa danh, tên/mã dự án minh hoạ) và nội dung nguồn chỉ có tiếng Việt chưa có bản tiếng Anh — xem ADR 0003 mục "Phạm vi dịch".
 
 English documentation: [README.en.md](README.en.md).
 
