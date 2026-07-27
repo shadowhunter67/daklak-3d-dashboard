@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BundledProjectPortfolioSource } from '../../data/projectPortfolioSource';
+import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
@@ -124,7 +124,7 @@ export function ProjectPortfolioView({
 }) {
   const { t } = useTranslation();
   const [retryToken, setRetryToken] = useState(0);
-  const effectiveSource = useMemo(() => source ?? new BundledProjectPortfolioSource(), [source]);
+  const effectiveSource = useMemo(() => source ?? defaultProjectPortfolioSource, [source]);
   const state = useProjectPortfolio(effectiveSource, retryToken);
 
   // Search box keeps its own instant local value; `filters.query` (and therefore `sorted.length`

@@ -2,7 +2,10 @@ import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { createBuildInfo } from './src/build/buildInfo';
+import { resolvePortfolioDataModeFromViteMode } from './src/app/portfolioDataModes';
+import { resolveActivePortfolioSourceModule } from './src/app/resolveActivePortfolioSourceModule';
 
 const packageMetadata = JSON.parse(
   readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
@@ -28,44 +31,60 @@ function resolveGitCommit(): string | undefined {
   }
 }
 
-export default defineConfig({
-  base: '/daklak-3d-dashboard/',
-  plugins: [
-    react(),
-    {
-      name: 'build-info',
-      apply: 'build',
-      generateBundle() {
-        const buildInfo = createBuildInfo({
-          applicationVersion: packageMetadata.version,
-          gitCommit: resolveGitCommit(),
-          buildTimestamp: process.env.BUILD_TIMESTAMP ?? new Date().toISOString(),
-          datasetVersion: sourceMetadata.sourceSnapshot,
-          datasetSnapshot: datasetMetadata.generatedAt,
-        });
-        this.emitFile({
-          type: 'asset',
-          fileName: 'build-info.json',
-          source: `${JSON.stringify(buildInfo, null, 2)}\n`,
-        });
+// resolvePortfolioDataModeFromViteMode (src/app/portfolioDataModes.ts) throws on an unrecognized
+// explicit --mode — build/test fails loudly, never silently falls back to another mode.
+export default defineConfig(({ mode }) => {
+  const portfolioDataMode = resolvePortfolioDataModeFromViteMode(mode);
+
+  return {
+    base: '/daklak-3d-dashboard/',
+    resolve: {
+      alias: {
+        // Buộc Rollup chỉ thấy MỘT trong hai module nguồn — xem JSDoc
+        // src/app/resolveActivePortfolioSourceModule.ts về lý do không dùng switch runtime.
+        '#active-portfolio-source': fileURLToPath(
+          new URL(resolveActivePortfolioSourceModule(portfolioDataMode), import.meta.url),
+        ),
       },
     },
-  ],
-  build: {
-    target: 'es2022',
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          if (id.includes('/node_modules/three/') || id.includes('\\node_modules\\three\\')) {
-            return 'three-vendor';
-          }
+    plugins: [
+      react(),
+      {
+        name: 'build-info',
+        apply: 'build',
+        generateBundle() {
+          const buildInfo = createBuildInfo({
+            applicationVersion: packageMetadata.version,
+            gitCommit: resolveGitCommit(),
+            buildTimestamp: process.env.BUILD_TIMESTAMP ?? new Date().toISOString(),
+            datasetVersion: sourceMetadata.sourceSnapshot,
+            datasetSnapshot: datasetMetadata.generatedAt,
+            portfolioDataMode,
+          });
+          this.emitFile({
+            type: 'asset',
+            fileName: 'build-info.json',
+            source: `${JSON.stringify(buildInfo, null, 2)}\n`,
+          });
+        },
+      },
+    ],
+    build: {
+      target: 'es2022',
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('/node_modules/three/') || id.includes('\\node_modules\\three\\')) {
+              return 'three-vendor';
+            }
+          },
         },
       },
     },
-  },
-  test: {
-    include: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'scripts/**/*.test.mjs'],
-    environment: 'jsdom',
-    setupFiles: './src/test/setup.ts',
-  },
+    test: {
+      include: ['src/**/*.test.ts', 'src/**/*.test.tsx', 'scripts/**/*.test.mjs'],
+      environment: 'jsdom',
+      setupFiles: './src/test/setup.ts',
+    },
+  };
 });

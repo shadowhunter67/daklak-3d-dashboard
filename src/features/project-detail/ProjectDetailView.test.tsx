@@ -23,6 +23,22 @@ function portfolio(bundles = MOCK_PROJECT_BUNDLES): ProjectPortfolio {
       publishedToDashboardAt: new Date().toISOString(),
       loadedInBrowserAt: new Date().toISOString(),
     },
+    metadata: {
+      sourceId: 'illustrative',
+      sourceKind: 'illustrative',
+      displayName: 'Dữ liệu minh họa (illustrative)',
+      datasetIds: [
+        'project-portfolio-illustrative',
+        'project-progress-illustrative',
+        'project-issues-illustrative',
+      ],
+      schemaVersion: null,
+      bundleVersion: null,
+      asOf: new Date().toISOString(),
+      generatedAt: null,
+      isIllustrative: true,
+      deploymentCompatibility: ['demo'],
+    },
   };
 }
 

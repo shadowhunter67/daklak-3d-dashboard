@@ -423,6 +423,43 @@ export const INVESTMENT_OPPORTUNITIES_ILLUSTRATIVE_DATASET: DatasetDescriptor = 
   access: { delivery: 'bundled-static', requiresAuthentication: false },
 };
 
+/**
+ * Phase 2 (docs/project-data-import/) — dataset thật đứng sau `GeneratedJsonProjectPortfolioSource`
+ * (`src/data/generatedJsonProjectPortfolioSource.ts`). Nội dung là 1 project hoàn toàn hư cấu, viết
+ * tay cho mục đích kiểm thử data-access boundary — KHÔNG phải output của importer thật (Phase 4 chưa
+ * triển khai) và KHÔNG phải dữ liệu nội bộ thật. `classification: 'public'` là chính xác ở đây (dữ
+ * liệu hư cấu, không nhạy cảm) — khi Phase 4 có importer thật nạp dữ liệu nội bộ thật, dataset cho
+ * dữ liệu đó phải có `classification`/`access.delivery` riêng, không tái dùng descriptor này.
+ */
+export const PROJECT_PORTFOLIO_GENERATED_FIXTURE_DATASET: DatasetDescriptor = {
+  id: 'project-portfolio-generated-fixture-demo',
+  title: 'Bundle generated-json kiểm thử (Phase 2 — data-access boundary)',
+  description:
+    'Bundle JSON viết tay dùng để kiểm thử GeneratedJsonProjectPortfolioSource — một dự án hoàn toàn hư cấu, không phải output của importer thật và không phải dữ liệu vận hành thật.',
+  domain: 'planning',
+  classification: 'public',
+  authority: 'illustrative',
+  publicationStatus: 'published',
+  administrativeLevel: 'commune',
+  temporalResolution: 'static',
+  spatialRepresentation: 'point',
+  source: {
+    organization: 'Phase 2 test fixture (nội bộ project, không phải nguồn thật)',
+    repositoryPath: 'src/assets/data/project-portfolio.generated-fixture-demo.json',
+  },
+  version: '1.0.0',
+  period: { label: 'demo' },
+  quality: {
+    status: 'unverified',
+    knownLimitations: [
+      'Dữ liệu hư cấu 100%, viết tay cho mục đích kiểm thử Phase 2 — không phải output của importer thật (Phase 4 chưa triển khai).',
+      'Không được dùng làm căn cứ cho bất kỳ quyết định quản lý, phê duyệt hay báo cáo thực tế nào.',
+      'Không tính checksum riêng ở cấp dataset — checksum của file vật lý đã ghi trong config/public-data-files.json.',
+    ],
+  },
+  access: { delivery: 'bundled-static', requiresAuthentication: false },
+};
+
 export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   ADMINISTRATIVE_UNITS_DATASET,
   PROVINCE_OVERVIEW_INDICATORS_DATASET,
@@ -435,6 +472,7 @@ export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   PROJECT_PORTFOLIO_ILLUSTRATIVE_DATASET,
   PROJECT_PROGRESS_ILLUSTRATIVE_DATASET,
   PROJECT_ISSUES_ILLUSTRATIVE_DATASET,
+  PROJECT_PORTFOLIO_GENERATED_FIXTURE_DATASET,
   INVESTMENT_OPPORTUNITIES_ILLUSTRATIVE_DATASET,
 ];
 

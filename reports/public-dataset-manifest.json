@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-24T07:48:03.081Z",
+  "generatedAt": "2026-07-27T08:13:35.267Z",
   "allDatasetIds": [
     "administrative-units",
     "province-overview-indicators",
@@ -12,6 +12,7 @@
     "project-portfolio-illustrative",
     "project-progress-illustrative",
     "project-issues-illustrative",
+    "project-portfolio-generated-fixture-demo",
     "investment-opportunities-daklak-illustrative"
   ],
   "publicDatasetIds": [
@@ -26,6 +27,7 @@
     "project-portfolio-illustrative",
     "project-progress-illustrative",
     "project-issues-illustrative",
+    "project-portfolio-generated-fixture-demo",
     "investment-opportunities-daklak-illustrative"
   ],
   "nonPublicDatasetIds": [],
@@ -40,6 +42,7 @@
     "project-portfolio-illustrative",
     "project-progress-illustrative",
     "project-issues-illustrative",
+    "project-portfolio-generated-fixture-demo",
     "investment-opportunities-daklak-illustrative"
   ],
   "datasets": [
@@ -105,6 +108,12 @@
     },
     {
       "id": "project-issues-illustrative",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "project-portfolio-generated-fixture-demo",
       "classification": "public",
       "delivery": "bundled-static",
       "requiresAuthentication": false
@@ -231,6 +240,16 @@
       "classification": "public",
       "delivery": "bundled-static",
       "note": "Curated snapshot of scripts/data-refresh/run.mjs output, hand-updated alongside reports/data-refresh/last-known-good/ — no fixed checksum since content changes whenever the pipeline updates last-known-good (see docs/public-data-refresh.md)."
+    },
+    {
+      "path": "src/assets/data/project-portfolio.generated-fixture-demo.json",
+      "datasetIds": [
+        "project-portfolio-generated-fixture-demo"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "928a751ef19ceca39dc2d77f69dc6eec12f567cd857e6029f0a063854bf86f37",
+      "note": "Phase 2 test/demo fixture for GeneratedJsonProjectPortfolioSource (docs/project-data-import/) — hand-written, entirely fictional, zero real project data. Not the output of a real importer (Phase 4)."
     }
   ]
 }

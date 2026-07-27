@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { BundledProjectPortfolioSource } from '../../data/projectPortfolioSource';
+import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
 import type { PortfolioStatus } from './model/executiveOverviewTypes';
 import { formatAbsoluteDateTime } from './model/executiveOverviewSelectors';
@@ -34,7 +34,7 @@ const ERROR_KIND_MESSAGE_KEY: Record<string, MessageKey> = {
  * Executive Overview — landing mặc định mới (Phase 2A). Component chỉ render `ExecutiveOverviewModel`
  * (từ `buildExecutiveOverview` qua `useExecutiveOverview`), không tự tính KPI. `source` cho phép
  * test/story tiêm `FakeProjectPortfolioSource` để mô phỏng loading/degraded/error mà
- * `BundledProjectPortfolioSource` (luôn ok) không tự tạo ra được.
+ * `defaultProjectPortfolioSource` (luôn ok) không tự tạo ra được.
  */
 export function ExecutiveOverview({
   source,
@@ -47,7 +47,7 @@ export function ExecutiveOverview({
 }) {
   const { t, locale } = useTranslation();
   const [retryToken, setRetryToken] = useState(0);
-  const effectiveSource = useMemo(() => source ?? new BundledProjectPortfolioSource(), [source]);
+  const effectiveSource = useMemo(() => source ?? defaultProjectPortfolioSource, [source]);
   const state = useExecutiveOverview(effectiveSource, retryToken);
 
   if (state.status === 'loading') {
