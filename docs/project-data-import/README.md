@@ -1,10 +1,10 @@
-# Nhập dữ liệu dự án nội bộ thật — tài liệu thiết kế (Phase 1) + triển khai (Phase 2)
+# Nhập dữ liệu dự án nội bộ thật — tài liệu thiết kế (Phase 1) + triển khai (Phase 2-3)
 
-Trạng thái: **Phase 1 (assessment/design) và Phase 2 (source abstraction and profiles) đã hoàn
-thành.** Phase 3-6 vẫn là đề xuất, chưa triển khai. Xem
-[ADR 0005](../adr/0005-project-portfolio-source-abstraction.md) cho quyết định Phase 2 đã chốt +
-các sai lệch phát hiện so với thiết kế Phase 1 (đã ghi chú trực tiếp trong
-01-target-architecture.md và 04-deployment-profiles-design.md).
+Trạng thái: **Phase 1 (assessment/design), Phase 2 (source abstraction and profiles) và Phase 3
+(canonical JSON schemas and data templates) đã hoàn thành.** Phase 4-6 vẫn là đề xuất, chưa triển
+khai. Xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md) (Phase 2) và
+[ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md) (Phase 3) cho quyết định đã
+chốt + sai lệch phát hiện so với thiết kế Phase 1 (ghi chú trực tiếp trong 01/02/04/05-*.md).
 
 Mục tiêu tổng thể: biến repo thành một static production-shaped demo, sẵn sàng tiếp nhận dữ liệu dự
 án nội bộ thật (Excel/CSV/JSON) qua một importer/adapter, mà không cần viết lại UI/KPI/validation/
@@ -23,6 +23,10 @@ domain/bản đồ, và **không** thêm database, backend, hay authentication.
    public-static, và vì sao đây là trục khác với "public/secure" đã có trong
    `docs/deployment-profiles.md`.
 6. [05-implementation-backlog.md](05-implementation-backlog.md) — backlog cụ thể theo Phase 2 → 6.
+
+Tài liệu Phase 3 (mới): [canonical-data-dictionary.md](canonical-data-dictionary.md) — field list
+đầy đủ 10 dataset · [schema-versioning-policy.md](schema-versioning-policy.md) ·
+[geometry-contract.md](geometry-contract.md) · [null-and-missing-semantics.md](null-and-missing-semantics.md).
 
 ## Điều quan trọng nhất rút ra từ Phase 1
 
@@ -45,10 +49,25 @@ script build mode (`build`/`build:internal-static`/`build:public-static`) + leak
 mới (`src/app/portfolioSourceBoundary.test.ts`, mở rộng `importBoundary.test.ts`). Xem
 [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md) cho chi tiết đầy đủ.
 
-## Điều chưa làm, cố ý (Phase 3 trở đi)
+## Phase 3 — đã triển khai
 
-- Canonical JSON Schema cho 10 dataset, importer CLI, scenario factory, Data Readiness UI, integration
-  kit — tất cả vẫn là đề xuất trong 02/03-*.md, chưa có code.
+Canonical bundle versioned (`CanonicalProjectPortfolioBundle`,
+`src/entities/project/canonicalBundle.ts`) + JSON Schema mirror
+(`data-templates/schemas/definitions/*.schema.json` + `project-portfolio-bundle.schema.json`, $ref
+cross-file) + drift guard (`projectSchemaDriftGuard.ts`/`.test.ts`, 118 test) + 13 example bundle
+(minimal-valid/representative-valid/11 invalid, mỗi file đúng 1 lỗi ở đúng 1 layer) + 9 CSV template
+(header-only, geometry deferred sang JSON) + `GeneratedJsonProjectPortfolioSource` đọc canonical
+bundle thật qua mapper tường minh (`groupCanonicalDatasetsIntoProjectBundles`) + script
+`npm run validate:project-data-contract` (wired vào `quality:frontend`). Xem
+[ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md) cho chi tiết đầy đủ.
+
+## Điều chưa làm, cố ý (Phase 4 trở đi)
+
+- Importer CLI (CSV/XLSX parsing), scenario factory, Data Readiness UI, integration kit — vẫn là đề
+  xuất trong 03-importer-design.md/05-implementation-backlog.md, chưa có code.
 - `HttpProjectPortfolioSourceContract` vẫn chỉ là interface — không implementation, không API thật.
-- `public-static` Phase 2 dùng chung bundle với `internal-static` — chưa có bước lọc
-  public-projection (Phase 6).
+- `public-static` dùng chung bundle với `internal-static` — chưa có bước lọc public-projection
+  (Phase 6).
+- Không có `DatasetDescriptor` riêng cho 9/10 dataset (chỉ dataset tổng cho fixture generated-json
+  đã đăng ký từ Phase 2) — đủ cho `GeneratedJsonProjectPortfolioSource` hoạt động, chưa cần thêm ở
+  Phase 3.

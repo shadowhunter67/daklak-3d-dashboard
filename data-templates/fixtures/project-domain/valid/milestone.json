@@ -1,0 +1,9 @@
+{
+  "id": "ms-fixture-001",
+  "projectId": "project-fixture-001",
+  "workPackageId": "wp-fixture-001",
+  "name": "Mốc minh hoạ (fixture)",
+  "plannedDate": "2026-06-01",
+  "critical": true,
+  "status": "on-track"
+}

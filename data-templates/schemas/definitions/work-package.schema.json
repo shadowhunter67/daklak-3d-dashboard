@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data-templates/schemas/definitions/work-package.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "projectId",
+    "code",
+    "name",
+    "plannedStart",
+    "plannedEnd",
+    "plannedProgress",
+    "actualProgress",
+    "budget",
+    "paidAmount",
+    "status"
+  ],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "projectId": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "code": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "name": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "contractorId": { "type": "string" },
+    "plannedStart": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "plannedEnd": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "actualStart": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "actualEnd": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "plannedProgress": { "$ref": "common.schema.json#/definitions/percentage" },
+    "actualProgress": { "$ref": "common.schema.json#/definitions/percentage" },
+    "budget": { "$ref": "common.schema.json#/definitions/vndAmount" },
+    "paidAmount": { "$ref": "common.schema.json#/definitions/vndAmount" },
+    "status": {
+      "enum": [
+        "planned",
+        "procurement",
+        "active",
+        "at-risk",
+        "delayed",
+        "suspended",
+        "completed",
+        "cancelled",
+        "unknown"
+      ]
+    },
+    "sourceDatasetId": { "type": "string" },
+    "sourceRecordId": { "type": "string" },
+    "observedAt": { "$ref": "common.schema.json#/definitions/isoDateTime" },
+    "verificationStatus": { "$ref": "common.schema.json#/definitions/verificationStatus" },
+    "confidence": { "$ref": "common.schema.json#/definitions/dataConfidence" },
+    "dataOwner": { "type": "string" }
+  }
+}

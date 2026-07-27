@@ -96,8 +96,8 @@
       "datasetIds": ["project-portfolio-generated-fixture-demo"],
       "classification": "public",
       "delivery": "bundled-static",
-      "checksum": "928a751ef19ceca39dc2d77f69dc6eec12f567cd857e6029f0a063854bf86f37",
-      "note": "Phase 2 test/demo fixture for GeneratedJsonProjectPortfolioSource (docs/project-data-import/) — hand-written, entirely fictional, zero real project data. Not the output of a real importer (Phase 4)."
+      "checksum": "e35c6ff04b4c490d9be79a670aec8d084ce4181b3c097e2b67e8f3c2efd7e593",
+      "note": "Phase 3 canonical-shape test/demo fixture for GeneratedJsonProjectPortfolioSource (docs/project-data-import/) — hand-written, entirely fictional, zero real project data. Not the output of a real importer (Phase 4)."
     }
   ]
 }

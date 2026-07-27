@@ -1,0 +1,2 @@
+project_id,observed_at,planned_physical_progress_pct,physical_progress_pct,financial_progress_pct,disbursed_amount_vnd,source_dataset_id,source_record_id,imported_at,verification_status,confidence,data_owner
+project-example-001,2026-07-01T00:00:00.000Z,25,20,20,2000000000,REPLACE_WITH_REAL_DATASET_ID,snap-example-001,2026-07-15T00:00:00.000Z,submitted,,

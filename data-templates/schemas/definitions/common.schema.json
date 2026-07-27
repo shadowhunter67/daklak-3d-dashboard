@@ -1,0 +1,122 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data-templates/schemas/definitions/common.schema.json",
+  "definitions": {
+    "vndAmount": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9007199254740991,
+      "description": "VND, số nguyên (Number.isInteger), không âm, <= Number.MAX_SAFE_INTEGER. Đây chỉ là Layer 1 (structural) — cùng 4 điều kiện của isValidVndAmount() trong src/entities/project/validation/validateProject.ts, KHÔNG thay thế hàm đó (Layer 2 vẫn phải gọi lại)."
+    },
+    "percentage": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "isoDate": {
+      "type": "string",
+      "format": "date",
+      "description": "YYYY-MM-DD — date-only field (vd plannedStart/plannedDate). KHÔNG chấp nhận DD/MM/YYYY hay định dạng mơ hồ khác."
+    },
+    "isoDateTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 đầy đủ có timezone (vd observedAt/dataUpdatedAt). KHÔNG chấp nhận date-only ở field này."
+    },
+    "nonEmptyString": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Chuỗi rỗng không hợp lệ cho identifier/name/title — field optional vắng mặt phải bỏ hẳn key hoặc dùng null tuỳ khai báo, không dùng \"\"."
+    },
+    "verificationStatus": {
+      "enum": [
+        "raw",
+        "validated-automatically",
+        "submitted",
+        "reviewed",
+        "approved",
+        "rejected",
+        "superseded"
+      ]
+    },
+    "dataConfidence": {
+      "enum": ["verified", "high", "medium", "low", "unknown"]
+    },
+    "geometrySource": {
+      "enum": [
+        "surveyed",
+        "design-drawing",
+        "administrative-boundary-derived",
+        "approximate-manual",
+        "unknown"
+      ]
+    },
+    "longitude": { "type": "number", "minimum": -180, "maximum": 180 },
+    "latitude": { "type": "number", "minimum": -90, "maximum": 90 },
+    "position2D": {
+      "type": "array",
+      "items": [{ "$ref": "#/definitions/longitude" }, { "$ref": "#/definitions/latitude" }],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "pointGeometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "const": "Point" },
+        "coordinates": { "$ref": "#/definitions/position2D" }
+      }
+    },
+    "lineStringGeometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "const": "LineString" },
+        "coordinates": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/position2D" },
+          "minItems": 2
+        }
+      }
+    },
+    "linearRing": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/position2D" },
+      "minItems": 4
+    },
+    "polygonGeometry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "coordinates"],
+      "properties": {
+        "type": { "const": "Polygon" },
+        "coordinates": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/linearRing" },
+          "minItems": 1
+        }
+      }
+    },
+    "projectGeometry": {
+      "description": "Point | LineString | Polygon — KHÔNG chấp nhận GeometryCollection hay Multi* (chưa có use case, xem docs/project-data-import/geometry-contract.md).",
+      "oneOf": [
+        { "$ref": "#/definitions/pointGeometry" },
+        { "$ref": "#/definitions/lineStringGeometry" },
+        { "$ref": "#/definitions/polygonGeometry" }
+      ]
+    },
+    "geometryMetadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "confidence", "approximate"],
+      "properties": {
+        "source": { "$ref": "#/definitions/geometrySource" },
+        "confidence": { "$ref": "#/definitions/dataConfidence" },
+        "approximate": { "type": "boolean" },
+        "legalStatusDisclaimer": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

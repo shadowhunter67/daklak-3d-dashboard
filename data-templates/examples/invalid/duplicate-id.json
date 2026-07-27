@@ -1,0 +1,69 @@
+{
+  "schemaVersion": "1.0.0",
+  "bundleVersion": "example-invalid-7",
+  "metadata": {
+    "generatedAt": "2026-07-27T00:00:00.000Z",
+    "asOf": "2026-07-20T00:00:00.000Z",
+    "sourceDatasetIds": ["project-portfolio-generated-fixture-demo"],
+    "administrativeCodeVersion": "daklak-labels-v1",
+    "classification": "public",
+    "producer": "phase3-manual-example",
+    "description": "PASS JSON Schema (Layer 1) — mỗi project object riêng lẻ đều hợp lệ. FAIL ở Layer 3 (data-quality: duplicate-primary-key) — hai project cùng id 'project-dup-001'."
+  },
+  "datasets": {
+    "agencies": [],
+    "contractors": [],
+    "projects": [
+      {
+        "id": "project-dup-001",
+        "code": "DUP-001-A",
+        "name": "Dự án trùng id — bản A (ví dụ invalid)",
+        "description": "Bản ghi thứ nhất.",
+        "sector": "transport",
+        "status": "active",
+        "priority": "medium",
+        "managingAuthorityId": "agency-x",
+        "investorId": "agency-x",
+        "approvedBudget": 1000000000,
+        "disbursedAmount": 0,
+        "overallProgress": 0,
+        "plannedProgress": 0,
+        "financialProgress": 0,
+        "administrativeAreaCodes": ["22165"],
+        "dataUpdatedAt": "2026-07-20T00:00:00.000Z",
+        "dataOwner": "Example",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "confidence": "medium",
+        "verificationStatus": "validated-automatically"
+      },
+      {
+        "id": "project-dup-001",
+        "code": "DUP-001-B",
+        "name": "Dự án trùng id — bản B (ví dụ invalid)",
+        "description": "Bản ghi thứ hai, cùng id với bản ghi thứ nhất.",
+        "sector": "energy",
+        "status": "active",
+        "priority": "medium",
+        "managingAuthorityId": "agency-x",
+        "investorId": "agency-x",
+        "approvedBudget": 2000000000,
+        "disbursedAmount": 0,
+        "overallProgress": 0,
+        "plannedProgress": 0,
+        "financialProgress": 0,
+        "administrativeAreaCodes": ["22165"],
+        "dataUpdatedAt": "2026-07-20T00:00:00.000Z",
+        "dataOwner": "Example",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "confidence": "medium",
+        "verificationStatus": "validated-automatically"
+      }
+    ],
+    "workPackages": [],
+    "milestones": [],
+    "projectIssues": [],
+    "progressSnapshots": [],
+    "evidence": [],
+    "referenceDocuments": []
+  }
+}

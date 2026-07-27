@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data-templates/schemas/definitions/reference-document.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "issuingAuthority", "legalStatus"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "title": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "issuingAuthority": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "documentNumber": { "type": "string" },
+    "issuedDate": { "$ref": "common.schema.json#/definitions/isoDate" },
+    "legalStatus": { "enum": ["draft", "in-effect", "superseded", "unknown"] },
+    "sourceUrl": { "type": "string", "format": "uri" },
+    "sourceDatasetId": { "type": "string" },
+    "verificationStatus": { "$ref": "common.schema.json#/definitions/verificationStatus" }
+  }
+}

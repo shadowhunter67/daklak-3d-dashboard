@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "1.0.0",
+  "bundleVersion": "example-invalid-6",
+  "metadata": {
+    "generatedAt": "2026-07-27T00:00:00.000Z",
+    "asOf": "2026-07-20T00:00:00.000Z",
+    "sourceDatasetIds": ["project-portfolio-generated-fixture-demo"],
+    "administrativeCodeVersion": "daklak-labels-v1",
+    "classification": "public",
+    "producer": "phase3-manual-example",
+    "description": "PASS JSON Schema (Layer 1) — workPackage.projectId là một string hợp lệ. FAIL ở Layer 3 (cross-record/data-quality): 'project-does-not-exist' không tồn tại trong datasets.projects[]. Đây là ví dụ minh hoạ ranh giới Layer 1 vs Layer 3, không phải lỗi trong schema."
+  },
+  "datasets": {
+    "agencies": [],
+    "contractors": [],
+    "projects": [
+      {
+        "id": "project-real-001",
+        "code": "REAL-001",
+        "name": "Dự án thật (ví dụ)",
+        "description": "Dự án duy nhất tồn tại trong bundle này.",
+        "sector": "transport",
+        "status": "active",
+        "priority": "medium",
+        "managingAuthorityId": "agency-x",
+        "investorId": "agency-x",
+        "approvedBudget": 1000000000,
+        "disbursedAmount": 0,
+        "overallProgress": 0,
+        "plannedProgress": 0,
+        "financialProgress": 0,
+        "administrativeAreaCodes": ["22165"],
+        "dataUpdatedAt": "2026-07-20T00:00:00.000Z",
+        "dataOwner": "Example",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "confidence": "medium",
+        "verificationStatus": "validated-automatically"
+      }
+    ],
+    "workPackages": [
+      {
+        "id": "wp-broken-fk",
+        "projectId": "project-does-not-exist",
+        "code": "WP-01",
+        "name": "Gói thầu tham chiếu sai projectId (ví dụ invalid)",
+        "plannedStart": "2026-01-01",
+        "plannedEnd": "2026-06-01",
+        "plannedProgress": 0,
+        "actualProgress": 0,
+        "budget": 100000000,
+        "paidAmount": 0,
+        "status": "planned"
+      }
+    ],
+    "milestones": [],
+    "projectIssues": [],
+    "progressSnapshots": [],
+    "evidence": [],
+    "referenceDocuments": []
+  }
+}

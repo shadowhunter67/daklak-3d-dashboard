@@ -1,0 +1,2 @@
+id,project_id,work_package_id,name,planned_date,forecast_date,actual_date,critical,status,source_dataset_id,source_record_id,observed_at,verification_status,confidence,data_owner
+ms-example-001,project-example-001,wp-example-001,"Ví dụ: cất nóc",2026-08-01,,,true,on-track,REPLACE_WITH_REAL_DATASET_ID,,,,,

@@ -433,9 +433,9 @@ export const INVESTMENT_OPPORTUNITIES_ILLUSTRATIVE_DATASET: DatasetDescriptor = 
  */
 export const PROJECT_PORTFOLIO_GENERATED_FIXTURE_DATASET: DatasetDescriptor = {
   id: 'project-portfolio-generated-fixture-demo',
-  title: 'Bundle generated-json kiểm thử (Phase 2 — data-access boundary)',
+  title: 'Bundle generated-json kiểm thử (Phase 3 — canonical bundle, data-access boundary)',
   description:
-    'Bundle JSON viết tay dùng để kiểm thử GeneratedJsonProjectPortfolioSource — một dự án hoàn toàn hư cấu, không phải output của importer thật và không phải dữ liệu vận hành thật.',
+    'Canonical bundle JSON viết tay dùng để kiểm thử GeneratedJsonProjectPortfolioSource — một dự án hoàn toàn hư cấu, không phải output của importer thật và không phải dữ liệu vận hành thật.',
   domain: 'planning',
   classification: 'public',
   authority: 'illustrative',
@@ -444,7 +444,7 @@ export const PROJECT_PORTFOLIO_GENERATED_FIXTURE_DATASET: DatasetDescriptor = {
   temporalResolution: 'static',
   spatialRepresentation: 'point',
   source: {
-    organization: 'Phase 2 test fixture (nội bộ project, không phải nguồn thật)',
+    organization: 'Phase 3 test fixture (nội bộ project, không phải nguồn thật)',
     repositoryPath: 'src/assets/data/project-portfolio.generated-fixture-demo.json',
   },
   version: '1.0.0',
@@ -452,7 +452,7 @@ export const PROJECT_PORTFOLIO_GENERATED_FIXTURE_DATASET: DatasetDescriptor = {
   quality: {
     status: 'unverified',
     knownLimitations: [
-      'Dữ liệu hư cấu 100%, viết tay cho mục đích kiểm thử Phase 2 — không phải output của importer thật (Phase 4 chưa triển khai).',
+      'Dữ liệu hư cấu 100%, viết tay cho mục đích kiểm thử Phase 3 (canonical schema) — không phải output của importer thật (Phase 4 chưa triển khai).',
       'Không được dùng làm căn cứ cho bất kỳ quyết định quản lý, phê duyệt hay báo cáo thực tế nào.',
       'Không tính checksum riêng ở cấp dataset — checksum của file vật lý đã ghi trong config/public-data-files.json.',
     ],

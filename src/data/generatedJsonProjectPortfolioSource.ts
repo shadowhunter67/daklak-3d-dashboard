@@ -1,30 +1,37 @@
 /**
- * `GeneratedJsonProjectPortfolioSource` — Phase 2 (docs/project-data-import/03-importer-design.md,
- * 01-target-architecture.md §2.2). Đọc một bundle JSON đã "chuẩn hoá sẵn" (wire format tối giản —
- * xem `GeneratedProjectPortfolioBundleFile` bên dưới), KHÔNG tự parse CSV, KHÔNG fetch qua network.
- * Bundle được import tĩnh (Vite bundles vào chunk JS), giống cơ chế
- * `IllustrativeProjectPortfolioSource` — chỉ khác nguồn file. Dùng cho data mode `internal-static`
- * (xem docs/project-data-import/04-deployment-profiles-design.md).
+ * `GeneratedJsonProjectPortfolioSource` — Phase 3 (docs/project-data-import/, ADR 0006). Đọc một
+ * CANONICAL bundle JSON (`CanonicalProjectPortfolioBundle`,
+ * `src/entities/project/canonicalBundle.ts`) — thay thế wire format tạm thời Phase 2
+ * (`GeneratedProjectPortfolioBundleFile`, dataset-oriented nông cạn không versioned) bằng canonical
+ * schema đầy đủ, versioned, có JSON Schema mirror
+ * (`data-templates/schemas/project-portfolio-bundle.schema.json`).
  *
- * Fixture Phase 2 (`src/assets/data/project-portfolio.generated-fixture-demo.json`) là dữ liệu hư
- * cấu viết tay để kiểm thử adapter này — KHÔNG phải output của importer thật (Phase 4 chưa triển
- * khai). Phase 3/4 chỉ cần thay nội dung file (canonical schema đầy đủ hơn, sinh bởi importer), giữ
- * nguyên chữ ký `ProjectPortfolioSource` — component/KPI/domain không cần sửa.
+ * Luồng (docs/project-data-import/03-importer-design.md, cập nhật Phase 3):
+ *   canonical JSON → structural shape guard (nhẹ, KHÔNG chạy Ajv trong browser — xem "Option A" bên
+ *   dưới) → kiểm tra schemaVersion được hỗ trợ → transport-to-domain mapping
+ *   (`groupCanonicalDatasetsIntoProjectBundles`) → domain record validation (`validateProject.ts`,
+ *   không viết lại) → `ProjectPortfolioLoadResult`.
  *
- * Gọi lại nguyên vẹn `validateProjectRecord`/`validateWorkPackageRecord`/`validateMilestoneRecord`/
- * `validateProjectIssueRecord`/`validateProgressSnapshotRecord` (không viết lại business rule) — nếu
- * phát hiện lỗi structural ở record, trả `status: 'degraded'` kèm `issues` (dữ liệu vẫn dùng được,
- * chỉ cần cảnh báo, đúng pattern `FakeProjectPortfolioSource.degraded()`); nếu bản thân cấu trúc
- * top-level JSON sai hình dạng, trả `status: 'error'` (`kind: 'schema-invalid'`) — KHÔNG BAO GIỜ
- * fallback âm thầm sang illustrative data (người vận hành phải biết ngay bundle generated đang lỗi,
- * không được âm thầm thấy dữ liệu minh hoạ mà tưởng là dữ liệu đã import thật).
+ * **Option A (build-time validated bundle)**: Ajv/JSON Schema KHÔNG được import ở file này (không
+ * đi vào browser production bundle) — full JSON Schema validation chạy ở
+ * `npm run validate:project-data-contract` (Node tooling, `scripts/validate_project_data_contract.mjs`)
+ * trên chính file `project-portfolio.generated-fixture-demo.json`, TRƯỚC KHI build. Runtime ở đây
+ * chỉ làm một type-guard tối thiểu (đủ để không throw khi truy cập field) + kiểm tra
+ * `schemaVersion` nằm trong allowlist hỗ trợ — không phải một JSON Schema validator đầy đủ.
+ *
+ * KHÔNG BAO GIỜ fallback âm thầm sang illustrative data khi bundle lỗi (schema-invalid hoặc
+ * unsupported-schema-version) — người vận hành phải biết ngay build `internal-static` đang lỗi.
  *
  * Sống ở `src/data/`, không phải `src/entities/project/adapters/`, cùng lý do với
- * `IllustrativeProjectPortfolioSource` (xem `projectPortfolioSource.ts`) — dù adapter này không tự
- * import GIS asset, nó vẫn là một concrete implementation, không phải type/interface thuần, nên
- * không thuộc domain layer "chỉ có type + hàm thuần" dưới `src/entities/project/`.
+ * `IllustrativeProjectPortfolioSource` (concrete implementation, không phải type/interface thuần).
  */
+import labels from '../assets/maps/daklak/daklak-labels.json';
 import bundleFile from '../assets/data/project-portfolio.generated-fixture-demo.json';
+import {
+  isSupportedCanonicalSchemaVersion,
+  type CanonicalProjectPortfolioBundle,
+} from '../entities/project/canonicalBundle';
+import { groupCanonicalDatasetsIntoProjectBundles } from '../entities/project/canonicalBundleMapper';
 import type { ProjectBundle } from '../entities/project/types';
 import {
   validateMilestoneRecord,
@@ -35,60 +42,54 @@ import {
 } from '../entities/project/validation/validateProject';
 import type {
   ProjectPortfolioLoadResult,
-  ProjectPortfolioProvenance,
   ProjectPortfolioSource,
   ProjectPortfolioSourceMetadata,
 } from '../entities/project/adapters/ProjectPortfolioSource';
 
-/**
- * Wire format tối giản Phase 2 — KHÔNG phải canonical schema đầy đủ. Xem
- * docs/project-data-import/02-canonical-schema-proposal.md §5 cho wire format mục tiêu Phase 3
- * (bao gồm agencies/contractors/evidence/referenceDocuments/auditEventsDemo mà Phase 2 chưa cần vì
- * chưa có UI/domain nào tiêu thụ các mảng đó qua nguồn generated-json).
- */
-interface GeneratedProjectPortfolioBundleFile {
-  schemaVersion: string;
-  bundleVersion: string;
-  generatedAt: string;
-  asOf: string;
-  sourceId: string;
-  datasetIds: string[];
-  validAdministrativeCodes: string[];
-  provenance: Omit<ProjectPortfolioProvenance, 'loadedInBrowserAt'>;
-  bundles: ProjectBundle[];
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0;
 }
 
-function isStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every((item) => typeof item === 'string');
-}
-
-/** Kiểm tra hình dạng top-level — KHÔNG kiểm tra sâu từng field của từng `ProjectBundle` (đó là việc
- * của `validateProjectRecord`/... gọi ngay sau bước này, xem `validateBundles`). Chỉ đủ để biết file
- * có thể coi là một `GeneratedProjectPortfolioBundleFile` một cách an toàn hay không — một type
- * guard tối thiểu, không phải một JSON Schema validator đầy đủ (đó là việc của Phase 3). */
-function isPlausibleBundleFileShape(value: unknown): value is GeneratedProjectPortfolioBundleFile {
-  if (typeof value !== 'object' || value === null) return false;
-  const candidate = value as Record<string, unknown>;
+/**
+ * Type guard tối thiểu — KHÔNG phải JSON Schema validator đầy đủ (đó là việc của
+ * `validate_project_data_contract.mjs`, chạy build-time). Chỉ đủ để biết bundle có hình dạng
+ * top-level an toàn để truy cập field hay không.
+ */
+function isPlausibleCanonicalBundleShape(value: unknown): value is CanonicalProjectPortfolioBundle {
+  if (!isPlainObject(value)) return false;
+  if (!isNonEmptyString(value.schemaVersion) || !isNonEmptyString(value.bundleVersion))
+    return false;
+  if (!isPlainObject(value.metadata) || !isPlainObject(value.datasets)) return false;
+  const metadata = value.metadata;
+  if (
+    !isNonEmptyString(metadata.generatedAt) ||
+    !isNonEmptyString(metadata.asOf) ||
+    !isNonEmptyString(metadata.administrativeCodeVersion) ||
+    !isNonEmptyString(metadata.classification) ||
+    !isNonEmptyString(metadata.producer) ||
+    !Array.isArray(metadata.sourceDatasetIds)
+  )
+    return false;
+  const datasets = value.datasets;
   return (
-    isNonEmptyString(candidate.schemaVersion) &&
-    isNonEmptyString(candidate.bundleVersion) &&
-    isNonEmptyString(candidate.generatedAt) &&
-    isNonEmptyString(candidate.asOf) &&
-    isNonEmptyString(candidate.sourceId) &&
-    isStringArray(candidate.datasetIds) &&
-    isStringArray(candidate.validAdministrativeCodes) &&
-    typeof candidate.provenance === 'object' &&
-    candidate.provenance !== null &&
-    Array.isArray(candidate.bundles)
+    Array.isArray(datasets.agencies) &&
+    Array.isArray(datasets.contractors) &&
+    Array.isArray(datasets.projects) &&
+    Array.isArray(datasets.workPackages) &&
+    Array.isArray(datasets.milestones) &&
+    Array.isArray(datasets.projectIssues) &&
+    Array.isArray(datasets.progressSnapshots) &&
+    Array.isArray(datasets.evidence) &&
+    Array.isArray(datasets.referenceDocuments)
   );
 }
 
 /** Gọi lại nguyên vẹn validator hiện có trên từng record — không viết lại business rule nào (xem
- * docs/project-data-import/03-importer-design.md §1, áp dụng nguyên tắc tương tự cho adapter này). */
+ * docs/project-data-import/03-importer-design.md §1). */
 function validateBundles(bundles: readonly ProjectBundle[]): string[] {
   const errors: string[] = [];
   for (const bundle of bundles) {
@@ -104,20 +105,20 @@ function validateBundles(bundles: readonly ProjectBundle[]): string[] {
 }
 
 function buildMetadata(
-  file: GeneratedProjectPortfolioBundleFile | null,
+  bundle: CanonicalProjectPortfolioBundle | null,
 ): ProjectPortfolioSourceMetadata {
   return {
-    sourceId: file?.sourceId ?? 'generated-json',
+    sourceId: 'generated-json',
     sourceKind: 'generated-json',
-    displayName: 'Generated JSON bundle (Phase 2 test fixture)',
-    datasetIds: file?.datasetIds ?? [],
-    schemaVersion: file?.schemaVersion ?? null,
-    bundleVersion: file?.bundleVersion ?? null,
-    asOf: file?.asOf ?? null,
-    generatedAt: file?.generatedAt ?? null,
+    displayName: 'Generated JSON bundle (Phase 3 canonical, test fixture)',
+    datasetIds: bundle?.metadata.sourceDatasetIds ?? [],
+    schemaVersion: bundle?.schemaVersion ?? null,
+    bundleVersion: bundle?.bundleVersion ?? null,
+    asOf: bundle?.metadata.asOf ?? null,
+    generatedAt: bundle?.metadata.generatedAt ?? null,
     isIllustrative: false,
-    // Bundle Phase 2 chưa qua bước lọc public-projection (Phase 3/6) — chỉ tuyên bố tương thích
-    // internal-static, KHÔNG tuyên bố public-static cho tới khi có cơ chế lọc thật.
+    // Bundle Phase 3 chưa qua bước lọc public-projection (Phase 6) — chỉ tuyên bố tương thích
+    // internal-static, KHÔNG public-static, cho tới khi có cơ chế lọc thật.
     deploymentCompatibility: ['internal-static'],
   };
 }
@@ -126,34 +127,61 @@ function readRawBundleFile(): unknown {
   return bundleFile;
 }
 
+/** Nguồn thật DUY NHẤT cho mã hành chính hợp lệ — cùng file `IllustrativeProjectPortfolioSource`
+ * dùng (xem `src/data/projectPortfolioSource.ts`). Canonical bundle KHÔNG tự mang danh sách mã hành
+ * chính riêng (xem JSDoc `src/entities/project/canonicalBundle.ts` — lý do tránh hai nguồn sự thật
+ * có thể lệch nhau); `metadata.administrativeCodeVersion` chỉ là một khai báo tham chiếu phiên bản,
+ * không phải bản thân dữ liệu. */
+const validAdministrativeCodes = new Set(Object.keys(labels));
+
 export class GeneratedJsonProjectPortfolioSource implements ProjectPortfolioSource {
   getMetadata(): ProjectPortfolioSourceMetadata {
     const raw = readRawBundleFile();
-    return buildMetadata(isPlausibleBundleFileShape(raw) ? raw : null);
+    return buildMetadata(isPlausibleCanonicalBundleShape(raw) ? raw : null);
   }
 
   async loadPortfolio(): Promise<ProjectPortfolioLoadResult> {
     const raw = readRawBundleFile();
-    if (!isPlausibleBundleFileShape(raw)) {
+    if (!isPlausibleCanonicalBundleShape(raw)) {
       return {
         status: 'error',
         error: {
           kind: 'schema-invalid',
           message:
-            'Generated JSON bundle không đúng hình dạng top-level mong đợi (thiếu hoặc sai kiểu field bắt buộc) — xem GeneratedProjectPortfolioBundleFile trong generatedJsonProjectPortfolioSource.ts.',
+            'Generated JSON bundle không đúng hình dạng canonical top-level mong đợi — xem CanonicalProjectPortfolioBundle trong src/entities/project/canonicalBundle.ts.',
         },
       };
     }
 
-    const validAdministrativeCodes = new Set(raw.validAdministrativeCodes);
-    const issues = validateBundles(raw.bundles);
+    if (!isSupportedCanonicalSchemaVersion(raw.schemaVersion)) {
+      return {
+        status: 'error',
+        error: {
+          kind: 'unsupported-schema-version',
+          message: `Generated JSON bundle có schemaVersion '${raw.schemaVersion}' không được hỗ trợ — xem SUPPORTED_CANONICAL_SCHEMA_VERSIONS trong canonicalBundle.ts. Không parse "best-effort" một version chưa hỗ trợ.`,
+        },
+      };
+    }
+
+    const bundles = groupCanonicalDatasetsIntoProjectBundles(raw.datasets);
+    const issues = validateBundles(bundles);
     const metadata = buildMetadata(raw);
+    // Bốn mốc của ProjectPortfolioProvenance ánh xạ từ hai field canonical metadata sẵn có (asOf,
+    // generatedAt) — canonical bundle Phase 3 chưa có 4 mốc tách biệt như fixture minh hoạ viết tay
+    // (xem docs/project-data-import/02-canonical-schema-proposal.md, "Metadata tối thiểu" không liệt
+    // kê 4 field này). Đây là giản lược có chủ đích, không phải bịa giá trị khác nhau giả tạo —
+    // effectiveAt/sourcePublishedAt cùng dùng `asOf`; retrievedAt/publishedToDashboardAt cùng dùng
+    // `generatedAt`, vì bundle generated-json không phân biệt hai cặp khái niệm này ở Phase 3.
     const data = {
-      bundles: raw.bundles,
+      bundles,
       validAdministrativeCodes,
-      // `loadedInBrowserAt` là mốc runtime hợp lệ DUY NHẤT — các mốc còn lại đến từ bundle file,
-      // không phải giờ hệ thống (cùng nguyên tắc với IllustrativeProjectPortfolioSource).
-      provenance: { ...raw.provenance, loadedInBrowserAt: new Date().toISOString() },
+      provenance: {
+        effectiveAt: raw.metadata.asOf,
+        sourcePublishedAt: raw.metadata.asOf,
+        retrievedAt: raw.metadata.generatedAt,
+        publishedToDashboardAt: raw.metadata.generatedAt,
+        loadedInBrowserAt: new Date().toISOString(),
+      },
       metadata,
     };
 

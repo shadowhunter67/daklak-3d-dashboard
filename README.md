@@ -185,6 +185,21 @@ tại build time, không có backend, không có runtime query. Xem
 [docs/project-data-import/04-deployment-profiles-design.md](docs/project-data-import/04-deployment-profiles-design.md)
 để biết chi tiết thiết kế và giới hạn từng mode.
 
+## Canonical project-portfolio data contract
+
+`internal-static`/`public-static` đọc một **canonical bundle** JSON versioned
+(`CanonicalProjectPortfolioBundle`, [ADR 0006](docs/adr/0006-canonical-project-portfolio-data-contract.md)) —
+JSON Schema mirror ở `data-templates/schemas/`, ví dụ/template ở `data-templates/examples/` và
+`data-templates/csv/`. Kiểm tra một bundle theo canonical schema:
+
+```bash
+npm run validate:project-data-contract
+```
+
+Script này chỉ chạy Node/CI (Ajv không đi vào browser bundle). Chưa có importer CSV/XLSX thật —
+CLI nhập dữ liệu offline (đọc CSV → canonical bundle → validate) thuộc Phase 4, chưa triển khai; xem
+[docs/project-data-import/03-importer-design.md](docs/project-data-import/03-importer-design.md).
+
 ## Khả năng tiếp cận và hiệu năng
 
 - Tổng quan điều hành (landing mặc định) không cần WebGL — chỉ HTML/CSS thuần, không mount canvas nào.
@@ -219,9 +234,11 @@ tại build time, không có backend, không có runtime query. Xem
   [ADR 0001 — Project là entity trung tâm](docs/adr/0001-project-centric-domain.md) ·
   [ADR 0002 — Hash routing cho Danh mục/Chi tiết dự án](docs/adr/0002-static-host-routing.md) ·
   [domain model](docs/domain-model.md)
-- Nhập dữ liệu dự án nội bộ thật (`docs/project-data-import/`, Phase 1-2 hoàn thành, Phase 3+ chưa
-  triển khai): [chỉ mục](docs/project-data-import/README.md) ·
-  [ADR 0005 — Project portfolio source abstraction và static data modes](docs/adr/0005-project-portfolio-source-abstraction.md)
+- Nhập dữ liệu dự án nội bộ thật (`docs/project-data-import/`, Phase 1-3 hoàn thành, Phase 4+ chưa
+  triển khai — importer CLI chưa tồn tại): [chỉ mục](docs/project-data-import/README.md) ·
+  [ADR 0005 — Project portfolio source abstraction và static data modes](docs/adr/0005-project-portfolio-source-abstraction.md) ·
+  [ADR 0006 — Canonical project portfolio data contract](docs/adr/0006-canonical-project-portfolio-data-contract.md) ·
+  [canonical data dictionary](docs/project-data-import/canonical-data-dictionary.md)
 - Pipeline ingestion dữ liệu công khai tự động (`scripts/data-refresh/`, nền tảng — chưa nối nguồn
   thật): [ADR 0004](docs/adr/0004-public-data-ingestion.md) ·
   [hướng dẫn vận hành](docs/public-data-refresh.md)

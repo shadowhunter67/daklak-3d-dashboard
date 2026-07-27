@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Milestone, Project, ProjectIssue, ProgressSnapshot, WorkPackage } from '../types';
 import {
   isValidProjectGeometry,
+  isValidVndAmount,
   validateMilestoneRecord,
   validateProgressSnapshotRecord,
   validateProjectIssueRecord,
@@ -213,5 +214,97 @@ describe('isValidProjectGeometry', () => {
       ],
     });
     expect(errors.some((e) => e.includes('không khép kín'))).toBe(true);
+  });
+
+  it('accepts a valid LineString (Phase 3 — route/line project)', () => {
+    expect(
+      isValidProjectGeometry({
+        type: 'LineString',
+        coordinates: [
+          [108, 12],
+          [108.1, 12.1],
+        ],
+      }),
+    ).toEqual([]);
+  });
+
+  it('rejects a LineString with fewer than 2 points', () => {
+    expect(
+      isValidProjectGeometry({ type: 'LineString', coordinates: [[108, 12]] }).length,
+    ).toBeGreaterThan(0);
+  });
+
+  it('rejects a LineString with an out-of-range coordinate', () => {
+    expect(
+      isValidProjectGeometry({
+        type: 'LineString',
+        coordinates: [
+          [108, 12],
+          [500, 12.1],
+        ],
+      }).length,
+    ).toBeGreaterThan(0);
+  });
+});
+
+describe('geometryMetadata validation (Phase 3)', () => {
+  it('accepts a project with valid geometryMetadata paired with geometry', () => {
+    const errors = validateProjectRecord(
+      makeProject({
+        geometry: { type: 'Point', coordinates: [108, 12] },
+        geometryMetadata: { source: 'surveyed', confidence: 'high', approximate: false },
+      }),
+    );
+    expect(errors).toEqual([]);
+  });
+
+  it('rejects geometryMetadata without a matching geometry', () => {
+    const errors = validateProjectRecord(
+      makeProject({
+        geometryMetadata: { source: 'surveyed', confidence: 'high', approximate: false },
+      }),
+    );
+    expect(errors.some((e) => e.includes('geometryMetadata') && e.includes('geometry'))).toBe(true);
+  });
+
+  it('rejects approximate geometry without a legal-status disclaimer', () => {
+    const errors = validateProjectRecord(
+      makeProject({
+        geometry: { type: 'Point', coordinates: [108, 12] },
+        geometryMetadata: { source: 'approximate-manual', confidence: 'low', approximate: true },
+      }),
+    );
+    expect(errors.some((e) => e.includes('legalStatusDisclaimer'))).toBe(true);
+  });
+
+  it('accepts approximate geometry when a legal-status disclaimer is present', () => {
+    const errors = validateProjectRecord(
+      makeProject({
+        geometry: { type: 'Point', coordinates: [108, 12] },
+        geometryMetadata: {
+          source: 'approximate-manual',
+          confidence: 'low',
+          approximate: true,
+          legalStatusDisclaimer: 'Ranh giới minh hoạ, không phải ranh giới pháp lý chính thức.',
+        },
+      }),
+    );
+    expect(errors).toEqual([]);
+  });
+});
+
+describe('isValidVndAmount boundaries', () => {
+  it('accepts 0, 1 and Number.MAX_SAFE_INTEGER', () => {
+    expect(isValidVndAmount(0)).toBe(true);
+    expect(isValidVndAmount(1)).toBe(true);
+    expect(isValidVndAmount(Number.MAX_SAFE_INTEGER)).toBe(true);
+  });
+
+  it('rejects negative, fractional, non-finite and out-of-range values', () => {
+    expect(isValidVndAmount(-1)).toBe(false);
+    expect(isValidVndAmount(1.5)).toBe(false);
+    expect(isValidVndAmount(Infinity)).toBe(false);
+    expect(isValidVndAmount(NaN)).toBe(false);
+    expect(isValidVndAmount(Number.MAX_SAFE_INTEGER + 1)).toBe(false);
   });
 });

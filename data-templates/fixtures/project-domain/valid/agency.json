@@ -1,0 +1,6 @@
+{
+  "id": "agency-fixture-001",
+  "name": "Sở Kế hoạch và Đầu tư (fixture)",
+  "type": "managing-authority",
+  "sourceDatasetId": "project-portfolio-generated-fixture-demo"
+}

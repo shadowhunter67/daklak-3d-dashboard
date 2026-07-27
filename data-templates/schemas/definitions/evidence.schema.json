@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/shadowhunter67/daklak-3d-dashboard/data-templates/schemas/definitions/evidence.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "kind"],
+  "properties": {
+    "id": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "title": { "$ref": "common.schema.json#/definitions/nonEmptyString" },
+    "kind": { "enum": ["document", "photo", "report", "measurement", "other"] },
+    "capturedAt": { "$ref": "common.schema.json#/definitions/isoDateTime" },
+    "sourceDatasetId": { "type": "string" },
+    "note": { "type": "string" },
+    "dataOwner": { "type": "string" }
+  }
+}

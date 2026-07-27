@@ -22,6 +22,8 @@ import type {
   WorkPackageStatus,
 } from '../types';
 import {
+  DATA_CONFIDENCE_LEVELS,
+  GEOMETRY_SOURCES,
   MILESTONE_STATUSES,
   PROJECT_PRIORITIES,
   PROJECT_SECTORS,
@@ -45,8 +47,12 @@ function isBefore(a: string, b: string): boolean {
  * VND amount contract (Phase 1.5 — see "Chuẩn hoá tiền tệ" in docs/domain-model.md, Option A):
  * finite, integer, non-negative, within `Number.MAX_SAFE_INTEGER`. No fractional VND exists at
  * project-budget scale, so a non-integer value is always a data error, never legitimate precision.
+ *
+ * Exported từ Phase 3 (docs/project-data-import/) để canonical-schema tooling và Phase 4 importer
+ * tái dùng đúng một hàm — không viết lại 4 điều kiện này ở nơi khác (chỉ đổi `function` →
+ * `export function`, không đổi logic).
  */
-function isValidVndAmount(value: number): boolean {
+export function isValidVndAmount(value: number): boolean {
   return (
     Number.isFinite(value) &&
     Number.isInteger(value) &&
@@ -71,6 +77,13 @@ export function isValidProjectGeometry(geometry: ProjectGeometry): string[] {
   if (geometry.type === 'Point') {
     if (!isValidLonLat(geometry.coordinates))
       errors.push('Point geometry có toạ độ ngoài phạm vi hợp lệ');
+    return errors;
+  }
+
+  if (geometry.type === 'LineString') {
+    if (geometry.coordinates.length < 2) errors.push('LineString geometry cần ít nhất 2 điểm');
+    const invalidPoint = geometry.coordinates.find((point) => !isValidLonLat(point));
+    if (invalidPoint) errors.push('LineString geometry có toạ độ ngoài phạm vi hợp lệ');
     return errors;
   }
 
@@ -155,6 +168,23 @@ export function validateProjectRecord(project: Project): string[] {
 
   if (project.geometry)
     errors.push(...isValidProjectGeometry(project.geometry).map((e) => `Project ${label}: ${e}`));
+
+  if (project.geometryMetadata) {
+    if (!project.geometry)
+      errors.push(`Project ${label} có geometryMetadata nhưng không có geometry`);
+    if (!GEOMETRY_SOURCES.includes(project.geometryMetadata.source))
+      errors.push(
+        `Project ${label} có geometryMetadata.source không hợp lệ: ${project.geometryMetadata.source}`,
+      );
+    if (!DATA_CONFIDENCE_LEVELS.includes(project.geometryMetadata.confidence))
+      errors.push(
+        `Project ${label} có geometryMetadata.confidence không hợp lệ: ${project.geometryMetadata.confidence}`,
+      );
+    if (project.geometryMetadata.approximate && !project.geometryMetadata.legalStatusDisclaimer)
+      errors.push(
+        `Project ${label} có geometryMetadata.approximate=true nhưng thiếu legalStatusDisclaimer`,
+      );
+  }
 
   if (!project.administrativeAreaCodes || project.administrativeAreaCodes.length === 0)
     errors.push(
