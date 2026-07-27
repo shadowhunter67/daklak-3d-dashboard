@@ -1,6 +1,10 @@
 # Importer CLI design (Phase 1 design)
 
-Trạng thái: **đề xuất, chưa triển khai**. Không có script nào được tạo trong Phase 1.
+Trạng thái: **Phase 1 design → triển khai thật ở Phase 4** (xem
+[ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md) +
+[import-runbook.md](import-runbook.md) cho hành vi thật). Tài liệu này giữ nguyên làm hồ sơ thiết kế
+gốc — đối chiếu với ADR 0007 để biết phần nào khác khi triển khai thật (chạy qua `tsx` thay vì
+`ssrLoadModule`, import all-or-nothing thay vì per-record, orphan-reference check bổ sung).
 
 ## 1. Nguyên tắc thiết kế quan trọng nhất: importer KHÔNG viết lại business rule
 

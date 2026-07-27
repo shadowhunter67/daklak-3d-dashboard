@@ -1,8 +1,9 @@
 # Implementation backlog — Phase 2 → 6
 
-Trạng thái: **Phase 2 hoàn thành** — xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md)
-và commit trên nhánh `feature/portfolio-source-abstraction-phase2`. Phase 3-6 dưới đây vẫn là **đề
-xuất**, chưa triển khai.
+Trạng thái: **Phase 2, 3, 4 hoàn thành** — xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md),
+[ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md),
+[ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md). Phase 5-6
+dưới đây vẫn là **đề xuất**, chưa triển khai.
 
 ## Phase 2 — Source abstraction and profiles — ĐÃ LÀM
 
@@ -59,9 +60,15 @@ KHÔNG được sửa (tài liệu Phase 3 mới nằm ở `docs/project-data-im
    vào `integration-kit/field-mapping-guide.md` ở Phase 6, nhưng cấu trúc CSV mẫu cần có từ Phase 3
    để Phase 4 (importer) có input thật để test).
 
-## Phase 4 — Importer
+## Phase 4 — Importer — ĐÃ LÀM
 
-Theo đúng 03-importer-design.md. Trình tự đề xuất trong phase này:
+Triển khai thật khác danh sách gốc dưới đây ở vài điểm (chi tiết + lý do ở
+[ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md)): chạy
+TypeScript trực tiếp qua `tsx` thay vì build step riêng; import all-or-nothing theo TOÀN BỘ lần chạy
+(không per-record partial-drop) thay vì "6. FK/duplicate-PK check + tiếp tục" ngầm định partial-accept;
+phát hiện và vá một khoảng trống thật ở mapper Phase 3 (orphan child record bị mapper âm thầm loại bỏ
+khỏi mọi bundle, không lỗi) bằng một integrity check riêng ở tầng importer. Danh sách gốc giữ nguyên
+làm hồ sơ:
 
 1. CSV/JSON reader thuần (unit test riêng, không phụ thuộc phần còn lại).
 2. Normalize/trim/null-coercion/date-parser/VND-parser (unit test riêng).
@@ -81,6 +88,21 @@ Theo đúng 03-importer-design.md. Trình tự đề xuất trong phase này:
 
 ## Phase 5 — Demo completeness
 
+0. Việc hoãn từ Phase 4 (xem ADR 0007 + `docs/project-data-import/csv-contract.md`):
+   - CSV header alias mapping (config `{"projects": {"project_code": "code"}}`) — Phase 4 chỉ chấp
+     nhận canonical column name.
+   - XLSX input format — chưa đánh giá dependency (license/security) vì chưa có nhu cầu vận hành cụ
+     thể.
+   - Per-record partial-import/quarantine (thay vì all-or-nothing theo toàn bộ lần chạy) — cần thiết
+     kế lại rejected-records/report format nếu triển khai.
+   - `geometry_json` CSV cell (JSON string trong 1 cột) cho geometry qua CSV — hiện phải dùng JSON
+     mode nếu cần geometry.
+   - Đổi tên `src/assets/data/project-portfolio.generated-fixture-demo.json` (tên kế thừa Phase 2/3,
+     giờ có thể chứa dữ liệu import thật) — kéo theo sửa checksum/config/test tham chiếu path đó.
+   - `--source-registry`/DATASET_CATALOG: chưa có UI/CLI để tự thêm `DatasetDescriptor` mới cho một
+     `sourceDatasetId` lạ — vẫn phải sửa `src/data-platform/catalog/datasets.ts` thủ công.
+   - `--last-known-good` auto-promote (tuỳ chọn copy `--output` mới vào vị trí baseline) — hiện chỉ
+     so sánh, không ghi (xem `last-known-good-policy.md`).
 1. Scenario factory (`src/entities/project/scenarioFactory.ts` hoặc tương tự) — hàm thuần sinh
    `ProjectBundle` theo tham số scenario, KHÔNG thay thế 9 project viết tay hiện có, chỉ **thêm**
    project mới qua factory để phủ 10 scenario còn thiếu (00-gap-analysis.md §3.6): unverified

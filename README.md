@@ -196,9 +196,30 @@ JSON Schema mirror ở `data-templates/schemas/`, ví dụ/template ở `data-te
 npm run validate:project-data-contract
 ```
 
-Script này chỉ chạy Node/CI (Ajv không đi vào browser bundle). Chưa có importer CSV/XLSX thật —
-CLI nhập dữ liệu offline (đọc CSV → canonical bundle → validate) thuộc Phase 4, chưa triển khai; xem
-[docs/project-data-import/03-importer-design.md](docs/project-data-import/03-importer-design.md).
+Script này chỉ chạy Node/CI (Ajv không đi vào browser bundle).
+
+### Offline importer (Phase 4)
+
+Nhập dữ liệu dự án nội bộ (canonical JSON hoặc thư mục CSV) thành một bundle đã validate:
+
+```bash
+npm run import:data -- --input ./incoming-data --output ./generated-data --as-of 2026-07-27T00:00:00.000Z
+npm run stage:internal-portfolio -- --bundle ./generated-data/project-portfolio.bundle.json
+npm run build:internal-static
+```
+
+Định dạng hỗ trợ THẬT: một file canonical JSON bundle hoàn chỉnh, HOẶC một thư mục CSV (9 dataset,
+header canonical — xem [csv-contract.md](docs/project-data-import/csv-contract.md)). **Không hỗ trợ
+XLSX** ở Phase 4 (chưa đánh giá dependency, chưa có nhu cầu vận hành cụ thể). Importer KHÔNG viết lại
+mapper/domain validator/quality rule — chỉ orchestrate lại các module đã có từ Phase 3, cộng thêm một
+integrity check riêng cho reference tới project không tồn tại. Import là all-or-nothing theo TOÀN BỘ
+lần chạy (một lỗi chặn khiến cả lần chạy bị từ chối, không có "import thành công một phần") — không
+bao giờ silently drop record. **Importer output KHÔNG tự động là public-approved output** —
+`stage:internal-portfolio` chỉ đưa dữ liệu vào build `internal-static`, không có bước lọc
+public-projection (vẫn là Phase 6, chưa triển khai); không dùng cho `public-static`. Không thêm
+database/backend/authentication nào. Xem
+[ADR 0007](docs/adr/0007-offline-project-data-importer-and-last-known-good-promotion.md) và
+[import-runbook.md](docs/project-data-import/import-runbook.md) cho chi tiết đầy đủ.
 
 ## Khả năng tiếp cận và hiệu năng
 
@@ -234,11 +255,13 @@ CLI nhập dữ liệu offline (đọc CSV → canonical bundle → validate) th
   [ADR 0001 — Project là entity trung tâm](docs/adr/0001-project-centric-domain.md) ·
   [ADR 0002 — Hash routing cho Danh mục/Chi tiết dự án](docs/adr/0002-static-host-routing.md) ·
   [domain model](docs/domain-model.md)
-- Nhập dữ liệu dự án nội bộ thật (`docs/project-data-import/`, Phase 1-3 hoàn thành, Phase 4+ chưa
-  triển khai — importer CLI chưa tồn tại): [chỉ mục](docs/project-data-import/README.md) ·
+- Nhập dữ liệu dự án nội bộ thật (`docs/project-data-import/`, Phase 1-4 hoàn thành, Phase 5+ chưa
+  triển khai): [chỉ mục](docs/project-data-import/README.md) ·
   [ADR 0005 — Project portfolio source abstraction và static data modes](docs/adr/0005-project-portfolio-source-abstraction.md) ·
   [ADR 0006 — Canonical project portfolio data contract](docs/adr/0006-canonical-project-portfolio-data-contract.md) ·
-  [canonical data dictionary](docs/project-data-import/canonical-data-dictionary.md)
+  [ADR 0007 — Offline importer và last-known-good promotion](docs/adr/0007-offline-project-data-importer-and-last-known-good-promotion.md) ·
+  [canonical data dictionary](docs/project-data-import/canonical-data-dictionary.md) ·
+  [import runbook](docs/project-data-import/import-runbook.md)
 - Pipeline ingestion dữ liệu công khai tự động (`scripts/data-refresh/`, nền tảng — chưa nối nguồn
   thật): [ADR 0004](docs/adr/0004-public-data-ingestion.md) ·
   [hướng dẫn vận hành](docs/public-data-refresh.md)
