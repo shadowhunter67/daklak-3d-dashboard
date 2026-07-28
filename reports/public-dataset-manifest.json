@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T09:26:16.924Z",
+  "generatedAt": "2026-07-28T03:50:59.286Z",
   "allDatasetIds": [
     "administrative-units",
     "province-overview-indicators",
@@ -13,6 +13,7 @@
     "project-progress-illustrative",
     "project-issues-illustrative",
     "project-portfolio-generated-fixture-demo",
+    "project-portfolio-generated-fixture-demo-public-projected",
     "investment-opportunities-daklak-illustrative"
   ],
   "publicDatasetIds": [
@@ -28,6 +29,7 @@
     "project-progress-illustrative",
     "project-issues-illustrative",
     "project-portfolio-generated-fixture-demo",
+    "project-portfolio-generated-fixture-demo-public-projected",
     "investment-opportunities-daklak-illustrative"
   ],
   "nonPublicDatasetIds": [],
@@ -43,6 +45,7 @@
     "project-progress-illustrative",
     "project-issues-illustrative",
     "project-portfolio-generated-fixture-demo",
+    "project-portfolio-generated-fixture-demo-public-projected",
     "investment-opportunities-daklak-illustrative"
   ],
   "datasets": [
@@ -114,6 +117,12 @@
     },
     {
       "id": "project-portfolio-generated-fixture-demo",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "project-portfolio-generated-fixture-demo-public-projected",
       "classification": "public",
       "delivery": "bundled-static",
       "requiresAuthentication": false
@@ -250,6 +259,26 @@
       "delivery": "bundled-static",
       "checksum": "e35c6ff04b4c490d9be79a670aec8d084ce4181b3c097e2b67e8f3c2efd7e593",
       "note": "Phase 3 canonical-shape test/demo fixture for GeneratedJsonProjectPortfolioSource (docs/project-data-import/) — hand-written, entirely fictional, zero real project data. Not the output of a real importer (Phase 4)."
+    },
+    {
+      "path": "src/assets/data/project-portfolio.public-projected.json",
+      "datasetIds": [
+        "project-portfolio-generated-fixture-demo-public-projected"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "bb84d62ecaf74632b2b720b954d78896d2f440aa3342f8f5a0808f461991bf86",
+      "note": "Phase 6 — output of `npm run project:public-data` + `npm run stage:public-portfolio`, the ONLY project-portfolio bundle build:public-static is allowed to read. Regenerate this checksum after re-running the projection pipeline."
+    },
+    {
+      "path": "src/assets/data/project-portfolio.public-projection-manifest.json",
+      "datasetIds": [
+        "project-portfolio-generated-fixture-demo-public-projected"
+      ],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "276d17451aa66916e1ca5f429804f3f498dec2649eb977ab439b35fa96633745",
+      "note": "Phase 6 — projection manifest (counts/checksums/policy version) staged alongside the public bundle; contains no removed sensitive values, only aggregate metadata (see ProjectionManifest)."
     }
   ]
 }

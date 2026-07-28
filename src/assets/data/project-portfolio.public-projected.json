@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "1.0.0",
+  "bundleVersion": "phase3-fixture-1",
+  "metadata": {
+    "generatedAt": "2026-07-28T03:39:08.983Z",
+    "asOf": "2026-07-20T00:00:00.000Z",
+    "sourceDatasetIds": ["project-portfolio-generated-fixture-demo"],
+    "administrativeCodeVersion": "daklak-labels-v1",
+    "classification": "public",
+    "producer": "phase6-public-projection-engine@1.0.0",
+    "description": "Public projection của bundle nguồn (producer gốc: 'phase3-manual-fixture') qua public-projection-engine v1.0.0, field policy v1.0.0. Xem docs/project-data-import/public-projection-policy.md."
+  },
+  "datasets": {
+    "agencies": [
+      {
+        "id": "agency-generated-fixture-demo",
+        "name": "Cơ quan minh hoạ (generated fixture)",
+        "type": "managing-authority"
+      }
+    ],
+    "contractors": [],
+    "projects": [
+      {
+        "id": "gen-fixture-001",
+        "code": "GEN-001",
+        "name": "Dự án minh hoạ nguồn generated-json (Phase 3 test fixture)",
+        "description": "Bản ghi kiểm thử cho GeneratedJsonProjectPortfolioSource — KHÔNG phải dữ liệu vận hành thật, không đại diện cho bất kỳ dự án có thật nào.",
+        "sector": "transport",
+        "status": "active",
+        "priority": "medium",
+        "managingAuthorityId": "agency-generated-fixture-demo",
+        "investorId": "agency-generated-fixture-demo",
+        "startDate": "2026-01-01",
+        "plannedCompletionDate": "2027-01-01",
+        "approvedBudget": 10000000000,
+        "disbursedAmount": 2000000000,
+        "overallProgress": 20,
+        "plannedProgress": 25,
+        "financialProgress": 20,
+        "administrativeAreaCodes": ["22165"],
+        "dataUpdatedAt": "2026-07-20T00:00:00.000Z",
+        "dataOwner": "Phase 3 test fixture — không phải dữ liệu vận hành thật",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "confidence": "medium",
+        "verificationStatus": "validated-automatically"
+      }
+    ],
+    "workPackages": [
+      {
+        "id": "gen-fixture-001-wp-01",
+        "projectId": "gen-fixture-001",
+        "code": "WP-01",
+        "name": "Gói thầu minh hoạ (fixture)",
+        "plannedStart": "2026-01-01",
+        "plannedEnd": "2026-12-01",
+        "plannedProgress": 25,
+        "actualProgress": 20,
+        "budget": 8000000000,
+        "paidAmount": 1500000000,
+        "status": "active",
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo"
+      }
+    ],
+    "milestones": [
+      {
+        "id": "gen-fixture-001-ms-01",
+        "projectId": "gen-fixture-001",
+        "name": "Mốc minh hoạ (fixture)",
+        "plannedDate": "2026-06-01",
+        "critical": false,
+        "status": "on-track"
+      }
+    ],
+    "projectIssues": [],
+    "progressSnapshots": [
+      {
+        "projectId": "gen-fixture-001",
+        "observedAt": "2026-07-01T00:00:00.000Z",
+        "plannedPhysicalProgress": 25,
+        "physicalProgress": 20,
+        "financialProgress": 20,
+        "disbursedAmount": 2000000000,
+        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "sourceRecordId": "gen-fixture-001-snap-01",
+        "importedAt": "2026-07-20T00:00:00.000Z",
+        "verificationStatus": "validated-automatically"
+      }
+    ],
+    "evidence": [],
+    "referenceDocuments": []
+  }
+}

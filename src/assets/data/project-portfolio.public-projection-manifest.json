@@ -1,0 +1,55 @@
+{
+  "projectionVersion": "1.0.0",
+  "schemaVersion": "1.0.0",
+  "sourceBundleVersion": "phase3-fixture-1",
+  "generatedAt": "2026-07-28T03:39:08.983Z",
+  "sourceNormalizedContentChecksum": "0c044fd2fb3318cbfbda1c7c3930cf58c3a584065251abaf74fa8ca2bdbceafb",
+  "projectedContentChecksum": "0c044fd2fb3318cbfbda1c7c3930cf58c3a584065251abaf74fa8ca2bdbceafb",
+  "allowedFieldPolicyVersion": "1.0.0",
+  "recordCountsBefore": {
+    "agencies": 1,
+    "contractors": 0,
+    "projects": 1,
+    "workPackages": 1,
+    "milestones": 1,
+    "projectIssues": 0,
+    "progressSnapshots": 1,
+    "evidence": 0,
+    "referenceDocuments": 0
+  },
+  "recordCountsAfter": {
+    "agencies": 1,
+    "contractors": 0,
+    "projects": 1,
+    "workPackages": 1,
+    "milestones": 1,
+    "projectIssues": 0,
+    "progressSnapshots": 1,
+    "evidence": 0,
+    "referenceDocuments": 0
+  },
+  "fieldRemovalCounts": {
+    "agencies": 0,
+    "contractors": 0,
+    "projects": 0,
+    "workPackages": 0,
+    "milestones": 0,
+    "projectIssues": 0,
+    "progressSnapshots": 0,
+    "evidence": 0,
+    "referenceDocuments": 0
+  },
+  "recordRemovalCounts": {
+    "agencies": 0,
+    "contractors": 0,
+    "projects": 0,
+    "workPackages": 0,
+    "milestones": 0,
+    "projectIssues": 0,
+    "progressSnapshots": 0,
+    "evidence": 0,
+    "referenceDocuments": 0
+  },
+  "sourceDatasetIds": ["project-portfolio-generated-fixture-demo"],
+  "outputDatasetIds": ["project-portfolio-generated-fixture-demo-public-projected"]
+}

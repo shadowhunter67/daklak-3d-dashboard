@@ -460,6 +460,44 @@ export const PROJECT_PORTFOLIO_GENERATED_FIXTURE_DATASET: DatasetDescriptor = {
   access: { delivery: 'bundled-static', requiresAuthentication: false },
 };
 
+/**
+ * Phase 6 — dataset đứng sau `PublicProjectedProjectPortfolioSource`
+ * (`src/data/publicProjectedProjectPortfolioSource.ts`). Nội dung là output THẬT của public
+ * projection engine (`src/entities/project/publicProjection/`) chạy trên
+ * `PROJECT_PORTFOLIO_GENERATED_FIXTURE_DATASET` — vẫn là dữ liệu hư cấu 100% (fixture Phase 3), chỉ
+ * khác ở chỗ đã đi qua đúng pipeline lọc field allowlist mà một bundle internal thật (Phase 4 importer)
+ * sẽ phải đi qua trước khi public-static được phép dùng nó.
+ */
+export const PROJECT_PORTFOLIO_PUBLIC_PROJECTED_DATASET: DatasetDescriptor = {
+  id: 'project-portfolio-generated-fixture-demo-public-projected',
+  title: 'Bundle public-projected (Phase 6 — allowlist-filtered canonical bundle)',
+  description:
+    'Canonical bundle đã qua public projection engine (field allowlist config/public-project-fields.json) — nguồn duy nhất build:public-static được phép dùng cho project-portfolio. Dữ liệu hư cấu 100% (chiếu từ Phase 3 test fixture), không phải output của một importer thật.',
+  domain: 'planning',
+  classification: 'public',
+  authority: 'illustrative',
+  publicationStatus: 'published',
+  administrativeLevel: 'commune',
+  temporalResolution: 'static',
+  spatialRepresentation: 'point',
+  source: {
+    organization: 'Phase 6 public projection engine (nội bộ project, không phải nguồn thật)',
+    repositoryPath: 'src/assets/data/project-portfolio.public-projected.json',
+  },
+  version: '1.0.0',
+  period: { label: 'demo' },
+  quality: {
+    status: 'unverified',
+    knownLimitations: [
+      'Dữ liệu hư cấu 100% (chiếu từ Phase 3 test fixture) — không phải output của importer thật.',
+      'Projection chỉ đảm bảo field/record nằm trong allowlist đã khai báo — KHÔNG tự cấp quyền công bố dữ liệu thật khi nguồn là dữ liệu vận hành thật (xem docs/project-data-import/public-projection-policy.md).',
+      'Không được dùng làm căn cứ cho bất kỳ quyết định quản lý, phê duyệt hay báo cáo thực tế nào.',
+      'Không tính checksum riêng ở cấp dataset — checksum của hai file vật lý (bundle + projection manifest) đã ghi trong config/public-data-files.json.',
+    ],
+  },
+  access: { delivery: 'bundled-static', requiresAuthentication: false },
+};
+
 export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   ADMINISTRATIVE_UNITS_DATASET,
   PROVINCE_OVERVIEW_INDICATORS_DATASET,
@@ -473,6 +511,7 @@ export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   PROJECT_PROGRESS_ILLUSTRATIVE_DATASET,
   PROJECT_ISSUES_ILLUSTRATIVE_DATASET,
   PROJECT_PORTFOLIO_GENERATED_FIXTURE_DATASET,
+  PROJECT_PORTFOLIO_PUBLIC_PROJECTED_DATASET,
   INVESTMENT_OPPORTUNITIES_ILLUSTRATIVE_DATASET,
 ];
 

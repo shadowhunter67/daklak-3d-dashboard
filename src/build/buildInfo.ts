@@ -10,6 +10,11 @@ export interface BuildInfoInput {
    * src/app/portfolioDataModes.ts — trục "nguồn dữ liệu project-portfolio" (demo/internal-static/
    * public-static), KHÔNG phải trục auth "public"/"secure" của docs/deployment-profiles.md. */
   portfolioDataMode: PortfolioDeploymentMode;
+  /** Phase 6 — đường dẫn module `resolveActivePortfolioSourceModule(portfolioDataMode)` ĐÃ được
+   * alias `#active-portfolio-source` tới ở lần build này. Đây là bằng chứng CẤU HÌNH (không phụ
+   * thuộc nội dung dữ liệu) mà `scripts/validate_portfolio_data_mode.mjs` dùng làm nguồn xác thực
+   * chính, thay cho grep ID dữ liệu cố định — xem `src/app/portfolioModePolicy.ts`. */
+  activePortfolioSourceModule: string;
 }
 
 export interface BuildInfo {
@@ -19,6 +24,7 @@ export interface BuildInfo {
   datasetVersion: string;
   datasetSnapshot: string;
   portfolioDataMode: PortfolioDeploymentMode;
+  activePortfolioSourceModule: string;
 }
 
 export function createBuildInfo(input: BuildInfoInput): BuildInfo {
@@ -30,5 +36,6 @@ export function createBuildInfo(input: BuildInfoInput): BuildInfo {
     datasetVersion: input.datasetVersion,
     datasetSnapshot: input.datasetSnapshot,
     portfolioDataMode: input.portfolioDataMode,
+    activePortfolioSourceModule: input.activePortfolioSourceModule,
   };
 }

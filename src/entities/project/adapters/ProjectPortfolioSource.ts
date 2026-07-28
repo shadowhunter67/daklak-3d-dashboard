@@ -32,8 +32,11 @@ export interface ProjectPortfolioProvenance {
 /** Loại nguồn cụ thể đang cung cấp portfolio — chỉ dùng để hiển thị (Data Readiness UI), KHÔNG được
  * dùng để rẽ nhánh logic nghiệp vụ/KPI/validation (xem docs/project-data-import/01-target-architecture.md
  * §4). `'http'` cố tình có mặt trong union dù chưa implementation nào tồn tại — xem
- * `HttpProjectPortfolioSourceContract.ts`. */
-export type PortfolioSourceKind = 'illustrative' | 'generated-json' | 'http';
+ * `HttpProjectPortfolioSourceContract.ts`. `'public-projected'` thêm ở Phase 6 — nguồn đọc bundle ĐÃ
+ * qua public projection engine (`src/entities/project/publicProjection/`), khác `'generated-json'`
+ * (bundle internal chưa lọc). Đây cũng là literal string ổn định dùng làm structural sanity marker
+ * trong `scripts/validate_portfolio_data_mode.mjs` (thay cho ID dữ liệu tuỳ ý của Phase 2-5). */
+export type PortfolioSourceKind = 'illustrative' | 'generated-json' | 'public-projected' | 'http';
 
 /** Ba data mode tĩnh (build-time) mà một nguồn có thể tương thích — trục KHÁC với "public"/"secure"
  * của docs/deployment-profiles.md (trục auth). Xem docs/project-data-import/04-deployment-profiles-design.md. */
@@ -77,6 +80,16 @@ export interface ProjectPortfolioSourceMetadata {
    * generated-json cụ thể có thể CHỈ tương thích `internal-static` (bundle chưa lọc public) dù class
    * adapter giống hệt một bundle khác đã lọc và tương thích `public-static`. */
   deploymentCompatibility: readonly PortfolioDeploymentMode[];
+  /** Phase 6 — chỉ có giá trị (không phải `null`) khi `sourceKind === 'public-projected'`. Cho phép
+   * Data Readiness UI hiển thị bundle public này được chiếu từ policy/version nào, và cho phép
+   * `scripts/validate_portfolio_data_mode.mjs` xác nhận (qua scan dist bundle) rằng build
+   * `public-static` thực sự nhúng một projection manifest, không chỉ dùng đúng module nguồn mà quên
+   * chạy projection. */
+  publicProjectionManifest?: {
+    projectionVersion: string;
+    generatedAt: string;
+    allowedFieldPolicyVersion: string;
+  } | null;
 }
 
 export interface ProjectPortfolio {
