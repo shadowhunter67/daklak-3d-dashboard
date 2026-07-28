@@ -17,6 +17,7 @@ import { pickPrimaryReason } from '../../../entities/project/attentionReason';
 import { getDatasetById } from '../../../data-platform/catalog/datasets';
 import type { ProjectBundle, ProjectIssue } from '../../../entities/project/types';
 import type { DataQualityContext } from '../../../entities/project/validation/dataQualityRules';
+import { explainLatestAuthoritativeSnapshot } from '../../../entities/project/validation/authoritativeSnapshotExplanation';
 import type { ProjectPortfolioProvenance } from '../../../entities/project/adapters/ProjectPortfolioSource';
 import type { ProjectDetailLookupResult, ProjectDetailModel } from './projectDetailTypes';
 
@@ -129,6 +130,7 @@ export function lookupProjectDetail({
       dataset: getDatasetById(id) ?? null,
     })),
     dataQualityIssueCount,
+    snapshotExplanation: explainLatestAuthoritativeSnapshot(bundle.progressSnapshots),
   };
 
   return { status: 'found', model };

@@ -29,6 +29,21 @@ describe('lookupProjectDetail', () => {
     }
   });
 
+  it('includes an authoritative snapshot explanation (Phase 6)', () => {
+    const target = MOCK_PROJECT_BUNDLES[0];
+    const result = lookupProjectDetail({
+      bundles: MOCK_PROJECT_BUNDLES,
+      context,
+      provenance,
+      projectId: target.project.id,
+    });
+    expect(result.status).toBe('found');
+    if (result.status === 'found') {
+      expect(result.model.snapshotExplanation).toBeDefined();
+      expect(result.model.snapshotExplanation.selectionRule).toBeTruthy();
+    }
+  });
+
   it('returns not-found for a non-existent id', () => {
     const result = lookupProjectDetail({
       bundles: MOCK_PROJECT_BUNDLES,

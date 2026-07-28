@@ -11,6 +11,7 @@ import type { KpiResult } from '../../../entities/project/kpi/types';
 import type { AttentionReasonCategory } from '../../../entities/project/attentionReason';
 import type { DatasetDescriptor } from '../../../data-platform/schemas/dataset';
 import type { ProjectPortfolioProvenance } from '../../../entities/project/adapters/ProjectPortfolioSource';
+import type { AuthoritativeSnapshotExplanation } from '../../../entities/project/validation/authoritativeSnapshotExplanation';
 
 export interface ProjectDetailProvenanceEntry {
   sourceDatasetId: string;
@@ -72,6 +73,10 @@ export interface ProjectDetailModel {
   };
   provenance: ProjectDetailProvenanceEntry[];
   dataQualityIssueCount: number;
+  /** Phase 6 (C1-C2) — giải thích authoritative snapshot cho lần quan sát tiến độ gần nhất. Xem
+   * JSDoc `authoritativeSnapshotExplanation.ts` về vì sao `affectedKpis` KHÔNG có nghĩa "tính trực
+   * tiếp từ snapshot này". */
+  snapshotExplanation: AuthoritativeSnapshotExplanation;
 }
 
 export type ProjectDetailLookupResult =
