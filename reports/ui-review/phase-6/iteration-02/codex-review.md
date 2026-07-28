@@ -1,0 +1,24 @@
+## Kết luận vòng 2: FAIL
+
+Không có BLOCKER, nhưng **UX-001 vẫn chưa đáp ứng acceptance check và còn ở mức HIGH**. Vì vậy thay đổi chưa đạt quy tắc pass: “không còn BLOCKER hoặc HIGH chưa giải quyết”.
+
+### Đối chiếu từng finding
+
+| ID | Kết quả | Severity hiện tại | Đánh giá |
+|---|---|---:|---|
+| UX-001 | **Chưa sửa đầy đủ** | **HIGH** | Cảnh báo mới đã xuất hiện ngay trong “Tóm tắt ngân sách và tiến độ”, nêu ngày quan sát gần nhất và cho biết các KPI có thể chưa phản ánh dữ liệu mới nhất. Đây là cải thiện đáng kể về khả năng nhận biết. Tuy nhiên, acceptance check yêu cầu người dùng chỉ đọc summary vẫn xác định được **nguồn và trạng thái hợp lệ** của sáu KPI. UI chưa nói các KPI đang lấy trực tiếp từ dữ liệu Project, snapshot hợp lệ cũ hơn hay nguồn khác; cũng không phân biệt trạng thái từng KPI. Trong khi đó, domain comment xác nhận KPI summary lấy từ các field của `Project`, không tính trực tiếp từ `ProgressSnapshot`, nhưng thông tin này không được đưa ra UI. Vì vậy người dùng vẫn chưa xác định được provenance thực tế của các con số `70% / 65%`. Xem [ProjectDetailView.tsx](/E:/Lập%20trình/lập%20trình/daklak-3d-dashboard/src/features/project-detail/ProjectDetailView.tsx:169) và [authoritativeSnapshotExplanation.ts](/E:/Lập%20trình/lập%20trình/daklak-3d-dashboard/src/entities/project/validation/authoritativeSnapshotExplanation.ts:10). |
+| UX-002 | **Đã sửa** | — | Ảnh mobile 390×844 không còn overflow ngang; các ID dài wrap trong card và toàn bộ hai competing records nằm trong chiều rộng viewport. CSS bổ sung `min-width: 0` và `overflow-wrap: anywhere`, áp dụng độc lập với breakpoint nên xử lý đúng nguyên nhân của lỗi. Ảnh không trực tiếp chứng minh viewport 320×700 hoặc số đo `scrollWidth`, nhưng code và capture 390×844 cung cấp đủ bằng chứng để đóng finding. Xem [global.css](/E:/Lập%20trình/lập%20trình/daklak-3d-dashboard/src/styles/global.css:2339). |
+| UX-003 | **Đã sửa** | — | Ảnh English expanded không còn câu tiếng Việt trong selection/exclusion explanation. Domain layer trả `{code, params}` và UI dịch reason bằng dictionary theo locale. Cả lý do chọn và lý do loại đều được render bằng English. Xem [authoritativeSnapshotExplanation.ts](/E:/Lập%20trình/lập%20trình/daklak-3d-dashboard/src/entities/project/validation/authoritativeSnapshotExplanation.ts:27) và [ProjectDetailView.tsx](/E:/Lập%20trình/lập%20trình/daklak-3d-dashboard/src/features/project-detail/ProjectDetailView.tsx:367). |
+| UX-004 | **Đã sửa** | — | Snapshot explanation hiện có cùng outer-card treatment với Progress history, Issues và Location trên cả desktop lẫn mobile: margin, padding, border, radius và background nhất quán. Xem [global.css](/E:/Lập%20trình/lập%20trình/daklak-3d-dashboard/src/styles/global.css:2307). |
+| UX-005 | **Đã sửa** | — | “Affected KPIs” trong ảnh English dùng nhãn đọc được như “Physical progress”, “Planned progress”, “Disbursement rate”… thay cho các field camelCase. Các identifier kỹ thuật còn lại nằm trong disclosure competing records, không phải danh sách KPI mặc định mà finding này nhắm tới. Xem [ProjectDetailView.tsx](/E:/Lập%20trình/lập%20trình/daklak-3d-dashboard/src/features/project-detail/ProjectDetailView.tsx:382). |
+| UX-006 | **Chưa sửa — đã biết** | **MEDIUM** | Selected record vẫn chỉ được phân biệt bằng tiền tố `✓ Selected`; record bị loại không có badge/treatment thị giác tương ứng. Hai card vẫn gần như cùng hierarchy, còn status, ID và imported time nằm trong một câu kỹ thuật. Finding vẫn là MEDIUM, nhưng **chấp nhận được để ship và không block**: trạng thái vẫn hiểu được bằng text, lý do loại hiện diện, không mất dữ liệu hay thao tác. Nên đưa vào iteration tiếp theo để tăng khả năng quét nhanh, đặc biệt trên mobile. |
+
+### Data Readiness recapture
+
+Ảnh fresh-tab mới hiển thị đầy đủ heading, các nhóm validation/data-quality/business alert và ba nút drill-down. Điều này đủ xác nhận ảnh đen vòng 1 là vấn đề capture, không phải bằng chứng về lỗi render của trang.
+
+### Regression mới
+
+Không phát hiện regression mới có đủ bằng chứng để lập UX-007 trở đi từ năm ảnh và phần code được review.
+
+**Quyết định cuối: FAIL**, chỉ vì UX-001 vẫn còn HIGH. UX-002 đến UX-005 có thể đóng; UX-006 tiếp tục theo dõi ở MEDIUM và không cản ship nếu UX-001 được giải quyết.

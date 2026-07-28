@@ -359,6 +359,8 @@ export const en: Partial<Record<MessageKey, string>> = {
   'detail.summary.forecastCompletion': 'Forecast completion',
   'detail.summary.forecastCompletionNone': 'No forecast yet',
   'detail.summary.forecastDelay': 'Forecast delay vs. plan',
+  'detail.summary.noAuthoritativeSnapshotWarning':
+    'The KPIs above are computed directly from the project\'s summary fields (not from a progress snapshot). No progress record was eligible for the most recent observation ({observedAt}) to corroborate these figures — their verification status is unclear. See "Snapshot used for KPIs" below for details.',
   'detail.workPackagesHeading': 'Work packages ({count})',
   'detail.workPackagesEmpty': 'No work packages recorded yet.',
   'detail.workPackage.status': 'Status: {status}',
@@ -388,6 +390,20 @@ export const en: Partial<Record<MessageKey, string>> = {
   'detail.snapshotExplanation.competingRecord':
     'sourceRecordId={sourceRecordId} — verificationStatus={status} — imported {importedAt}',
   'detail.snapshotExplanation.otherObservations': 'Other observations: {dates}',
+  'detail.snapshotExplanation.selectionReasonCode.highest-verification-priority':
+    'Verification status "{status}" is the highest priority among {count} records for this observation.',
+  'detail.snapshotExplanation.exclusionReasonCode.rejected':
+    'This record was rejected — the data was found to be incorrect and is not used for KPIs.',
+  'detail.snapshotExplanation.exclusionReasonCode.superseded':
+    'This record was superseded by a newer record for the same observation.',
+  'detail.snapshotExplanation.exclusionReasonCode.lower-priority':
+    'Same observation, but a lower verification priority than the selected record.',
+  'affectedKpiLabel.overallProgress': 'Physical progress',
+  'affectedKpiLabel.plannedProgress': 'Planned progress',
+  'affectedKpiLabel.financialProgress': 'Financial progress',
+  'affectedKpiLabel.disbursementRate': 'Disbursement rate',
+  'affectedKpiLabel.scheduleVariance': 'Schedule variance',
+  'affectedKpiLabel.budgetVariance': 'Budget variance',
   'progressVerificationStatus.raw': 'Raw (unverified)',
   'progressVerificationStatus.validated-automatically': 'Validated automatically',
   'progressVerificationStatus.submitted': 'Submitted',

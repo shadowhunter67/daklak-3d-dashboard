@@ -11,19 +11,37 @@
  * `affectedKpis` ở đây liệt kê các KPI mà snapshot được chọn CORROBORATE (số liệu Project nên khớp
  * với quan sát tiến độ mới nhất này nếu record được cập nhật đồng bộ) — không phải các KPI được TÍNH
  * TRỰC TIẾP từ snapshot. Không tuyên bố sai lệch giữa hai khái niệm này.
+ *
+ * Lý do/exclusion trả về dưới dạng CODE + dữ liệu có cấu trúc (không phải câu tiếng Việt viết sẵn) —
+ * sửa sau vòng UI review Codex #1 (UX-003, reports/ui-review/phase-6/iteration-01/codex-review.md):
+ * câu tiếng Việt cứng trong domain layer không dịch được khi UI ở locale `en`. UI layer
+ * (`ProjectDetailView.tsx`) chịu trách nhiệm dịch code thành câu hoàn chỉnh qua i18n dictionary.
  */
-import type { ProgressSnapshot } from '../types';
+import type { ProgressSnapshot, VerificationStatus } from '../types';
 import {
   groupSnapshotsByIdentity,
   isUsableForKpi,
-  progressSnapshotIdentityKey,
   selectAuthoritativeSnapshot,
 } from './progressSnapshotSelection';
+
+export type SelectionReasonCode = 'highest-verification-priority';
+
+export interface SelectedReasonDetails {
+  code: SelectionReasonCode;
+  verificationStatus: VerificationStatus;
+  competingCount: number;
+}
+
+export type ExclusionReasonCode = 'rejected' | 'superseded' | 'lower-priority';
+
+export interface ExclusionReasonDetails {
+  code: ExclusionReasonCode;
+}
 
 export interface CompetingSnapshotExplanation {
   snapshot: ProgressSnapshot;
   selected: boolean;
-  exclusionReason?: string;
+  exclusionReason?: ExclusionReasonDetails;
 }
 
 export interface AuthoritativeSnapshotExplanation {
@@ -31,10 +49,9 @@ export interface AuthoritativeSnapshotExplanation {
   identityKey: string | null;
   observedAt: string | null;
   selectedSnapshot: ProgressSnapshot | null;
-  selectionRule: string;
   /** `null` khi không có snapshot nào được chọn (toàn bộ nhóm mới nhất bị rejected/superseded, hoặc
    * không có snapshot nào). */
-  selectedReason: string | null;
+  selectedReason: SelectedReasonDetails | null;
   /** Các bản ghi CÙNG identity (projectId+observedAt+sourceDatasetId) với snapshot mới nhất — bao
    * gồm cả bản được chọn, để UI hiển thị đầy đủ các verification stage. */
   competingSnapshots: readonly CompetingSnapshotExplanation[];
@@ -53,22 +70,15 @@ const AFFECTED_KPIS_WHEN_SELECTED: readonly string[] = [
   'budgetVariance',
 ];
 
-const SELECTION_RULE_DESCRIPTION =
-  'Ưu tiên verificationStatus (approved > reviewed > submitted > validated-automatically > raw); ' +
-  'rejected/superseded không bao giờ được chọn. Cùng mức ưu tiên: importedAt gần nhất thắng; vẫn ' +
-  'trùng: sourceRecordId theo thứ tự alphabet thắng (xem selectAuthoritativeSnapshot).';
-
 function exclusionReasonFor(
   snapshot: ProgressSnapshot,
   selected: ProgressSnapshot | null,
-): string | undefined {
+): ExclusionReasonDetails | undefined {
   if (selected && snapshot === selected) return undefined;
   if (!isUsableForKpi(snapshot.verificationStatus)) {
-    return snapshot.verificationStatus === 'rejected'
-      ? "verificationStatus='rejected' — số liệu đã được xác định là sai, không dùng cho KPI."
-      : "verificationStatus='superseded' — đã có bản ghi mới hơn thay thế cho cùng lần quan sát này.";
+    return { code: snapshot.verificationStatus === 'rejected' ? 'rejected' : 'superseded' };
   }
-  return `Cùng lần quan sát nhưng thua bản ghi được chọn theo thứ tự ưu tiên (${SELECTION_RULE_DESCRIPTION})`;
+  return { code: 'lower-priority' };
 }
 
 /** Nhóm mới nhất theo `observedAt` trong `groups` — không quan tâm nhóm đó có snapshot usable hay
@@ -86,36 +96,24 @@ function pickLatestGroup(
   return latest;
 }
 
+const EMPTY_EXPLANATION: AuthoritativeSnapshotExplanation = {
+  identityKey: null,
+  observedAt: null,
+  selectedSnapshot: null,
+  selectedReason: null,
+  competingSnapshots: [],
+  otherObservationDates: [],
+  affectedKpis: [],
+};
+
 export function explainLatestAuthoritativeSnapshot(
   snapshots: readonly ProgressSnapshot[],
 ): AuthoritativeSnapshotExplanation {
-  if (snapshots.length === 0) {
-    return {
-      identityKey: null,
-      observedAt: null,
-      selectedSnapshot: null,
-      selectionRule: SELECTION_RULE_DESCRIPTION,
-      selectedReason: null,
-      competingSnapshots: [],
-      otherObservationDates: [],
-      affectedKpis: [],
-    };
-  }
+  if (snapshots.length === 0) return EMPTY_EXPLANATION;
 
   const groups = groupSnapshotsByIdentity(snapshots);
   const latest = pickLatestGroup(groups);
-  if (!latest) {
-    return {
-      identityKey: null,
-      observedAt: null,
-      selectedSnapshot: null,
-      selectionRule: SELECTION_RULE_DESCRIPTION,
-      selectedReason: null,
-      competingSnapshots: [],
-      otherObservationDates: [],
-      affectedKpis: [],
-    };
-  }
+  if (!latest) return EMPTY_EXPLANATION;
 
   const selected = selectAuthoritativeSnapshot(latest.group);
   const competingSnapshots: CompetingSnapshotExplanation[] = latest.group.map((snapshot) => ({
@@ -133,9 +131,12 @@ export function explainLatestAuthoritativeSnapshot(
     identityKey: latest.key,
     observedAt: latest.group[0].observedAt,
     selectedSnapshot: selected,
-    selectionRule: SELECTION_RULE_DESCRIPTION,
     selectedReason: selected
-      ? `verificationStatus='${selected.verificationStatus}' là mức ưu tiên cao nhất trong ${latest.group.length} bản ghi cùng lần quan sát (identity: ${progressSnapshotIdentityKey(selected)}).`
+      ? {
+          code: 'highest-verification-priority',
+          verificationStatus: selected.verificationStatus,
+          competingCount: latest.group.length,
+        }
       : null,
     competingSnapshots,
     otherObservationDates,

@@ -34,6 +34,11 @@ describe('explainLatestAuthoritativeSnapshot', () => {
     expect(result.competingSnapshots).toHaveLength(1);
     expect(result.competingSnapshots[0].selected).toBe(true);
     expect(result.affectedKpis.length).toBeGreaterThan(0);
+    expect(result.selectedReason).toEqual({
+      code: 'highest-verification-priority',
+      verificationStatus: 'approved',
+      competingCount: 1,
+    });
   });
 
   it('explains multiple verification stages for the same observation, picking the highest priority', () => {
@@ -52,7 +57,7 @@ describe('explainLatestAuthoritativeSnapshot', () => {
     expect(result.competingSnapshots).toHaveLength(2);
     const rawEntry = result.competingSnapshots.find((c) => c.snapshot === raw);
     expect(rawEntry?.selected).toBe(false);
-    expect(rawEntry?.exclusionReason).toBeTruthy();
+    expect(rawEntry?.exclusionReason).toEqual({ code: 'lower-priority' });
   });
 
   it('explains a rejected-only observation as having no selected snapshot', () => {
@@ -60,7 +65,7 @@ describe('explainLatestAuthoritativeSnapshot', () => {
     const result = explainLatestAuthoritativeSnapshot([rejected]);
     expect(result.selectedSnapshot).toBeNull();
     expect(result.selectedReason).toBeNull();
-    expect(result.competingSnapshots[0].exclusionReason).toContain('rejected');
+    expect(result.competingSnapshots[0].exclusionReason).toEqual({ code: 'rejected' });
     expect(result.affectedKpis).toEqual([]);
   });
 
@@ -68,7 +73,7 @@ describe('explainLatestAuthoritativeSnapshot', () => {
     const superseded = snapshot({ verificationStatus: 'superseded' });
     const result = explainLatestAuthoritativeSnapshot([superseded]);
     expect(result.selectedSnapshot).toBeNull();
-    expect(result.competingSnapshots[0].exclusionReason).toContain('superseded');
+    expect(result.competingSnapshots[0].exclusionReason).toEqual({ code: 'superseded' });
   });
 
   it('picks the most recent observedAt as the explained identity, and lists the others separately', () => {

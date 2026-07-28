@@ -168,6 +168,14 @@ export function ProjectDetailView({
 
       <section aria-labelledby="project-detail-summary-heading" className="project-detail__summary">
         <h3 id="project-detail-summary-heading">{t('detail.summaryHeading')}</h3>
+        {model.snapshotExplanation.observedAt !== null &&
+          model.snapshotExplanation.selectedSnapshot === null && (
+            <p role="note" className="project-detail__summary-warning">
+              {t('detail.summary.noAuthoritativeSnapshotWarning', {
+                observedAt: formatDate(model.snapshotExplanation.observedAt, locale),
+              })}
+            </p>
+          )}
         <dl className="project-detail__summary-grid">
           <div>
             <dt>{t('detail.summary.approvedBudget')}</dt>
@@ -359,14 +367,24 @@ export function ProjectDetailView({
                   {explanation.selectedReason && (
                     <p>
                       {t('detail.snapshotExplanation.reason', {
-                        reason: explanation.selectedReason,
+                        reason: t(
+                          `detail.snapshotExplanation.selectionReasonCode.${explanation.selectedReason.code}` as MessageKey,
+                          {
+                            status: t(
+                              `progressVerificationStatus.${explanation.selectedReason.verificationStatus}` as MessageKey,
+                            ),
+                            count: explanation.selectedReason.competingCount,
+                          },
+                        ),
                       })}
                     </p>
                   )}
                   {explanation.affectedKpis.length > 0 && (
                     <p>
                       {t('detail.snapshotExplanation.affectedKpis', {
-                        kpis: explanation.affectedKpis.join(', '),
+                        kpis: explanation.affectedKpis
+                          .map((kpi) => t(`affectedKpiLabel.${kpi}` as MessageKey))
+                          .join(', '),
                       })}
                     </p>
                   )}
@@ -411,7 +429,13 @@ export function ProjectDetailView({
                             importedAt: formatDateTime(entry.snapshot.importedAt, locale),
                           })}
                         </p>
-                        {entry.exclusionReason && <p>{entry.exclusionReason}</p>}
+                        {entry.exclusionReason && (
+                          <p>
+                            {t(
+                              `detail.snapshotExplanation.exclusionReasonCode.${entry.exclusionReason.code}` as MessageKey,
+                            )}
+                          </p>
+                        )}
                       </li>
                     ))}
                   </ul>

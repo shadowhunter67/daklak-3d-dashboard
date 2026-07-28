@@ -1,0 +1,75 @@
+{
+  "commit": "eede3a966008fc5129124e1f01c65a4dec1a1a4e",
+  "screenshots": [
+    {
+      "path": "screenshots/project-detail-prj015-desktop-vi.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-015",
+      "viewport": "1440x900",
+      "language": "vi",
+      "state": "default — most recent observation has only a rejected record, none selected",
+      "description": "Full page, snapshot-explanation section shows 'no record eligible for KPI' branch."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-desktop-vi-expanded.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-013",
+      "viewport": "1440x900",
+      "language": "vi",
+      "state": "competing-records disclosure expanded",
+      "description": "Viewport screenshot (scrolled), shows selected snapshot + expanded competing-records list with one excluded (raw) and one selected (reviewed) record."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-mobile-vi.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-013",
+      "viewport": "390x844",
+      "language": "vi",
+      "state": "default (top of page, header)",
+      "description": "Mobile viewport top-of-page capture."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-mobile-vi-snapshot-section.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-013",
+      "viewport": "390x844",
+      "language": "vi",
+      "state": "competing-records disclosure expanded",
+      "description": "Element-scoped capture of the snapshot-explanation section at mobile width (full-page capture was unreliable in this environment)."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-desktop-en.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-013",
+      "viewport": "1440x900",
+      "language": "en",
+      "state": "default (top of page, header)",
+      "description": "English locale top-of-page capture."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-desktop-en-snapshot-section.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-013",
+      "viewport": "1440x900",
+      "language": "en",
+      "state": "collapsed disclosure, selected snapshot shown",
+      "description": "Element-scoped capture of the snapshot-explanation section in English — selection reason text is Vietnamese (see review-brief 'Design decisions worth a second opinion')."
+    },
+    {
+      "path": "screenshots/data-readiness-desktop-vi.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/data-readiness",
+      "viewport": "1440x900",
+      "language": "vi",
+      "state": "default — 3 business alerts, all with a resolved drill-down button",
+      "description": "Full page, business-alerts section with 'Xem dự án liên quan' buttons."
+    }
+  ]
+}

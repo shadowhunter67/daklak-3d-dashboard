@@ -40,7 +40,7 @@ describe('lookupProjectDetail', () => {
     expect(result.status).toBe('found');
     if (result.status === 'found') {
       expect(result.model.snapshotExplanation).toBeDefined();
-      expect(result.model.snapshotExplanation.selectionRule).toBeTruthy();
+      expect(result.model.snapshotExplanation.affectedKpis).toBeDefined();
     }
   });
 

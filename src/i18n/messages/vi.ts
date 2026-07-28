@@ -364,6 +364,8 @@ export const vi = {
   'detail.summary.forecastCompletion': 'Dự báo hoàn thành',
   'detail.summary.forecastCompletionNone': 'Chưa có dự báo',
   'detail.summary.forecastDelay': 'Chậm dự báo so với kế hoạch',
+  'detail.summary.noAuthoritativeSnapshotWarning':
+    'Các KPI trên được tính trực tiếp từ dữ liệu tóm tắt của dự án (không phải từ progress snapshot). Không có bản ghi tiến độ nào đủ điều kiện cho lần quan sát gần nhất ({observedAt}) để xác nhận các số liệu này — trạng thái xác thực chưa rõ. Xem "Snapshot dùng để tính KPI" bên dưới để biết chi tiết.',
   'detail.workPackagesHeading': 'Gói thầu ({count})',
   'detail.workPackagesEmpty': 'Chưa có gói thầu nào được ghi nhận.',
   'detail.workPackage.status': 'Trạng thái: {status}',
@@ -393,6 +395,20 @@ export const vi = {
   'detail.snapshotExplanation.competingRecord':
     'sourceRecordId={sourceRecordId} — verificationStatus={status} — nhập lúc {importedAt}',
   'detail.snapshotExplanation.otherObservations': 'Các lần quan sát khác: {dates}',
+  'detail.snapshotExplanation.selectionReasonCode.highest-verification-priority':
+    'Trạng thái xác thực "{status}" là mức ưu tiên cao nhất trong {count} bản ghi cùng lần quan sát.',
+  'detail.snapshotExplanation.exclusionReasonCode.rejected':
+    'Bản ghi đã bị từ chối — số liệu được xác định là sai, không dùng cho KPI.',
+  'detail.snapshotExplanation.exclusionReasonCode.superseded':
+    'Bản ghi đã bị thay thế bởi một bản ghi mới hơn cho cùng lần quan sát này.',
+  'detail.snapshotExplanation.exclusionReasonCode.lower-priority':
+    'Cùng lần quan sát nhưng có mức ưu tiên xác thực thấp hơn bản ghi được chọn.',
+  'affectedKpiLabel.overallProgress': 'Tiến độ khối lượng',
+  'affectedKpiLabel.plannedProgress': 'Tiến độ kế hoạch',
+  'affectedKpiLabel.financialProgress': 'Tiến độ tài chính',
+  'affectedKpiLabel.disbursementRate': 'Tỷ lệ giải ngân',
+  'affectedKpiLabel.scheduleVariance': 'Chênh lệch tiến độ',
+  'affectedKpiLabel.budgetVariance': 'Chênh lệch ngân sách',
   'progressVerificationStatus.raw': 'Thô (chưa xác thực)',
   'progressVerificationStatus.validated-automatically': 'Đã xác thực tự động',
   'progressVerificationStatus.submitted': 'Đã nộp',
