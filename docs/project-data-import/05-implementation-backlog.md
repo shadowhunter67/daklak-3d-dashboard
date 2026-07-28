@@ -3,8 +3,12 @@
 Trạng thái: **Phase 2, 3, 4, 5 hoàn thành** — xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md),
 [ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md),
 [ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md),
-[ADR 0008](../adr/0008-demo-scenario-strategy-and-data-readiness-experience.md). Phase 6 dưới đây vẫn
-là **đề xuất**, chưa triển khai.
+[ADR 0008](../adr/0008-demo-scenario-strategy-and-data-readiness-experience.md). "Phase 6" trong tài
+liệu này (mục cuối, "Integration kit and hardening") là đề xuất GỐC, đã lỗi thời — phần lớn nội dung
+của nó được kéo lên làm ở Phase 5 (xem ADR 0008). Phase 6 THẬT SỰ đã triển khai là public projection
+engine + leakage-guard hardening + authoritative-snapshot explanation + Codex UI review gate — xem
+[ADR 0009](../adr/0009-public-projection-and-ui-review-gate.md), không phải đề xuất còn lại bên dưới
+mục "Phase 6" của file này.
 
 ## Phase 2 — Source abstraction and profiles — ĐÃ LÀM
 

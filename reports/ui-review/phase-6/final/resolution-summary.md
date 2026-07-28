@@ -16,21 +16,21 @@
 2. **Iteration 02** — re-screenshotted (via fresh browser tabs, working around a headless-Chrome
    capture bug identified this round — see below) after fixing all 6 findings. Result: **FAIL** —
    UX-002 through UX-005 confirmed fixed; UX-006 accepted as non-blocking; UX-001's fix was an
-   improvement but didn't yet meet the original acceptance check (didn't state KPI *source* and
-   *verification status* explicitly).
+   improvement but didn't yet meet the original acceptance check (didn't state KPI _source_ and
+   _verification status_ explicitly).
 3. **Iteration 03** — focused re-check of UX-001 only, after strengthening the warning copy.
    Result: **PASS**.
 
 ## Findings, final status
 
-| ID | Severity | Status |
-|---|---|---|
-| UX-001 | HIGH | Fixed (iteration 03) |
-| UX-002 | HIGH | Fixed (iteration 02) |
-| UX-003 | HIGH | Fixed (iteration 02) |
-| UX-004 | MEDIUM | Fixed (iteration 02) |
-| UX-005 | MEDIUM | Fixed (iteration 02) |
-| UX-006 | MEDIUM | Deferred, accepted as non-blocking by reviewer |
+| ID     | Severity | Status                                         |
+| ------ | -------- | ---------------------------------------------- |
+| UX-001 | HIGH     | Fixed (iteration 03)                           |
+| UX-002 | HIGH     | Fixed (iteration 02)                           |
+| UX-003 | HIGH     | Fixed (iteration 02)                           |
+| UX-004 | MEDIUM   | Fixed (iteration 02)                           |
+| UX-005 | MEDIUM   | Fixed (iteration 02)                           |
+| UX-006 | MEDIUM   | Deferred, accepted as non-blocking by reviewer |
 
 0 BLOCKER, 0 unresolved HIGH, all MEDIUM fixed or explicitly accepted with reason — meets the
 UI pass bar.

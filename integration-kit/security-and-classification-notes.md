@@ -21,6 +21,16 @@ thật cần mức khác, đây là quyết định của người vận hành, 
 trong `src/assets/`, KHÔNG tự `git add`/`git commit`/`git push`, KHÔNG tự chạy bất kỳ lệnh git nào.
 Người vận hành luôn phải tự review + commit thủ công nếu muốn giữ thay đổi.
 
+## Public projection (Phase 6) không phải bảo đảm privacy tuyệt đối
+
+`npm run project:public-data` lọc field theo allowlist tường minh
+(`config/public-project-fields.json`) — chỉ đảm bảo field KHÔNG nằm trong allowlist bị loại. Nó
+KHÔNG phát hiện dữ liệu nhạy cảm bị điền nhầm vào một field ĐÃ nằm trong allowlist (ví dụ tên người
+viết nhầm vào `description`). Xem
+[public-projection-policy.md](../docs/project-data-import/public-projection-policy.md) và
+[public-release-runbook.md](../docs/project-data-import/public-release-runbook.md) — bước review
+thủ công của người có thẩm quyền vẫn bắt buộc trước khi publish, projection chỉ là bộ lọc kỹ thuật.
+
 ## Không có dữ liệu nội bộ thật trong repo/integration-kit
 
 Mọi ví dụ trong `example-input/` là dữ liệu hư cấu 100% (`(fictional)` trong mọi tên) — không đại
