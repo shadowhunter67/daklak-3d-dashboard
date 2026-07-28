@@ -1,0 +1,55 @@
+{
+  "commit": "e10bd12da174af571b48b356a696740bf52fa2d0",
+  "screenshots": [
+    {
+      "path": "screenshots/project-detail-prj015-desktop-vi-1440.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome, fresh tab)",
+      "route": "#/projects/prj-015",
+      "viewport": "1440x900",
+      "language": "vi",
+      "state": "no snapshot selected — strengthened warning naming KPI source + unclear verification status (UX-001 final fix)",
+      "description": "Confirms UX-001 resolved."
+    },
+    {
+      "path": "screenshots/project-detail-prj015-desktop-vi-scrolled.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome, fresh tab)",
+      "route": "#/projects/prj-015",
+      "viewport": "1440x900",
+      "language": "vi",
+      "state": "scrolled to snapshot-explanation section",
+      "description": "Confirms UX-004 resolved — section now shares the same card chrome as its siblings."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-desktop-en-expanded.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome, fresh tab)",
+      "route": "#/projects/prj-013",
+      "viewport": "1440x900",
+      "language": "en",
+      "state": "competing-records disclosure expanded",
+      "description": "Confirms UX-003 (fully English reason text) and UX-005 (translated KPI labels) resolved."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-mobile-en-expanded.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome, fresh tab)",
+      "route": "#/projects/prj-013",
+      "viewport": "390x844",
+      "language": "en",
+      "state": "competing-records disclosure expanded",
+      "description": "Confirms UX-002 resolved — no horizontal overflow."
+    },
+    {
+      "path": "screenshots/data-readiness-desktop-vi-freshtab.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome, fresh tab)",
+      "route": "#/data-readiness",
+      "viewport": "1440x900",
+      "language": "vi",
+      "state": "3 business alerts, all with a resolved drill-down button",
+      "description": "Re-capture of iteration-01's blank image; confirms the drill-down feature renders correctly (capture-tooling issue, not an app defect)."
+    }
+  ]
+}
