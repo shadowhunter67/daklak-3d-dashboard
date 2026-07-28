@@ -61,6 +61,7 @@ import {
 } from './schemaValidation';
 import { loadAdministrativeCodes } from './administrativeCodes';
 import { loadLocalSourceRegistryIds, resolveDatasetIds } from './sourceRegistry';
+import { validateCanonicalReferentialIntegrity } from './canonicalIntegrity';
 
 export type InputFormat = 'json' | 'csv';
 
@@ -138,47 +139,22 @@ export class PipelineConfigError extends Error {
 }
 
 /**
- * `groupCanonicalDatasetsIntoProjectBundles` (Phase 3, không viết lại) nhóm workPackages/milestones/
- * projectIssues/progressSnapshots THEO `datasets.projects` — một record có `projectId` không khớp
- * bất kỳ project nào bị loại khỏi MỌI `ProjectBundle` (không lỗi, không cảnh báo ở tầng mapper). Hệ
- * quả: `dangling-project-reference` trong `dataQualityRules.ts` không bao giờ tự bắt được orphan
- * thật (nó chỉ chạy trên record đã nằm trong một bundle, tức projectId đã khớp) — đây là một
- * integrity check RIÊNG của importer (không phải viết lại mapper/quality-rule), bù đúng khoảng
- * trống record bị mapper âm thầm bỏ qua trước khi chúng biến mất. Xem ADR 0007 quyết định
- * "orphan reference check".
+ * Rule name từ `dataQualityRules.ts` (Phase 1.5) giờ đã được `validateCanonicalReferentialIntegrity`
+ * (Phase 5, `canonicalIntegrity.ts`) phủ đầy đủ hơn (bao gồm cả record orphan mapper bỏ qua) — importer
+ * dùng function mới làm nguồn xác thực DUY NHẤT cho các rule này, tránh báo trùng hai lần. Chỉ giữ lại
+ * từ `runDataQualityRules` output các rule KHÔNG bị ảnh hưởng bởi khoảng trống orphan
+ * (`unmapped-administrative-code`, `stale-data`) — xem JSDoc đầu `canonicalIntegrity.ts`.
  */
-function checkOrphanedProjectReferences(
-  datasets: CanonicalProjectPortfolioDatasets,
-): ImportIssue[] {
-  const projectIds = new Set(datasets.projects.map((p) => p.id));
-  const issues: ImportIssue[] = [];
-  const check = (
-    dataset: string,
-    records: readonly { projectId: string }[],
-    idOf: (r: { projectId: string }) => string,
-  ) => {
-    for (const record of records) {
-      if (!projectIds.has(record.projectId))
-        issues.push({
-          code: 'foreign-key-unresolved',
-          severity: 'error',
-          layer: 'quality',
-          dataset,
-          recordId: idOf(record),
-          message: `projectId không tồn tại trong datasets.projects: ${record.projectId}`,
-        });
-    }
-  };
-  check('workPackages', datasets.workPackages, (r) => (r as unknown as { id: string }).id);
-  check('milestones', datasets.milestones, (r) => (r as unknown as { id: string }).id);
-  check('projectIssues', datasets.projectIssues, (r) => (r as unknown as { id: string }).id);
-  check(
-    'progressSnapshots',
-    datasets.progressSnapshots,
-    (r) => `${r.projectId}@${(r as unknown as { observedAt: string }).observedAt}`,
-  );
-  return issues;
-}
+const RULES_SUPERSEDED_BY_CANONICAL_INTEGRITY_CHECK = new Set([
+  'duplicate-primary-key',
+  'dangling-project-reference',
+  'dangling-work-package-reference',
+  'unknown-contractor',
+  'unknown-managing-authority',
+  'unknown-investor',
+  'unknown-evidence',
+  'multiple-verification-stage-records',
+]);
 
 function collectSourceDatasetIds(datasets: CanonicalProjectPortfolioDatasets): Set<string> {
   const ids = new Set<string>();
@@ -360,20 +336,23 @@ export function runImportPipeline(options: PipelineOptions): PipelineResult {
       evidence: canonicalBundle.datasets.evidence,
       asOf: new Date(options.asOf),
     };
-    issues.push(...checkOrphanedProjectReferences(canonicalBundle.datasets));
+    issues.push(...validateCanonicalReferentialIntegrity(canonicalBundle.datasets));
+    // qualityIssues (trả nguyên vẹn trong PipelineResult cho quality-report.json) LÀ output đầy đủ,
+    // không lọc — "không tự tính lại" domain quality assessment (spec Phase 4 §"Quality report").
+    // Chỉ lọc khi gộp vào `issues` (dùng cho blocking + validation-report.json) để tránh báo trùng
+    // với validateCanonicalReferentialIntegrity ở trên — xem RULES_SUPERSEDED_BY_CANONICAL_INTEGRITY_CHECK.
     qualityIssues = runDataQualityRules(bundles, context);
-    for (const q of qualityIssues)
+    for (const q of qualityIssues) {
+      if (RULES_SUPERSEDED_BY_CANONICAL_INTEGRITY_CHECK.has(q.rule)) continue;
       issues.push({
         code: QUALITY_RULE_TO_CODE[q.rule] ?? 'domain-invalid',
         severity: q.severity,
-        layer:
-          q.rule === 'stale-data' || q.rule === 'multiple-verification-stage-records'
-            ? 'business'
-            : 'quality',
+        layer: q.rule === 'stale-data' ? 'business' : 'quality',
         dataset: q.entityType,
         recordId: q.entityId,
         message: q.message,
       });
+    }
     qualitySummary = summarizeDataQuality(bundles, context);
 
     issues.push(

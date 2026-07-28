@@ -1,12 +1,13 @@
-# Nhập dữ liệu dự án nội bộ thật — tài liệu thiết kế (Phase 1) + triển khai (Phase 2-4)
+# Nhập dữ liệu dự án nội bộ thật — tài liệu thiết kế (Phase 1) + triển khai (Phase 2-5)
 
 Trạng thái: **Phase 1 (assessment/design), Phase 2 (source abstraction and profiles), Phase 3
-(canonical JSON schemas and data templates) và Phase 4 (offline importer CLI) đã hoàn thành.** Phase
-5-6 vẫn là đề xuất, chưa triển khai. Xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md)
-(Phase 2), [ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md) (Phase 3) và
-[ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md) (Phase 4) cho
-quyết định đã chốt + sai lệch phát hiện so với thiết kế Phase 1 (ghi chú trực tiếp trong
-01/02/03/04/05-*.md).
+(canonical JSON schemas and data templates), Phase 4 (offline importer CLI) và Phase 5 (demo
+completeness, Data Readiness UI, integration kit) đã hoàn thành.** Phase 6 vẫn là đề xuất, chưa triển
+khai. Xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md) (Phase 2),
+[ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md) (Phase 3),
+[ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md) (Phase 4) và
+[ADR 0008](../adr/0008-demo-scenario-strategy-and-data-readiness-experience.md) (Phase 5) cho quyết
+định đã chốt + sai lệch phát hiện so với thiết kế Phase 1 (ghi chú trực tiếp trong 01/02/03/04/05-*.md).
 
 Mục tiêu tổng thể: biến repo thành một static production-shaped demo, sẵn sàng tiếp nhận dữ liệu dự
 án nội bộ thật (Excel/CSV/JSON) qua một importer/adapter, mà không cần viết lại UI/KPI/validation/
@@ -79,12 +80,25 @@ orphan-reference check bổ sung (bù khoảng trống thật phát hiện ở m
 không tự commit. Xem [ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md)
 cho chi tiết đầy đủ + [import-runbook.md](import-runbook.md) cho hướng dẫn vận hành.
 
-## Điều chưa làm, cố ý (Phase 5 trở đi)
+## Phase 5 — đã triển khai
+
+`scripts/import-data/canonicalIntegrity.ts` (reusable referential-integrity validator, dùng chung
+importer+test) + `scripts/import-data/benchmark/` (25/250/1000 project deterministic) +
+`stage_internal_portfolio_bundle.test.ts` (11 test, temp dir thật) + `scenarioFactory.ts` +
+`illustrativeScenarioAdditions.ts` (5 project minh hoạ bổ sung) + Data Readiness route
+(`#/data-readiness`, `src/features/data-readiness/`) + `integration-kit/` (đã chạy thật qua importer,
+checksum xác nhận thật). Xem
+[ADR 0008](../adr/0008-demo-scenario-strategy-and-data-readiness-experience.md) cho chi tiết đầy đủ +
+lý do thu hẹp phạm vi so với đề xuất gốc (24-40 project, ProjectDetailView đầy đủ, Executive Overview
+reorder — cả ba backlog Phase 6).
+
+## Điều chưa làm, cố ý (Phase 6 trở đi)
 
 - XLSX input, CSV header alias mapping, per-record partial-import, `geometry_json` CSV cell — xem
   05-implementation-backlog.md "Phase 5, mục 0" cho danh sách đầy đủ việc Phase 4 hoãn có chủ đích.
-- Scenario factory, Data Readiness UI, integration kit — vẫn là đề xuất trong
-  05-implementation-backlog.md, chưa có code.
+- Scenario coverage đầy đủ 24-40 project, `ProjectDetailView` authoritative-snapshot explanation đầy
+  đủ, Executive Overview reorder — xem 05-implementation-backlog.md "Phase 6" cho danh sách Phase 5
+  hoãn có chủ đích.
 - `HttpProjectPortfolioSourceContract` vẫn chỉ là interface — không implementation, không API thật.
 - `public-static` dùng chung bundle với `internal-static` — chưa có bước lọc public-projection
   (Phase 6). Importer output KHÔNG tự động là public-approved output.

@@ -21,9 +21,9 @@ import {
 const validAdministrativeCodes = new Set(Object.keys(labels));
 
 describe('MOCK_PROJECT_BUNDLES', () => {
-  it('has between 8 and 12 projects per spec', () => {
+  it('has between 8 and 16 projects (9 original + Phase 5 §B scenario additions)', () => {
     expect(MOCK_PROJECT_BUNDLES.length).toBeGreaterThanOrEqual(8);
-    expect(MOCK_PROJECT_BUNDLES.length).toBeLessThanOrEqual(12);
+    expect(MOCK_PROJECT_BUNDLES.length).toBeLessThanOrEqual(16);
   });
 
   it('covers every required sector at least once', () => {
@@ -80,12 +80,20 @@ describe('MOCK_PROJECT_BUNDLES', () => {
       asOf: new Date(MOCK_REFERENCE_DATE),
     });
     // prj-007 is intentionally seeded with an old dataUpdatedAt to exercise the stale-data UI path
-    // (see the fixture file comment on prj-007) — every other issue would be unexpected.
+    // (see the fixture file comment on prj-007); prj-013 (Phase 5 §B scenario addition) is
+    // intentionally seeded with two progress snapshots at the same identity but different
+    // verification stages, to exercise the multiple-verification-stage-records UI path — every
+    // other issue would be unexpected.
     expect(issues).toEqual([
       expect.objectContaining({
         entityType: 'project',
         entityId: 'prj-007',
         rule: 'stale-data',
+        severity: 'warning',
+      }),
+      expect.objectContaining({
+        entityType: 'progressSnapshot',
+        rule: 'multiple-verification-stage-records',
         severity: 'warning',
       }),
     ]);
@@ -159,6 +167,47 @@ describe('MOCK_PROJECT_BUNDLES', () => {
       );
       expect(stale).toHaveLength(1);
       expect(stale[0]?.project.id).toBe('prj-007');
+    });
+  });
+
+  describe('Phase 5 §B scenario additions (illustrativeScenarioAdditions.ts)', () => {
+    it('covers proposed, preparing, procurement and approved statuses', () => {
+      const statuses = new Set(MOCK_PROJECT_BUNDLES.map((b) => b.project.status));
+      expect(statuses.has('proposed')).toBe(true);
+      expect(statuses.has('preparing')).toBe(true);
+      expect(statuses.has('procurement')).toBe(true);
+      expect(statuses.has('approved')).toBe(true);
+    });
+
+    it('covers a LineString route project and a Polygon project', () => {
+      expect(MOCK_PROJECT_BUNDLES.some((b) => b.project.geometry?.type === 'LineString')).toBe(
+        true,
+      );
+      expect(MOCK_PROJECT_BUNDLES.some((b) => b.project.geometry?.type === 'Polygon')).toBe(true);
+    });
+
+    it('covers an approximate-geometry project with a legalStatusDisclaimer', () => {
+      const approximate = MOCK_PROJECT_BUNDLES.find(
+        (b) => b.project.geometryMetadata?.approximate === true,
+      );
+      expect(approximate).toBeDefined();
+      expect(approximate?.project.geometryMetadata?.legalStatusDisclaimer).toBeTruthy();
+    });
+
+    it('covers a low-confidence, raw-verification project', () => {
+      expect(
+        MOCK_PROJECT_BUNDLES.some(
+          (b) => b.project.confidence === 'low' && b.project.verificationStatus === 'raw',
+        ),
+      ).toBe(true);
+    });
+
+    it('covers a progress snapshot with multiple verification stages at the same identity', () => {
+      const project013 = MOCK_PROJECT_BUNDLES.find((b) => b.project.id === 'prj-013');
+      expect(project013?.progressSnapshots).toHaveLength(2);
+      const statuses = new Set(project013?.progressSnapshots.map((s) => s.verificationStatus));
+      expect(statuses.has('raw')).toBe(true);
+      expect(statuses.has('reviewed')).toBe(true);
     });
   });
 });

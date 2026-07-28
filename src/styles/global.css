@@ -1944,10 +1944,12 @@ footer a {
   font-size: 12px;
   color: #9db6ae;
 }
-.data-health-panel__provenance-link {
+.data-health-panel__provenance-link,
+.data-health-panel__data-readiness-link {
   border: 1px solid #d4a44688;
   border-radius: 999px;
   padding: 7px 14px;
+  margin-right: 8px;
   color: #e7c471;
   background: #d4a44612;
   cursor: pointer;
@@ -2435,6 +2437,117 @@ footer a {
   .project-detail__header-grid,
   .project-detail__summary-grid,
   .project-portfolio-card__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Data Readiness (Phase 5 §C) — same layout/color pattern as .project-portfolio/.project-detail. */
+.data-readiness {
+  position: absolute;
+  z-index: 4;
+  inset: 118px 0 0;
+  overflow-y: auto;
+  padding: 0 3.3vw 64px;
+  color: #dcebe5;
+  background: #071918;
+}
+.data-readiness__back {
+  margin: 16px 0 4px;
+  padding: 6px 12px;
+  border: 1px solid #ffffff2a;
+  border-radius: 999px;
+  color: #a9c3ba;
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+.data-readiness h2 {
+  margin: 8px 0 6px;
+  color: #f0cf7a;
+  font:
+    700 clamp(20px, 3.2vw, 28px)/1.2 Cambria,
+    'Noto Serif',
+    'DejaVu Serif',
+    serif;
+}
+.data-readiness h3 {
+  margin: 20px 0 8px;
+  color: #e9f2ed;
+  font-size: 15px;
+}
+.data-readiness__description {
+  margin: 0 0 16px;
+  color: #a9c3ba;
+  font-size: 13px;
+}
+.data-readiness__degraded-banner {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border: 1px solid #f0cf7a55;
+  border-radius: 10px;
+  color: #f0cf7a;
+  background: #f0cf7a12;
+  font-size: 12px;
+}
+.data-readiness__error {
+  max-width: 520px;
+  margin: 40px 0;
+  padding: 20px 22px;
+  border: 1px solid #f0836655;
+  border-radius: 12px;
+  background: #f0836612;
+}
+.data-readiness__error button {
+  margin: 8px 8px 0 0;
+  border: 1px solid #d4a44688;
+  border-radius: 999px;
+  padding: 8px 16px;
+  color: #e7c471;
+  background: #d4a44612;
+  cursor: pointer;
+}
+.data-readiness__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px 14px;
+  margin: 0 0 12px;
+  font-size: 12px;
+}
+.data-readiness__grid dt {
+  color: #7fa39a;
+}
+.data-readiness__grid dd {
+  margin: 0;
+  color: #dcebe5;
+  overflow-wrap: anywhere;
+}
+.data-readiness__note {
+  margin: 8px 0 16px;
+  color: #9db6ae;
+  font-size: 12px;
+}
+.data-readiness__issue-group {
+  margin: 0 0 20px;
+}
+.data-readiness__issue-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 12px;
+  color: #dcebe5;
+}
+.data-readiness__issue-rule {
+  color: #e7c471;
+  font-weight: 600;
+}
+@media (max-width: 767px) and (orientation: portrait) {
+  .data-readiness {
+    inset: calc(var(--mobile-header-height) + var(--mobile-tabs-height)) 0 0;
+    padding: 0 12px 32px;
+  }
+  .data-readiness h2 {
+    font-size: 19px;
+  }
+  .data-readiness__grid {
     grid-template-columns: 1fr 1fr;
   }
 }

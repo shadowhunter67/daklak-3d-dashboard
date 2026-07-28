@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { parseHashRoute, serializePortfolioHash, serializeProjectDetailHash } from './hashRoute';
+import {
+  parseHashRoute,
+  serializeDataReadinessHash,
+  serializePortfolioHash,
+  serializeProjectDetailHash,
+} from './hashRoute';
 
 describe('parseHashRoute', () => {
   it('parses empty/missing hash as none', () => {
@@ -58,6 +63,14 @@ describe('parseHashRoute', () => {
   it('tolerates a missing leading slash', () => {
     expect(parseHashRoute('#projects')).toEqual({ kind: 'portfolio', filters: {} });
   });
+
+  it('parses #/data-readiness', () => {
+    expect(parseHashRoute('#/data-readiness')).toEqual({ kind: 'data-readiness' });
+  });
+
+  it('falls back to none for #/data-readiness with an extra segment', () => {
+    expect(parseHashRoute('#/data-readiness/extra')).toEqual({ kind: 'none' });
+  });
 });
 
 describe('serializePortfolioHash / serializeProjectDetailHash', () => {
@@ -86,5 +99,9 @@ describe('serializePortfolioHash / serializeProjectDetailHash', () => {
       kind: 'project-detail',
       projectId: 'prj 001',
     });
+  });
+
+  it('round-trips the data-readiness hash', () => {
+    expect(parseHashRoute(serializeDataReadinessHash())).toEqual({ kind: 'data-readiness' });
   });
 });

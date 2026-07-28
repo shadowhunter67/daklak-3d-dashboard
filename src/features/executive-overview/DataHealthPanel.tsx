@@ -3,6 +3,8 @@ import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
 import type { ProjectPortfolioProvenance } from '../../entities/project/adapters/ProjectPortfolioSource';
+import { serializeDataReadinessHash } from '../../routing/hashRoute';
+import { useHashRoute } from '../../routing/useHashRoute';
 import { formatAbsoluteDateTime } from './model/executiveOverviewSelectors';
 import type { DataHealthSummary } from './model/executiveOverviewTypes';
 
@@ -15,6 +17,7 @@ export function DataHealthPanel({
 }) {
   const { t, locale } = useTranslation();
   const openProvenancePanel = useMapStore((state) => state.openProvenancePanel);
+  const { navigate } = useHashRoute();
 
   return (
     <section aria-labelledby="data-health-heading" className="data-health-panel">
@@ -85,6 +88,13 @@ export function DataHealthPanel({
         className="data-health-panel__provenance-link"
       >
         {t('dataHealth.viewProvenance')}
+      </button>
+      <button
+        type="button"
+        onClick={() => navigate(serializeDataReadinessHash())}
+        className="data-health-panel__data-readiness-link"
+      >
+        {t('dataHealth.viewDataReadiness')}
       </button>
     </section>
   );

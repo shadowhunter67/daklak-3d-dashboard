@@ -1,0 +1,2 @@
+id,project_id,code,name,contractor_id,planned_start,planned_end,actual_start,actual_end,planned_progress_pct,actual_progress_pct,budget_vnd,paid_amount_vnd,status,source_dataset_id,source_record_id,observed_at,verification_status,confidence,data_owner
+intkit-wp-001,intkit-001,WP-01,"Sample earthworks package (fictional)",sample-contractor-001,2026-01-01,2026-12-01,2026-01-10,,25,20,6000000000,1200000000,active,,,,,,
