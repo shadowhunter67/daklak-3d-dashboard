@@ -28,6 +28,11 @@ const ProjectDetailView = lazy(() =>
     default: module.ProjectDetailView,
   })),
 );
+const DataReadinessView = lazy(() =>
+  import('./features/data-readiness/DataReadinessView').then((module) => ({
+    default: module.DataReadinessView,
+  })),
+);
 
 function ProjectRouteLoading() {
   const { t } = useTranslation();
@@ -129,11 +134,16 @@ export default function App() {
   // DetailMapViewport / ExecutiveOverview / DashboardPanels so Portfolio/Detail never risk pulling
   // in Three.js/MapLibre/ECharts (spec Phase 2B1 D6) regardless of whatever `viewMode` happens to
   // be underneath.
-  const isProjectRoute = route.kind === 'portfolio' || route.kind === 'project-detail';
+  const isProjectRoute =
+    route.kind === 'portfolio' ||
+    route.kind === 'project-detail' ||
+    route.kind === 'data-readiness';
   const skipLinkTargetId = isProjectRoute
     ? route.kind === 'portfolio'
       ? 'project-portfolio'
-      : 'project-detail'
+      : route.kind === 'project-detail'
+        ? 'project-detail'
+        : 'data-readiness'
     : viewMode === 'table'
       ? 'map-2d-title'
       : viewMode === 'map'
@@ -175,6 +185,7 @@ export default function App() {
               }}
             />
           )}
+          {route.kind === 'data-readiness' && <DataReadinessView onBackToOverview={goToOverview} />}
         </Suspense>
       ) : (
         <>
@@ -203,7 +214,9 @@ export default function App() {
         {isProjectRoute
           ? route.kind === 'portfolio'
             ? t('app.live.openedPortfolio')
-            : t('app.live.openedProjectDetail')
+            : route.kind === 'project-detail'
+              ? t('app.live.openedProjectDetail')
+              : t('app.live.openedDataReadiness')
           : viewMode === 'table'
             ? t('app.live.openedTable')
             : viewMode === 'map'

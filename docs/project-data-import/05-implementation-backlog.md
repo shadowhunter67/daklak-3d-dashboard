@@ -1,9 +1,10 @@
 # Implementation backlog — Phase 2 → 6
 
-Trạng thái: **Phase 2, 3, 4 hoàn thành** — xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md),
+Trạng thái: **Phase 2, 3, 4, 5 hoàn thành** — xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md),
 [ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md),
-[ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md). Phase 5-6
-dưới đây vẫn là **đề xuất**, chưa triển khai.
+[ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md),
+[ADR 0008](../adr/0008-demo-scenario-strategy-and-data-readiness-experience.md). Phase 6 dưới đây vẫn
+là **đề xuất**, chưa triển khai.
 
 ## Phase 2 — Source abstraction and profiles — ĐÃ LÀM
 
@@ -86,7 +87,15 @@ làm hồ sơ:
 11. `integration-kit/import-runbook.md` (nội dung chi tiết ở Phase 6, nhưng bản nháp runbook nên viết
     song song khi xây importer, không để dồn cuối).
 
-## Phase 5 — Demo completeness
+## Phase 5 — Demo completeness, Data Readiness UI, integration kit — ĐÃ LÀM (thu hẹp phạm vi)
+
+Triển khai thật khác đáng kể so với đề xuất đầy đủ dưới đây — xem
+[ADR 0008](../adr/0008-demo-scenario-strategy-and-data-readiness-experience.md) cho lý do từng quyết
+định thu hẹp phạm vi (24-40 project → 5 project bổ sung; không sửa `ProjectDetailView`/Executive
+Overview reorder). Đã làm: `canonicalIntegrity.ts` (reusable integrity validator) + benchmark
+deterministic + staging script test + `scenarioFactory.ts` + 5 project bổ sung + Data Readiness route
+(`#/data-readiness`) + `integration-kit/` đầy đủ (đã chạy thật qua importer). Danh sách gốc dưới đây
+giữ nguyên làm hồ sơ:
 
 0. Việc hoãn từ Phase 4 (xem ADR 0007 + `docs/project-data-import/csv-contract.md`):
    - CSV header alias mapping (config `{"projects": {"project_code": "code"}}`) — Phase 4 chỉ chấp
@@ -132,29 +141,48 @@ làm hồ sơ:
 
 ## Phase 6 — Integration kit and hardening
 
-1. Tạo `integration-kit/` đầy đủ (README, source-assessment-checklist, field-mapping-guide,
+**Lưu ý**: mục 1 dưới đây (`integration-kit/`) thực ra đã được làm SỚM HƠN, ở Phase 5 (theo yêu cầu
+thực tế của người vận hành đưa việc này vào Phase 5 thay vì Phase 6 như đề xuất gốc) — xem
+`integration-kit/` đã tồn tại + [ADR 0008](../adr/0008-demo-scenario-strategy-and-data-readiness-experience.md).
+Các mục 2+ dưới đây (leakage guard public-static, hardening) vẫn là đề xuất, chưa triển khai. Bổ sung
+từ Phase 5 (việc bị hoãn có chủ đích, xem ADR 0008 quyết định 1):
+
+0. Phase độ phủ scenario đầy đủ (24-40 project theo ma trận spec Phase 5 §B2, thay vì 5 project đã
+   thêm) — nếu có nhu cầu demo phong phú hơn.
+1. `ProjectDetailView` hiển thị đầy đủ authoritative-snapshot explanation per-project (snapshot được
+   chọn/lý do chọn/snapshot cạnh tranh/KPI nào dùng) — hiện chỉ có ở mức business-alert message trong
+   Data Readiness, chưa có UI per-project trong Project Detail (ADR 0008 quyết định 1, mục 2).
+2. Rà soát lại thứ tự exception-first của Executive Overview theo spec Phase 5 §C7 — chỉ nếu có phản
+   hồi thực tế cho thấy thứ tự hiện tại (đã quyết theo ADR 0001) cần đổi.
+3. Sửa `scripts/validate_portfolio_data_mode.mjs` (Phase 2 leakage guard) để không dựa vào marker
+   string cố định (`gen-fixture-001`) khi kiểm tra "build internal-static thực sự dùng
+   GeneratedJsonProjectPortfolioSource" — phát hiện khi chạy `integration-kit/example-input/` qua
+   importer thật + `stage:internal-portfolio` (Phase 5), guard báo false positive vì fixture thật đã
+   thay marker đó. Cần kiểm tra cấu trúc build (import graph) thay vì nội dung string cụ thể.
+
+4. Tạo `integration-kit/` đầy đủ (README, source-assessment-checklist, field-mapping-guide,
    canonical-data-dictionary, import-runbook, validation-rules, common-errors, deployment-profiles,
    example-input/, expected-output/) — phần lớn nội dung đã có bản nháp rải rác từ Phase 3-4, Phase 6
    là gom + hoàn thiện + review chéo, không viết từ số 0.
-2. `config/public-project-fields.json` (hoặc mở rộng `config/public-data-files.json`) +
+5. `config/public-project-fields.json` (hoặc mở rộng `config/public-data-files.json`) +
    `scripts/validate_internal_static_build.mjs` (không có dữ liệu minh hoạ lọt vào internal-static) +
    mở rộng leakage guard cho `public-static` (04-deployment-profiles-design.md §2).
-3. Test leakage 2 chiều: "demo data không lọt vào internal-static", "field nội bộ không lọt vào
+6. Test leakage 2 chiều: "demo data không lọt vào internal-static", "field nội bộ không lọt vào
    public-static" — cả hai đều là test mới, không sửa test leakage cũ (`validate_public_build.mjs`
    giữ nguyên mục đích ban đầu của nó).
-4. Chạy lại toàn bộ `npm run quality` + `npm run check:budget` + accessibility test hiện có, xác nhận
+7. Chạy lại toàn bộ `npm run quality` + `npm run check:budget` + accessibility test hiện có, xác nhận
    không regression sau khi tăng scenario/thêm UI.
-5. End-to-end import demonstration: một lần chạy thật `npm run import:data` trên
+8. End-to-end import demonstration: một lần chạy thật `npm run import:data` trên
    `integration-kit/example-input/` → build `internal-static` → so sánh thủ công với
    `integration-kit/expected-output/` — ghi lại kết quả thật (không tuyên bố nếu chưa chạy).
-6. README cập nhật 5 mục đã yêu cầu (How to replace illustrative data / import offline / build
+9. README cập nhật 5 mục đã yêu cầu (How to replace illustrative data / import offline / build
    internal-static / build public-static / What this demo does not provide) — thêm mới, không xoá
    nội dung README hiện có.
-7. ADR mới (0005 trở đi — số thứ tự xác nhận lại tại thời điểm viết, vì có thể có ADR khác được thêm
-   giữa các phase): canonical import format, offline importer, deployment profiles (nguồn dữ liệu),
-   project portfolio source abstraction, demo scenario strategy — mỗi ADR viết SAU khi phần tương
-   ứng đã triển khai xong (đúng convention 4 ADR hiện có, luôn mô tả quyết định đã chốt, không mô tả
-   dự định).
+10. ADR mới (0005 trở đi — số thứ tự xác nhận lại tại thời điểm viết, vì có thể có ADR khác được thêm
+    giữa các phase): canonical import format, offline importer, deployment profiles (nguồn dữ liệu),
+    project portfolio source abstraction, demo scenario strategy — mỗi ADR viết SAU khi phần tương
+    ứng đã triển khai xong (đúng convention 4 ADR hiện có, luôn mô tả quyết định đã chốt, không mô tả
+    dự định).
 
 ## Rủi ro xuyên suốt backlog (nhắc lại để không quên giữa các phase)
 

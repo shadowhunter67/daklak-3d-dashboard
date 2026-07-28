@@ -23,6 +23,7 @@
  */
 import type { Agency, Contractor, Evidence, ProjectBundle } from './types';
 import type { ProjectPortfolioProvenance } from './adapters/ProjectPortfolioSource';
+import { ADDITIONAL_SCENARIO_PROJECT_BUNDLES } from './illustrativeScenarioAdditions';
 
 export const MOCK_REFERENCE_DATE = '2026-07-23T00:00:00.000Z';
 
@@ -836,4 +837,7 @@ export const MOCK_PROJECT_BUNDLES: ProjectBundle[] = [
       },
     ],
   }),
+
+  // Phase 5 §B — 5 project bổ sung sinh qua scenarioFactory.ts, xem illustrativeScenarioAdditions.ts.
+  ...ADDITIONAL_SCENARIO_PROJECT_BUNDLES,
 ];

@@ -1,0 +1,2 @@
+project_id,observed_at,planned_physical_progress_pct,physical_progress_pct,financial_progress_pct,disbursed_amount_vnd,source_dataset_id,source_record_id,imported_at,verification_status,confidence,data_owner
+intkit-001,2026-07-01T00:00:00.000Z,25,20,18,2000000000,project-portfolio-illustrative,intkit-snap-001,2026-07-15T00:00:00.000Z,submitted,,

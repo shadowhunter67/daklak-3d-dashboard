@@ -46,4 +46,11 @@ describe('DataHealthPanel', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Xem chi tiết nguồn dữ liệu' }));
     expect(useMapStore.getState().provenancePanelOpen).toBe(true);
   });
+
+  it('navigates to the Data Readiness route via the hash', () => {
+    window.location.hash = '';
+    renderWithI18n(<DataHealthPanel dataHealth={dataHealth} dataTimeline={dataTimeline} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Xem Data Readiness' }));
+    expect(window.location.hash).toBe('#/data-readiness');
+  });
 });

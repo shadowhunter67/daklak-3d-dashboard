@@ -14,7 +14,7 @@ const validAdministrativeCodes = new Set(Object.keys(labels));
 const asOf = new Date(MOCK_REFERENCE_DATE);
 
 describe('summarizeDataQuality', () => {
-  it('reports the mock portfolio as valid, with exactly the one deliberately-stale scenario project surfaced', () => {
+  it('reports the mock portfolio as valid, with exactly the deliberately-seeded quality issues surfaced', () => {
     const summary = summarizeDataQuality(MOCK_PROJECT_BUNDLES, {
       validAdministrativeCodes,
       agencies: MOCK_AGENCIES,
@@ -30,7 +30,8 @@ describe('summarizeDataQuality', () => {
     expect(summary.staleProjectCount).toBe(1);
     expect(summary.duplicateRecordCount).toBe(0);
     expect(summary.unmappedAdministrativeCodeCount).toBe(0);
-    expect(summary.totalDataQualityIssues).toBe(1);
+    // 1 stale-data (prj-007) + 1 multiple-verification-stage-records (prj-013, Phase 5 §B addition).
+    expect(summary.totalDataQualityIssues).toBe(2);
     expect(summary.sourceAvailable).toBe(true);
   });
 

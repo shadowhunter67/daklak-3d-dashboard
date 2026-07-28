@@ -219,7 +219,17 @@ bao giờ silently drop record. **Importer output KHÔNG tự động là public
 public-projection (vẫn là Phase 6, chưa triển khai); không dùng cho `public-static`. Không thêm
 database/backend/authentication nào. Xem
 [ADR 0007](docs/adr/0007-offline-project-data-importer-and-last-known-good-promotion.md) và
-[import-runbook.md](docs/project-data-import/import-runbook.md) cho chi tiết đầy đủ.
+[import-runbook.md](docs/project-data-import/import-runbook.md) cho chi tiết đầy đủ. Đội cung cấp dữ
+liệu nên bắt đầu từ [integration-kit/README.md](integration-kit/README.md) (checklist đánh giá
+nguồn, field mapping, lỗi thường gặp, ví dụ CSV đã chạy thật qua importer).
+
+### Data Readiness (Phase 5)
+
+Trang `#/data-readiness` (link "Xem Data Readiness" trong panel Data Health của Tổng quan điều hành)
+hiển thị: nguồn dữ liệu hiện tại là gì (minh hoạ hay đã import), schema/bundle version, số lượng bản
+ghi từng loại, và ba nhóm vấn đề tách biệt rõ — lỗi cấu trúc (luôn cần sửa) / vấn đề chất lượng dữ
+liệu (cần xem xét) / cảnh báo nghiệp vụ (thông tin, không phải lỗi). Xem
+[ADR 0008](docs/adr/0008-demo-scenario-strategy-and-data-readiness-experience.md).
 
 ## Khả năng tiếp cận và hiệu năng
 
@@ -255,13 +265,15 @@ database/backend/authentication nào. Xem
   [ADR 0001 — Project là entity trung tâm](docs/adr/0001-project-centric-domain.md) ·
   [ADR 0002 — Hash routing cho Danh mục/Chi tiết dự án](docs/adr/0002-static-host-routing.md) ·
   [domain model](docs/domain-model.md)
-- Nhập dữ liệu dự án nội bộ thật (`docs/project-data-import/`, Phase 1-4 hoàn thành, Phase 5+ chưa
+- Nhập dữ liệu dự án nội bộ thật (`docs/project-data-import/`, Phase 1-5 hoàn thành, Phase 6+ chưa
   triển khai): [chỉ mục](docs/project-data-import/README.md) ·
   [ADR 0005 — Project portfolio source abstraction và static data modes](docs/adr/0005-project-portfolio-source-abstraction.md) ·
   [ADR 0006 — Canonical project portfolio data contract](docs/adr/0006-canonical-project-portfolio-data-contract.md) ·
   [ADR 0007 — Offline importer và last-known-good promotion](docs/adr/0007-offline-project-data-importer-and-last-known-good-promotion.md) ·
+  [ADR 0008 — Demo scenario strategy và Data Readiness](docs/adr/0008-demo-scenario-strategy-and-data-readiness-experience.md) ·
   [canonical data dictionary](docs/project-data-import/canonical-data-dictionary.md) ·
-  [import runbook](docs/project-data-import/import-runbook.md)
+  [import runbook](docs/project-data-import/import-runbook.md) ·
+  [integration kit](integration-kit/README.md) — bàn giao cho đội cung cấp dữ liệu
 - Pipeline ingestion dữ liệu công khai tự động (`scripts/data-refresh/`, nền tảng — chưa nối nguồn
   thật): [ADR 0004](docs/adr/0004-public-data-ingestion.md) ·
   [hướng dẫn vận hành](docs/public-data-refresh.md)
