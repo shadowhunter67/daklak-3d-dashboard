@@ -80,10 +80,10 @@ describe('MOCK_PROJECT_BUNDLES', () => {
       asOf: new Date(MOCK_REFERENCE_DATE),
     });
     // prj-007 is intentionally seeded with an old dataUpdatedAt to exercise the stale-data UI path
-    // (see the fixture file comment on prj-007); prj-013 (Phase 5 §B scenario addition) is
-    // intentionally seeded with two progress snapshots at the same identity but different
-    // verification stages, to exercise the multiple-verification-stage-records UI path — every
-    // other issue would be unexpected.
+    // (see the fixture file comment on prj-007); prj-013 and prj-015 (Phase 5 §B / Phase 6 §D1
+    // scenario additions) are intentionally seeded with two progress snapshots at the same identity
+    // but different verification stages, to exercise the multiple-verification-stage-records UI
+    // path — every other issue would be unexpected.
     expect(issues).toEqual([
       expect.objectContaining({
         entityType: 'project',
@@ -93,6 +93,13 @@ describe('MOCK_PROJECT_BUNDLES', () => {
       }),
       expect.objectContaining({
         entityType: 'progressSnapshot',
+        entityId: expect.stringContaining('prj-013'),
+        rule: 'multiple-verification-stage-records',
+        severity: 'warning',
+      }),
+      expect.objectContaining({
+        entityType: 'progressSnapshot',
+        entityId: expect.stringContaining('prj-015'),
         rule: 'multiple-verification-stage-records',
         severity: 'warning',
       }),
@@ -167,6 +174,37 @@ describe('MOCK_PROJECT_BUNDLES', () => {
       );
       expect(stale).toHaveLength(1);
       expect(stale[0]?.project.id).toBe('prj-007');
+    });
+
+    // Phase 6 (§D1) — four scenarios flagged missing by the Phase 5→6 coverage audit, all added via
+    // prj-015 (docs/adr/0009-*.md) rather than as separate projects.
+    it('has at least one project with a clear financial/physical mismatch', () => {
+      const mismatch = MOCK_PROJECT_BUNDLES.find(
+        (b) => b.project.overallProgress - b.project.financialProgress >= 30,
+      );
+      expect(mismatch).toBeDefined();
+      expect(mismatch?.project.id).toBe('prj-015');
+    });
+
+    it('has at least one work package missing sourceDatasetId (missing provenance)', () => {
+      const missingProvenance = MOCK_PROJECT_BUNDLES.some((b) =>
+        b.workPackages.some((wp) => !wp.sourceDatasetId),
+      );
+      expect(missingProvenance).toBe(true);
+    });
+
+    it('has at least one progress snapshot with verificationStatus superseded', () => {
+      const hasSuperseded = MOCK_PROJECT_BUNDLES.some((b) =>
+        b.progressSnapshots.some((s) => s.verificationStatus === 'superseded'),
+      );
+      expect(hasSuperseded).toBe(true);
+    });
+
+    it('has at least one progress snapshot with verificationStatus rejected', () => {
+      const hasRejected = MOCK_PROJECT_BUNDLES.some((b) =>
+        b.progressSnapshots.some((s) => s.verificationStatus === 'rejected'),
+      );
+      expect(hasRejected).toBe(true);
     });
   });
 

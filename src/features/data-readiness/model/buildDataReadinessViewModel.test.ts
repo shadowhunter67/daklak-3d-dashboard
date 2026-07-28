@@ -32,10 +32,11 @@ describe('buildDataReadinessViewModel', () => {
         asOf: new Date(MOCK_REFERENCE_DATE),
       },
     });
-    // prj-007 stale-data (warning) and prj-013 multiple-verification-stage-records (warning) — both
-    // business alerts, never counted as data-quality errors (nguyên tắc #17: warning !== error).
+    // prj-007 stale-data (warning), prj-013 and prj-015 multiple-verification-stage-records
+    // (warning) — all business alerts, never counted as data-quality errors (nguyên tắc #17:
+    // warning !== error).
     expect(model.dataQualityIssues).toEqual([]);
-    expect(model.businessAlerts.length).toBe(2);
+    expect(model.businessAlerts.length).toBe(3);
     expect(model.validationErrors).toEqual([]);
   });
 

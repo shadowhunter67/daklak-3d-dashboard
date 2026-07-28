@@ -195,4 +195,100 @@ export const ADDITIONAL_SCENARIO_PROJECT_BUNDLES: ProjectBundle[] = [
     confidence: 'high',
     verificationStatus: 'approved',
   }),
+
+  // Phase 6 (§D1) — bốn scenario còn thiếu sau audit Phase 5→6, gộp vào MỘT project thay vì bốn (ưu
+  // tiên scenario coverage, không ưu tiên số lượng project — xem docs/adr/0009-*.md):
+  //   1. financial/physical mismatch: overallProgress cao (70%) nhưng financialProgress rất thấp
+  //      (15%) — khối lượng thi công vượt xa tiến độ giải ngân.
+  //   2. missing provenance: work package KHÔNG có sourceDatasetId (field optional — xem
+  //      WorkPackage.sourceDatasetId trong types.ts), để missingProvenanceChildCount (Data
+  //      Readiness) > 0 có ít nhất một ví dụ thật trong fixture minh hoạ.
+  //   3. superseded snapshot: nhóm progress snapshot cùng identity
+  //      (projectId+observedAt+sourceDatasetId) có MỘT bản ghi verificationStatus='superseded' (bị
+  //      thay thế bởi bản ghi 'approved' cùng identity, sourceRecordId khác) — khác prj-013 (raw→
+  //      reviewed, không có bản nào 'superseded').
+  //   4. rejected snapshot: MỘT quan sát riêng biệt (observedAt khác) có verificationStatus='rejected'
+  //      duy nhất, không có bản ghi thay thế cho quan sát đó.
+  buildScenarioBundle(
+    {
+      id: 'prj-015',
+      code: 'DL-2026-NL-015',
+      name: 'Trạm biến áp 110kV cụm công nghiệp phía Nam (minh hoạ)',
+      description:
+        'Xây dựng trạm biến áp phục vụ cụm công nghiệp — khối lượng thi công vượt tiến độ giải ngân (dữ liệu minh hoạ).',
+      sector: 'energy',
+      status: 'active',
+      managingAuthorityId: 'agency-scongthuong',
+      investorId: 'agency-ubnd-tinh',
+      administrativeAreaCodes: ['24133'],
+      geometry: { type: 'Point', coordinates: [108.06, 12.64] },
+      approvedBudget: 150_000_000_000,
+      disbursedAmount: 22_500_000_000,
+      overallProgress: 70,
+      plannedProgress: 65,
+      financialProgress: 15,
+      dataUpdatedAt: '2026-07-20T00:00:00.000Z',
+      dataOwner: MOCK_DATA_OWNER,
+      sourceDatasetId: PROJECT_PORTFOLIO_DATASET_ID,
+      confidence: 'medium',
+      verificationStatus: 'approved',
+    },
+    {
+      workPackages: [
+        {
+          id: 'prj-015-wp-01',
+          projectId: 'prj-015',
+          code: 'WP-01',
+          name: 'Thi công móng và lắp đặt thiết bị (minh hoạ)',
+          plannedStart: '2026-01-01',
+          plannedEnd: '2026-09-01',
+          plannedProgress: 65,
+          actualProgress: 70,
+          budget: 100_000_000_000,
+          paidAmount: 15_000_000_000,
+          status: 'active',
+          // KHÔNG có sourceDatasetId — scenario "missing provenance" (field optional, xem
+          // types.ts §WorkPackage).
+        },
+      ],
+      progressSnapshots: [
+        {
+          projectId: 'prj-015',
+          observedAt: '2026-05-01T00:00:00.000Z',
+          plannedPhysicalProgress: 55,
+          physicalProgress: 60,
+          financialProgress: 10,
+          disbursedAmount: 15_000_000_000,
+          sourceDatasetId: PROJECT_PROGRESS_DATASET_ID,
+          sourceRecordId: 'snap-015-superseded',
+          importedAt: '2026-05-03T00:00:00.000Z',
+          verificationStatus: 'superseded',
+        },
+        {
+          projectId: 'prj-015',
+          observedAt: '2026-05-01T00:00:00.000Z',
+          plannedPhysicalProgress: 55,
+          physicalProgress: 62,
+          financialProgress: 11,
+          disbursedAmount: 16_500_000_000,
+          sourceDatasetId: PROJECT_PROGRESS_DATASET_ID,
+          sourceRecordId: 'snap-015-approved',
+          importedAt: '2026-05-10T00:00:00.000Z',
+          verificationStatus: 'approved',
+        },
+        {
+          projectId: 'prj-015',
+          observedAt: '2026-06-15T00:00:00.000Z',
+          plannedPhysicalProgress: 60,
+          physicalProgress: 90,
+          financialProgress: 12,
+          disbursedAmount: 18_000_000_000,
+          sourceDatasetId: PROJECT_PROGRESS_DATASET_ID,
+          sourceRecordId: 'snap-015-rejected',
+          importedAt: '2026-06-16T00:00:00.000Z',
+          verificationStatus: 'rejected',
+        },
+      ],
+    },
+  ),
 ];
