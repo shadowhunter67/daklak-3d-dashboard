@@ -1,0 +1,5 @@
+project_id,observed_at,planned_physical_progress_pct,physical_progress_pct,financial_progress_pct,disbursed_amount_vnd,source_dataset_id,source_record_id,imported_at,verification_status,confidence,data_owner
+pilot-proj-001,2026-05-01T00:00:00.000Z,15,12,10,1500000000,phase7-pilot-rehearsal,pilot-snap-001,2026-05-05T00:00:00.000Z,submitted,medium,Pilot Data Team
+pilot-proj-001,2026-06-01T00:00:00.000Z,20,25,22,3300000000,phase7-pilot-rehearsal,pilot-snap-002,2026-06-05T00:00:00.000Z,rejected,medium,Pilot Data Team
+pilot-proj-001,2026-07-01T00:00:00.000Z,20,20,20,3000000000,phase7-pilot-rehearsal,pilot-snap-003,2026-07-05T00:00:00.000Z,approved,high,Pilot Data Team
+pilot-proj-003,2026-05-30T00:00:00.000Z,100,100,100,8000000000,phase7-pilot-rehearsal,pilot-snap-004,2026-06-01T00:00:00.000Z,approved,high,Pilot Data Team
