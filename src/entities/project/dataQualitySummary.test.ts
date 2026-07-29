@@ -30,8 +30,9 @@ describe('summarizeDataQuality', () => {
     expect(summary.staleProjectCount).toBe(1);
     expect(summary.duplicateRecordCount).toBe(0);
     expect(summary.unmappedAdministrativeCodeCount).toBe(0);
-    // 1 stale-data (prj-007) + 1 multiple-verification-stage-records (prj-013, Phase 5 §B addition).
-    expect(summary.totalDataQualityIssues).toBe(2);
+    // 1 stale-data (prj-007) + 1 multiple-verification-stage-records (prj-013, Phase 5 §B addition)
+    // + 1 multiple-verification-stage-records (prj-015, Phase 6 §D1 addition).
+    expect(summary.totalDataQualityIssues).toBe(3);
     expect(summary.sourceAvailable).toBe(true);
   });
 

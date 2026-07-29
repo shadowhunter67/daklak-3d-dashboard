@@ -32,10 +32,11 @@ describe('buildDataReadinessViewModel', () => {
         asOf: new Date(MOCK_REFERENCE_DATE),
       },
     });
-    // prj-007 stale-data (warning) and prj-013 multiple-verification-stage-records (warning) — both
-    // business alerts, never counted as data-quality errors (nguyên tắc #17: warning !== error).
+    // prj-007 stale-data (warning), prj-013 and prj-015 multiple-verification-stage-records
+    // (warning) — all business alerts, never counted as data-quality errors (nguyên tắc #17:
+    // warning !== error).
     expect(model.dataQualityIssues).toEqual([]);
-    expect(model.businessAlerts.length).toBe(2);
+    expect(model.businessAlerts.length).toBe(3);
     expect(model.validationErrors).toEqual([]);
   });
 
@@ -49,6 +50,36 @@ describe('buildDataReadinessViewModel', () => {
     expect(model.validationErrors).toEqual([]);
     expect(model.dataQualityIssues).toEqual([]);
     expect(model.businessAlerts).toEqual([]);
+  });
+
+  it('resolves linkedProjectId for a progressSnapshot business alert (Phase 6 C6)', () => {
+    const model = buildDataReadinessViewModel({
+      bundles: MOCK_PROJECT_BUNDLES,
+      metadata,
+      context: {
+        validAdministrativeCodes,
+        asOf: new Date(MOCK_REFERENCE_DATE),
+      },
+    });
+    const snapshotAlert = model.businessAlerts.find((a) => a.entityType === 'progressSnapshot');
+    expect(snapshotAlert).toBeDefined();
+    expect(snapshotAlert?.linkedProjectId).toBe('prj-013');
+  });
+
+  it('never links to a non-existent project (no dead links)', () => {
+    const model = buildDataReadinessViewModel({
+      bundles: MOCK_PROJECT_BUNDLES,
+      metadata,
+      context: {
+        validAdministrativeCodes,
+        asOf: new Date(MOCK_REFERENCE_DATE),
+      },
+    });
+    for (const issue of [...model.dataQualityIssues, ...model.businessAlerts]) {
+      if (issue.linkedProjectId) {
+        expect(MOCK_PROJECT_BUNDLES.some((b) => b.project.id === issue.linkedProjectId)).toBe(true);
+      }
+    }
   });
 
   it('counts low-confidence and unverified projects correctly', () => {

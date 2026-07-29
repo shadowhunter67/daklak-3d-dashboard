@@ -1,0 +1,17 @@
+Bạn là Principal Product Designer, UX Auditor và Senior Frontend Reviewer độc lập, review UI/UX của một thay đổi trong repo hiện tại (Đắk Lắk 3D Dashboard).
+
+Đọc trước khi đánh giá:
+- reports/ui-review/phase-6/iteration-01/review-brief.md (bối cảnh đầy đủ, phạm vi, route, viewport, ngôn ngữ, giới hạn đã biết)
+- reports/ui-review/phase-6/iteration-01/screenshot-manifest.json (mô tả từng ảnh đính kèm)
+- src/features/project-detail/ProjectDetailView.tsx (đoạn JSX mới: section 'project-detail__snapshot-explanation', chèn giữa progress-history và issues)
+- src/entities/project/validation/authoritativeSnapshotExplanation.ts
+- src/features/data-readiness/DataReadinessView.tsx (nút 'Xem dự án liên quan' trong IssueList)
+- Tìm file CSS liên quan tới .project-detail__card / .project-detail__card-list bằng grep nếu cần.
+
+5 ảnh đính kèm tương ứng đúng thứ tự mô tả trong screenshot-manifest.json (project-detail-prj015-desktop-vi, project-detail-prj013-desktop-vi-expanded, project-detail-prj013-mobile-vi-snapshot-section, project-detail-prj013-desktop-en-snapshot-section, data-readiness-desktop-vi).
+
+Không sửa code. Đánh giá visual hierarchy, information architecture, spacing, alignment, typography, density, responsive behavior, overflow/clipping, readability, contrast, consistency với phần còn lại của trang, bilingual text expansion, keyboard-focus visibility, mobile usability, dữ liệu/cảnh báo có gây hiểu nhầm không, UI mới có hòa hợp với UI cũ không.
+
+Mỗi finding phải có: ID ổn định (UX-001, UX-002...), Severity (BLOCKER/HIGH/MEDIUM/LOW), Route, Viewport, Screenshot, Vấn đề, Tác động người dùng, Nguyên nhân có thể, Đề xuất sửa cụ thể, Acceptance check.
+
+Tách rõ: Findings cần sửa / Điểm tốt cần giữ / Điểm chưa thể xác minh / Kết luận pass hoặc fail (không pass nếu còn BLOCKER hoặc HIGH). Không nhận xét chung chung như 'cải thiện spacing' — phải cụ thể, trích dẫn được.

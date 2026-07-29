@@ -185,7 +185,12 @@ export default function App() {
               }}
             />
           )}
-          {route.kind === 'data-readiness' && <DataReadinessView onBackToOverview={goToOverview} />}
+          {route.kind === 'data-readiness' && (
+            <DataReadinessView
+              onBackToOverview={goToOverview}
+              onOpenProject={(projectId) => navigate(serializeProjectDetailHash(projectId))}
+            />
+          )}
         </Suspense>
       ) : (
         <>

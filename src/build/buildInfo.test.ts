@@ -8,6 +8,7 @@ describe('createBuildInfo', () => {
     datasetVersion: '1253e2ad7933bcc59a5b68a03a81b532cd939e3e',
     datasetSnapshot: '2026-07-16',
     portfolioDataMode: 'demo' as const,
+    activePortfolioSourceModule: './src/data/activePortfolioSource.demo.ts',
   };
 
   it('normalizes metadata to a deploy-verifiable representation', () => {

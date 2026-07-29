@@ -1,0 +1,9 @@
+Đây là vòng 3 (cuối), chỉ re-check MỘT finding còn lại từ vòng 2: UX-001 (HIGH), route #/projects/prj-015.
+
+Đọc reports/ui-review/phase-6/iteration-02/codex-review.md (tìm dòng UX-001 trong bảng "Đối chiếu từng finding") để nhớ acceptance check gốc: "một người chỉ đọc summary phải xác định được nguồn và trạng thái hợp lệ của overallProgress, plannedProgress, financialProgress, disbursementRate, scheduleVariance, budgetVariance mà không cần cuộn tới section snapshot", và lý do vòng 2 vẫn FAIL: cảnh báo chưa nói rõ KPI đến từ đâu (Project record trực tiếp, không phải snapshot) và trạng thái xác thực không rõ.
+
+Đọc src/i18n/messages/vi.ts và src/i18n/messages/en.ts, tìm key 'detail.summary.noAuthoritativeSnapshotWarning' (bản mới).
+
+Ảnh đính kèm: project-detail-prj015-desktop-vi-1440.png (1440x900, tiếng Việt, section "Tóm tắt ngân sách và tiến độ").
+
+Chỉ trả lời: UX-001 giờ đã đáp ứng acceptance check hay chưa (đã sửa / chưa sửa), và nếu chưa, chính xác câu chữ nào còn thiếu. Không cần review lại UX-002 đến UX-006 (đã đóng ở vòng 2, trừ UX-006 đã biết là MEDIUM chấp nhận được). Kết luận cuối: PASS hay FAIL cho toàn bộ Phase 6 UI slice.

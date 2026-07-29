@@ -97,6 +97,23 @@ export interface CanonicalProjectPortfolioBundle {
   datasets: CanonicalProjectPortfolioDatasets;
 }
 
+/** Chín nhóm dataset có thể chiếu (project) sang public bundle (Phase 6) — cố tình KHÔNG gồm
+ * `auditEvents` (không bao giờ public, xem docs/project-data-import/public-projection-policy.md).
+ * Tách khỏi `keyof CanonicalProjectPortfolioDatasets` để dùng được làm runtime value (danh sách lặp
+ * qua được), không chỉ type-level. */
+export const CANONICAL_ENTITY_KINDS = [
+  'agencies',
+  'contractors',
+  'projects',
+  'workPackages',
+  'milestones',
+  'projectIssues',
+  'progressSnapshots',
+  'evidence',
+  'referenceDocuments',
+] as const;
+export type CanonicalEntityKind = (typeof CANONICAL_ENTITY_KINDS)[number];
+
 /**
  * Schema-versioning policy (ADR 0006, docs/project-data-import/schema-versioning-policy.md):
  * - Major thay đổi khi: xoá field, đổi kiểu field, thu hẹp enum, đổi semantics phá compatibility.

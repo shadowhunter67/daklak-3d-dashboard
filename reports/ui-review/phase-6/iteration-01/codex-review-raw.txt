@@ -1,0 +1,2258 @@
+Reading prompt from stdin...
+2026-07-28T06:42:36.072711Z ERROR codex_models_manager::cache: failed to load models cache: missing field `supports_reasoning_summaries` at line 88 column 5
+OpenAI Codex v0.144.1
+--------
+workdir: E:\Lập trình\lập trình\daklak-3d-dashboard
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: none
+reasoning summaries: none
+session id: 019fa776-0470-7210-802a-f2e65980c0db
+--------
+user
+Bạn là Principal Product Designer, UX Auditor và Senior Frontend Reviewer độc lập, review UI/UX của một thay đổi trong repo hiện tại (Đắk Lắk 3D Dashboard).
+
+Đọc trước khi đánh giá:
+- reports/ui-review/phase-6/iteration-01/review-brief.md (bối cảnh đầy đủ, phạm vi, route, viewport, ngôn ngữ, giới hạn đã biết)
+- reports/ui-review/phase-6/iteration-01/screenshot-manifest.json (mô tả từng ảnh đính kèm)
+- src/features/project-detail/ProjectDetailView.tsx (đoạn JSX mới: section 'project-detail__snapshot-explanation', chèn giữa progress-history và issues)
+- src/entities/project/validation/authoritativeSnapshotExplanation.ts
+- src/features/data-readiness/DataReadinessView.tsx (nút 'Xem dự án liên quan' trong IssueList)
+- Tìm file CSS liên quan tới .project-detail__card / .project-detail__card-list bằng grep nếu cần.
+
+5 ảnh đính kèm tương ứng đúng thứ tự mô tả trong screenshot-manifest.json (project-detail-prj015-desktop-vi, project-detail-prj013-desktop-vi-expanded, project-detail-prj013-mobile-vi-snapshot-section, project-detail-prj013-desktop-en-snapshot-section, data-readiness-desktop-vi).
+
+Không sửa code. Đánh giá visual hierarchy, information architecture, spacing, alignment, typography, density, responsive behavior, overflow/clipping, readability, contrast, consistency với phần còn lại của trang, bilingual text expansion, keyboard-focus visibility, mobile usability, dữ liệu/cảnh báo có gây hiểu nhầm không, UI mới có hòa hợp với UI cũ không.
+
+Mỗi finding phải có: ID ổn định (UX-001, UX-002...), Severity (BLOCKER/HIGH/MEDIUM/LOW), Route, Viewport, Screenshot, Vấn đề, Tác động người dùng, Nguyên nhân có thể, Đề xuất sửa cụ thể, Acceptance check.
+
+Tách rõ: Findings cần sửa / Điểm tốt cần giữ / Điểm chưa thể xác minh / Kết luận pass hoặc fail (không pass nếu còn BLOCKER hoặc HIGH). Không nhận xét chung chung như 'cải thiện spacing' — phải cụ thể, trích dẫn được.
+
+codex
+Tôi sẽ review theo đúng brief và bằng chứng trong repo, không sửa code. Tôi đang đối chiếu manifest, JSX, logic giải thích snapshot và CSS để phân biệt lỗi của UI mới với lỗi capture/route.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw 'reports/ui-review/phase-6/iteration-01/review-brief.md'; Get-Content -Raw 'reports/ui-review/phase-6/iteration-01/screenshot-manifest.json'; Get-Content -Raw 'src/features/project-detail/ProjectDetailView.tsx'; Get-Content -Raw 'src/entities/project/validation/authoritativeSnapshotExplanation.ts'; Get-Content -Raw 'src/features/data-readiness/DataReadinessView.tsx'; rg -n --glob '"'!*.env*'"' \"project-detail__card|project-detail__card-list|snapshot-explanation|IssueList|data-readiness\" src" in E:\Lập trình\lập trình\daklak-3d-dashboard
+ succeeded in 728ms:
+# Phase 6 UI review ƒ?" iteration 01
+
+## Commit under review
+
+`eede3a966008fc5129124e1f01c65a4dec1a1a4e` (branch `feature/phase6-public-projection-ui-review`)
+
+## Phase goal
+
+Phase 6 adds a public data projection engine, hardens the portfolio-data-mode leakage guard, and
+(this UI-facing slice) adds a "which progress snapshot backs the current KPIs, and why" explanation
+to Project Detail, plus a "view related project" drill-down from Data Readiness issues.
+
+## UI changes in this diff
+
+1. **Project Detail** (`src/features/project-detail/ProjectDetailView.tsx`): new section "Snapshot
+   dA1ng Ž` ¯Ÿ tA-nh KPI" / "Snapshot used for KPIs", inserted between "Progress history" and "Issues".
+   Shows: observation date, verification status, confidence (if present), selection reason,
+   affected KPI list, other observation dates, and ƒ?" when more than one competing record exists for
+   the same observation ƒ?" an expandable native `<details>` list of every competing record with a
+   "ƒo" Selected" badge or an exclusion reason.
+2. **Data Readiness** (`src/features/data-readiness/DataReadinessView.tsx`): each data-quality/
+   business-alert issue now shows a "Xem d ¯ñ A­n liA¦n quan" / "View related project" button when a
+   real project id can be resolved for that issue (never rendered for unresolvable issues ƒ?" no dead
+   links).
+
+## User goal
+
+An operator looking at a project's KPIs should be able to tell, without reading source code,
+*which* progress observation those numbers came from, why that one and not a competing
+verification-stage record, and whether anything is stale/rejected/superseded. An operator scanning
+Data Readiness alerts should be able to jump straight to the affected project.
+
+## Acceptance criteria for this slice
+
+- No new field is shown when the underlying data is absent (no "0" standing in for missing data).
+- Bilingual (vi/en) ƒ?" static labels are translated via the existing i18n dictionary.
+- Keyboard-operable disclosure (native `<details>`/`<summary>`), no custom JS focus trap needed.
+- No console errors on any of the routes below.
+- Data Readiness never renders a drill-down button for an issue with no resolvable project.
+
+## Routes reviewed
+
+- `#/projects/prj-013` (Education project, two progress-snapshot records for the same observation ƒ?"
+  `raw` losing to `reviewed` ƒ?" exercises the expandable competing-records list)
+- `#/projects/prj-015` (Energy project, most recent observation has ONLY a `rejected` record ƒ?"
+  exercises the "no snapshot selected" branch)
+- `#/data-readiness` (three business alerts, all three now show a working drill-down button)
+
+## Viewports
+
+- 1440A-900 (desktop) ƒ?" primary
+- 390A-844 (mobile) ƒ?" spot-checked on the new section only (full-page screenshot capture was
+  unreliable in this environment for the map-heavy pages; see "Known limitations")
+
+## Languages
+
+- Vietnamese (default)
+- English (`?lang=en`)
+
+## States captured
+
+- Selected snapshot with reason + affected KPIs + collapsed competing-records disclosure
+  (prj-013, vi, desktop) ƒ?" `project-detail-prj013-desktop-vi-expanded.png` (after clicking to expand)
+- No snapshot selected for the latest observation, single competing record shown inline, no
+  disclosure toggle (only 1 record ƒØ' nothing to disclose) (prj-015, vi, desktop) ƒ?"
+  `project-detail-prj015-desktop-vi.png`
+- Same selected-snapshot case in English (prj-013, en, desktop) ƒ?"
+  `project-detail-prj013-desktop-en-snapshot-section.png`
+- Expanded competing-records disclosure, mobile viewport, element-scoped capture (prj-013, vi,
+  390A-844) ƒ?" `project-detail-prj013-mobile-vi-snapshot-section.png`
+- Data Readiness with three business alerts + drill-down buttons (vi, desktop) ƒ?"
+  `data-readiness-desktop-vi.png`
+
+## Code files for this slice
+
+- `src/entities/project/validation/authoritativeSnapshotExplanation.ts` (+ test) ƒ?" pure view-model,
+  reuses `selectAuthoritativeSnapshot`/`groupSnapshotsByIdentity` unchanged.
+- `src/features/project-detail/ProjectDetailView.tsx`, `model/buildProjectDetailViewModel.ts`,
+  `model/projectDetailTypes.ts`.
+- `src/features/data-readiness/DataReadinessView.tsx`,
+  `model/buildDataReadinessViewModel.ts` (`resolveIssueProjectId`), `model/dataReadinessTypes.ts`.
+- `src/i18n/messages/{vi,en}.ts` ƒ?" new `detail.snapshotExplanation.*`, `progressVerificationStatus.*`,
+  `dataReadiness.issue.openProject` keys.
+- `src/App.tsx` ƒ?" wires `onOpenProject` into `DataReadinessView`.
+
+## Known limitations of this review round
+
+- Only 2 of the 5 spec-requested viewports were exercised (1440A-900 and 390A-844); 1280A-800,
+  768A-1024, and 320A-700 were not captured in this round.
+- Only the changed section/route was screenshotted at mobile width (element-scoped, not full-page)
+  because full-page capture of the WebGL/map-bearing pages timed out repeatedly in this headless
+  environment.
+- Loading/error/degraded states of the new UI were not screenshotted (verified only by reading the
+  component code and existing unit tests, not visually).
+- This is a single review round, not the full 3-round loop the process ideally uses.
+
+## Design decisions worth a second opinion
+
+- The dynamic "selection reason" / exclusion-reason sentences shown in the snapshot-explanation
+  section are always Vietnamese, even when the UI locale is English ƒ?" only the static label
+  ("Selection reason:" / "LA« do ch ¯?n:") is translated. This matches the existing repo convention for
+  `DataQualityIssue.message` (shown raw, untranslated, in Data Readiness) but is visible for the
+  first time inside a bilingual detail page rather than a diagnostics list.
+- `affectedKpis` names raw domain field identifiers (`overallProgress`, `disbursementRate`, ...) ƒ?"
+  not translated KPI labels ƒ?" since it's meant to name a `KpiResult`-adjacent list corroborated by
+  the snapshot, not a fully polished sentence.
+
+## Previous findings
+
+None ƒ?" this is iteration 01.
+
+{
+  "commit": "eede3a966008fc5129124e1f01c65a4dec1a1a4e",
+  "screenshots": [
+    {
+      "path": "screenshots/project-detail-prj015-desktop-vi.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-015",
+      "viewport": "1440x900",
+      "language": "vi",
+      "state": "default ƒ?" most recent observation has only a rejected record, none selected",
+      "description": "Full page, snapshot-explanation section shows 'no record eligible for KPI' branch."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-desktop-vi-expanded.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-013",
+      "viewport": "1440x900",
+      "language": "vi",
+      "state": "competing-records disclosure expanded",
+      "description": "Viewport screenshot (scrolled), shows selected snapshot + expanded competing-records list with one excluded (raw) and one selected (reviewed) record."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-mobile-vi.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-013",
+      "viewport": "390x844",
+      "language": "vi",
+      "state": "default (top of page, header)",
+      "description": "Mobile viewport top-of-page capture."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-mobile-vi-snapshot-section.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-013",
+      "viewport": "390x844",
+      "language": "vi",
+      "state": "competing-records disclosure expanded",
+      "description": "Element-scoped capture of the snapshot-explanation section at mobile width (full-page capture was unreliable in this environment)."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-desktop-en.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-013",
+      "viewport": "1440x900",
+      "language": "en",
+      "state": "default (top of page, header)",
+      "description": "English locale top-of-page capture."
+    },
+    {
+      "path": "screenshots/project-detail-prj013-desktop-en-snapshot-section.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/projects/prj-013",
+      "viewport": "1440x900",
+      "language": "en",
+      "state": "collapsed disclosure, selected snapshot shown",
+      "description": "Element-scoped capture of the snapshot-explanation section in English ƒ?" selection reason text is Vietnamese (see review-brief 'Design decisions worth a second opinion')."
+    },
+    {
+      "path": "screenshots/data-readiness-desktop-vi.png",
+      "buildMode": "demo",
+      "browser": "chrome-devtools-mcp (headless Chrome)",
+      "route": "#/data-readiness",
+      "viewport": "1440x900",
+      "language": "vi",
+      "state": "default ƒ?" 3 business alerts, all with a resolved drill-down button",
+      "description": "Full page, business-alerts section with 'Xem d ¯ñ A­n liA¦n quan' buttons."
+    }
+  ]
+}
+
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
+import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
+import type { ProjectGeometry } from '../../entities/project/types';
+import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
+import { formatDate, formatDateTime, formatVnd } from '../../i18n/formatters';
+import {
+  formatAbsoluteDateTime,
+  formatKpiValueLocalized,
+} from '../executive-overview/model/executiveOverviewSelectors';
+import { useProjectDetail } from './data/useProjectDetail';
+import { ProgressHistorySparkline } from './ProgressHistorySparkline';
+import { resolveLocalizedText } from '../../i18n/resolveLocalizedText';
+
+const ISSUE_SEVERITIES = ['critical', 'high', 'medium', 'low'] as const;
+
+export function ProjectDetailView({
+  source,
+  projectId,
+  onBackToPortfolio,
+  onViewOnMap,
+}: {
+  source?: ProjectPortfolioSource;
+  projectId: string;
+  onBackToPortfolio: () => void;
+  onViewOnMap: (geometry: ProjectGeometry) => void;
+}) {
+  const { t, locale } = useTranslation();
+  const [retryToken, setRetryToken] = useState(0);
+  const effectiveSource = useMemo(() => source ?? defaultProjectPortfolioSource, [source]);
+  const state = useProjectDetail(effectiveSource, projectId, retryToken);
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
+
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, [projectId]);
+
+  if (state.status === 'loading') {
+    return (
+      <section
+        id="project-detail"
+        className="project-detail"
+        aria-live="polite"
+        aria-busy="true"
+        tabIndex={-1}
+      >
+        <span className="map-loading__spinner" aria-hidden="true" />
+        <p>{t('detail.loading')}</p>
+      </section>
+    );
+  }
+
+  if (state.status === 'not-found') {
+    return (
+      <section id="project-detail" className="project-detail" tabIndex={-1}>
+        <div className="project-detail__not-found" role="alert">
+          <h2 ref={headingRef} tabIndex={-1}>
+            {t('detail.notFoundHeading')}
+          </h2>
+          <p>{t('detail.notFoundBody', { projectId })}</p>
+          <button type="button" onClick={onBackToPortfolio}>
+            {t('detail.backToPortfolio')}
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  if (state.status === 'error') {
+    return (
+      <section id="project-detail" className="project-detail" tabIndex={-1}>
+        <div className="project-detail__error" role="alert">
+          <h2 ref={headingRef} tabIndex={-1}>
+            {t('detail.loadErrorHeading')}
+          </h2>
+          <p>{t(`errorKind.${state.error.kind}` as MessageKey)}</p>
+          <p className="project-detail__error-detail">{state.error.message}</p>
+          <button type="button" onClick={() => setRetryToken((n) => n + 1)}>
+            {t('detail.retry')}
+          </button>
+          <button type="button" onClick={onBackToPortfolio}>
+            {t('detail.backToPortfolio')}
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  const { model } = state;
+  const disbursement = formatKpiValueLocalized(model.summary.disbursementRate, locale, t);
+  const scheduleVariance = formatKpiValueLocalized(model.summary.scheduleVariance, locale, t);
+  const budgetVariance = formatKpiValueLocalized(model.summary.budgetVariance, locale, t);
+  const forecastDelay = formatKpiValueLocalized(model.summary.forecastDelayInDays, locale, t);
+  const overdueIssues = formatKpiValueLocalized(model.issues.overdueIssueCount, locale, t);
+
+  return (
+    <section
+      id="project-detail"
+      className="project-detail"
+      aria-labelledby="project-detail-heading"
+      tabIndex={-1}
+    >
+      <button type="button" className="project-detail__back" onClick={onBackToPortfolio}>
+        {t('detail.backToPortfolioShort')}
+      </button>
+
+      {state.status === 'degraded' && (
+        <p role="alert" className="project-detail__degraded-banner">
+          {t('detail.degradedBanner', { issues: state.sourceIssues.join('; ') })}
+        </p>
+      )}
+
+      {/* A plain <div>, not <header>: the bare `header { position: absolute; top: 0; ... }`
+          selector in global.css is reserved for DashboardHeader's own top bar ƒ?" an actual
+          <header> element here would silently inherit that layout and float on top of the page
+          instead of flowing normally inside .project-detail. */}
+      <div className="project-detail__header">
+        <h2 id="project-detail-heading" ref={headingRef} tabIndex={-1}>
+          {model.header.name}
+        </h2>
+        <p className="project-detail__mock-badge" role="note">
+          {t('detail.illustrativeBadge')}
+        </p>
+        <dl className="project-detail__header-grid">
+          <div>
+            <dt>{t('detail.header.code')}</dt>
+            <dd>{model.header.code}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.header.sector')}</dt>
+            <dd>{t(`sector.${model.header.sector}` as MessageKey)}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.header.status')}</dt>
+            <dd>{t(`status.${model.header.status}` as MessageKey)}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.header.priority')}</dt>
+            {/* ProjectPriority and issue severity share the same critical/high/medium/low values ƒ?"
+                reusing issueSeverity.* rather than a duplicate priority.* dictionary entry per value. */}
+            <dd>{t(`issueSeverity.${model.header.priority}` as MessageKey)}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.header.updatedAt')}</dt>
+            <dd>{formatDateTime(model.header.dataUpdatedAt, locale)}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.header.confidence')}</dt>
+            <dd>{t(`confidence.${model.header.confidence}` as MessageKey)}</dd>
+          </div>
+        </dl>
+      </div>
+
+      {model.attentionReasons.length > 0 && (
+        <section
+          aria-labelledby="project-detail-attention-heading"
+          className="project-detail__attention"
+        >
+          <h3 id="project-detail-attention-heading">{t('detail.attentionHeading')}</h3>
+          <ul>
+            {model.attentionReasons.map((reason) => (
+              <li key={reason.category}>{t(`reason.${reason.category}` as MessageKey)}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <section aria-labelledby="project-detail-summary-heading" className="project-detail__summary">
+        <h3 id="project-detail-summary-heading">{t('detail.summaryHeading')}</h3>
+        <dl className="project-detail__summary-grid">
+          <div>
+            <dt>{t('detail.summary.approvedBudget')}</dt>
+            <dd>{formatVnd(model.summary.approvedBudget, locale)}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.summary.adjustedBudget')}</dt>
+            <dd>
+              {model.summary.adjustedBudget !== null
+                ? formatVnd(model.summary.adjustedBudget, locale)
+                : t('detail.summary.adjustedBudgetNone')}
+            </dd>
+          </div>
+          <div>
+            <dt>{t('detail.summary.disbursedAmount')}</dt>
+            <dd>{formatVnd(model.summary.disbursedAmount, locale)}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.summary.disbursementRate')}</dt>
+            <dd>{disbursement.text}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.summary.progress')}</dt>
+            <dd>
+              {model.summary.overallProgress}% / {model.summary.plannedProgress}%
+            </dd>
+          </div>
+          <div>
+            <dt>{t('detail.summary.scheduleVariance')}</dt>
+            <dd>{scheduleVariance.text}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.summary.budgetVariance')}</dt>
+            <dd>{budgetVariance.text}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.summary.plannedCompletion')}</dt>
+            <dd>
+              {model.summary.plannedCompletionDate
+                ? formatDate(model.summary.plannedCompletionDate, locale)
+                : t('portfolio.notDetermined')}
+            </dd>
+          </div>
+          <div>
+            <dt>{t('detail.summary.forecastCompletion')}</dt>
+            <dd>
+              {model.summary.forecastCompletionDate
+                ? formatDate(model.summary.forecastCompletionDate, locale)
+                : t('detail.summary.forecastCompletionNone')}
+            </dd>
+          </div>
+          <div>
+            <dt>{t('detail.summary.forecastDelay')}</dt>
+            <dd>{forecastDelay.text}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section
+        aria-labelledby="project-detail-workpackages-heading"
+        className="project-detail__work-packages"
+      >
+        <h3 id="project-detail-workpackages-heading">
+          {t('detail.workPackagesHeading', { count: model.workPackages.length })}
+        </h3>
+        {model.workPackages.length === 0 ? (
+          <p>{t('detail.workPackagesEmpty')}</p>
+        ) : (
+          <ul className="project-detail__card-list">
+            {model.workPackages.map((wp) => (
+              <li key={wp.id} className="project-detail__card">
+                <p className="project-detail__card-title">
+                  {wp.name} <span className="project-portfolio__code">({wp.code})</span>
+                </p>
+                <p>
+                  {t('detail.workPackage.status', {
+                    status: t(`workPackageStatus.${wp.status}` as MessageKey),
+                  })}
+                </p>
+                <p>
+                  {t('detail.workPackage.progress', {
+                    actual: wp.actualProgress,
+                    planned: wp.plannedProgress,
+                  })}
+                </p>
+                <p>
+                  {t('detail.workPackage.planned', {
+                    start: formatDate(wp.plannedStart, locale),
+                    end: formatDate(wp.plannedEnd, locale),
+                  })}
+                </p>
+                <p>
+                  {t('detail.workPackage.budget', {
+                    budget: formatVnd(wp.budget, locale),
+                    paid: formatVnd(wp.paidAmount, locale),
+                  })}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section
+        aria-labelledby="project-detail-milestones-heading"
+        className="project-detail__milestones"
+      >
+        <h3 id="project-detail-milestones-heading">
+          {t('detail.milestonesHeading', { count: model.milestones.length })}
+        </h3>
+        {model.milestones.length === 0 ? (
+          <p>{t('detail.milestonesEmpty')}</p>
+        ) : (
+          <ul className="project-detail__card-list">
+            {model.milestones.map((m) => (
+              <li key={m.id} className="project-detail__card">
+                <p className="project-detail__card-title">
+                  {m.name}{' '}
+                  {m.critical && (
+                    <span aria-label={t('detail.milestone.criticalAria')}>
+                      {t('detail.milestone.criticalBadge')}
+                    </span>
+                  )}
+                </p>
+                <p>
+                  {t('detail.milestone.status', {
+                    status: t(`milestoneStatus.${m.status}` as MessageKey),
+                  })}
+                </p>
+                <p>{t('detail.milestone.planned', { date: formatDate(m.plannedDate, locale) })}</p>
+                {m.forecastDate && (
+                  <p>
+                    {t('detail.milestone.forecast', { date: formatDate(m.forecastDate, locale) })}
+                  </p>
+                )}
+                {m.actualDate && (
+                  <p>{t('detail.milestone.actual', { date: formatDate(m.actualDate, locale) })}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section
+        aria-labelledby="project-detail-progress-history-heading"
+        className="project-detail__progress-history"
+      >
+        <h3 id="project-detail-progress-history-heading">{t('detail.progressHistoryHeading')}</h3>
+        <ProgressHistorySparkline points={model.progressHistory} />
+      </section>
+
+      <section
+        aria-labelledby="project-detail-snapshot-explanation-heading"
+        className="project-detail__snapshot-explanation"
+      >
+        <h3 id="project-detail-snapshot-explanation-heading">
+          {t('detail.snapshotExplanation.heading')}
+        </h3>
+        {(() => {
+          const explanation = model.snapshotExplanation;
+          if (explanation.observedAt === null) {
+            return <p>{t('detail.snapshotExplanation.none')}</p>;
+          }
+          const selected = explanation.selectedSnapshot;
+          return (
+            <div className="project-detail__card">
+              <p>
+                {t('detail.snapshotExplanation.selectedObservedAt', {
+                  observedAt: formatDate(explanation.observedAt, locale),
+                })}
+              </p>
+              {selected ? (
+                <>
+                  <p>
+                    {t('detail.snapshotExplanation.selectedStatus', {
+                      status: t(
+                        `progressVerificationStatus.${selected.verificationStatus}` as MessageKey,
+                      ),
+                    })}
+                  </p>
+                  {selected.confidence && (
+                    <p>
+                      {t('detail.snapshotExplanation.selectedConfidence', {
+                        confidence: t(`confidence.${selected.confidence}` as MessageKey),
+                      })}
+                    </p>
+                  )}
+                  {explanation.selectedReason && (
+                    <p>
+                      {t('detail.snapshotExplanation.reason', {
+                        reason: explanation.selectedReason,
+                      })}
+                    </p>
+                  )}
+                  {explanation.affectedKpis.length > 0 && (
+                    <p>
+                      {t('detail.snapshotExplanation.affectedKpis', {
+                        kpis: explanation.affectedKpis.join(', '),
+                      })}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p role="note">
+                  {t('detail.snapshotExplanation.noneSelectedFor', {
+                    observedAt: formatDate(explanation.observedAt, locale),
+                  })}
+                </p>
+              )}
+              {explanation.otherObservationDates.length > 0 && (
+                <p>
+                  {t('detail.snapshotExplanation.otherObservations', {
+                    dates: explanation.otherObservationDates
+                      .map((d) => formatDate(d, locale))
+                      .join(', '),
+                  })}
+                </p>
+              )}
+              {explanation.competingSnapshots.length > 1 && (
+                <details>
+                  <summary>
+                    {t('detail.snapshotExplanation.competingToggle', {
+                      count: explanation.competingSnapshots.length,
+                    })}
+                  </summary>
+                  <ul className="project-detail__card-list">
+                    {explanation.competingSnapshots.map((entry) => (
+                      <li key={entry.snapshot.sourceRecordId} className="project-detail__card">
+                        <p>
+                          {entry.selected && (
+                            <strong>
+                              {t('detail.snapshotExplanation.competingSelectedBadge')}{' '}
+                            </strong>
+                          )}
+                          {t('detail.snapshotExplanation.competingRecord', {
+                            sourceRecordId: entry.snapshot.sourceRecordId,
+                            status: t(
+                              `progressVerificationStatus.${entry.snapshot.verificationStatus}` as MessageKey,
+                            ),
+                            importedAt: formatDateTime(entry.snapshot.importedAt, locale),
+                          })}
+                        </p>
+                        {entry.exclusionReason && <p>{entry.exclusionReason}</p>}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+            </div>
+          );
+        })()}
+      </section>
+
+      <section aria-labelledby="project-detail-issues-heading" className="project-detail__issues">
+        <h3 id="project-detail-issues-heading">
+          {t('detail.issuesHeading', {
+            count: model.issues.all.length,
+            overdue: overdueIssues.text,
+          })}
+        </h3>
+        {model.issues.all.length === 0 ? (
+          <p>{t('detail.issuesEmpty')}</p>
+        ) : (
+          ISSUE_SEVERITIES.map((severity) => {
+            const issues = model.issues.bySeverity[severity];
+            if (issues.length === 0) return null;
+            return (
+              <div key={severity} className="project-detail__issue-group">
+                <h4>
+                  {t('detail.issueGroupHeading', {
+                    severity: t(`issueSeverity.${severity}` as MessageKey),
+                    count: issues.length,
+                  })}
+                </h4>
+                <ul className="project-detail__card-list">
+                  {issues.map((issue) => (
+                    <li key={issue.id} className="project-detail__card">
+                      <p className="project-detail__card-title">{issue.title}</p>
+                      <p>{issue.description}</p>
+                      <p>
+                        {t('detail.issue.statusOpened', {
+                          status: t(`issueStatus.${issue.status}` as MessageKey),
+                          openedAt: formatDate(issue.openedAt, locale),
+                        })}
+                        {issue.dueAt &&
+                          t('detail.issue.due', { dueAt: formatDate(issue.dueAt, locale) })}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })
+        )}
+      </section>
+
+      <section
+        aria-labelledby="project-detail-geography-heading"
+        className="project-detail__geography"
+      >
+        <h3 id="project-detail-geography-heading">{t('detail.geographyHeading')}</h3>
+        <p>
+          {t('detail.geography.area', {
+            areas:
+              model.geography.administrativeAreaCodes.length > 0
+                ? model.geography.administrativeAreaCodes.join(', ')
+                : t('detail.geography.areaNone'),
+          })}
+        </p>
+        {model.geography.hasGeometry && model.geography.geometry ? (
+          <button type="button" onClick={() => onViewOnMap(model.geography.geometry!)}>
+            {t('detail.geography.viewOnMap')}
+          </button>
+        ) : (
+          <p>{t('detail.geography.noGeometry')}</p>
+        )}
+      </section>
+
+      <section
+        aria-labelledby="project-detail-provenance-heading"
+        className="project-detail__provenance"
+      >
+        <h3 id="project-detail-provenance-heading">{t('detail.provenanceHeading')}</h3>
+        <ul className="project-detail__card-list">
+          {model.provenance.map((entry) => {
+            if (!entry.dataset) {
+              return (
+                <li key={entry.sourceDatasetId} className="project-detail__card">
+                  <p>{t('detail.provenance.missing', { datasetId: entry.sourceDatasetId })}</p>
+                </li>
+              );
+            }
+            // Dataset title/description are Vietnamese-only publisher content today ƒ?" resolved via
+            // resolveLocalizedText rather than a MessageKey, since these are not this app's own UI
+            // copy (see src/i18n/resolveLocalizedText.ts).
+            const title = resolveLocalizedText(entry.dataset.title, locale);
+            const description = resolveLocalizedText(entry.dataset.description, locale);
+            return (
+              <li key={entry.sourceDatasetId} className="project-detail__card">
+                <p className="project-detail__card-title">
+                  {title.text}
+                  {title.isFallback && (
+                    <span className="project-detail__localized-fallback-note">
+                      {' '}
+                      ({t('resolveLocalizedText.fallbackNote')})
+                    </span>
+                  )}
+                </p>
+                <p>{description.text}</p>
+                <p>
+                  {t('detail.provenance.quality', {
+                    status: entry.dataset.quality.status,
+                    version: entry.dataset.version,
+                  })}
+                </p>
+                {entry.dataset.quality.knownLimitations && (
+                  <ul>
+                    {entry.dataset.quality.knownLimitations.map((limitation) => (
+                      <li key={limitation}>{limitation}</li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+        <dl className="project-detail__header-grid">
+          <div>
+            <dt>{t('detail.dataTimeline.effectiveAt')}</dt>
+            <dd>{formatAbsoluteDateTime(model.dataTimeline.effectiveAt, locale)}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.dataTimeline.sourcePublishedAt')}</dt>
+            <dd>{formatAbsoluteDateTime(model.dataTimeline.sourcePublishedAt, locale)}</dd>
+          </div>
+          <div>
+            <dt>{t('detail.dataTimeline.retrievedAt')}</dt>
+            <dd>{formatAbsoluteDateTime(model.dataTimeline.retrievedAt, locale)}</dd>
+          </div>
+        </dl>
+      </section>
+    </section>
+  );
+}
+
+/**
+ * Phase 6 (C1-C2) ƒ?" view-model gi §œi thA-ch L ¯øA CH ¯ON authoritative snapshot cho Project Detail. KHA"NG
+ * vi §¨t l §­i `selectAuthoritativeSnapshot`/`groupSnapshotsByIdentity`/`isUsableForKpi`
+ * (`progressSnapshotSelection.ts`, Phase 1.5) ƒ?" file nAÿy ch ¯% G ¯OI L §ÿI chA§ng vAÿ di ¯.n gi §œi k §¨t qu §œ
+ * thAÿnh d ¯_ li ¯Øu hi ¯Ÿn th ¯< Ž`’ø ¯œc (snapshot nAÿo Ž`’ø ¯œc ch ¯?n, vAª sao, cA­c b §œn ghi c §­nh tranh b ¯< lo §­i vAª lA«
+ * do gAª).
+ *
+ * L’øu A« ki §¨n trA§c quan tr ¯?ng: KPI tA3m t §_t  ¯Y Ž` §u Project Detail (`disbursementRate`,
+ * `scheduleVariance`, `budgetVariance` ƒ?" `entities/project/kpi/index.ts`) Ž` ¯?c tr ¯ñc ti §¨p t ¯® field
+ * `Project.overallProgress`/`financialProgress`/`disbursedAmount`, KHA"NG Ž` ¯?c t ¯® `ProgressSnapshot`.
+ * `affectedKpis`  ¯Y Ž`A›y li ¯Øt kA¦ cA­c KPI mAÿ snapshot Ž`’ø ¯œc ch ¯?n CORROBORATE (s ¯` li ¯Øu Project nA¦n kh ¯>p
+ * v ¯>i quan sA­t ti §¨n Ž` ¯T m ¯>i nh §t nAÿy n §¨u record Ž`’ø ¯œc c §-p nh §-t Ž` ¯"ng b ¯T) ƒ?" khA'ng ph §œi cA­c KPI Ž`’ø ¯œc TA?NH
+ * TR ¯øC TI §_P t ¯® snapshot. KhA'ng tuyA¦n b ¯` sai l ¯Øch gi ¯_a hai khA­i ni ¯Øm nAÿy.
+ */
+import type { ProgressSnapshot } from '../types';
+import {
+  groupSnapshotsByIdentity,
+  isUsableForKpi,
+  progressSnapshotIdentityKey,
+  selectAuthoritativeSnapshot,
+} from './progressSnapshotSelection';
+
+export interface CompetingSnapshotExplanation {
+  snapshot: ProgressSnapshot;
+  selected: boolean;
+  exclusionReason?: string;
+}
+
+export interface AuthoritativeSnapshotExplanation {
+  /** `null` khi d ¯ñ A­n khA'ng cA3 b §t k ¯3 progress snapshot nAÿo. */
+  identityKey: string | null;
+  observedAt: string | null;
+  selectedSnapshot: ProgressSnapshot | null;
+  selectionRule: string;
+  /** `null` khi khA'ng cA3 snapshot nAÿo Ž`’ø ¯œc ch ¯?n (toAÿn b ¯T nhA3m m ¯>i nh §t b ¯< rejected/superseded, ho §úc
+   * khA'ng cA3 snapshot nAÿo). */
+  selectedReason: string | null;
+  /** CA­c b §œn ghi CATNG identity (projectId+observedAt+sourceDatasetId) v ¯>i snapshot m ¯>i nh §t ƒ?" bao
+   * g ¯"m c §œ b §œn Ž`’ø ¯œc ch ¯?n, Ž` ¯Ÿ UI hi ¯Ÿn th ¯< Ž` §y Ž` ¯ cA­c verification stage. */
+  competingSnapshots: readonly CompetingSnapshotExplanation[];
+  /** CA­c `observedAt` khA­c (khA'ng ph §œi nhA3m m ¯>i nh §t), m ¯>i nh §t tr’ø ¯>c ƒ?" cho UI bi §¨t cAýn l ¯<ch s ¯- nAÿo
+   * khA­c ngoAÿi quan sA­t hi ¯Øn t §­i. */
+  otherObservationDates: readonly string[];
+  affectedKpis: readonly string[];
+}
+
+const AFFECTED_KPIS_WHEN_SELECTED: readonly string[] = [
+  'overallProgress',
+  'plannedProgress',
+  'financialProgress',
+  'disbursementRate',
+  'scheduleVariance',
+  'budgetVariance',
+];
+
+const SELECTION_RULE_DESCRIPTION =
+  '’_u tiA¦n verificationStatus (approved > reviewed > submitted > validated-automatically > raw); ' +
+  'rejected/superseded khA'ng bao gi ¯? Ž`’ø ¯œc ch ¯?n. CA1ng m ¯cc ’øu tiA¦n: importedAt g §n nh §t th §_ng; v §®n ' +
+  'trA1ng: sourceRecordId theo th ¯c t ¯ñ alphabet th §_ng (xem selectAuthoritativeSnapshot).';
+
+function exclusionReasonFor(
+  snapshot: ProgressSnapshot,
+  selected: ProgressSnapshot | null,
+): string | undefined {
+  if (selected && snapshot === selected) return undefined;
+  if (!isUsableForKpi(snapshot.verificationStatus)) {
+    return snapshot.verificationStatus === 'rejected'
+      ? "verificationStatus='rejected' ƒ?" s ¯` li ¯Øu Ž`Aœ Ž`’ø ¯œc xA­c Ž` ¯<nh lAÿ sai, khA'ng dA1ng cho KPI."
+      : "verificationStatus='superseded' ƒ?" Ž`Aœ cA3 b §œn ghi m ¯>i h’­n thay th §¨ cho cA1ng l §n quan sA­t nAÿy.";
+  }
+  return `CA1ng l §n quan sA­t nh’øng thua b §œn ghi Ž`’ø ¯œc ch ¯?n theo th ¯c t ¯ñ ’øu tiA¦n (${SELECTION_RULE_DESCRIPTION})`;
+}
+
+/** NhA3m m ¯>i nh §t theo `observedAt` trong `groups` ƒ?" khA'ng quan tA›m nhA3m Ž`A3 cA3 snapshot usable hay
+ * khA'ng (m ¯Tt nhA3m toAÿn `rejected` v §®n lAÿ nhA3m "m ¯>i nh §t" n §¨u observedAt c ¯a nA3 l ¯>n nh §t; UI v §®n c §n
+ * hi ¯Ÿn th ¯< lA« do KHA"NG cA3 snapshot nAÿo Ž`’ø ¯œc ch ¯?n cho l §n quan sA­t g §n nh §t). */
+function pickLatestGroup(
+  groups: Map<string, ProgressSnapshot[]>,
+): { key: string; group: ProgressSnapshot[] } | null {
+  let latest: { key: string; group: ProgressSnapshot[] } | null = null;
+  for (const [key, group] of groups) {
+    const observedAt = group[0]?.observedAt;
+    if (!observedAt) continue;
+    if (!latest || observedAt > latest.group[0].observedAt) latest = { key, group };
+  }
+  return latest;
+}
+
+export function explainLatestAuthoritativeSnapshot(
+  snapshots: readonly ProgressSnapshot[],
+): AuthoritativeSnapshotExplanation {
+  if (snapshots.length === 0) {
+    return {
+      identityKey: null,
+      observedAt: null,
+      selectedSnapshot: null,
+      selectionRule: SELECTION_RULE_DESCRIPTION,
+      selectedReason: null,
+      competingSnapshots: [],
+      otherObservationDates: [],
+      affectedKpis: [],
+    };
+  }
+
+  const groups = groupSnapshotsByIdentity(snapshots);
+  const latest = pickLatestGroup(groups);
+  if (!latest) {
+    return {
+      identityKey: null,
+      observedAt: null,
+      selectedSnapshot: null,
+      selectionRule: SELECTION_RULE_DESCRIPTION,
+      selectedReason: null,
+      competingSnapshots: [],
+      otherObservationDates: [],
+      affectedKpis: [],
+    };
+  }
+
+  const selected = selectAuthoritativeSnapshot(latest.group);
+  const competingSnapshots: CompetingSnapshotExplanation[] = latest.group.map((snapshot) => ({
+    snapshot,
+    selected: snapshot === selected,
+    exclusionReason: exclusionReasonFor(snapshot, selected),
+  }));
+
+  const otherObservationDates = [...groups.keys()]
+    .filter((key) => key !== latest.key)
+    .map((key) => groups.get(key)![0].observedAt)
+    .sort((a, b) => b.localeCompare(a));
+
+  return {
+    identityKey: latest.key,
+    observedAt: latest.group[0].observedAt,
+    selectedSnapshot: selected,
+    selectionRule: SELECTION_RULE_DESCRIPTION,
+    selectedReason: selected
+      ? `verificationStatus='${selected.verificationStatus}' lAÿ m ¯cc ’øu tiA¦n cao nh §t trong ${latest.group.length} b §œn ghi cA1ng l §n quan sA­t (identity: ${progressSnapshotIdentityKey(selected)}).`
+      : null,
+    competingSnapshots,
+    otherObservationDates,
+    affectedKpis: selected ? AFFECTED_KPIS_WHEN_SELECTED : [],
+  };
+}
+
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
+import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
+import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
+import { formatDateTime } from '../../i18n/formatters';
+import { useDataReadiness } from './data/useDataReadiness';
+import type { DataReadinessIssueWithProjectLink } from './model/dataReadinessTypes';
+
+function IssueList({
+  issues,
+  emptyKey,
+  headingKey,
+  idSuffix,
+  onOpenProject,
+}: {
+  issues: readonly DataReadinessIssueWithProjectLink[];
+  emptyKey: MessageKey;
+  headingKey: MessageKey;
+  idSuffix: string;
+  onOpenProject: (projectId: string) => void;
+}) {
+  const { t } = useTranslation();
+  const headingId = `data-readiness-${idSuffix}-heading`;
+  return (
+    <section aria-labelledby={headingId} className="data-readiness__issue-group">
+      <h3 id={headingId}>
+        {t(headingKey)} ({issues.length})
+      </h3>
+      {issues.length === 0 ? (
+        <p role="status">{t(emptyKey)}</p>
+      ) : (
+        <ul className="data-readiness__issue-list">
+          {issues.map((issue) => (
+            <li key={issue.id}>
+              <span className="data-readiness__issue-rule">{issue.rule}</span> ƒ?" {issue.message}
+              {/* C6: ch ¯% hi ¯Ÿn th ¯< nA§t Ž`i ¯?u h’ø ¯>ng khi projectId Ž`Aœ resolve Ž`’ø ¯œc th §-t ƒ?" khA'ng t §­o
+                  dead link cho issue khA'ng g §_n project (workPackage/milestone m ¯" cA'i, v.v.). */}
+              {issue.linkedProjectId && (
+                <>
+                  {' '}
+                  <button
+                    type="button"
+                    className="data-readiness__issue-link"
+                    onClick={() => onOpenProject(issue.linkedProjectId!)}
+                  >
+                    {t('dataReadiness.issue.openProject')}
+                  </button>
+                </>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+export function DataReadinessView({
+  source,
+  onBackToOverview,
+  onOpenProject,
+}: {
+  source?: ProjectPortfolioSource;
+  onBackToOverview: () => void;
+  onOpenProject: (projectId: string) => void;
+}) {
+  const { t, locale } = useTranslation();
+  const [retryToken, setRetryToken] = useState(0);
+  const effectiveSource = useMemo(() => source ?? defaultProjectPortfolioSource, [source]);
+  const state = useDataReadiness(effectiveSource, retryToken);
+  const headingRef = useRef<HTMLHeadingElement | null>(null);
+
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, []);
+
+  if (state.status === 'loading') {
+    return (
+      <section
+        id="data-readiness"
+        className="data-readiness"
+        aria-live="polite"
+        aria-busy="true"
+        tabIndex={-1}
+      >
+        <span className="map-loading__spinner" aria-hidden="true" />
+        <p>{t('dataReadiness.loading')}</p>
+      </section>
+    );
+  }
+
+  if (state.status === 'error') {
+    return (
+      <section id="data-readiness" className="data-readiness" tabIndex={-1}>
+        <div className="data-readiness__error" role="alert">
+          <h2>{t('dataReadiness.loadErrorHeading')}</h2>
+          <p>{t(`errorKind.${state.error.kind}` as MessageKey)}</p>
+          <p className="data-readiness__error-detail">{state.error.message}</p>
+          <button type="button" onClick={() => setRetryToken((n) => n + 1)}>
+            {t('dataReadiness.retry')}
+          </button>
+          <button type="button" onClick={onBackToOverview}>
+            {t('dataReadiness.backToOverview')}
+          </button>
+        </div>
+      </section>
+    );
+  }
+
+  const { model } = state;
+  const { metadata } = model;
+
+  return (
+    <section
+      id="data-readiness"
+      className="data-readiness"
+      aria-labelledby="data-readiness-heading"
+      tabIndex={-1}
+    >
+      <button type="button" className="data-readiness__back" onClick={onBackToOverview}>
+        {t('dataReadiness.backToOverview')}
+      </button>
+      <h2 id="data-readiness-heading" ref={headingRef} tabIndex={-1}>
+        {t('dataReadiness.heading')}
+      </h2>
+      <p className="data-readiness__description">{t('dataReadiness.description')}</p>
+
+      {state.status === 'degraded' && (
+        <p role="alert" className="data-readiness__degraded-banner">
+          {t('dataReadiness.degradedBanner', { issues: state.sourceIssues.join('; ') })}
+        </p>
+      )}
+
+      <section aria-labelledby="data-readiness-source-heading">
+        <h3 id="data-readiness-source-heading">{t('dataReadiness.sourceHeading')}</h3>
+        <dl className="data-readiness__grid">
+          <div>
+            <dt>{t('dataReadiness.sourceKind')}</dt>
+            <dd>{t(`dataReadiness.sourceKind.${metadata.sourceKind}` as MessageKey)}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.isIllustrative')}</dt>
+            <dd>
+              {metadata.isIllustrative
+                ? t('dataReadiness.isIllustrative.yes')
+                : t('dataReadiness.isIllustrative.no')}
+            </dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.schemaVersion')}</dt>
+            <dd>{metadata.schemaVersion ?? t('dataReadiness.notAvailable')}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.bundleVersion')}</dt>
+            <dd>{metadata.bundleVersion ?? t('dataReadiness.notAvailable')}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.asOf')}</dt>
+            <dd>
+              {metadata.asOf
+                ? formatDateTime(metadata.asOf, locale)
+                : t('dataReadiness.notAvailable')}
+            </dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.generatedAt')}</dt>
+            <dd>
+              {metadata.generatedAt
+                ? formatDateTime(metadata.generatedAt, locale)
+                : t('dataReadiness.notAvailable')}
+            </dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.datasetCount')}</dt>
+            <dd>{metadata.datasetIds.length}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section aria-labelledby="data-readiness-counts-heading">
+        <h3 id="data-readiness-counts-heading">{t('dataReadiness.countsHeading')}</h3>
+        <dl className="data-readiness__grid">
+          <div>
+            <dt>{t('dataReadiness.count.projects')}</dt>
+            <dd>{model.counts.projects}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.count.workPackages')}</dt>
+            <dd>{model.counts.workPackages}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.count.milestones')}</dt>
+            <dd>{model.counts.milestones}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.count.issues')}</dt>
+            <dd>{model.counts.issues}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.count.progressSnapshots')}</dt>
+            <dd>{model.counts.progressSnapshots}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.staleCount')}</dt>
+            <dd>{model.staleProjectCount}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.duplicateCount')}</dt>
+            <dd>{model.duplicateRecordCount}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.unmappedAdministrativeCodeCount')}</dt>
+            <dd>{model.unmappedAdministrativeCodeCount}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.lowConfidenceCount')}</dt>
+            <dd>{model.lowConfidenceProjectCount}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.unverifiedCount')}</dt>
+            <dd>{model.unverifiedProjectCount}</dd>
+          </div>
+          <div>
+            <dt>{t('dataReadiness.missingProvenanceCount')}</dt>
+            <dd>{model.missingProvenanceChildCount}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <p className="data-readiness__note" role="note">
+        {t('dataReadiness.classificationNote')}
+      </p>
+
+      <section aria-labelledby="data-readiness-validation-heading">
+        <h3 id="data-readiness-validation-heading">
+          {t('dataReadiness.validationHeading')} ({model.validationErrors.length})
+        </h3>
+        {model.validationErrors.length === 0 ? (
+          <p role="status">{t('dataReadiness.validationEmpty')}</p>
+        ) : (
+          <ul className="data-readiness__issue-list">
+            {model.validationErrors.map((message) => (
+              <li key={message}>{message}</li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <IssueList
+        issues={model.dataQualityIssues}
+        headingKey="dataReadiness.qualityHeading"
+        emptyKey="dataReadiness.qualityEmpty"
+        idSuffix="quality"
+        onOpenProject={onOpenProject}
+      />
+      <IssueList
+        issues={model.businessAlerts}
+        headingKey="dataReadiness.businessHeading"
+        emptyKey="dataReadiness.businessEmpty"
+        idSuffix="business"
+        onOpenProject={onOpenProject}
+      />
+    </section>
+  );
+}
+
+src\App.tsx:32:  import('./features/data-readiness/DataReadinessView').then((module) => ({
+src\App.tsx:140:    route.kind === 'data-readiness';
+src\App.tsx:146:        : 'data-readiness'
+src\App.tsx:188:          {route.kind === 'data-readiness' && (
+src\styles\global.css:1948:.data-health-panel__data-readiness-link {
+src\styles\global.css:2331:.project-detail__card-list {
+src\styles\global.css:2338:.project-detail__card {
+src\styles\global.css:2345:.project-detail__card p {
+src\styles\global.css:2348:.project-detail__card-title {
+src\styles\global.css:2445:.data-readiness {
+src\styles\global.css:2454:.data-readiness__back {
+src\styles\global.css:2464:.data-readiness h2 {
+src\styles\global.css:2473:.data-readiness h3 {
+src\styles\global.css:2478:.data-readiness__description {
+src\styles\global.css:2483:.data-readiness__degraded-banner {
+src\styles\global.css:2492:.data-readiness__error {
+src\styles\global.css:2500:.data-readiness__error button {
+src\styles\global.css:2509:.data-readiness__grid {
+src\styles\global.css:2516:.data-readiness__grid dt {
+src\styles\global.css:2519:.data-readiness__grid dd {
+src\styles\global.css:2524:.data-readiness__note {
+src\styles\global.css:2529:.data-readiness__issue-group {
+src\styles\global.css:2532:.data-readiness__issue-list {
+src\styles\global.css:2538:.data-readiness__issue-rule {
+src\styles\global.css:2543:  .data-readiness {
+src\styles\global.css:2547:  .data-readiness h2 {
+src\styles\global.css:2550:  .data-readiness__grid {
+src\routing\hashRoute.ts:11: *   #/data-readiness                 -> { kind: 'data-readiness' } (Phase 5 Â§C)
+src\routing\hashRoute.ts:38:  | { kind: 'data-readiness' };
+src\routing\hashRoute.ts:81:  if (segments[0] === 'data-readiness') {
+src\routing\hashRoute.ts:82:    return segments.length === 1 ? { kind: 'data-readiness' } : { kind: 'none' };
+src\routing\hashRoute.ts:108:  return '#/data-readiness';
+src\routing\hashRoute.test.ts:67:  it('parses #/data-readiness', () => {
+src\routing\hashRoute.test.ts:68:    expect(parseHashRoute('#/data-readiness')).toEqual({ kind: 'data-readiness' });
+src\routing\hashRoute.test.ts:71:  it('falls back to none for #/data-readiness with an extra segment', () => {
+src\routing\hashRoute.test.ts:72:    expect(parseHashRoute('#/data-readiness/extra')).toEqual({ kind: 'none' });
+src\routing\hashRoute.test.ts:104:  it('round-trips the data-readiness hash', () => {
+src\routing\hashRoute.test.ts:105:    expect(parseHashRoute(serializeDataReadinessHash())).toEqual({ kind: 'data-readiness' });
+src\features\project-detail\ProjectDetailView.tsx:239:          <ul className="project-detail__card-list">
+src\features\project-detail\ProjectDetailView.tsx:241:              <li key={wp.id} className="project-detail__card">
+src\features\project-detail\ProjectDetailView.tsx:242:                <p className="project-detail__card-title">
+src\features\project-detail\ProjectDetailView.tsx:284:          <ul className="project-detail__card-list">
+src\features\project-detail\ProjectDetailView.tsx:286:              <li key={m.id} className="project-detail__card">
+src\features\project-detail\ProjectDetailView.tsx:287:                <p className="project-detail__card-title">
+src\features\project-detail\ProjectDetailView.tsx:324:        aria-labelledby="project-detail-snapshot-explanation-heading"
+src\features\project-detail\ProjectDetailView.tsx:325:        className="project-detail__snapshot-explanation"
+src\features\project-detail\ProjectDetailView.tsx:327:        <h3 id="project-detail-snapshot-explanation-heading">
+src\features\project-detail\ProjectDetailView.tsx:337:            <div className="project-detail__card">
+src\features\project-detail\ProjectDetailView.tsx:397:                  <ul className="project-detail__card-list">
+src\features\project-detail\ProjectDetailView.tsx:399:                      <li key={entry.snapshot.sourceRecordId} className="project-detail__card">
+src\features\project-detail\ProjectDetailView.tsx:446:                <ul className="project-detail__card-list">
+src\features\project-detail\ProjectDetailView.tsx:448:                    <li key={issue.id} className="project-detail__card">
+src\features\project-detail\ProjectDetailView.tsx:449:                      <p className="project-detail__card-title">{issue.title}</p>
+src\features\project-detail\ProjectDetailView.tsx:495:        <ul className="project-detail__card-list">
+src\features\project-detail\ProjectDetailView.tsx:499:                <li key={entry.sourceDatasetId} className="project-detail__card">
+src\features\project-detail\ProjectDetailView.tsx:510:              <li key={entry.sourceDatasetId} className="project-detail__card">
+src\features\project-detail\ProjectDetailView.tsx:511:                <p className="project-detail__card-title">
+src\features\data-readiness\DataReadinessView.tsx:10:function IssueList({
+src\features\data-readiness\DataReadinessView.tsx:24:  const headingId = `data-readiness-${idSuffix}-heading`;
+src\features\data-readiness\DataReadinessView.tsx:26:    <section aria-labelledby={headingId} className="data-readiness__issue-group">
+src\features\data-readiness\DataReadinessView.tsx:33:        <ul className="data-readiness__issue-list">
+src\features\data-readiness\DataReadinessView.tsx:36:              <span className="data-readiness__issue-rule">{issue.rule}</span> â€” {issue.message}
+src\features\data-readiness\DataReadinessView.tsx:44:                    className="data-readiness__issue-link"
+src\features\data-readiness\DataReadinessView.tsx:81:        id="data-readiness"
+src\features\data-readiness\DataReadinessView.tsx:82:        className="data-readiness"
+src\features\data-readiness\DataReadinessView.tsx:95:      <section id="data-readiness" className="data-readiness" tabIndex={-1}>
+src\features\data-readiness\DataReadinessView.tsx:96:        <div className="data-readiness__error" role="alert">
+src\features\data-readiness\DataReadinessView.tsx:99:          <p className="data-readiness__error-detail">{state.error.message}</p>
+src\features\data-readiness\DataReadinessView.tsx:116:      id="data-readiness"
+src\features\data-readiness\DataReadinessView.tsx:117:      className="data-readiness"
+src\features\data-readiness\DataReadinessView.tsx:118:      aria-labelledby="data-readiness-heading"
+src\features\data-readiness\DataReadinessView.tsx:121:      <button type="button" className="data-readiness__back" onClick={onBackToOverview}>
+src\features\data-readiness\DataReadinessView.tsx:124:      <h2 id="data-readiness-heading" ref={headingRef} tabIndex={-1}>
+src\features\data-readiness\DataReadinessView.tsx:127:      <p className="data-readiness__description">{t('dataReadiness.description')}</p>
+src\features\data-readiness\DataReadinessView.tsx:130:        <p role="alert" className="data-readiness__degraded-banner">
+src\features\data-readiness\DataReadinessView.tsx:135:      <section aria-labelledby="data-readiness-source-heading">
+src\features\data-readiness\DataReadinessView.tsx:136:        <h3 id="data-readiness-source-heading">{t('dataReadiness.sourceHeading')}</h3>
+src\features\data-readiness\DataReadinessView.tsx:137:        <dl className="data-readiness__grid">
+src\features\data-readiness\DataReadinessView.tsx:181:      <section aria-labelledby="data-readiness-counts-heading">
+src\features\data-readiness\DataReadinessView.tsx:182:        <h3 id="data-readiness-counts-heading">{t('dataReadiness.countsHeading')}</h3>
+src\features\data-readiness\DataReadinessView.tsx:183:        <dl className="data-readiness__grid">
+src\features\data-readiness\DataReadinessView.tsx:231:      <p className="data-readiness__note" role="note">
+src\features\data-readiness\DataReadinessView.tsx:235:      <section aria-labelledby="data-readiness-validation-heading">
+src\features\data-readiness\DataReadinessView.tsx:236:        <h3 id="data-readiness-validation-heading">
+src\features\data-readiness\DataReadinessView.tsx:242:          <ul className="data-readiness__issue-list">
+src\features\data-readiness\DataReadinessView.tsx:250:      <IssueList
+src\features\data-readiness\DataReadinessView.tsx:257:      <IssueList
+src\features\executive-overview\DataHealthPanel.test.tsx:54:    expect(window.location.hash).toBe('#/data-readiness');
+src\features\executive-overview\DataHealthPanel.tsx:95:        className="data-health-panel__data-readiness-link"
+
+codex
+Các ảnh cho thấy hai vấn đề capture rất mạnh: ảnh Data Readiness hoàn toàn trống, và ảnh English bị lặp/cắt ngang như một canvas rộng hơn viewport. Tôi sẽ ghi chúng là bằng chứng review không hợp lệ nếu manifest/CSS không giải thích được, thay vì quy kết ngay thành lỗi sản phẩm.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command '$p='"'src/features/project-detail/ProjectDetailView.tsx'; "'$c=Get-Content $p; $c[305..430]; $g=Get-Content '"'src/styles/global.css'; "'$g[2280..2565]; rg -n --glob '"'"'!*.env*'"' \"snapshotExplanation|progressVerificationStatus|issue-link|focus-visible|button:focus|details|summary\" src/styles src/i18n src/features/project-detail src/features/data-readiness; Add-Type -AssemblyName System.Drawing; Get-ChildItem 'reports/ui-review/phase-6/iteration-01/screenshots/*.png' | ForEach-Object { "'$i=[System.Drawing.Image]::FromFile($_.FullName); [PSCustomObject]@{Name=$_.Name; Width=$i.Width; Height=$i.Height}; $i.Dispose() } | Format-Table -AutoSize' in E:\Lập trình\lập trình\daklak-3d-dashboard
+ succeeded in 574ms:
+                {m.actualDate && (
+                  <p>{t('detail.milestone.actual', { date: formatDate(m.actualDate, locale) })}</p>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section
+        aria-labelledby="project-detail-progress-history-heading"
+        className="project-detail__progress-history"
+      >
+        <h3 id="project-detail-progress-history-heading">{t('detail.progressHistoryHeading')}</h3>
+        <ProgressHistorySparkline points={model.progressHistory} />
+      </section>
+
+      <section
+        aria-labelledby="project-detail-snapshot-explanation-heading"
+        className="project-detail__snapshot-explanation"
+      >
+        <h3 id="project-detail-snapshot-explanation-heading">
+          {t('detail.snapshotExplanation.heading')}
+        </h3>
+        {(() => {
+          const explanation = model.snapshotExplanation;
+          if (explanation.observedAt === null) {
+            return <p>{t('detail.snapshotExplanation.none')}</p>;
+          }
+          const selected = explanation.selectedSnapshot;
+          return (
+            <div className="project-detail__card">
+              <p>
+                {t('detail.snapshotExplanation.selectedObservedAt', {
+                  observedAt: formatDate(explanation.observedAt, locale),
+                })}
+              </p>
+              {selected ? (
+                <>
+                  <p>
+                    {t('detail.snapshotExplanation.selectedStatus', {
+                      status: t(
+                        `progressVerificationStatus.${selected.verificationStatus}` as MessageKey,
+                      ),
+                    })}
+                  </p>
+                  {selected.confidence && (
+                    <p>
+                      {t('detail.snapshotExplanation.selectedConfidence', {
+                        confidence: t(`confidence.${selected.confidence}` as MessageKey),
+                      })}
+                    </p>
+                  )}
+                  {explanation.selectedReason && (
+                    <p>
+                      {t('detail.snapshotExplanation.reason', {
+                        reason: explanation.selectedReason,
+                      })}
+                    </p>
+                  )}
+                  {explanation.affectedKpis.length > 0 && (
+                    <p>
+                      {t('detail.snapshotExplanation.affectedKpis', {
+                        kpis: explanation.affectedKpis.join(', '),
+                      })}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p role="note">
+                  {t('detail.snapshotExplanation.noneSelectedFor', {
+                    observedAt: formatDate(explanation.observedAt, locale),
+                  })}
+                </p>
+              )}
+              {explanation.otherObservationDates.length > 0 && (
+                <p>
+                  {t('detail.snapshotExplanation.otherObservations', {
+                    dates: explanation.otherObservationDates
+                      .map((d) => formatDate(d, locale))
+                      .join(', '),
+                  })}
+                </p>
+              )}
+              {explanation.competingSnapshots.length > 1 && (
+                <details>
+                  <summary>
+                    {t('detail.snapshotExplanation.competingToggle', {
+                      count: explanation.competingSnapshots.length,
+                    })}
+                  </summary>
+                  <ul className="project-detail__card-list">
+                    {explanation.competingSnapshots.map((entry) => (
+                      <li key={entry.snapshot.sourceRecordId} className="project-detail__card">
+                        <p>
+                          {entry.selected && (
+                            <strong>
+                              {t('detail.snapshotExplanation.competingSelectedBadge')}{' '}
+                            </strong>
+                          )}
+                          {t('detail.snapshotExplanation.competingRecord', {
+                            sourceRecordId: entry.snapshot.sourceRecordId,
+                            status: t(
+                              `progressVerificationStatus.${entry.snapshot.verificationStatus}` as MessageKey,
+                            ),
+                            importedAt: formatDateTime(entry.snapshot.importedAt, locale),
+                          })}
+                        </p>
+                        {entry.exclusionReason && <p>{entry.exclusionReason}</p>}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+            </div>
+          );
+        })()}
+      </section>
+
+      <section aria-labelledby="project-detail-issues-heading" className="project-detail__issues">
+        <h3 id="project-detail-issues-heading">
+          {t('detail.issuesHeading', {
+            count: model.issues.all.length,
+            overdue: overdueIssues.text,
+          })}
+        </h3>
+}
+.project-portfolio-card__grid dd {
+  margin: 0;
+  color: #dcebe5;
+  font-size: 13px;
+}
+
+/* Project Detail */
+.project-detail__header-grid,
+.project-detail__summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px 16px;
+  margin: 12px 0 0;
+}
+.project-detail__header-grid dt,
+.project-detail__summary-grid dt {
+  color: #7fa39a;
+  font-size: 11px;
+}
+.project-detail__header-grid dd,
+.project-detail__summary-grid dd {
+  margin: 2px 0 0;
+  color: #e9f2ed;
+  font-size: 14px;
+}
+.project-detail__header,
+.project-detail__attention,
+.project-detail__summary,
+.project-detail__work-packages,
+.project-detail__milestones,
+.project-detail__progress-history,
+.project-detail__issues,
+.project-detail__geography,
+.project-detail__provenance {
+  margin: 0 0 24px;
+  padding: 16px 18px;
+  border: 1px solid #ffffff1a;
+  border-radius: 12px;
+  background: #ffffff08;
+}
+.project-detail__attention {
+  border-color: #f0cf7a55;
+  background: #f0cf7a0d;
+}
+.project-detail h3 {
+  margin: 0 0 10px;
+  color: #e9f2ed;
+  font-size: 15px;
+}
+.project-detail__card-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.project-detail__card {
+  padding: 12px 14px;
+  border: 1px solid #ffffff14;
+  border-radius: 10px;
+  background: #ffffff05;
+  font-size: 13px;
+}
+.project-detail__card p {
+  margin: 4px 0;
+}
+.project-detail__card-title {
+  margin: 0 0 4px;
+  color: #e9f2ed;
+  font-weight: 600;
+}
+.project-detail__issue-group {
+  margin: 0 0 16px;
+}
+.project-detail__issue-group h4 {
+  margin: 0 0 8px;
+  color: #a9c3ba;
+  font-size: 12px;
+}
+.project-detail__geography button {
+  margin-top: 8px;
+  border: 1px solid #d4a44688;
+  border-radius: 999px;
+  padding: 8px 16px;
+  color: #e7c471;
+  background: #d4a44612;
+  cursor: pointer;
+}
+
+.progress-history__chart {
+  width: 100%;
+  max-width: 480px;
+  height: auto;
+}
+.progress-history__axis {
+  stroke: #ffffff2a;
+  stroke-width: 1;
+}
+.progress-history__line {
+  fill: none;
+  stroke-width: 2;
+}
+.progress-history__line--planned {
+  stroke: #7fa39a;
+  stroke-dasharray: 4 3;
+}
+.progress-history__line--actual {
+  stroke: #e7c471;
+}
+.progress-history__point {
+  fill: #e7c471;
+}
+.progress-history__legend {
+  display: flex;
+  gap: 16px;
+  margin: 8px 0 0;
+  font-size: 12px;
+}
+.progress-history__legend-item::before {
+  content: '';
+  display: inline-block;
+  width: 12px;
+  height: 2px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.progress-history__legend-item--planned::before {
+  background: #7fa39a;
+}
+.progress-history__legend-item--actual::before {
+  background: #e7c471;
+}
+
+.executive-overview__portfolio-link {
+  display: inline-flex;
+  margin: 4px 0 12px;
+  padding: 8px 16px;
+  border: 1px solid #e7c47155;
+  border-radius: 999px;
+  color: #e7c471;
+  background: #e7c47112;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
+  .project-portfolio,
+  .project-detail {
+    inset: calc(var(--mobile-header-height) + var(--mobile-tabs-height)) 0 0;
+    padding: 0 12px 32px;
+  }
+  .project-portfolio h2,
+  .project-detail h2 {
+    font-size: 19px;
+  }
+  .project-detail__header-grid,
+  .project-detail__summary-grid,
+  .project-portfolio-card__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Data Readiness (Phase 5 AC) ƒ?" same layout/color pattern as .project-portfolio/.project-detail. */
+.data-readiness {
+  position: absolute;
+  z-index: 4;
+  inset: 118px 0 0;
+  overflow-y: auto;
+  padding: 0 3.3vw 64px;
+  color: #dcebe5;
+  background: #071918;
+}
+.data-readiness__back {
+  margin: 16px 0 4px;
+  padding: 6px 12px;
+  border: 1px solid #ffffff2a;
+  border-radius: 999px;
+  color: #a9c3ba;
+  background: transparent;
+  font-size: 12px;
+  cursor: pointer;
+}
+.data-readiness h2 {
+  margin: 8px 0 6px;
+  color: #f0cf7a;
+  font:
+    700 clamp(20px, 3.2vw, 28px)/1.2 Cambria,
+    'Noto Serif',
+    'DejaVu Serif',
+    serif;
+}
+.data-readiness h3 {
+  margin: 20px 0 8px;
+  color: #e9f2ed;
+  font-size: 15px;
+}
+.data-readiness__description {
+  margin: 0 0 16px;
+  color: #a9c3ba;
+  font-size: 13px;
+}
+.data-readiness__degraded-banner {
+  margin: 0 0 16px;
+  padding: 10px 14px;
+  border: 1px solid #f0cf7a55;
+  border-radius: 10px;
+  color: #f0cf7a;
+  background: #f0cf7a12;
+  font-size: 12px;
+}
+.data-readiness__error {
+  max-width: 520px;
+  margin: 40px 0;
+  padding: 20px 22px;
+  border: 1px solid #f0836655;
+  border-radius: 12px;
+  background: #f0836612;
+}
+.data-readiness__error button {
+  margin: 8px 8px 0 0;
+  border: 1px solid #d4a44688;
+  border-radius: 999px;
+  padding: 8px 16px;
+  color: #e7c471;
+  background: #d4a44612;
+  cursor: pointer;
+}
+.data-readiness__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px 14px;
+  margin: 0 0 12px;
+  font-size: 12px;
+}
+.data-readiness__grid dt {
+  color: #7fa39a;
+}
+.data-readiness__grid dd {
+  margin: 0;
+  color: #dcebe5;
+  overflow-wrap: anywhere;
+}
+.data-readiness__note {
+  margin: 8px 0 16px;
+  color: #9db6ae;
+  font-size: 12px;
+}
+.data-readiness__issue-group {
+  margin: 0 0 20px;
+}
+.data-readiness__issue-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 12px;
+  color: #dcebe5;
+}
+.data-readiness__issue-rule {
+  color: #e7c471;
+  font-weight: 600;
+}
+@media (max-width: 767px) and (orientation: portrait) {
+  .data-readiness {
+    inset: calc(var(--mobile-header-height) + var(--mobile-tabs-height)) 0 0;
+    padding: 0 12px 32px;
+  }
+  .data-readiness h2 {
+    font-size: 19px;
+  }
+  .data-readiness__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+src/styles\global.css:490:.directory-heading input:focus-visible,
+src/styles\global.css:491:.directory-row:focus-visible,
+src/styles\global.css:492:.map-stage:focus-visible,
+src/styles\global.css:493:#directory-title:focus-visible,
+src/styles\global.css:494:button:focus-visible,
+src/styles\global.css:495:a:focus-visible {
+src/styles\global.css:1421:.data-status-summary {
+src/styles\global.css:1431:.data-status-summary strong {
+src/styles\global.css:1434:.data-status-summary__total {
+src/styles\global.css:1482:.provenance-dataset-card details {
+src/styles\global.css:1486:.provenance-dataset-card summary {
+src/styles\global.css:1490:.provenance-dataset-card details ul {
+src/styles\global.css:1959:.project-summary-backdrop {
+src/styles\global.css:1969:.project-summary-card {
+src/styles\global.css:1980:.project-summary-card__header {
+src/styles\global.css:1987:.project-summary-card__header h2 {
+src/styles\global.css:1992:.project-summary-card dl {
+src/styles\global.css:1999:.project-summary-card dt {
+src/styles\global.css:2002:.project-summary-card dd {
+src/styles\global.css:2006:.project-summary-card__map-action {
+src/styles\global.css:2015:.project-summary-card__no-geometry {
+src/styles\global.css:2019:.project-summary-card__mock-notice {
+src/styles\global.css:2290:.project-detail__summary-grid {
+src/styles\global.css:2297:.project-detail__summary-grid dt {
+src/styles\global.css:2302:.project-detail__summary-grid dd {
+src/styles\global.css:2309:.project-detail__summary,
+src/styles\global.css:2438:  .project-detail__summary-grid,
+src/features/project-detail\ProjectDetailView.tsx:91:  const disbursement = formatKpiValueLocalized(model.summary.disbursementRate, locale, t);
+src/features/project-detail\ProjectDetailView.tsx:92:  const scheduleVariance = formatKpiValueLocalized(model.summary.scheduleVariance, locale, t);
+src/features/project-detail\ProjectDetailView.tsx:93:  const budgetVariance = formatKpiValueLocalized(model.summary.budgetVariance, locale, t);
+src/features/project-detail\ProjectDetailView.tsx:94:  const forecastDelay = formatKpiValueLocalized(model.summary.forecastDelayInDays, locale, t);
+src/features/project-detail\ProjectDetailView.tsx:169:      <section aria-labelledby="project-detail-summary-heading" className="project-detail__summary">
+src/features/project-detail\ProjectDetailView.tsx:170:        <h3 id="project-detail-summary-heading">{t('detail.summaryHeading')}</h3>
+src/features/project-detail\ProjectDetailView.tsx:171:        <dl className="project-detail__summary-grid">
+src/features/project-detail\ProjectDetailView.tsx:173:            <dt>{t('detail.summary.approvedBudget')}</dt>
+src/features/project-detail\ProjectDetailView.tsx:174:            <dd>{formatVnd(model.summary.approvedBudget, locale)}</dd>
+src/features/project-detail\ProjectDetailView.tsx:177:            <dt>{t('detail.summary.adjustedBudget')}</dt>
+src/features/project-detail\ProjectDetailView.tsx:179:              {model.summary.adjustedBudget !== null
+src/features/project-detail\ProjectDetailView.tsx:180:                ? formatVnd(model.summary.adjustedBudget, locale)
+src/features/project-detail\ProjectDetailView.tsx:181:                : t('detail.summary.adjustedBudgetNone')}
+src/features/project-detail\ProjectDetailView.tsx:185:            <dt>{t('detail.summary.disbursedAmount')}</dt>
+src/features/project-detail\ProjectDetailView.tsx:186:            <dd>{formatVnd(model.summary.disbursedAmount, locale)}</dd>
+src/features/project-detail\ProjectDetailView.tsx:189:            <dt>{t('detail.summary.disbursementRate')}</dt>
+src/features/project-detail\ProjectDetailView.tsx:193:            <dt>{t('detail.summary.progress')}</dt>
+src/features/project-detail\ProjectDetailView.tsx:195:              {model.summary.overallProgress}% / {model.summary.plannedProgress}%
+src/features/project-detail\ProjectDetailView.tsx:199:            <dt>{t('detail.summary.scheduleVariance')}</dt>
+src/features/project-detail\ProjectDetailView.tsx:203:            <dt>{t('detail.summary.budgetVariance')}</dt>
+src/features/project-detail\ProjectDetailView.tsx:207:            <dt>{t('detail.summary.plannedCompletion')}</dt>
+src/features/project-detail\ProjectDetailView.tsx:209:              {model.summary.plannedCompletionDate
+src/features/project-detail\ProjectDetailView.tsx:210:                ? formatDate(model.summary.plannedCompletionDate, locale)
+src/features/project-detail\ProjectDetailView.tsx:215:            <dt>{t('detail.summary.forecastCompletion')}</dt>
+src/features/project-detail\ProjectDetailView.tsx:217:              {model.summary.forecastCompletionDate
+src/features/project-detail\ProjectDetailView.tsx:218:                ? formatDate(model.summary.forecastCompletionDate, locale)
+src/features/project-detail\ProjectDetailView.tsx:219:                : t('detail.summary.forecastCompletionNone')}
+src/features/project-detail\ProjectDetailView.tsx:223:            <dt>{t('detail.summary.forecastDelay')}</dt>
+src/features/project-detail\ProjectDetailView.tsx:328:          {t('detail.snapshotExplanation.heading')}
+src/features/project-detail\ProjectDetailView.tsx:331:          const explanation = model.snapshotExplanation;
+src/features/project-detail\ProjectDetailView.tsx:333:            return <p>{t('detail.snapshotExplanation.none')}</p>;
+src/features/project-detail\ProjectDetailView.tsx:339:                {t('detail.snapshotExplanation.selectedObservedAt', {
+src/features/project-detail\ProjectDetailView.tsx:346:                    {t('detail.snapshotExplanation.selectedStatus', {
+src/features/project-detail\ProjectDetailView.tsx:348:                        `progressVerificationStatus.${selected.verificationStatus}` as MessageKey,
+src/features/project-detail\ProjectDetailView.tsx:354:                      {t('detail.snapshotExplanation.selectedConfidence', {
+src/features/project-detail\ProjectDetailView.tsx:361:                      {t('detail.snapshotExplanation.reason', {
+src/features/project-detail\ProjectDetailView.tsx:368:                      {t('detail.snapshotExplanation.affectedKpis', {
+src/features/project-detail\ProjectDetailView.tsx:376:                  {t('detail.snapshotExplanation.noneSelectedFor', {
+src/features/project-detail\ProjectDetailView.tsx:383:                  {t('detail.snapshotExplanation.otherObservations', {
+src/features/project-detail\ProjectDetailView.tsx:391:                <details>
+src/features/project-detail\ProjectDetailView.tsx:392:                  <summary>
+src/features/project-detail\ProjectDetailView.tsx:393:                    {t('detail.snapshotExplanation.competingToggle', {
+src/features/project-detail\ProjectDetailView.tsx:396:                  </summary>
+src/features/project-detail\ProjectDetailView.tsx:403:                              {t('detail.snapshotExplanation.competingSelectedBadge')}{' '}
+src/features/project-detail\ProjectDetailView.tsx:406:                          {t('detail.snapshotExplanation.competingRecord', {
+src/features/project-detail\ProjectDetailView.tsx:409:                              `progressVerificationStatus.${entry.snapshot.verificationStatus}` as MessageKey,
+src/features/project-detail\ProjectDetailView.tsx:418:                </details>
+src/features/project-detail\ProjectDetailView.test.tsx:60:  it('renders header, summary and the illustrative-data disclaimer for a valid project', async () => {
+src/features/project-detail\ProgressHistorySparkline.tsx:13: * summary").
+src/features/data-readiness\DataReadinessView.tsx:44:                    className="data-readiness__issue-link"
+src/features/data-readiness\model\buildDataReadinessViewModel.ts:124:  const summary = summarizeDataQuality(bundles, context);
+src/features/data-readiness\model\buildDataReadinessViewModel.ts:144:    staleProjectCount: summary.staleProjectCount,
+src/features/data-readiness\model\buildDataReadinessViewModel.ts:145:    duplicateRecordCount: summary.duplicateRecordCount,
+src/features/data-readiness\model\buildDataReadinessViewModel.ts:146:    unmappedAdministrativeCodeCount: summary.unmappedAdministrativeCodeCount,
+src/features/project-detail\model\buildProjectDetailViewModel.test.ts:42:      expect(result.model.snapshotExplanation).toBeDefined();
+src/features/project-detail\model\buildProjectDetailViewModel.test.ts:43:      expect(result.model.snapshotExplanation.selectionRule).toBeTruthy();
+src/features/project-detail\model\projectDetailTypes.ts:47:  summary: {
+src/features/project-detail\model\projectDetailTypes.ts:79:  snapshotExplanation: AuthoritativeSnapshotExplanation;
+src/features/project-detail\model\buildProjectDetailViewModel.ts:92:    summary: {
+src/features/project-detail\model\buildProjectDetailViewModel.ts:133:    snapshotExplanation: explainLatestAuthoritativeSnapshot(bundle.progressSnapshots),
+src/i18n\messages\vi.ts:152:  // Project summary panel (dialog)
+src/i18n\messages\vi.ts:153:  'summary.close': 'ÄÃ³ng',
+src/i18n\messages\vi.ts:154:  'summary.closeAria': 'ÄÃ³ng tÃ³m táº¯t dá»± Ã¡n',
+src/i18n\messages\vi.ts:155:  'summary.code': 'MÃ£ dá»± Ã¡n',
+src/i18n\messages\vi.ts:156:  'summary.sector': 'LÄ©nh vá»±c',
+src/i18n\messages\vi.ts:157:  'summary.status': 'Tráº¡ng thÃ¡i',
+src/i18n\messages\vi.ts:158:  'summary.progress': 'Tiáº¿n Ä‘á»™ khá»‘i lÆ°á»£ng',
+src/i18n\messages\vi.ts:159:  'summary.disbursementRate': 'Tá»· lá»‡ giáº£i ngÃ¢n',
+src/i18n\messages\vi.ts:160:  'summary.reason': 'LÃ½ do cáº§n chÃº Ã½',
+src/i18n\messages\vi.ts:161:  'summary.area': 'Äá»‹a bÃ n',
+src/i18n\messages\vi.ts:162:  'summary.noArea': 'ChÆ°a gÃ¡n Ä‘á»‹a bÃ n cá»¥ thá»ƒ',
+src/i18n\messages\vi.ts:163:  'summary.dataUpdatedAt': 'Dá»¯ liá»‡u cáº­p nháº­t lÃºc',
+src/i18n\messages\vi.ts:164:  'summary.viewOnMap': 'Xem trÃªn báº£n Ä‘á»“',
+src/i18n\messages\vi.ts:165:  'summary.noGeometry': 'Dá»± Ã¡n nÃ y chÆ°a cÃ³ toáº¡ Ä‘á»™ Ä‘á»ƒ hiá»ƒn thá»‹ trÃªn báº£n Ä‘á»“.',
+src/i18n\messages\vi.ts:166:  'summary.mockNotice':
+src/i18n\messages\vi.ts:354:  'detail.summaryHeading': 'TÃ³m táº¯t ngÃ¢n sÃ¡ch vÃ  tiáº¿n Ä‘á»™',
+src/i18n\messages\vi.ts:355:  'detail.summary.approvedBudget': 'NgÃ¢n sÃ¡ch phÃª duyá»‡t',
+src/i18n\messages\vi.ts:356:  'detail.summary.adjustedBudget': 'NgÃ¢n sÃ¡ch Ä‘iá»u chá»‰nh',
+src/i18n\messages\vi.ts:357:  'detail.summary.adjustedBudgetNone': 'ChÆ°a Ä‘iá»u chá»‰nh',
+src/i18n\messages\vi.ts:358:  'detail.summary.disbursedAmount': 'ÄÃ£ giáº£i ngÃ¢n',
+src/i18n\messages\vi.ts:359:  'detail.summary.disbursementRate': 'Tá»· lá»‡ giáº£i ngÃ¢n',
+src/i18n\messages\vi.ts:360:  'detail.summary.progress': 'Tiáº¿n Ä‘á»™ khá»‘i lÆ°á»£ng / káº¿ hoáº¡ch',
+src/i18n\messages\vi.ts:361:  'detail.summary.scheduleVariance': 'ChÃªnh lá»‡ch tiáº¿n Ä‘á»™',
+src/i18n\messages\vi.ts:362:  'detail.summary.budgetVariance': 'ChÃªnh lá»‡ch ngÃ¢n sÃ¡ch',
+src/i18n\messages\vi.ts:363:  'detail.summary.plannedCompletion': 'Káº¿ hoáº¡ch hoÃ n thÃ nh',
+src/i18n\messages\vi.ts:364:  'detail.summary.forecastCompletion': 'Dá»± bÃ¡o hoÃ n thÃ nh',
+src/i18n\messages\vi.ts:365:  'detail.summary.forecastCompletionNone': 'ChÆ°a cÃ³ dá»± bÃ¡o',
+src/i18n\messages\vi.ts:366:  'detail.summary.forecastDelay': 'Cháº­m dá»± bÃ¡o so vá»›i káº¿ hoáº¡ch',
+src/i18n\messages\vi.ts:382:  'detail.snapshotExplanation.heading': 'Snapshot dÃ¹ng Ä‘á»ƒ tÃ­nh KPI',
+src/i18n\messages\vi.ts:383:  'detail.snapshotExplanation.none': 'Dá»± Ã¡n chÆ°a cÃ³ báº£n ghi tiáº¿n Ä‘á»™ (progress snapshot) nÃ o.',
+src/i18n\messages\vi.ts:384:  'detail.snapshotExplanation.noneSelectedFor':
+src/i18n\messages\vi.ts:386:  'detail.snapshotExplanation.selectedObservedAt': 'Láº§n quan sÃ¡t: {observedAt}',
+src/i18n\messages\vi.ts:387:  'detail.snapshotExplanation.selectedStatus': 'Tráº¡ng thÃ¡i xÃ¡c thá»±c: {status}',
+src/i18n\messages\vi.ts:388:  'detail.snapshotExplanation.selectedConfidence': 'Äá»™ tin cáº­y: {confidence}',
+src/i18n\messages\vi.ts:389:  'detail.snapshotExplanation.reason': 'LÃ½ do chá»n: {reason}',
+src/i18n\messages\vi.ts:390:  'detail.snapshotExplanation.affectedKpis': 'KPI liÃªn quan: {kpis}',
+src/i18n\messages\vi.ts:391:  'detail.snapshotExplanation.competingToggle': 'Xem cÃ¡c báº£n ghi cáº¡nh tranh ({count})',
+src/i18n\messages\vi.ts:392:  'detail.snapshotExplanation.competingSelectedBadge': 'âœ“ ÄÆ°á»£c chá»n',
+src/i18n\messages\vi.ts:393:  'detail.snapshotExplanation.competingRecord':
+src/i18n\messages\vi.ts:395:  'detail.snapshotExplanation.otherObservations': 'CÃ¡c láº§n quan sÃ¡t khÃ¡c: {dates}',
+src/i18n\messages\vi.ts:396:  'progressVerificationStatus.raw': 'ThÃ´ (chÆ°a xÃ¡c thá»±c)',
+src/i18n\messages\vi.ts:397:  'progressVerificationStatus.validated-automatically': 'ÄÃ£ xÃ¡c thá»±c tá»± Ä‘á»™ng',
+src/i18n\messages\vi.ts:398:  'progressVerificationStatus.submitted': 'ÄÃ£ ná»™p',
+src/i18n\messages\vi.ts:399:  'progressVerificationStatus.reviewed': 'ÄÃ£ rÃ  soÃ¡t',
+src/i18n\messages\vi.ts:400:  'progressVerificationStatus.approved': 'ÄÃ£ phÃª duyá»‡t',
+src/i18n\messages\vi.ts:401:  'progressVerificationStatus.rejected': 'ÄÃ£ tá»« chá»‘i',
+src/i18n\messages\vi.ts:402:  'progressVerificationStatus.superseded': 'ÄÃ£ bá»‹ thay tháº¿',
+src/i18n\messages\vi.ts:454:  'statPanel.chartAria': 'Biá»ƒu Ä‘á»“ cá»™t tÃ³m táº¯t ba nhÃ³m chá»‰ sá»‘ Ä‘ang hiá»ƒn thá»‹: {summary}.',
+src/i18n\messages\vi.ts:619:  'dataStatus.summaryAria': 'TÃ³m táº¯t tráº¡ng thÃ¡i dá»¯ liá»‡u',
+src/i18n\messages\en.ts:145:  'priorityProjects.viewSummary': 'View summary',
+src/i18n\messages\en.ts:147:  // Project summary panel (dialog)
+src/i18n\messages\en.ts:148:  'summary.close': 'Close',
+src/i18n\messages\en.ts:149:  'summary.closeAria': 'Close project summary',
+src/i18n\messages\en.ts:150:  'summary.code': 'Project code',
+src/i18n\messages\en.ts:151:  'summary.sector': 'Sector',
+src/i18n\messages\en.ts:152:  'summary.status': 'Status',
+src/i18n\messages\en.ts:153:  'summary.progress': 'Physical progress',
+src/i18n\messages\en.ts:154:  'summary.disbursementRate': 'Disbursement rate',
+src/i18n\messages\en.ts:155:  'summary.reason': 'Reason for attention',
+src/i18n\messages\en.ts:156:  'summary.area': 'Area',
+src/i18n\messages\en.ts:157:  'summary.noArea': 'No specific area assigned',
+src/i18n\messages\en.ts:158:  'summary.dataUpdatedAt': 'Data updated at',
+src/i18n\messages\en.ts:159:  'summary.viewOnMap': 'View on map',
+src/i18n\messages\en.ts:160:  'summary.noGeometry': 'This project has no coordinates to display on the map.',
+src/i18n\messages\en.ts:161:  'summary.mockNotice': 'ILLUSTRATIVE DATA â€” as of {date}, not for real management decisions.',
+src/i18n\messages\en.ts:185:  'dataHealth.viewProvenance': 'View data source details',
+src/i18n\messages\en.ts:349:  'detail.summaryHeading': 'Budget and progress summary',
+src/i18n\messages\en.ts:350:  'detail.summary.approvedBudget': 'Approved budget',
+src/i18n\messages\en.ts:351:  'detail.summary.adjustedBudget': 'Adjusted budget',
+src/i18n\messages\en.ts:352:  'detail.summary.adjustedBudgetNone': 'Not adjusted',
+src/i18n\messages\en.ts:353:  'detail.summary.disbursedAmount': 'Disbursed amount',
+src/i18n\messages\en.ts:354:  'detail.summary.disbursementRate': 'Disbursement rate',
+src/i18n\messages\en.ts:355:  'detail.summary.progress': 'Physical progress / planned',
+src/i18n\messages\en.ts:356:  'detail.summary.scheduleVariance': 'Schedule variance',
+src/i18n\messages\en.ts:357:  'detail.summary.budgetVariance': 'Budget variance',
+src/i18n\messages\en.ts:358:  'detail.summary.plannedCompletion': 'Planned completion',
+src/i18n\messages\en.ts:359:  'detail.summary.forecastCompletion': 'Forecast completion',
+src/i18n\messages\en.ts:360:  'detail.summary.forecastCompletionNone': 'No forecast yet',
+src/i18n\messages\en.ts:361:  'detail.summary.forecastDelay': 'Forecast delay vs. plan',
+src/i18n\messages\en.ts:377:  'detail.snapshotExplanation.heading': 'Snapshot used for KPIs',
+src/i18n\messages\en.ts:378:  'detail.snapshotExplanation.none': 'This project has no progress snapshots recorded yet.',
+src/i18n\messages\en.ts:379:  'detail.snapshotExplanation.noneSelectedFor':
+src/i18n\messages\en.ts:381:  'detail.snapshotExplanation.selectedObservedAt': 'Observation: {observedAt}',
+src/i18n\messages\en.ts:382:  'detail.snapshotExplanation.selectedStatus': 'Verification status: {status}',
+src/i18n\messages\en.ts:383:  'detail.snapshotExplanation.selectedConfidence': 'Confidence: {confidence}',
+src/i18n\messages\en.ts:384:  'detail.snapshotExplanation.reason': 'Selection reason: {reason}',
+src/i18n\messages\en.ts:385:  'detail.snapshotExplanation.affectedKpis': 'Affected KPIs: {kpis}',
+src/i18n\messages\en.ts:386:  'detail.snapshotExplanation.competingToggle': 'View competing records ({count})',
+src/i18n\messages\en.ts:387:  'detail.snapshotExplanation.competingSelectedBadge': 'âœ“ Selected',
+src/i18n\messages\en.ts:388:  'detail.snapshotExplanation.competingRecord':
+src/i18n\messages\en.ts:390:  'detail.snapshotExplanation.otherObservations': 'Other observations: {dates}',
+src/i18n\messages\en.ts:391:  'progressVerificationStatus.raw': 'Raw (unverified)',
+src/i18n\messages\en.ts:392:  'progressVerificationStatus.validated-automatically': 'Validated automatically',
+src/i18n\messages\en.ts:393:  'progressVerificationStatus.submitted': 'Submitted',
+src/i18n\messages\en.ts:394:  'progressVerificationStatus.reviewed': 'Reviewed',
+src/i18n\messages\en.ts:395:  'progressVerificationStatus.approved': 'Approved',
+src/i18n\messages\en.ts:396:  'progressVerificationStatus.rejected': 'Rejected',
+src/i18n\messages\en.ts:397:  'progressVerificationStatus.superseded': 'Superseded',
+src/i18n\messages\en.ts:449:  'statPanel.chartAria': 'Bar chart summarizing the three displayed indicator groups: {summary}.',
+src/i18n\messages\en.ts:615:  'dataStatus.summaryAria': 'Data status summary',
+Add-Type : Cannot add type. Definition of new types is not supported in this language mode.
+At line:2 char:349
++ ... eatures/data-readiness; Add-Type -AssemblyName System.Drawing; Get-Ch ...
++                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : PermissionDenied: (:) [Add-Type], PSNotSupportedException
+    + FullyQualifiedErrorId : CannotDefineNewType,Microsoft.PowerShell.Commands.AddTypeCommand
+ 
+Unable to find type [System.Drawing.Image].
+At line:2 char:483
++ ... reenshots/*.png' | ForEach-Object { $i=[System.Drawing.Image]::FromFi ...
++                                            ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (System.Drawing.Image:TypeName) [], RuntimeException
+    + FullyQualifiedErrorId : TypeNotFound
+ 
+Cannot convert value to type "System.Management.Automation.LanguagePrimitives+InternalPSCustomObject". Only core types 
+are supported in this language mode.
+At line:2 char:530
++ ... .FullName); [PSCustomObject]@{Name=$_.Name; Width=$i.Width; Height=$i ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [], RuntimeException
+    + FullyQualifiedErrorId : ConversionSupportedOnlyToCoreTypes
+ 
+You cannot call a method on a null-valued expression.
+At line:2 char:597
++ ... Name=$_.Name; Width=$i.Width; Height=$i.Height}; $i.Dispose() } | For ...
++                                                      ~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
+    + FullyQualifiedErrorId : InvokeMethodOnNull
+ 
+Unable to find type [System.Drawing.Image].
+At line:2 char:483
++ ... reenshots/*.png' | ForEach-Object { $i=[System.Drawing.Image]::FromFi ...
++                                            ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (System.Drawing.Image:TypeName) [], RuntimeException
+    + FullyQualifiedErrorId : TypeNotFound
+ 
+Cannot convert value to type "System.Management.Automation.LanguagePrimitives+InternalPSCustomObject". Only core types 
+are supported in this language mode.
+At line:2 char:530
++ ... .FullName); [PSCustomObject]@{Name=$_.Name; Width=$i.Width; Height=$i ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [], RuntimeException
+    + FullyQualifiedErrorId : ConversionSupportedOnlyToCoreTypes
+ 
+You cannot call a method on a null-valued expression.
+At line:2 char:597
++ ... Name=$_.Name; Width=$i.Width; Height=$i.Height}; $i.Dispose() } | For ...
++                                                      ~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
+    + FullyQualifiedErrorId : InvokeMethodOnNull
+ 
+Unable to find type [System.Drawing.Image].
+At line:2 char:483
++ ... reenshots/*.png' | ForEach-Object { $i=[System.Drawing.Image]::FromFi ...
++                                            ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (System.Drawing.Image:TypeName) [], RuntimeException
+    + FullyQualifiedErrorId : TypeNotFound
+ 
+Cannot convert value to type "System.Management.Automation.LanguagePrimitives+InternalPSCustomObject". Only core types 
+are supported in this language mode.
+At line:2 char:530
++ ... .FullName); [PSCustomObject]@{Name=$_.Name; Width=$i.Width; Height=$i ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [], RuntimeException
+    + FullyQualifiedErrorId : ConversionSupportedOnlyToCoreTypes
+ 
+You cannot call a method on a null-valued expression.
+At line:2 char:597
++ ... Name=$_.Name; Width=$i.Width; Height=$i.Height}; $i.Dispose() } | For ...
++                                                      ~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
+    + FullyQualifiedErrorId : InvokeMethodOnNull
+ 
+Unable to find type [System.Drawing.Image].
+At line:2 char:483
++ ... reenshots/*.png' | ForEach-Object { $i=[System.Drawing.Image]::FromFi ...
++                                            ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (System.Drawing.Image:TypeName) [], RuntimeException
+    + FullyQualifiedErrorId : TypeNotFound
+ 
+Cannot convert value to type "System.Management.Automation.LanguagePrimitives+InternalPSCustomObject". Only core types 
+are supported in this language mode.
+At line:2 char:530
++ ... .FullName); [PSCustomObject]@{Name=$_.Name; Width=$i.Width; Height=$i ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [], RuntimeException
+    + FullyQualifiedErrorId : ConversionSupportedOnlyToCoreTypes
+ 
+You cannot call a method on a null-valued expression.
+At line:2 char:597
++ ... Name=$_.Name; Width=$i.Width; Height=$i.Height}; $i.Dispose() } | For ...
++                                                      ~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
+    + FullyQualifiedErrorId : InvokeMethodOnNull
+ 
+Unable to find type [System.Drawing.Image].
+At line:2 char:483
++ ... reenshots/*.png' | ForEach-Object { $i=[System.Drawing.Image]::FromFi ...
++                                            ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (System.Drawing.Image:TypeName) [], RuntimeException
+    + FullyQualifiedErrorId : TypeNotFound
+ 
+Cannot convert value to type "System.Management.Automation.LanguagePrimitives+InternalPSCustomObject". Only core types 
+are supported in this language mode.
+At line:2 char:530
++ ... .FullName); [PSCustomObject]@{Name=$_.Name; Width=$i.Width; Height=$i ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [], RuntimeException
+    + FullyQualifiedErrorId : ConversionSupportedOnlyToCoreTypes
+ 
+You cannot call a method on a null-valued expression.
+At line:2 char:597
++ ... Name=$_.Name; Width=$i.Width; Height=$i.Height}; $i.Dispose() } | For ...
++                                                      ~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
+    + FullyQualifiedErrorId : InvokeMethodOnNull
+ 
+Unable to find type [System.Drawing.Image].
+At line:2 char:483
++ ... reenshots/*.png' | ForEach-Object { $i=[System.Drawing.Image]::FromFi ...
++                                            ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (System.Drawing.Image:TypeName) [], RuntimeException
+    + FullyQualifiedErrorId : TypeNotFound
+ 
+Cannot convert value to type "System.Management.Automation.LanguagePrimitives+InternalPSCustomObject". Only core types 
+are supported in this language mode.
+At line:2 char:530
++ ... .FullName); [PSCustomObject]@{Name=$_.Name; Width=$i.Width; Height=$i ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [], RuntimeException
+    + FullyQualifiedErrorId : ConversionSupportedOnlyToCoreTypes
+ 
+You cannot call a method on a null-valued expression.
+At line:2 char:597
++ ... Name=$_.Name; Width=$i.Width; Height=$i.Height}; $i.Dispose() } | For ...
++                                                      ~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
+    + FullyQualifiedErrorId : InvokeMethodOnNull
+ 
+Unable to find type [System.Drawing.Image].
+At line:2 char:483
++ ... reenshots/*.png' | ForEach-Object { $i=[System.Drawing.Image]::FromFi ...
++                                            ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (System.Drawing.Image:TypeName) [], RuntimeException
+    + FullyQualifiedErrorId : TypeNotFound
+ 
+Cannot convert value to type "System.Management.Automation.LanguagePrimitives+InternalPSCustomObject". Only core types 
+are supported in this language mode.
+At line:2 char:530
++ ... .FullName); [PSCustomObject]@{Name=$_.Name; Width=$i.Width; Height=$i ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [], RuntimeException
+    + FullyQualifiedErrorId : ConversionSupportedOnlyToCoreTypes
+ 
+You cannot call a method on a null-valued expression.
+At line:2 char:597
++ ... Name=$_.Name; Width=$i.Width; Height=$i.Height}; $i.Dispose() } | For ...
++                                                      ~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (:) [], RuntimeException
+    + FullyQualifiedErrorId : InvokeMethodOnNull
+ 
+
+codex
+## Kết luận
+
+**FAIL — chưa nên duyệt UI ở iteration 01.**
+
+Có **3 finding HIGH**, tập trung vào tính nhất quán của KPI, khả năng dùng trên mobile và trải nghiệm song ngữ. Không thấy BLOCKER được chứng minh trực tiếp từ code, nhưng ảnh Data Readiness không cung cấp bằng chứng thị giác hợp lệ để nghiệm thu thay đổi nút drill-down.
+
+## Findings cần sửa
+
+### UX-001 — HIGH
+
+- **Route:** `#/projects/prj-015`
+- **Viewport:** 1440×900
+- **Screenshot:** `project-detail-prj015-desktop-vi.png`
+- **Vấn đề:** Trang vẫn hiển thị KPI `70% / 65%` và biểu đồ lịch sử, trong khi section “Snapshot dùng để tính KPI” nói lần quan sát mới nhất không có bản ghi đủ điều kiện được chọn. Người dùng không biết các KPI đang thấy đến từ snapshot nào, snapshot cũ hơn, hay trường tổng hợp độc lập.
+- **Tác động người dùng:** Có nguy cơ coi số liệu không có nguồn hợp lệ là KPI hiện hành. Cảnh báo nằm thấp hơn nhiều so với summary nên dễ bị bỏ qua.
+- **Nguyên nhân có thể:** `explainLatestAuthoritativeSnapshot()` chỉ xét nhóm quan sát mới nhất; khi nhóm đó chỉ có `rejected`, `selectedSnapshot` là `null`, nhưng summary vẫn lấy các trường KPI của project mà không diễn giải provenance hoặc trạng thái fallback.
+- **Đề xuất sửa cụ thể:** Khi không có snapshot hợp lệ cho lần quan sát mới nhất:
+  - Gắn trạng thái cảnh báo ngay cạnh các KPI bị ảnh hưởng trong summary.
+  - Nói rõ KPI đang dùng snapshot hợp lệ gần nhất, nguồn khác, hay không thể xác minh.
+  - Nếu không có nguồn hợp lệ, không trình bày KPI như số liệu bình thường; dùng trạng thái “Không có snapshot hợp lệ” thay vì chỉ giải thích ở section phía dưới.
+- **Acceptance check:** Trên `prj-015`, một người chỉ đọc summary phải xác định được nguồn và trạng thái hợp lệ của `overallProgress`, `plannedProgress`, `financialProgress`, `disbursementRate`, `scheduleVariance`, `budgetVariance` mà không cần cuộn tới section snapshot.
+
+### UX-002 — HIGH
+
+- **Route:** `#/projects/prj-013`
+- **Viewport:** 390×844
+- **Screenshot:** `project-detail-prj013-mobile-vi-snapshot-section.png`
+- **Vấn đề:** Section mở rộng vượt xa chiều rộng mobile. Các chuỗi kỹ thuật dài như identity, `sourceRecordId` và câu quy tắc lựa chọn không có điểm ngắt phù hợp. Ảnh element-scoped rộng khoảng 1.328 px thay vì bám viewport 390 px là dấu hiệu overflow ngang rõ ràng.
+- **Tác động người dùng:** Người dùng phải cuộn ngang để đọc; nội dung cạnh tranh và trạng thái selected có thể nằm ngoài màn hình. Đây là lỗi usability nghiêm trọng trên mobile.
+- **Nguyên nhân có thể:** `.project-detail__card` không có `min-width: 0` hoặc `overflow-wrap`; các chuỗi `identity: ...Z:project-progress-illustrative` và `sourceRecordId=...` gần như không có khoảng trắng. Danh sách lồng dùng lại card desktop mà không có xử lý chuỗi máy.
+- **Đề xuất sửa cụ thể:**
+  - Áp dụng `min-width: 0` cho section, details, list và card lồng.
+  - Dùng `overflow-wrap: anywhere` cho ID/identity.
+  - Tách source record, trạng thái và thời gian thành các hàng label/value; không ghép thành một câu dài.
+  - Rút gọn ID hiển thị và cho phép xem/copy đầy đủ theo cách accessible nếu cần.
+- **Acceptance check:** Ở 320×700 và 390×844, `document.documentElement.scrollWidth <= clientWidth`; mọi nội dung expanded đọc được không cần cuộn ngang, không bị cắt và không đè lên phần tử khác.
+
+### UX-003 — HIGH
+
+- **Route:** `#/projects/prj-013?lang=en`
+- **Viewport:** 1440×900
+- **Screenshot:** `project-detail-prj013-desktop-en-snapshot-section.png`
+- **Vấn đề:** Static label được dịch sang English nhưng selection reason và exclusion reason vẫn là tiếng Việt. Đây là phần giải thích quan trọng nhất của feature.
+- **Tác động người dùng:** Người dùng English hiểu trạng thái và ngày nhưng không hiểu “vì sao bản ghi này được chọn” — mục tiêu chính của thay đổi không đạt trong locale English.
+- **Nguyên nhân có thể:** `authoritativeSnapshotExplanation.ts` tạo trực tiếp câu tiếng Việt trong `selectedReason` và `exclusionReason`, thay vì trả về reason code cùng tham số để lớp UI dịch.
+- **Đề xuất sửa cụ thể:** View-model chỉ trả về reason code có cấu trúc, ví dụ `highestVerificationPriority`, `rejected`, `superseded`, `olderImportedAt`, cùng interpolation values. Dịch toàn bộ câu qua dictionary `vi/en`.
+- **Acceptance check:** Khi `lang=en`, section không còn câu tiếng Việt; khi `lang=vi`, không còn câu tiếng Anh ngoài identifier/domain value được xác định rõ là dữ liệu kỹ thuật.
+
+### UX-004 — MEDIUM
+
+- **Route:** `#/projects/prj-013`
+- **Viewport:** 1440×900 và 390×844
+- **Screenshot:** `project-detail-prj013-desktop-vi-expanded.png`, `project-detail-prj013-mobile-vi-snapshot-section.png`
+- **Vấn đề:** Section mới không dùng cùng outer-card treatment với các section liền kề. Selector CSS chung bao gồm progress history và issues nhưng thiếu `.project-detail__snapshot-explanation`. Vì vậy heading đứng ngoài khung, còn chỉ phần nội dung bên trong có card.
+- **Tác động người dùng:** Snapshot explanation trông như diagnostics được chèn thêm, không phải một phần chính thức trong kiến trúc Project Detail. Quan hệ “Progress history → Snapshot dùng cho KPI → Issues” kém rõ.
+- **Nguyên nhân có thể:** Class mới chưa được thêm vào nhóm CSS của `.project-detail__header`, `__summary`, `__progress-history`, `__issues`, v.v.
+- **Đề xuất sửa cụ thể:** Cho section mới dùng cùng margin, padding, border, radius và background của các section cấp một. Nếu vẫn cần card lồng cho competing records, chỉ dùng card ở từng record, tránh “card trong section trống”.
+- **Acceptance check:** Khoảng cách dọc, mép trái heading, padding và đường biên của snapshot section khớp progress-history/issues ở cả desktop và mobile.
+
+### UX-005 — MEDIUM
+
+- **Route:** `#/projects/prj-013`
+- **Viewport:** 1440×900 và 390×844
+- **Screenshot:** `project-detail-prj013-desktop-vi-expanded.png`, `project-detail-prj013-mobile-vi-snapshot-section.png`
+- **Vấn đề:** Nội dung chính dùng raw domain identifiers như `overallProgress`, `plannedProgress`, `financialProgress`, `disbursementRate`, `scheduleVariance`, `budgetVariance`. Câu selection rule còn đưa cả thuật toán ưu tiên và identity đầy đủ vào luồng đọc chính.
+- **Tác động người dùng:** Operator phải hiểu schema nội bộ mới biết KPI nào bị ảnh hưởng. Mật độ kỹ thuật cao làm trạng thái quan trọng như “Đã rà soát” và “Được chọn” khó quét nhanh.
+- **Nguyên nhân có thể:** `affectedKpis` được join trực tiếp; nội dung audit/debug chưa được tách khỏi giải thích vận hành.
+- **Đề xuất sửa cụ thể:**
+  - Dịch identifier thành nhãn KPI đang dùng trong summary.
+  - Hiển thị thành chips hoặc danh sách ngắn có thể quét.
+  - Đưa selection rule đầy đủ và identity vào disclosure “Chi tiết kỹ thuật”.
+  - Phần mặc định chỉ nên trả lời: ngày nào, trạng thái gì, vì sao được chọn và KPI nào dùng nó.
+- **Acceptance check:** Người không biết tên field TypeScript vẫn đối chiếu được từng KPI với summary; nội dung mặc định không chứa camelCase identifiers.
+
+### UX-006 — MEDIUM
+
+- **Route:** `#/projects/prj-013`
+- **Viewport:** 1440×900 và 390×844
+- **Screenshot:** `project-detail-prj013-desktop-vi-expanded.png`, `project-detail-prj013-mobile-vi-snapshot-section.png`
+- **Vấn đề:** Hai competing records chỉ được phân biệt bằng đoạn văn. Record được chọn có dấu `✓`, nhưng record bị loại không có treatment thị giác tương đương; reason, status, imported time và ID đều hòa vào cùng cỡ chữ.
+- **Tác động người dùng:** Khó so sánh nhanh “được chọn” với “bị loại”, đặc biệt khi danh sách có thêm record hoặc trên màn hình nhỏ.
+- **Nguyên nhân có thể:** Cùng một `.project-detail__card` và paragraph styling được tái sử dụng, chưa có component/status hierarchy riêng cho audit records.
+- **Đề xuất sửa cụ thể:** Mỗi record nên có:
+  - Badge trạng thái `Được chọn` hoặc `Không được chọn`.
+  - Các hàng riêng cho nguồn, verification status và thời gian nhập.
+  - Reason nằm dưới badge, dùng màu phụ nhưng vẫn đủ contrast.
+  - Không chỉ dùng dấu ✓ để truyền đạt trạng thái.
+- **Acceptance check:** Trong vòng vài giây, người dùng xác định đúng record được chọn và lý do loại từng record mà không cần đọc toàn bộ paragraph.
+
+## Điểm tốt cần giữ
+
+- Vị trí information architecture giữa “Lịch sử tiến độ” và “Vướng mắc” là hợp lý về mặt nghiệp vụ.
+- Dùng native `<details>/<summary>` là lựa chọn tốt: có semantics và keyboard operation sẵn.
+- Disclosure chỉ xuất hiện khi có hơn một competing record, tránh control rỗng ở `prj-015`.
+- Trạng thái verification và confidence được dịch qua dictionary.
+- Không render field confidence khi dữ liệu vắng mặt, phù hợp acceptance criterion.
+- Nhánh không có selected snapshot không giả lập giá trị `0`.
+- Illustrative-data badge ở đầu trang vẫn hiện rõ; UI không giả danh số liệu vận hành chính thức.
+- Global CSS có `button:focus-visible`, nên nút drill-down và các button khác có nền tảng focus indicator chung.
+
+## Điểm chưa thể xác minh
+
+- `data-readiness-desktop-vi.png` chỉ là nền tối trống, không hiển thị heading, issue list hoặc ba nút “Xem dự án liên quan”. Vì vậy chưa thể nghiệm thu visual hierarchy, alignment, contrast, focus visibility hay vị trí nút mới.
+- Ảnh English snapshot bị lặp phần header và cắt ngang; chỉ đủ hỗ trợ finding về mixed-language, không đủ để đánh giá layout English desktop đáng tin cậy.
+- Chưa có ảnh 1280×800, 768×1024 và 320×700.
+- Không có ảnh trạng thái keyboard focus trên `<summary>` hoặc nút Data Readiness.
+- Không có ảnh loading, error và degraded state.
+- Không thể xác minh bằng ảnh rằng cả ba nút Data Readiness điều hướng đúng project và focus được chuyển tới heading Project Detail.
+- Không có bằng chứng contrast đo bằng công cụ; nhận xét trên chỉ dựa vào quan sát và CSS.
+- Manifest liệt kê nhiều hơn năm ảnh và thứ tự không hoàn toàn khớp danh sách ảnh đính kèm, nên traceability của capture cần được làm sạch ở vòng kế tiếp.
+tokens used
+51,681
+## Kết luận
+
+**FAIL — chưa nên duyệt UI ở iteration 01.**
+
+Có **3 finding HIGH**, tập trung vào tính nhất quán của KPI, khả năng dùng trên mobile và trải nghiệm song ngữ. Không thấy BLOCKER được chứng minh trực tiếp từ code, nhưng ảnh Data Readiness không cung cấp bằng chứng thị giác hợp lệ để nghiệm thu thay đổi nút drill-down.
+
+## Findings cần sửa
+
+### UX-001 — HIGH
+
+- **Route:** `#/projects/prj-015`
+- **Viewport:** 1440×900
+- **Screenshot:** `project-detail-prj015-desktop-vi.png`
+- **Vấn đề:** Trang vẫn hiển thị KPI `70% / 65%` và biểu đồ lịch sử, trong khi section “Snapshot dùng để tính KPI” nói lần quan sát mới nhất không có bản ghi đủ điều kiện được chọn. Người dùng không biết các KPI đang thấy đến từ snapshot nào, snapshot cũ hơn, hay trường tổng hợp độc lập.
+- **Tác động người dùng:** Có nguy cơ coi số liệu không có nguồn hợp lệ là KPI hiện hành. Cảnh báo nằm thấp hơn nhiều so với summary nên dễ bị bỏ qua.
+- **Nguyên nhân có thể:** `explainLatestAuthoritativeSnapshot()` chỉ xét nhóm quan sát mới nhất; khi nhóm đó chỉ có `rejected`, `selectedSnapshot` là `null`, nhưng summary vẫn lấy các trường KPI của project mà không diễn giải provenance hoặc trạng thái fallback.
+- **Đề xuất sửa cụ thể:** Khi không có snapshot hợp lệ cho lần quan sát mới nhất:
+  - Gắn trạng thái cảnh báo ngay cạnh các KPI bị ảnh hưởng trong summary.
+  - Nói rõ KPI đang dùng snapshot hợp lệ gần nhất, nguồn khác, hay không thể xác minh.
+  - Nếu không có nguồn hợp lệ, không trình bày KPI như số liệu bình thường; dùng trạng thái “Không có snapshot hợp lệ” thay vì chỉ giải thích ở section phía dưới.
+- **Acceptance check:** Trên `prj-015`, một người chỉ đọc summary phải xác định được nguồn và trạng thái hợp lệ của `overallProgress`, `plannedProgress`, `financialProgress`, `disbursementRate`, `scheduleVariance`, `budgetVariance` mà không cần cuộn tới section snapshot.
+
+### UX-002 — HIGH
+
+- **Route:** `#/projects/prj-013`
+- **Viewport:** 390×844
+- **Screenshot:** `project-detail-prj013-mobile-vi-snapshot-section.png`
+- **Vấn đề:** Section mở rộng vượt xa chiều rộng mobile. Các chuỗi kỹ thuật dài như identity, `sourceRecordId` và câu quy tắc lựa chọn không có điểm ngắt phù hợp. Ảnh element-scoped rộng khoảng 1.328 px thay vì bám viewport 390 px là dấu hiệu overflow ngang rõ ràng.
+- **Tác động người dùng:** Người dùng phải cuộn ngang để đọc; nội dung cạnh tranh và trạng thái selected có thể nằm ngoài màn hình. Đây là lỗi usability nghiêm trọng trên mobile.
+- **Nguyên nhân có thể:** `.project-detail__card` không có `min-width: 0` hoặc `overflow-wrap`; các chuỗi `identity: ...Z:project-progress-illustrative` và `sourceRecordId=...` gần như không có khoảng trắng. Danh sách lồng dùng lại card desktop mà không có xử lý chuỗi máy.
+- **Đề xuất sửa cụ thể:**
+  - Áp dụng `min-width: 0` cho section, details, list và card lồng.
+  - Dùng `overflow-wrap: anywhere` cho ID/identity.
+  - Tách source record, trạng thái và thời gian thành các hàng label/value; không ghép thành một câu dài.
+  - Rút gọn ID hiển thị và cho phép xem/copy đầy đủ theo cách accessible nếu cần.
+- **Acceptance check:** Ở 320×700 và 390×844, `document.documentElement.scrollWidth <= clientWidth`; mọi nội dung expanded đọc được không cần cuộn ngang, không bị cắt và không đè lên phần tử khác.
+
+### UX-003 — HIGH
+
+- **Route:** `#/projects/prj-013?lang=en`
+- **Viewport:** 1440×900
+- **Screenshot:** `project-detail-prj013-desktop-en-snapshot-section.png`
+- **Vấn đề:** Static label được dịch sang English nhưng selection reason và exclusion reason vẫn là tiếng Việt. Đây là phần giải thích quan trọng nhất của feature.
+- **Tác động người dùng:** Người dùng English hiểu trạng thái và ngày nhưng không hiểu “vì sao bản ghi này được chọn” — mục tiêu chính của thay đổi không đạt trong locale English.
+- **Nguyên nhân có thể:** `authoritativeSnapshotExplanation.ts` tạo trực tiếp câu tiếng Việt trong `selectedReason` và `exclusionReason`, thay vì trả về reason code cùng tham số để lớp UI dịch.
+- **Đề xuất sửa cụ thể:** View-model chỉ trả về reason code có cấu trúc, ví dụ `highestVerificationPriority`, `rejected`, `superseded`, `olderImportedAt`, cùng interpolation values. Dịch toàn bộ câu qua dictionary `vi/en`.
+- **Acceptance check:** Khi `lang=en`, section không còn câu tiếng Việt; khi `lang=vi`, không còn câu tiếng Anh ngoài identifier/domain value được xác định rõ là dữ liệu kỹ thuật.
+
+### UX-004 — MEDIUM
+
+- **Route:** `#/projects/prj-013`
+- **Viewport:** 1440×900 và 390×844
+- **Screenshot:** `project-detail-prj013-desktop-vi-expanded.png`, `project-detail-prj013-mobile-vi-snapshot-section.png`
+- **Vấn đề:** Section mới không dùng cùng outer-card treatment với các section liền kề. Selector CSS chung bao gồm progress history và issues nhưng thiếu `.project-detail__snapshot-explanation`. Vì vậy heading đứng ngoài khung, còn chỉ phần nội dung bên trong có card.
+- **Tác động người dùng:** Snapshot explanation trông như diagnostics được chèn thêm, không phải một phần chính thức trong kiến trúc Project Detail. Quan hệ “Progress history → Snapshot dùng cho KPI → Issues” kém rõ.
+- **Nguyên nhân có thể:** Class mới chưa được thêm vào nhóm CSS của `.project-detail__header`, `__summary`, `__progress-history`, `__issues`, v.v.
+- **Đề xuất sửa cụ thể:** Cho section mới dùng cùng margin, padding, border, radius và background của các section cấp một. Nếu vẫn cần card lồng cho competing records, chỉ dùng card ở từng record, tránh “card trong section trống”.
+- **Acceptance check:** Khoảng cách dọc, mép trái heading, padding và đường biên của snapshot section khớp progress-history/issues ở cả desktop và mobile.
+
+### UX-005 — MEDIUM
+
+- **Route:** `#/projects/prj-013`
+- **Viewport:** 1440×900 và 390×844
+- **Screenshot:** `project-detail-prj013-desktop-vi-expanded.png`, `project-detail-prj013-mobile-vi-snapshot-section.png`
+- **Vấn đề:** Nội dung chính dùng raw domain identifiers như `overallProgress`, `plannedProgress`, `financialProgress`, `disbursementRate`, `scheduleVariance`, `budgetVariance`. Câu selection rule còn đưa cả thuật toán ưu tiên và identity đầy đủ vào luồng đọc chính.
+- **Tác động người dùng:** Operator phải hiểu schema nội bộ mới biết KPI nào bị ảnh hưởng. Mật độ kỹ thuật cao làm trạng thái quan trọng như “Đã rà soát” và “Được chọn” khó quét nhanh.
+- **Nguyên nhân có thể:** `affectedKpis` được join trực tiếp; nội dung audit/debug chưa được tách khỏi giải thích vận hành.
+- **Đề xuất sửa cụ thể:**
+  - Dịch identifier thành nhãn KPI đang dùng trong summary.
+  - Hiển thị thành chips hoặc danh sách ngắn có thể quét.
+  - Đưa selection rule đầy đủ và identity vào disclosure “Chi tiết kỹ thuật”.
+  - Phần mặc định chỉ nên trả lời: ngày nào, trạng thái gì, vì sao được chọn và KPI nào dùng nó.
+- **Acceptance check:** Người không biết tên field TypeScript vẫn đối chiếu được từng KPI với summary; nội dung mặc định không chứa camelCase identifiers.
+
+### UX-006 — MEDIUM
+
+- **Route:** `#/projects/prj-013`
+- **Viewport:** 1440×900 và 390×844
+- **Screenshot:** `project-detail-prj013-desktop-vi-expanded.png`, `project-detail-prj013-mobile-vi-snapshot-section.png`
+- **Vấn đề:** Hai competing records chỉ được phân biệt bằng đoạn văn. Record được chọn có dấu `✓`, nhưng record bị loại không có treatment thị giác tương đương; reason, status, imported time và ID đều hòa vào cùng cỡ chữ.
+- **Tác động người dùng:** Khó so sánh nhanh “được chọn” với “bị loại”, đặc biệt khi danh sách có thêm record hoặc trên màn hình nhỏ.
+- **Nguyên nhân có thể:** Cùng một `.project-detail__card` và paragraph styling được tái sử dụng, chưa có component/status hierarchy riêng cho audit records.
+- **Đề xuất sửa cụ thể:** Mỗi record nên có:
+  - Badge trạng thái `Được chọn` hoặc `Không được chọn`.
+  - Các hàng riêng cho nguồn, verification status và thời gian nhập.
+  - Reason nằm dưới badge, dùng màu phụ nhưng vẫn đủ contrast.
+  - Không chỉ dùng dấu ✓ để truyền đạt trạng thái.
+- **Acceptance check:** Trong vòng vài giây, người dùng xác định đúng record được chọn và lý do loại từng record mà không cần đọc toàn bộ paragraph.
+
+## Điểm tốt cần giữ
+
+- Vị trí information architecture giữa “Lịch sử tiến độ” và “Vướng mắc” là hợp lý về mặt nghiệp vụ.
+- Dùng native `<details>/<summary>` là lựa chọn tốt: có semantics và keyboard operation sẵn.
+- Disclosure chỉ xuất hiện khi có hơn một competing record, tránh control rỗng ở `prj-015`.
+- Trạng thái verification và confidence được dịch qua dictionary.
+- Không render field confidence khi dữ liệu vắng mặt, phù hợp acceptance criterion.
+- Nhánh không có selected snapshot không giả lập giá trị `0`.
+- Illustrative-data badge ở đầu trang vẫn hiện rõ; UI không giả danh số liệu vận hành chính thức.
+- Global CSS có `button:focus-visible`, nên nút drill-down và các button khác có nền tảng focus indicator chung.
+
+## Điểm chưa thể xác minh
+
+- `data-readiness-desktop-vi.png` chỉ là nền tối trống, không hiển thị heading, issue list hoặc ba nút “Xem dự án liên quan”. Vì vậy chưa thể nghiệm thu visual hierarchy, alignment, contrast, focus visibility hay vị trí nút mới.
+- Ảnh English snapshot bị lặp phần header và cắt ngang; chỉ đủ hỗ trợ finding về mixed-language, không đủ để đánh giá layout English desktop đáng tin cậy.
+- Chưa có ảnh 1280×800, 768×1024 và 320×700.
+- Không có ảnh trạng thái keyboard focus trên `<summary>` hoặc nút Data Readiness.
+- Không có ảnh loading, error và degraded state.
+- Không thể xác minh bằng ảnh rằng cả ba nút Data Readiness điều hướng đúng project và focus được chuyển tới heading Project Detail.
+- Không có bằng chứng contrast đo bằng công cụ; nhận xét trên chỉ dựa vào quan sát và CSS.
+- Manifest liệt kê nhiều hơn năm ảnh và thứ tự không hoàn toàn khớp danh sách ảnh đính kèm, nên traceability của capture cần được làm sạch ở vòng kế tiếp.

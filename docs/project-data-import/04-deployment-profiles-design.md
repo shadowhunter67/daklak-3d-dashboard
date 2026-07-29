@@ -101,6 +101,15 @@ dữ liệu mật chỉ bằng frontend"). Tài liệu này phải dẫn lại n
   thuộc dataset đó bị loại khỏi bundle `public-static`), không ẩn theo field lẻ (ẩn theo field lẻ dễ
   bỏ sót, khó audit).
 
+  > **Cập nhật Phase 6 (đã triển khai, xem [ADR 0009](../adr/0009-public-projection-and-ui-review-gate.md)
+  > và [public-projection-policy.md](public-projection-policy.md)):** quyết định cuối cùng đi theo
+  > hướng NGƯỢC với đề xuất "ẩn cấp dataset" ở trên — cơ chế chính là **field-level allowlist**
+  > (`config/public-project-fields.json`), áp dụng vô điều kiện cho mọi record; classification chỉ
+  > còn là gate cấp BUNDLE (`restricted`/`confidential` → từ chối projection hoàn toàn). Lý do đổi
+  > hướng: field-level allowlist strict-by-default (field không khai báo luôn bị loại) là lưới an
+  > toàn đơn giản hơn để audit so với việc duy trì một danh sách dataset "đạt classification" song
+  > song.
+
 ## 3. Build wiring (đề xuất, Phase 2/6, không làm ở Phase 1)
 
 ```jsonc

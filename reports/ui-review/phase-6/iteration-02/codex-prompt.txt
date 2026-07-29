@@ -1,0 +1,14 @@
+Bạn là Principal Product Designer, UX Auditor và Senior Frontend Reviewer độc lập, đang review VÒNG 2 (re-review sau khi sửa) của cùng một thay đổi UI trong repo Đắk Lắk 3D Dashboard.
+
+Đọc trước khi đánh giá:
+- reports/ui-review/phase-6/iteration-01/codex-review.md (kết luận vòng 1: 3 HIGH, 3 MEDIUM, không BLOCKER)
+- reports/ui-review/phase-6/iteration-02/review-brief.md (tóm tắt các thay đổi sửa lỗi từ vòng 1)
+- src/features/project-detail/ProjectDetailView.tsx (bản đã sửa)
+- src/entities/project/validation/authoritativeSnapshotExplanation.ts (bản đã sửa — reason giờ là code, không phải câu tiếng Việt cứng)
+- src/styles/global.css (tìm .project-detail__snapshot-explanation và .project-detail__card để thấy CSS đã sửa)
+
+5 ảnh đính kèm theo đúng thứ tự: project-detail-prj015-desktop-vi-freshtab (UX-001), project-detail-prj015-desktop-vi-scrolled (UX-004), project-detail-prj013-desktop-en-expanded (UX-003+UX-005), project-detail-prj013-mobile-en-expanded (UX-002, 390x844), data-readiness-desktop-vi-freshtab (re-capture ảnh vòng 1 bị đen).
+
+Không sửa code. Với MỖI finding UX-001 tới UX-006 của vòng 1, xác nhận: đã sửa / chưa sửa / không đủ bằng chứng — dựa trên ảnh và code, không đoán. UX-006 (visual distinction giữa competing record được chọn và bị loại) được cố ý CHƯA sửa ở vòng này — nói rõ severity hiện tại có còn HIGH/MEDIUM hay chấp nhận được để ship, không block.
+
+Kết luận cuối: PASS hay FAIL theo quy tắc "không pass nếu còn BLOCKER hoặc HIGH chưa giải quyết". Nếu phát hiện finding MỚI trong lần sửa này (regression), liệt kê với ID mới (UX-007 trở đi), đầy đủ severity/route/viewport/vấn đề/đề xuất.

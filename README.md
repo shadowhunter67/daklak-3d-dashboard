@@ -164,10 +164,10 @@ luôn thuộc `public` (không auth) và đồng thời thuộc một trong ba m
 ```bash
 npm run build                    # = build:demo — dữ liệu minh hoạ (mặc định, không đổi hành vi cũ)
 npm run build:internal-static    # dùng generated-json bundle (Phase 2: fixture kiểm thử, chưa phải importer thật)
-npm run build:public-static      # Phase 2: dùng CHUNG bundle với internal-static, chưa có bước lọc public-projection
+npm run build:public-static      # Phase 6: dùng bundle ĐÃ qua public projection engine (allowlist field)
 ```
 
-- **`demo`** — nguồn `IllustrativeProjectPortfolioSource`, 9 dự án minh hoạ hiện có, hành vi giống
+- **`demo`** — nguồn `IllustrativeProjectPortfolioSource`, 9+ dự án minh hoạ hiện có, hành vi giống
   hệt trước đây. Đây là build deploy GitHub Pages.
 - **`internal-static`** — nguồn `GeneratedJsonProjectPortfolioSource`, đọc một bundle JSON đã chuẩn
   hoá sẵn. **Không tự động chứa dữ liệu minh hoạ** — build này bị kiểm tra bằng
@@ -175,10 +175,17 @@ npm run build:public-static      # Phase 2: dùng CHUNG bundle với internal-st
   `dist/`. Dùng để triển khai tĩnh trong mạng/máy chủ nội bộ có kiểm soát truy cập — **không phải cơ
   chế bảo vệ dữ liệu mật**: static build không có đăng nhập, không có server, ai truy cập được vào
   nơi host file tĩnh này đều đọc được toàn bộ dữ liệu. Dữ liệu thật/nhạy cảm phải được triển khai
-  trong môi trường có kiểm soát truy cập ở tầng mạng, không phải trông cậy vào frontend.
-- **`public-static`** — Phase 2 dùng cùng adapter/bundle với `internal-static` (chưa có allowlist lọc
-  field/record công khai — đó là việc của Phase 6). Không tuyên bố mode này đã sẵn sàng công khai dữ
-  liệu thật cho tới khi cơ chế lọc đó tồn tại.
+  trong môi trường có kiểm soát truy cập ở tầng mạng, không phải trông cậy vào frontend. Guard
+  (`npm run validate:portfolio-data-mode:*`) từ Phase 6 kiểm tra cấu trúc (module nguồn nào được
+  Vite alias + literal `sourceKind` trong contract), không còn dùng ID dữ liệu tuỳ ý — xem
+  [ADR 0009](docs/adr/0009-public-projection-and-ui-review-gate.md).
+- **`public-static`** (Phase 6) — nguồn `PublicProjectedProjectPortfolioSource`, đọc bundle ĐÃ qua
+  **public projection engine** (`src/entities/project/publicProjection/`) — lọc field theo allowlist
+  tường minh (`config/public-project-fields.json`), KHÔNG còn dùng chung bundle với `internal-static`.
+  Xem [docs/project-data-import/public-projection-policy.md](docs/project-data-import/public-projection-policy.md)
+  và [public-release-runbook.md](docs/project-data-import/public-release-runbook.md). Projection chỉ
+  đảm bảo field/record nằm trong allowlist — **không tự cấp quyền công bố**; một người có thẩm quyền
+  vẫn phải review nội dung trước khi publish thật.
 
 Không cần database cho bất kỳ mode nào ở trên — cả ba đều là static site đọc dữ liệu bundled/generated
 tại build time, không có backend, không có runtime query. Xem
@@ -215,13 +222,18 @@ mapper/domain validator/quality rule — chỉ orchestrate lại các module đ�
 integrity check riêng cho reference tới project không tồn tại. Import là all-or-nothing theo TOÀN BỘ
 lần chạy (một lỗi chặn khiến cả lần chạy bị từ chối, không có "import thành công một phần") — không
 bao giờ silently drop record. **Importer output KHÔNG tự động là public-approved output** —
-`stage:internal-portfolio` chỉ đưa dữ liệu vào build `internal-static`, không có bước lọc
-public-projection (vẫn là Phase 6, chưa triển khai); không dùng cho `public-static`. Không thêm
-database/backend/authentication nào. Xem
+`stage:internal-portfolio` chỉ đưa dữ liệu vào build `internal-static`; để dùng cho `public-static`
+phải qua public projection engine (Phase 6 — `npm run project:public-data` +
+`npm run stage:public-portfolio`, xem
+[public-release-runbook.md](docs/project-data-import/public-release-runbook.md)), không bao giờ
+dùng trực tiếp bundle internal chưa lọc. Không thêm database/backend/authentication nào. Xem
 [ADR 0007](docs/adr/0007-offline-project-data-importer-and-last-known-good-promotion.md) và
 [import-runbook.md](docs/project-data-import/import-runbook.md) cho chi tiết đầy đủ. Đội cung cấp dữ
 liệu nên bắt đầu từ [integration-kit/README.md](integration-kit/README.md) (checklist đánh giá
-nguồn, field mapping, lỗi thường gặp, ví dụ CSV đã chạy thật qua importer).
+nguồn, field mapping, lỗi thường gặp, ví dụ CSV đã chạy thật qua importer). Để publish dữ liệu đã
+import ra `public-static` thật, xem
+[public-release-runbook.md](docs/project-data-import/public-release-runbook.md) (Phase 6) — bước
+projection + review thủ công BẮT BUỘC trước khi stage.
 
 ### Data Readiness (Phase 5)
 
@@ -265,14 +277,18 @@ liệu (cần xem xét) / cảnh báo nghiệp vụ (thông tin, không phải l
   [ADR 0001 — Project là entity trung tâm](docs/adr/0001-project-centric-domain.md) ·
   [ADR 0002 — Hash routing cho Danh mục/Chi tiết dự án](docs/adr/0002-static-host-routing.md) ·
   [domain model](docs/domain-model.md)
-- Nhập dữ liệu dự án nội bộ thật (`docs/project-data-import/`, Phase 1-5 hoàn thành, Phase 6+ chưa
-  triển khai): [chỉ mục](docs/project-data-import/README.md) ·
+- Nhập dữ liệu dự án nội bộ thật (`docs/project-data-import/`, Phase 1-6 hoàn thành): [chỉ
+  mục](docs/project-data-import/README.md) ·
   [ADR 0005 — Project portfolio source abstraction và static data modes](docs/adr/0005-project-portfolio-source-abstraction.md) ·
   [ADR 0006 — Canonical project portfolio data contract](docs/adr/0006-canonical-project-portfolio-data-contract.md) ·
   [ADR 0007 — Offline importer và last-known-good promotion](docs/adr/0007-offline-project-data-importer-and-last-known-good-promotion.md) ·
   [ADR 0008 — Demo scenario strategy và Data Readiness](docs/adr/0008-demo-scenario-strategy-and-data-readiness-experience.md) ·
+  [ADR 0009 — Public projection và UI review gate](docs/adr/0009-public-projection-and-ui-review-gate.md) ·
   [canonical data dictionary](docs/project-data-import/canonical-data-dictionary.md) ·
   [import runbook](docs/project-data-import/import-runbook.md) ·
+  [public projection policy](docs/project-data-import/public-projection-policy.md) ·
+  [public release runbook](docs/project-data-import/public-release-runbook.md) ·
+  [UI review process](docs/project-data-import/ui-review-process.md) ·
   [integration kit](integration-kit/README.md) — bàn giao cho đội cung cấp dữ liệu
 - Pipeline ingestion dữ liệu công khai tự động (`scripts/data-refresh/`, nền tảng — chưa nối nguồn
   thật): [ADR 0004](docs/adr/0004-public-data-ingestion.md) ·

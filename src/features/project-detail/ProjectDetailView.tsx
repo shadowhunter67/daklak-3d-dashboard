@@ -168,6 +168,14 @@ export function ProjectDetailView({
 
       <section aria-labelledby="project-detail-summary-heading" className="project-detail__summary">
         <h3 id="project-detail-summary-heading">{t('detail.summaryHeading')}</h3>
+        {model.snapshotExplanation.observedAt !== null &&
+          model.snapshotExplanation.selectedSnapshot === null && (
+            <p role="note" className="project-detail__summary-warning">
+              {t('detail.summary.noAuthoritativeSnapshotWarning', {
+                observedAt: formatDate(model.snapshotExplanation.observedAt, locale),
+              })}
+            </p>
+          )}
         <dl className="project-detail__summary-grid">
           <div>
             <dt>{t('detail.summary.approvedBudget')}</dt>
@@ -318,6 +326,124 @@ export function ProjectDetailView({
       >
         <h3 id="project-detail-progress-history-heading">{t('detail.progressHistoryHeading')}</h3>
         <ProgressHistorySparkline points={model.progressHistory} />
+      </section>
+
+      <section
+        aria-labelledby="project-detail-snapshot-explanation-heading"
+        className="project-detail__snapshot-explanation"
+      >
+        <h3 id="project-detail-snapshot-explanation-heading">
+          {t('detail.snapshotExplanation.heading')}
+        </h3>
+        {(() => {
+          const explanation = model.snapshotExplanation;
+          if (explanation.observedAt === null) {
+            return <p>{t('detail.snapshotExplanation.none')}</p>;
+          }
+          const selected = explanation.selectedSnapshot;
+          return (
+            <div className="project-detail__card">
+              <p>
+                {t('detail.snapshotExplanation.selectedObservedAt', {
+                  observedAt: formatDate(explanation.observedAt, locale),
+                })}
+              </p>
+              {selected ? (
+                <>
+                  <p>
+                    {t('detail.snapshotExplanation.selectedStatus', {
+                      status: t(
+                        `progressVerificationStatus.${selected.verificationStatus}` as MessageKey,
+                      ),
+                    })}
+                  </p>
+                  {selected.confidence && (
+                    <p>
+                      {t('detail.snapshotExplanation.selectedConfidence', {
+                        confidence: t(`confidence.${selected.confidence}` as MessageKey),
+                      })}
+                    </p>
+                  )}
+                  {explanation.selectedReason && (
+                    <p>
+                      {t('detail.snapshotExplanation.reason', {
+                        reason: t(
+                          `detail.snapshotExplanation.selectionReasonCode.${explanation.selectedReason.code}` as MessageKey,
+                          {
+                            status: t(
+                              `progressVerificationStatus.${explanation.selectedReason.verificationStatus}` as MessageKey,
+                            ),
+                            count: explanation.selectedReason.competingCount,
+                          },
+                        ),
+                      })}
+                    </p>
+                  )}
+                  {explanation.affectedKpis.length > 0 && (
+                    <p>
+                      {t('detail.snapshotExplanation.affectedKpis', {
+                        kpis: explanation.affectedKpis
+                          .map((kpi) => t(`affectedKpiLabel.${kpi}` as MessageKey))
+                          .join(', '),
+                      })}
+                    </p>
+                  )}
+                </>
+              ) : (
+                <p role="note">
+                  {t('detail.snapshotExplanation.noneSelectedFor', {
+                    observedAt: formatDate(explanation.observedAt, locale),
+                  })}
+                </p>
+              )}
+              {explanation.otherObservationDates.length > 0 && (
+                <p>
+                  {t('detail.snapshotExplanation.otherObservations', {
+                    dates: explanation.otherObservationDates
+                      .map((d) => formatDate(d, locale))
+                      .join(', '),
+                  })}
+                </p>
+              )}
+              {explanation.competingSnapshots.length > 1 && (
+                <details>
+                  <summary>
+                    {t('detail.snapshotExplanation.competingToggle', {
+                      count: explanation.competingSnapshots.length,
+                    })}
+                  </summary>
+                  <ul className="project-detail__card-list">
+                    {explanation.competingSnapshots.map((entry) => (
+                      <li key={entry.snapshot.sourceRecordId} className="project-detail__card">
+                        <p>
+                          {entry.selected && (
+                            <strong>
+                              {t('detail.snapshotExplanation.competingSelectedBadge')}{' '}
+                            </strong>
+                          )}
+                          {t('detail.snapshotExplanation.competingRecord', {
+                            sourceRecordId: entry.snapshot.sourceRecordId,
+                            status: t(
+                              `progressVerificationStatus.${entry.snapshot.verificationStatus}` as MessageKey,
+                            ),
+                            importedAt: formatDateTime(entry.snapshot.importedAt, locale),
+                          })}
+                        </p>
+                        {entry.exclusionReason && (
+                          <p>
+                            {t(
+                              `detail.snapshotExplanation.exclusionReasonCode.${entry.exclusionReason.code}` as MessageKey,
+                            )}
+                          </p>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
+            </div>
+          );
+        })()}
       </section>
 
       <section aria-labelledby="project-detail-issues-heading" className="project-detail__issues">

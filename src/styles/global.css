@@ -2310,6 +2310,7 @@ footer a {
 .project-detail__work-packages,
 .project-detail__milestones,
 .project-detail__progress-history,
+.project-detail__snapshot-explanation,
 .project-detail__issues,
 .project-detail__geography,
 .project-detail__provenance {
@@ -2336,6 +2337,7 @@ footer a {
   list-style: none;
 }
 .project-detail__card {
+  min-width: 0;
   padding: 12px 14px;
   border: 1px solid #ffffff14;
   border-radius: 10px;
@@ -2344,6 +2346,14 @@ footer a {
 }
 .project-detail__card p {
   margin: 4px 0;
+  overflow-wrap: anywhere;
+}
+.project-detail__snapshot-explanation details {
+  margin-top: 8px;
+}
+.project-detail__snapshot-explanation summary {
+  cursor: pointer;
+  color: #a9c3ba;
 }
 .project-detail__card-title {
   margin: 0 0 4px;

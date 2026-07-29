@@ -17,14 +17,18 @@ import type { PortfolioDeploymentMode } from '../entities/project/adapters/Proje
 export const ACTIVE_PORTFOLIO_SOURCE_MODULE_DEMO = './src/data/activePortfolioSource.demo.ts';
 export const ACTIVE_PORTFOLIO_SOURCE_MODULE_GENERATED_JSON =
   './src/data/activePortfolioSource.generatedJson.ts';
+/** Phase 6 — module riêng cho `public-static`, đọc bundle ĐÃ qua public projection engine (xem
+ * `src/entities/project/publicProjection/`, `src/data/publicProjectedProjectPortfolioSource.ts`).
+ * Trước Phase 6, `public-static` dùng chung module với `internal-static` (xem lịch sử git) — từ Phase
+ * 6 trở đi, hai mode này KHÔNG còn dùng chung module nữa (xem `portfolioModePolicy.ts`). */
+export const ACTIVE_PORTFOLIO_SOURCE_MODULE_PUBLIC_PROJECTED =
+  './src/data/activePortfolioSource.publicProjected.ts';
 
 /** `mode` đã được chuẩn hoá về `PortfolioDeploymentMode` hợp lệ trước khi gọi hàm này (xem
  * `isPortfolioDeploymentMode`/`DEFAULT_PORTFOLIO_DATA_MODE` trong `portfolioDataModes.ts`) — hàm
  * này không tự xử lý giá trị lạ. */
 export function resolveActivePortfolioSourceModule(mode: PortfolioDeploymentMode): string {
   if (mode === 'demo') return ACTIVE_PORTFOLIO_SOURCE_MODULE_DEMO;
-  // Phase 2: 'internal-static' và 'public-static' dùng CHUNG module — xem
-  // GeneratedJsonProjectPortfolioSource.getMetadata().deploymentCompatibility (chỉ khai
-  // 'internal-static' cho tới khi Phase 6 có bước lọc public-projection thật).
+  if (mode === 'public-static') return ACTIVE_PORTFOLIO_SOURCE_MODULE_PUBLIC_PROJECTED;
   return ACTIVE_PORTFOLIO_SOURCE_MODULE_GENERATED_JSON;
 }

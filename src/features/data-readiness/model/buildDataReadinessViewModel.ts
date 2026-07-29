@@ -5,7 +5,7 @@
  * data-quality issue (Layer 3 severity=error), business alert (Layer 3 severity=warning — KHÔNG bao
  * giờ hiển thị như lỗi, xem `dataHealth.ts`/`dataQualityRules.ts`).
  */
-import type { ProjectBundle } from '../../../entities/project/types';
+import type { DataQualityIssue, ProjectBundle } from '../../../entities/project/types';
 import {
   validateMilestoneRecord,
   validateProgressSnapshotRecord,
@@ -19,7 +19,58 @@ import {
 } from '../../../entities/project/validation/dataQualityRules';
 import { summarizeDataQuality } from '../../../entities/project/dataQualitySummary';
 import type { ProjectPortfolioSourceMetadata } from '../../../entities/project/adapters/ProjectPortfolioSource';
-import type { DataReadinessModel } from './dataReadinessTypes';
+import type { DataReadinessIssueWithProjectLink, DataReadinessModel } from './dataReadinessTypes';
+
+/**
+ * Phase 6 (C6) — resolve projectId thật cho một `DataQualityIssue` để Data Readiness có thể điều
+ * hướng thẳng sang Project Detail. KHÔNG suy đoán: chỉ trả một id khi id đó THẬT SỰ tồn tại trong
+ * `bundles` — nếu không resolve được, trả `null` (component phải không render link trong trường hợp
+ * này, xem C6 "Không tạo dead link cho issue không gắn project").
+ *
+ * `entityId` cho `progressSnapshot` có hai định dạng tuỳ rule sinh ra nó (xem dataQualityRules.ts):
+ * `${projectId}@${observedAt}` (dangling-project-reference) hoặc identity key
+ * `${projectId}::${observedAt}::${sourceDatasetId}` (duplicate/multiple-verification-stage) — cả hai
+ * đều bắt đầu bằng projectId, tách bằng ký tự đầu tiên trong `@`/`::`.
+ */
+function resolveIssueProjectId(
+  bundles: readonly ProjectBundle[],
+  issue: DataQualityIssue,
+): string | null {
+  const projectIds = new Set(bundles.map((b) => b.project.id));
+
+  if (issue.entityType === 'project') {
+    return projectIds.has(issue.entityId) ? issue.entityId : null;
+  }
+  if (issue.entityType === 'progressSnapshot') {
+    const candidateProjectId = issue.entityId.split(/@|::/)[0];
+    return projectIds.has(candidateProjectId) ? candidateProjectId : null;
+  }
+  for (const bundle of bundles) {
+    if (
+      issue.entityType === 'workPackage' &&
+      bundle.workPackages.some((wp) => wp.id === issue.entityId)
+    )
+      return bundle.project.id;
+    if (
+      issue.entityType === 'milestone' &&
+      bundle.milestones.some((ms) => ms.id === issue.entityId)
+    )
+      return bundle.project.id;
+    if (issue.entityType === 'issue' && bundle.issues.some((i) => i.id === issue.entityId))
+      return bundle.project.id;
+  }
+  return null;
+}
+
+function withProjectLink(
+  bundles: readonly ProjectBundle[],
+  issues: readonly DataQualityIssue[],
+): DataReadinessIssueWithProjectLink[] {
+  return issues.map((issue) => ({
+    ...issue,
+    linkedProjectId: resolveIssueProjectId(bundles, issue),
+  }));
+}
 
 /** `unverified` = chưa qua bước xác thực có ý nghĩa (raw/validated-automatically) — KHÔNG gồm
  * submitted/reviewed/approved (đã có ai đó xác nhận, dù chưa phải approved cuối cùng). */
@@ -62,8 +113,14 @@ export function buildDataReadinessViewModel(params: {
   }
 
   const qualityIssues = runDataQualityRules(bundles, context);
-  const dataQualityIssues = qualityIssues.filter((i) => i.severity === 'error');
-  const businessAlerts = qualityIssues.filter((i) => i.severity === 'warning');
+  const dataQualityIssues = withProjectLink(
+    bundles,
+    qualityIssues.filter((i) => i.severity === 'error'),
+  );
+  const businessAlerts = withProjectLink(
+    bundles,
+    qualityIssues.filter((i) => i.severity === 'warning'),
+  );
   const summary = summarizeDataQuality(bundles, context);
 
   const lowConfidenceProjectCount = bundles.filter((b) => b.project.confidence === 'low').length;

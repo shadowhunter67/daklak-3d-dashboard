@@ -1,22 +1,24 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
-import type { DataQualityIssue } from '../../entities/project/types';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
 import { formatDateTime } from '../../i18n/formatters';
 import { useDataReadiness } from './data/useDataReadiness';
+import type { DataReadinessIssueWithProjectLink } from './model/dataReadinessTypes';
 
 function IssueList({
   issues,
   emptyKey,
   headingKey,
   idSuffix,
+  onOpenProject,
 }: {
-  issues: readonly DataQualityIssue[];
+  issues: readonly DataReadinessIssueWithProjectLink[];
   emptyKey: MessageKey;
   headingKey: MessageKey;
   idSuffix: string;
+  onOpenProject: (projectId: string) => void;
 }) {
   const { t } = useTranslation();
   const headingId = `data-readiness-${idSuffix}-heading`;
@@ -32,6 +34,20 @@ function IssueList({
           {issues.map((issue) => (
             <li key={issue.id}>
               <span className="data-readiness__issue-rule">{issue.rule}</span> — {issue.message}
+              {/* C6: chỉ hiển thị nút điều hướng khi projectId đã resolve được thật — không tạo
+                  dead link cho issue không gắn project (workPackage/milestone mồ côi, v.v.). */}
+              {issue.linkedProjectId && (
+                <>
+                  {' '}
+                  <button
+                    type="button"
+                    className="data-readiness__issue-link"
+                    onClick={() => onOpenProject(issue.linkedProjectId!)}
+                  >
+                    {t('dataReadiness.issue.openProject')}
+                  </button>
+                </>
+              )}
             </li>
           ))}
         </ul>
@@ -43,9 +59,11 @@ function IssueList({
 export function DataReadinessView({
   source,
   onBackToOverview,
+  onOpenProject,
 }: {
   source?: ProjectPortfolioSource;
   onBackToOverview: () => void;
+  onOpenProject: (projectId: string) => void;
 }) {
   const { t, locale } = useTranslation();
   const [retryToken, setRetryToken] = useState(0);
@@ -234,12 +252,14 @@ export function DataReadinessView({
         headingKey="dataReadiness.qualityHeading"
         emptyKey="dataReadiness.qualityEmpty"
         idSuffix="quality"
+        onOpenProject={onOpenProject}
       />
       <IssueList
         issues={model.businessAlerts}
         headingKey="dataReadiness.businessHeading"
         emptyKey="dataReadiness.businessEmpty"
         idSuffix="business"
+        onOpenProject={onOpenProject}
       />
     </section>
   );

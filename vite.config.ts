@@ -35,15 +35,16 @@ function resolveGitCommit(): string | undefined {
 // explicit --mode — build/test fails loudly, never silently falls back to another mode.
 export default defineConfig(({ mode }) => {
   const portfolioDataMode = resolvePortfolioDataModeFromViteMode(mode);
+  const activePortfolioSourceModule = resolveActivePortfolioSourceModule(portfolioDataMode);
 
   return {
     base: '/daklak-3d-dashboard/',
     resolve: {
       alias: {
-        // Buộc Rollup chỉ thấy MỘT trong hai module nguồn — xem JSDoc
+        // Buộc Rollup chỉ thấy MỘT trong ba module nguồn — xem JSDoc
         // src/app/resolveActivePortfolioSourceModule.ts về lý do không dùng switch runtime.
         '#active-portfolio-source': fileURLToPath(
-          new URL(resolveActivePortfolioSourceModule(portfolioDataMode), import.meta.url),
+          new URL(activePortfolioSourceModule, import.meta.url),
         ),
       },
     },
@@ -60,6 +61,7 @@ export default defineConfig(({ mode }) => {
             datasetVersion: sourceMetadata.sourceSnapshot,
             datasetSnapshot: datasetMetadata.generatedAt,
             portfolioDataMode,
+            activePortfolioSourceModule,
           });
           this.emitFile({
             type: 'asset',
