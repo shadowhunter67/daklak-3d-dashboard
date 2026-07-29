@@ -62,6 +62,11 @@ export interface ProjectionManifest {
   recordRemovalCounts: ProjectionCountsByEntity;
   sourceDatasetIds: readonly string[];
   outputDatasetIds: readonly string[];
+  /** Checksum của publication-decision set đã dùng (xem `publicationDecision.ts`, Phase 7) — `null`
+   * khi projection chạy KHÔNG kèm publication-decision set (hành vi Phase 6 gốc: mọi record mặc định
+   * public trừ khi tự khai `recordClassification`). Field optional để không phá manifest cũ đã ghi
+   * trước Phase 7 (đọc lại một manifest Phase 6 vẫn hợp lệ, chỉ thiếu field này). */
+  publicationDecisionSetChecksum?: string | null;
 }
 
 /** Phiên bản của CHÍNH cơ chế projection (thuật toán/quy tắc cascade) — khác `allowedFieldPolicyVersion`

@@ -28,6 +28,12 @@ import type {
   PublicRecordClassification,
 } from './publicProjectionTypes';
 import { PROJECTION_ENGINE_VERSION } from './publicProjectionTypes';
+import {
+  buildPublicationDecisionIndex,
+  computePublicationDecisionSetChecksum,
+  type PublicationDecisionEntry,
+  type PublicationDecisionSet,
+} from './publicationDecision';
 
 export class PublicProjectionRefusedError extends Error {}
 
@@ -39,6 +45,17 @@ export interface ProjectPublicBundleOptions {
   generatedAt: string;
   /** Chuỗi tự do mô tả hệ thống sinh bundle, vd `phase6-public-projection-engine@1.0.0`. */
   producer: string;
+  /** Phase 7 — publication-decision set (xem `publicationDecision.ts`) dùng để quyết định record nào
+   * được public, thay cho/kết hợp với `recordClassification` tự khai. `undefined` = không dùng cơ chế
+   * này (hành vi Phase 6 gốc không đổi). */
+  publicationDecisions?: PublicationDecisionSet;
+  /** Khi `true`: record KHÔNG có entry trong `publicationDecisions` bị LOẠI (fail-closed) thay vì mặc
+   * định public. Bắt buộc `true` cho một public release THẬT (không phải demo/fixture hư cấu) — xem
+   * ADR 0010. Mặc định `false` để giữ nguyên hành vi Phase 6 khi caller không truyền gì (demo/test cũ
+   * không bị phá). Bật `true` mà không kèm `publicationDecisions` nghĩa là MỌI record bị loại — hợp
+   * lệ về mặt logic (an toàn nhất có thể) nhưng thường là lỗi cấu hình của caller, không phải lỗi ở
+   * đây; CLI (`scripts/public-projection/cli.ts`) cảnh báo rõ khi rơi vào trường hợp này. */
+  requirePublicationDecisions?: boolean;
 }
 
 export interface ProjectPublicBundleResult {
@@ -69,18 +86,39 @@ function recordId(entityKind: CanonicalEntityKind, record: Record<string, unknow
   return String(record.id ?? '(unknown-id)');
 }
 
-/** Record-level classification hiện KHÔNG tồn tại trong canonical JSON Schema (Phase 3-5) — field
- * `recordClassification` chỉ là một optional TypeScript-level hook dự phòng (xem JSDoc
- * `publicProjectionTypes.ts`). Mặc định khi vắng mặt là `'public'` (không tự loại record) — an toàn
- * thực sự nằm ở FIELD-level allowlist bên dưới (field không nằm trong allowlist luôn bị loại, kể cả
- * khi record được coi là 'public'). Đây là điểm khác biệt có chủ đích với B3 "missing classification
- * → fail/exclude": ở mức FIELD, "thiếu trong allowlist" ĐÃ tương đương "loại trừ" — hai lớp phòng thủ
- * độc lập (record-level tuỳ chọn + field-level bắt buộc) cộng lại, không phải một lớp duy nhất mặc
- * định "thiếu = public". */
+interface RecordClassificationResolution {
+  classification: PublicRecordClassification;
+  /** Có mặt khi quyết định đến từ publication-decision set (Phase 7) — dùng để viết report entry với
+   * lý do/policyRule chính xác thay vì lý do chung chung "record-level classification override". */
+  decisionEntry?: PublicationDecisionEntry;
+  /** `true` khi record bị loại vì THIẾU quyết định dưới chế độ fail-closed (khác với bị loại vì có
+   * quyết định `excluded` tường minh) — report cần phân biệt rõ hai lý do này. */
+  missingRequiredDecision?: boolean;
+}
+
+/** Phase 7 (ADR 0010): khi `decisionIndex` được truyền, publication-decision set là NGUỒN SỰ THẬT
+ * cho classification — được ưu tiên trên `recordClassification` tự khai (record không thể tự "khai
+ * mình public" để vượt qua quyết định publication đã ký). Khi record không có entry trong decision
+ * set: `requirePublicationDecisions=true` → loại (fail-closed, ADR 0010 Decision 1); `false` → rơi về
+ * hành vi Phase 6 gốc (`recordClassification ?? 'public'`) — giữ nguyên tương thích ngược cho
+ * demo/fixture không dùng cơ chế Phase 7. */
 function resolveRecordClassification(
   record: HasOptionalRecordClassification,
-): PublicRecordClassification {
-  return record.recordClassification ?? 'public';
+  decisionIndex: ReadonlyMap<string, PublicationDecisionEntry> | undefined,
+  decisionKey: string,
+  requirePublicationDecisions: boolean,
+): RecordClassificationResolution {
+  const decisionEntry = decisionIndex?.get(decisionKey);
+  if (decisionEntry) {
+    return {
+      classification: decisionEntry.decision === 'public' ? 'public' : 'restricted',
+      decisionEntry,
+    };
+  }
+  if (requirePublicationDecisions) {
+    return { classification: 'restricted', missingRequiredDecision: true };
+  }
+  return { classification: record.recordClassification ?? 'public' };
 }
 
 function projectRecordFields(
@@ -128,8 +166,13 @@ export function projectCanonicalBundleToPublic(
 
   const survivingIdsByEntity = {} as Record<CanonicalEntityKind, Set<string>>;
   const projectedDatasets = {} as Record<CanonicalEntityKind, Record<string, unknown>[]>;
+  const decisionIndex = options.publicationDecisions
+    ? buildPublicationDecisionIndex(options.publicationDecisions)
+    : undefined;
+  const requirePublicationDecisions = options.requirePublicationDecisions ?? false;
 
-  // Pass 1: record-level classification filtering + field allowlist, độc lập theo từng entity.
+  // Pass 1: record-level classification filtering (publication-decision set khi có, xem ADR 0010) +
+  // field allowlist, độc lập theo từng entity.
   for (const entityKind of CANONICAL_ENTITY_KINDS) {
     const sourceRecords = sourceBundle.datasets[entityKind] as unknown as Record<string, unknown>[];
     recordCountsBefore[entityKind] = sourceRecords.length;
@@ -138,20 +181,35 @@ export function projectCanonicalBundleToPublic(
     const projected: Record<string, unknown>[] = [];
 
     for (const record of sourceRecords) {
-      const classification = resolveRecordClassification(record);
-      if (classification !== 'public') {
+      const thisRecordId = recordId(entityKind, record);
+      const resolution = resolveRecordClassification(
+        record,
+        decisionIndex,
+        `${entityKind}:${thisRecordId}`,
+        requirePublicationDecisions,
+      );
+      if (resolution.classification !== 'public') {
+        const reason = resolution.missingRequiredDecision
+          ? `Không có publication decision cho record này và requirePublicationDecisions=true (fail-closed, ADR 0010) — loại khỏi public bundle.`
+          : resolution.decisionEntry
+            ? `Publication decision='${resolution.decisionEntry.decision}' (decidedBy=${resolution.decisionEntry.decidedBy}, lý do: ${resolution.decisionEntry.reason}) — không xuất sang public bundle.`
+            : `Record có recordClassification='${resolution.classification}' — không xuất sang public bundle.`;
         report.push({
           entityKind,
-          recordId: recordId(entityKind, record),
+          recordId: thisRecordId,
           kind: 'record-removed',
-          reason: `Record có recordClassification='${classification}' — không xuất sang public bundle.`,
-          classification,
-          policyRule: 'record-level classification override',
+          reason,
+          classification: resolution.classification,
+          policyRule: resolution.missingRequiredDecision
+            ? 'publication-decision missing (fail-closed)'
+            : resolution.decisionEntry
+              ? 'publication-decision override'
+              : 'record-level classification override',
         });
         recordRemovalCounts[entityKind] += 1;
         continue;
       }
-      survivingIds.add(recordId(entityKind, record));
+      survivingIds.add(thisRecordId);
       const before = report.length;
       const projectedRecord = projectRecordFields(entityKind, record, allowedFields, report);
       fieldRemovalCounts[entityKind] += report.length - before;
@@ -250,6 +308,9 @@ export function projectCanonicalBundleToPublic(
     recordRemovalCounts,
     sourceDatasetIds: sourceBundle.metadata.sourceDatasetIds,
     outputDatasetIds: sourceBundle.metadata.sourceDatasetIds.map((id) => `${id}-public-projected`),
+    publicationDecisionSetChecksum: options.publicationDecisions
+      ? computePublicationDecisionSetChecksum(options.publicationDecisions)
+      : null,
   };
 
   return {
