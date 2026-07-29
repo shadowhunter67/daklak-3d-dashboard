@@ -209,6 +209,19 @@ export async function main(argv: readonly string[]): Promise<number> {
     // nhánh này chỉ còn lại như phòng thủ kép, không nên chạm được trong thực tế.
     console.error('Thiếu approval receipt bắt buộc — KHÔNG stage.');
     return 1;
+  } else {
+    // Phase 8 (ADR 0011, review post-merge Phase 7 finding F-007): stage KHÔNG kèm bất kỳ flag
+    // approval-receipt nào trước đây im lặng bỏ qua toàn bộ bước xác nhận phê duyệt — một operator
+    // quên `--approval-receipt`/`--require-approval-receipt` trên một release THẬT sẽ không nhận được
+    // tín hiệu nào. In cảnh báo rõ ràng ra stderr, KHÔNG đổi exit code (0) — demo/fixture vẫn phải
+    // stage được không cần receipt, cảnh báo chỉ đảm bảo sự vắng mặt của bằng chứng phê duyệt LUÔN
+    // hiện diện trong output, không bị bỏ sót.
+    console.warn(
+      'CẢNH BÁO: không có approval receipt cho artifact này — không có bằng chứng phê duyệt công bố ' +
+        'nào được ghi lại. Nếu đây là một public release THẬT (không phải demo/fixture), dừng lại và ' +
+        'chạy lại với --approval-receipt <path> --require-approval-receipt — xem ' +
+        'docs/project-data-import/public-release-runbook.md.',
+    );
   }
 
   // Chỉ ghi SAU KHI mọi validation đã pass.

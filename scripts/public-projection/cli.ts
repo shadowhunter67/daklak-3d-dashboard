@@ -221,6 +221,20 @@ export async function main(argv: readonly string[]): Promise<number> {
     `${JSON.stringify(result.report, null, 2)}\n`,
   );
 
+  if (!requirePublicationDecisions) {
+    // Phase 8 (ADR 0011, review post-merge Phase 7 finding F-007): projection KHÔNG kèm
+    // --require-publication-decisions im lặng quay về hành vi Phase 6 (record thiếu quyết định mặc
+    // định public) — một operator quên flag này trên một release THẬT sẽ không nhận được tín hiệu
+    // nào. Cảnh báo rõ ràng ra stderr, KHÔNG đổi exit code/hành vi mặc định (demo/fixture vẫn phải
+    // chạy được không cần publication decisions).
+    console.warn(
+      'CẢNH BÁO: projection này KHÔNG dùng --require-publication-decisions — mọi record không tự khai ' +
+        'recordClassification mặc định được coi là public (hành vi Phase 6). Nếu đây là một public ' +
+        'release THẬT, dừng lại và chạy lại với --publication-decisions <path> ' +
+        '--require-publication-decisions — xem docs/project-data-import/public-release-runbook.md.',
+    );
+  }
+
   console.log(`Đã ghi public projection vào ${outputDir}`);
   console.log(
     `  projectionVersion=${result.manifest.projectionVersion} allowedFieldPolicyVersion=${result.manifest.allowedFieldPolicyVersion}`,
