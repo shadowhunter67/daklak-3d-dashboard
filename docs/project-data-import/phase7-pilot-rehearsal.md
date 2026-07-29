@@ -32,16 +32,16 @@ field). Bảng dưới liệt kê phân loại theo đúng cấu trúc yêu cầ
 
 ### `projects.csv` (4 dòng)
 
-| Source column                  | Canonical field           | Required | Ghi chú kịch bản pilot                                             |
-| ------------------------------- | -------------------------- | -------- | -------------------------------------------------------------------- |
-| `id`,`code`,`name`,`description`| `id`,`code`,`name`,`description` | Có | `pilot-proj-003` cố ý dùng tên/mô tả rất dài (stress-test UI)         |
-| `sector`,`status`,`priority`     | như trên                   | Có       | phủ 3 sector khác nhau (transport/irrigation), nhiều status          |
-| `managing_authority_id`,`investor_id` | `managingAuthorityId`,`investorId` | Có | trỏ tới 2 agency trong `agencies.csv`                          |
-| `project_manager_id`,`approval_decision` | tương ứng            | Không    | để trống ở mọi dòng — kiểm chứng optional field bị OMIT, không lưu `""` |
-| `forecast_completion_date`,`actual_completion_date` | tương ứng | Không | để trống ở mọi dòng — cùng lý do trên                              |
-| `approved_budget_vnd`,`disbursed_amount_vnd`,`*_progress_pct` | tương ứng | Có | `pilot-proj-002` dùng TOÀN SỐ 0 hợp lệ (chưa giải ngân) — không phải thiếu dữ liệu |
-| `administrative_area_codes`     | `administrativeAreaCodes`  | Có       | `;`-delimited, dùng mã thật trong `daklak-labels.json` (22015, 24133, 24187) |
-| `data_updated_at`,`data_owner`,`source_dataset_id`,`confidence`,`verification_status` | tương ứng | Có | `source_dataset_id` đăng ký qua `--source-registry` (chưa có trong catalog dùng chung) |
+| Source column                                                                         | Canonical field                    | Required | Ghi chú kịch bản pilot                                                                 |
+| ------------------------------------------------------------------------------------- | ---------------------------------- | -------- | -------------------------------------------------------------------------------------- |
+| `id`,`code`,`name`,`description`                                                      | `id`,`code`,`name`,`description`   | Có       | `pilot-proj-003` cố ý dùng tên/mô tả rất dài (stress-test UI)                          |
+| `sector`,`status`,`priority`                                                          | như trên                           | Có       | phủ 3 sector khác nhau (transport/irrigation), nhiều status                            |
+| `managing_authority_id`,`investor_id`                                                 | `managingAuthorityId`,`investorId` | Có       | trỏ tới 2 agency trong `agencies.csv`                                                  |
+| `project_manager_id`,`approval_decision`                                              | tương ứng                          | Không    | để trống ở mọi dòng — kiểm chứng optional field bị OMIT, không lưu `""`                |
+| `forecast_completion_date`,`actual_completion_date`                                   | tương ứng                          | Không    | để trống ở mọi dòng — cùng lý do trên                                                  |
+| `approved_budget_vnd`,`disbursed_amount_vnd`,`*_progress_pct`                         | tương ứng                          | Có       | `pilot-proj-002` dùng TOÀN SỐ 0 hợp lệ (chưa giải ngân) — không phải thiếu dữ liệu     |
+| `administrative_area_codes`                                                           | `administrativeAreaCodes`          | Có       | `;`-delimited, dùng mã thật trong `daklak-labels.json` (22015, 24133, 24187)           |
+| `data_updated_at`,`data_owner`,`source_dataset_id`,`confidence`,`verification_status` | tương ứng                          | Có       | `source_dataset_id` đăng ký qua `--source-registry` (chưa có trong catalog dùng chung) |
 
 ### `agencies.csv` (2 dòng), `contractors.csv` (1 dòng)
 

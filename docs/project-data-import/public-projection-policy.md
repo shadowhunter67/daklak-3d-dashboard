@@ -39,15 +39,39 @@ Tài liệu này là hướng dẫn vận hành/tham chiếu nhanh — không l�
 - `Project.approvalDecision` — số hiệu văn bản nội bộ chưa xác nhận công khai.
 - Mọi `auditEvents` — không bao giờ public (không nằm trong danh sách entity được phép chiếu).
 
-## Record-level classification (hiện tại: chưa phải per-record thật)
+## Record-level classification (hiện tại: chưa phải per-record thật trong schema)
 
 Canonical JSON Schema (Phase 3-5) chưa có field classification ở mức từng record — chỉ có
 `CanonicalBundleMetadata.classification` ở mức BUNDLE. `projectCanonicalBundleToPublic` hỗ trợ một
-field optional `recordClassification` (không có trong schema hiện tại, dự phòng cho tương lai);
-khi vắng mặt, mặc định coi là `'public'` — an toàn thực sự nằm ở field-level allowlist (mục 1), không
-phải ở giả định "record chưa gắn nhãn thì nguy hiểm". Nếu một ngày canonical schema có
-classification thật ở mức record, cập nhật logic này để field đó điều khiển việc loại RECORD (không
-chỉ field) — xem `resolveRecordClassification` trong `projectPublicBundle.ts`.
+field optional `recordClassification` (không có trong schema hiện tại); khi vắng mặt VÀ không dùng
+publication-decision set (mục dưới), mặc định coi là `'public'` — an toàn thực sự nằm ở field-level
+allowlist (mục 1). Với một public release THẬT, dùng cơ chế publication-decision (fail-closed) thay
+vì dựa vào mặc định này.
+
+## Publication decision (Phase 7, ADR 0010) — bắt buộc cho public release THẬT
+
+`recordClassification` mặc định `'public'` (mục trên) chỉ an toàn cho demo/fixture. Cho một bundle
+THẬT chứa cả record public lẫn không-public, dùng `PublicationDecisionSet`
+(`src/entities/project/publicProjection/publicationDecision.ts`) — một artifact JSON riêng, key theo
+`entityKind:recordId`, mỗi record cần quyết định RÕ RÀNG `'public'`/`'excluded'`:
+
+```bash
+npm run project:public-data -- \
+  --input <bundle-internal> --output ./generated-public-data \
+  --publication-decisions <decision-set.json> --require-publication-decisions
+```
+
+Với `--require-publication-decisions`: record KHÔNG có entry trong decision set bị LOẠI (fail-closed)
+— khác hành vi mặc định ở trên. Xem ví dụ đầy đủ (bao gồm checksum thật) ở
+[phase7-pilot-rehearsal.md](phase7-pilot-rehearsal.md).
+
+## Approval receipt (Phase 7, ADR 0010) — buộc phê duyệt vào đúng output đã duyệt
+
+`stage:public-portfolio` mặc định KHÔNG yêu cầu bằng chứng phê duyệt (chỉ có "review thủ công" trong
+runbook). Cho public release THẬT, dùng `--require-approval-receipt` để buộc một
+`PublicApprovalReceipt` (`approvalReceipt.ts`) khớp CHÍNH XÁC checksum của output đang stage — nếu
+output bị regenerate sau khi duyệt (checksum đổi), receipt cũ bị từ chối, không stage được cho tới
+khi có receipt mới. Xem [public-release-runbook.md](public-release-runbook.md) bước phê duyệt.
 
 ## Chạy thật
 
@@ -58,6 +82,10 @@ npm run stage:public-portfolio -- --input ./generated-public-data
 npm run build:public-static
 npm run validate:portfolio-data-mode:public-static
 ```
+
+Cho public release THẬT (không phải demo), thêm `--publication-decisions`/
+`--require-publication-decisions` ở bước đầu và `--approval-receipt`/`--require-approval-receipt` ở
+bước `stage:public-portfolio` — xem 2 mục ngay trên.
 
 `generated-public-data/` bị gitignore — không commit output projection thô, chỉ commit sau khi đã
 stage vào `src/assets/data/`.

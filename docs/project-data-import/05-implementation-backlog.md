@@ -1,14 +1,18 @@
-# Implementation backlog — Phase 2 → 6
+# Implementation backlog — Phase 2 → 7
 
-Trạng thái: **Phase 2, 3, 4, 5 hoàn thành** — xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md),
+Trạng thái: **Phase 2, 3, 4, 5, 6 hoàn thành** — xem [ADR 0005](../adr/0005-project-portfolio-source-abstraction.md),
 [ADR 0006](../adr/0006-canonical-project-portfolio-data-contract.md),
 [ADR 0007](../adr/0007-offline-project-data-importer-and-last-known-good-promotion.md),
-[ADR 0008](../adr/0008-demo-scenario-strategy-and-data-readiness-experience.md). "Phase 6" trong tài
-liệu này (mục cuối, "Integration kit and hardening") là đề xuất GỐC, đã lỗi thời — phần lớn nội dung
-của nó được kéo lên làm ở Phase 5 (xem ADR 0008). Phase 6 THẬT SỰ đã triển khai là public projection
-engine + leakage-guard hardening + authoritative-snapshot explanation + Codex UI review gate — xem
-[ADR 0009](../adr/0009-public-projection-and-ui-review-gate.md), không phải đề xuất còn lại bên dưới
-mục "Phase 6" của file này.
+[ADR 0008](../adr/0008-demo-scenario-strategy-and-data-readiness-experience.md),
+[ADR 0009](../adr/0009-public-projection-and-ui-review-gate.md),
+[ADR 0010](../adr/0010-representative-pilot-and-fail-closed-publication-decisions.md). "Phase 6" trong
+tài liệu này (mục cuối, "Integration kit and hardening") là đề xuất GỐC, đã lỗi thời — phần lớn nội
+dung của nó được kéo lên làm ở Phase 5 (xem ADR 0008). Phase 6 THẬT SỰ đã triển khai là public
+projection engine + leakage-guard hardening + authoritative-snapshot explanation + Codex UI review
+gate — xem ADR 0009, không phải đề xuất còn lại bên dưới mục "Phase 6" của file này. Phase 7 (mới,
+xem cuối file) đóng 5 finding của một bản review độc lập chạy sau Phase 6: representative pilot
+rehearsal qua importer thật (F-001), publication-decision fail-closed (F-002), CI gate còn thiếu
+(F-003), UI verification với dữ liệu pilot (F-004 một phần), approval receipt buộc checksum (F-005).
 
 ## Phase 2 — Source abstraction and profiles — ĐÃ LÀM
 
@@ -187,6 +191,36 @@ từ Phase 5 (việc bị hoãn có chủ đích, xem ADR 0008 quyết định 1
     project portfolio source abstraction, demo scenario strategy — mỗi ADR viết SAU khi phần tương
     ứng đã triển khai xong (đúng convention 4 ADR hiện có, luôn mô tả quyết định đã chốt, không mô tả
     dự định).
+
+## Phase 7 — Representative pilot rehearsal, fail-closed publication decisions — ĐÃ LÀM (thu hẹp phạm vi)
+
+Xem [ADR 0010](../adr/0010-representative-pilot-and-fail-closed-publication-decisions.md) cho lý do
+quyết định. Triển khai thật:
+
+1. `PublicationDecisionSet` (`src/entities/project/publicProjection/publicationDecision.ts`) +
+   `requirePublicationDecisions` option trên `projectCanonicalBundleToPublic` — record không có quyết
+   định bị loại (fail-closed) thay vì mặc định public khi bật; tắt (mặc định) giữ nguyên hành vi
+   Phase 6.
+2. `PublicApprovalReceipt` (`approvalReceipt.ts`) buộc chặt phê duyệt thủ công vào checksum chính xác
+   của output — `stage_public_portfolio_bundle.ts --require-approval-receipt` từ chối stage khi
+   receipt thiếu hoặc không khớp.
+3. Pilot rehearsal CSV thật (`data-templates/pilot/phase7-integration-rehearsal/`) chạy qua
+   `import:data` (strict) → `project:public-data` (fail-closed) → `stage:public-portfolio`
+   (approval-receipt) — lần đầu tiên importer THẬT (không phải fixture JSON viết tay) đi qua public
+   projection engine, xem `docs/project-data-import/phase7-pilot-rehearsal.md`.
+4. CI job `contract-and-modes` mới (`.github/workflows/quality.yml`) chạy
+   `validate:project-data-contract` + `test:public-projection` + `verify:portfolio-data-modes`.
+5. UI verification thủ công (không phải Codex loop đầy đủ — Phase 7 không thêm UI mới, chỉ nạp dữ
+   liệu pilot vào UI hiện có): build `internal-static` thật với bundle pilot, xác nhận không lỗi
+   console/tràn layout/authoritative-snapshot chọn đúng bản `approved`, rồi khôi phục fixture thật qua
+   `git checkout`.
+
+**Có chủ đích KHÔNG làm** (do phạm vi review Phase 7 gốc quá rộng cho một phase, xem "Do-not-do
+list"): độ phủ 5 viewport × Codex loop đầy đủ (F-004 — không có UI mới nên rủi ro thấp, hoãn tới khi
+có thay đổi UI thật cần review); negative-path fixture riêng cho pilot (đã có 11 fixture ở
+`data-templates/examples/invalid/`, không lặp lại); record-level classification thật trong canonical
+JSON Schema (publication-decision set là artifact TÁCH RIÊNG, không sửa schema — vẫn đúng quyết định
+"backlog nếu cần" của ADR 0009, Phase 7 chọn giải pháp không sửa schema).
 
 ## Rủi ro xuyên suốt backlog (nhắc lại để không quên giữa các phase)
 
