@@ -83,9 +83,11 @@ npm run build:public-static
 npm run validate:portfolio-data-mode:public-static
 ```
 
-Cho public release THẬT (không phải demo), thêm `--publication-decisions`/
-`--require-publication-decisions` ở bước đầu và `--approval-receipt`/`--require-approval-receipt` ở
-bước `stage:public-portfolio` — xem 2 mục ngay trên.
+Cho public release THẬT (không phải demo), dùng `npm run project:public-data:release` +
+`npm run stage:public-portfolio:release` (Phase 8, ADR 0011) — hai script hardcode sẵn
+`--require-publication-decisions`/`--require-approval-receipt`, không thể vô tình quên flag. Dùng
+script gốc mà quên flag vẫn chạy được (không phá demo/fixture) nhưng in cảnh báo rõ ra `stderr` —
+xem 2 mục ngay trên.
 
 `generated-public-data/` bị gitignore — không commit output projection thô, chỉ commit sau khi đã
 stage vào `src/assets/data/`.

@@ -222,6 +222,25 @@ có thay đổi UI thật cần review); negative-path fixture riêng cho pilot 
 JSON Schema (publication-decision set là artifact TÁCH RIÊNG, không sửa schema — vẫn đúng quyết định
 "backlog nếu cần" của ADR 0009, Phase 7 chọn giải pháp không sửa schema).
 
+## Phase 8 — Non-silent fail-closed flag enforcement — ĐÃ LÀM
+
+Xem [ADR 0011](../adr/0011-fail-closed-flag-enforcement-warnings.md). Đóng finding F-007/F-009 từ một
+lượt review độc lập post-merge Phase 7 (tái hiện trực tiếp: quên `--require-publication-decisions`
+hoặc `--require-approval-receipt` khiến bảo vệ fail-closed bị bỏ qua im lặng, exit code 0, không log
+cảnh báo nào).
+
+1. `scripts/public-projection/cli.ts` + `stage_public_portfolio_bundle.ts`: cảnh báo `stderr` rõ ràng
+   khi chạy KHÔNG kèm flag tương ứng — không đổi exit code mặc định (giữ nguyên demo/fixture path).
+2. Hai npm script mới hardcode flag: `project:public-data:release`, `stage:public-portfolio:release`.
+3. `scripts/public-projection/pilotRehearsal.test.ts` (5 test case) — chạy pilot CSV Phase 7 qua toàn
+   bộ chuỗi import → projection → staging thật (gọi `main()` của cả 3 CLI), bao gồm 2 test guard đúng
+   hành vi F-007 (thiếu flag → cảnh báo + hành vi cũ). `test:public-projection` mở rộng glob để CI job
+   `contract-and-modes` (đã có từ Phase 7) tự động chạy các test này.
+
+**Có chủ đích KHÔNG làm**: không quy định F-008 (regenerate lại dataset public-static thật đang
+commit qua cơ chế mới) — quyết định tách riêng, chưa được giao trong Phase 8; không đụng F-004
+(viewport/Codex UI review) — Phase 8 không có UI nào thay đổi.
+
 ## Rủi ro xuyên suốt backlog (nhắc lại để không quên giữa các phase)
 
 - Đặt tên "internal-static" dễ bị hiểu nhầm là tương đương "secure" (docs cũ) — mỗi tài liệu mới viết

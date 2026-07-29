@@ -23,13 +23,18 @@ cho lý do thiết kế.
 
 ## Các bước
 
+**Cho một release THẬT, dùng hai script `:release` (Phase 8, ADR 0011) thay vì script gốc** — hai
+script này hardcode sẵn `--require-publication-decisions`/`--require-approval-receipt`, không thể vô
+tình quên flag. Script gốc (`project:public-data`/`stage:public-portfolio`, không hardcode) vẫn đúng
+cho demo/fixture; nếu dùng script gốc mà quên flag, CLI sẽ in cảnh báo ra `stderr` (không chặn) — đọc
+kỹ output, đừng bỏ qua cảnh báo đó.
+
 ```bash
-# 1. Chiếu bundle internal sang public (build-time, offline). Cho release THẬT, thêm
-#    --publication-decisions/--require-publication-decisions (xem điều kiện tiên quyết ở trên).
-npm run project:public-data -- \
+# 1. Chiếu bundle internal sang public (build-time, offline).
+npm run project:public-data:release -- \
   --input src/assets/data/project-portfolio.generated-fixture-demo.json \
   --output ./generated-public-data \
-  --publication-decisions <decision-set.json> --require-publication-decisions
+  --publication-decisions <decision-set.json>
 
 # 2. Review THỦ CÔNG output — đọc cả 3 file
 cat ./generated-public-data/project-portfolio.public.bundle.json
@@ -43,11 +48,10 @@ cat ./generated-public-data/public-projection-report.json     # field/record đ�
 #    decidedAt/referenceId). Bỏ qua bước này nếu chỉ đang release demo/fixture (không dùng
 #    --require-approval-receipt ở bước 4).
 
-# 4. Nếu đạt yêu cầu, stage vào vị trí public-static build đọc — release THẬT dùng
-#    --approval-receipt/--require-approval-receipt để buộc receipt khớp checksum thật của output.
-npm run stage:public-portfolio -- \
+# 4. Nếu đạt yêu cầu, stage vào vị trí public-static build đọc.
+npm run stage:public-portfolio:release -- \
   --input ./generated-public-data \
-  --approval-receipt <receipt.json> --require-approval-receipt
+  --approval-receipt <receipt.json>
 
 # 5. Đăng ký checksum thật vào config/public-data-files.json (2 entry:
 #    project-portfolio.public-projected.json + project-portfolio.public-projection-manifest.json)
