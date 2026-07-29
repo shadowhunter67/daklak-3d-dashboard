@@ -23,7 +23,13 @@ test.describe('dashboard smoke tests', () => {
     const runtimeErrors: string[] = [];
     const failedRequests: string[] = [];
     page.on('pageerror', (error) => runtimeErrors.push(error.message));
-    page.on('requestfailed', (request) => failedRequests.push(request.url()));
+    page.on('requestfailed', (request) => {
+      // Google Analytics beacons reach a real external host and are expected to fail in this
+      // offline/sandboxed test environment — that's a network-availability artifact, not an
+      // app defect, so they're excluded from this app-correctness assertion.
+      if (/google-analytics\.com|googletagmanager\.com/.test(request.url())) return;
+      failedRequests.push(request.url());
+    });
     await page.goto('./?view=3d');
 
     await expect(page.getByRole('heading', { name: /Đắk Lắk/i })).toBeVisible();
