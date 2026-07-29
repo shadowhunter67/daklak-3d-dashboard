@@ -1,0 +1,102 @@
+{
+  "policyVersion": "1.0.0",
+  "generatedAt": "2026-07-29T00:00:00.000Z",
+  "decisions": [
+    {
+      "entityKind": "agencies",
+      "recordId": "pilot-agency-001",
+      "decision": "public",
+      "reason": "Cơ quan chủ quản công khai theo quy định.",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "entityKind": "agencies",
+      "recordId": "pilot-agency-002",
+      "decision": "public",
+      "reason": "Cơ quan chủ quản công khai theo quy định.",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "entityKind": "contractors",
+      "recordId": "pilot-contractor-001",
+      "decision": "public",
+      "reason": "Nhà thầu đã trúng thầu công khai, thông tin không nhạy cảm.",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "entityKind": "projects",
+      "recordId": "pilot-proj-001",
+      "decision": "public",
+      "reason": "Dự án diễn tập — cho phép công bố để kiểm chứng pipeline.",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "entityKind": "projects",
+      "recordId": "pilot-proj-002",
+      "decision": "public",
+      "reason": "Dự án diễn tập — cho phép công bố để kiểm chứng pipeline.",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "entityKind": "projects",
+      "recordId": "pilot-proj-003",
+      "decision": "public",
+      "reason": "Dự án diễn tập — cho phép công bố để kiểm chứng pipeline.",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "entityKind": "projects",
+      "recordId": "pilot-proj-004",
+      "decision": "excluded",
+      "reason": "CHƯA được phê duyệt công bố công khai — cố ý giữ excluded để kiểm chứng fail-closed (ADR 0010).",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "entityKind": "workPackages",
+      "recordId": "pilot-wp-001",
+      "decision": "public",
+      "reason": "Gói thầu thuộc dự án đã duyệt công bố (pilot-proj-001).",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "entityKind": "progressSnapshots",
+      "recordId": "pilot-proj-001::2026-05-01T00:00:00.000Z::phase7-pilot-rehearsal",
+      "decision": "public",
+      "reason": "Snapshot thuộc dự án đã duyệt công bố.",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "entityKind": "progressSnapshots",
+      "recordId": "pilot-proj-001::2026-06-01T00:00:00.000Z::phase7-pilot-rehearsal",
+      "decision": "public",
+      "reason": "Snapshot thuộc dự án đã duyệt công bố.",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "entityKind": "progressSnapshots",
+      "recordId": "pilot-proj-001::2026-07-01T00:00:00.000Z::phase7-pilot-rehearsal",
+      "decision": "public",
+      "reason": "Snapshot thuộc dự án đã duyệt công bố.",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    },
+    {
+      "entityKind": "progressSnapshots",
+      "recordId": "pilot-proj-003::2026-05-30T00:00:00.000Z::phase7-pilot-rehearsal",
+      "decision": "public",
+      "reason": "Snapshot thuộc dự án đã duyệt công bố.",
+      "decidedBy": "pilot-reviewer",
+      "decidedAt": "2026-07-29T00:00:00.000Z"
+    }
+  ]
+}

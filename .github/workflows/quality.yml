@@ -54,6 +54,24 @@ jobs:
           path: reports/validation-report.json
           if-no-files-found: error
 
+  contract-and-modes:
+    # Phase 7 (review finding F-003): these three gates were previously runnable locally but not
+    # exercised in CI — a change could keep the demo build green while breaking the canonical data
+    # contract, the public projection engine, or build-time source-mode aliasing without CI noticing.
+    # One focused job, not a 3x duplication of the full frontend test suite per mode.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Validate canonical project-data contract (schema drift guard)
+        run: npm run validate:project-data-contract
+      - name: Public projection engine tests
+        run: npm run test:public-projection
+      - name: Verify demo/internal-static/public-static build-time source aliasing
+        run: npm run verify:portfolio-data-modes
+
   build-and-budget:
     runs-on: ubuntu-latest
     steps:

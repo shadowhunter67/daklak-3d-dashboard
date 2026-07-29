@@ -1,0 +1,10 @@
+{
+  "receiptVersion": "1.0.0",
+  "sourceNormalizedContentChecksum": "66e4713c6c5ef81c17f54703d9b1f7ecd433c7f0551f5d317bfd6dff85b06a4d",
+  "projectedContentChecksum": "17167ca504b9b5ede464544232549dc4e67a02b8fb65cd61dbc47f7e4eeb4631",
+  "allowedFieldPolicyVersion": "1.0.0",
+  "publicationDecisionSetChecksum": "849a2288b6a8bab723879aa9305676ea507675b3f3a02473feaab83cfe0e137e",
+  "reviewer": "pilot-reviewer",
+  "decidedAt": "2026-07-29T00:00:00.000Z",
+  "referenceId": "PHASE7-PILOT-REHEARSAL"
+}

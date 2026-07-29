@@ -5,6 +5,7 @@ import {
   projectCanonicalBundleToPublic,
 } from './projectPublicBundle';
 import type { PublicFieldAllowlist } from './publicProjectionTypes';
+import type { PublicationDecisionSet } from './publicationDecision';
 
 const FIELD_ALLOWLIST: PublicFieldAllowlist = {
   policyVersion: '1.0.0',
@@ -285,5 +286,177 @@ describe('projectCanonicalBundleToPublic', () => {
     expect(result.manifest.recordCountsAfter.evidence).toBe(1);
     expect(result.manifest.recordRemovalCounts.evidence).toBe(1);
     expect(result.manifest.fieldRemovalCounts.projects).toBeGreaterThan(0);
+  });
+
+  it('publicationDecisionSetChecksum is null when no decision set is used (Phase 6 behavior unchanged)', () => {
+    const result = projectCanonicalBundleToPublic(baseBundle(), OPTIONS);
+    expect(result.manifest.publicationDecisionSetChecksum).toBeNull();
+  });
+});
+
+describe('projectCanonicalBundleToPublic — publication decisions (Phase 7, ADR 0010)', () => {
+  const decisionsAllPublic: PublicationDecisionSet = {
+    policyVersion: '1.0.0',
+    generatedAt: '2026-03-01T00:00:00.000Z',
+    decisions: [
+      {
+        entityKind: 'agencies',
+        recordId: 'agency-1',
+        decision: 'public',
+        reason: 'ok',
+        decidedBy: 'reviewer',
+        decidedAt: '2026-03-01T00:00:00.000Z',
+      },
+      {
+        entityKind: 'projects',
+        recordId: 'project-1',
+        decision: 'public',
+        reason: 'ok',
+        decidedBy: 'reviewer',
+        decidedAt: '2026-03-01T00:00:00.000Z',
+      },
+      {
+        entityKind: 'workPackages',
+        recordId: 'wp-1',
+        decision: 'public',
+        reason: 'ok',
+        decidedBy: 'reviewer',
+        decidedAt: '2026-03-01T00:00:00.000Z',
+      },
+      {
+        entityKind: 'milestones',
+        recordId: 'ms-1',
+        decision: 'public',
+        reason: 'ok',
+        decidedBy: 'reviewer',
+        decidedAt: '2026-03-01T00:00:00.000Z',
+      },
+      {
+        entityKind: 'projectIssues',
+        recordId: 'issue-1',
+        decision: 'public',
+        reason: 'ok',
+        decidedBy: 'reviewer',
+        decidedAt: '2026-03-01T00:00:00.000Z',
+      },
+      {
+        entityKind: 'progressSnapshots',
+        recordId: 'project-1::2026-01-01T00:00:00.000Z::source-dataset-a',
+        decision: 'public',
+        reason: 'ok',
+        decidedBy: 'reviewer',
+        decidedAt: '2026-03-01T00:00:00.000Z',
+      },
+      {
+        entityKind: 'evidence',
+        recordId: 'evidence-1',
+        decision: 'public',
+        reason: 'ok',
+        decidedBy: 'reviewer',
+        decidedAt: '2026-03-01T00:00:00.000Z',
+      },
+      {
+        entityKind: 'evidence',
+        recordId: 'evidence-2',
+        decision: 'public',
+        reason: 'ok',
+        decidedBy: 'reviewer',
+        decidedAt: '2026-03-01T00:00:00.000Z',
+      },
+    ],
+  };
+
+  it('a record with no publication decision is excluded when requirePublicationDecisions=true (fail-closed)', () => {
+    const result = projectCanonicalBundleToPublic(baseBundle(), {
+      ...OPTIONS,
+      publicationDecisions: { ...decisionsAllPublic, decisions: [] },
+      requirePublicationDecisions: true,
+    });
+    expect(result.bundle.datasets.projects).toHaveLength(0);
+    expect(result.bundle.datasets.agencies).toHaveLength(0);
+    const missing = result.report.entries.find(
+      (e) => e.entityKind === 'projects' && e.kind === 'record-removed',
+    );
+    expect(missing?.policyRule).toBe('publication-decision missing (fail-closed)');
+  });
+
+  it('a record with an explicit "public" decision is kept even without requirePublicationDecisions', () => {
+    const result = projectCanonicalBundleToPublic(baseBundle(), {
+      ...OPTIONS,
+      publicationDecisions: decisionsAllPublic,
+    });
+    expect(result.bundle.datasets.projects).toHaveLength(1);
+  });
+
+  it('a record with an explicit "excluded" decision is dropped, overriding recordClassification', () => {
+    const bundle = baseBundle();
+    const decisions: PublicationDecisionSet = {
+      ...decisionsAllPublic,
+      decisions: decisionsAllPublic.decisions.map((d) =>
+        d.entityKind === 'projects' && d.recordId === 'project-1'
+          ? { ...d, decision: 'excluded' as const }
+          : d,
+      ),
+    };
+    const result = projectCanonicalBundleToPublic(bundle, {
+      ...OPTIONS,
+      publicationDecisions: decisions,
+      requirePublicationDecisions: true,
+    });
+    expect(result.bundle.datasets.projects).toHaveLength(0);
+    // cascade still applies to an explicitly-excluded project
+    expect(result.bundle.datasets.workPackages).toHaveLength(0);
+  });
+
+  it('all records public + requirePublicationDecisions=true round-trips the full pilot bundle', () => {
+    const result = projectCanonicalBundleToPublic(baseBundle(), {
+      ...OPTIONS,
+      publicationDecisions: decisionsAllPublic,
+      requirePublicationDecisions: true,
+    });
+    expect(result.bundle.datasets.projects).toHaveLength(1);
+    expect(result.bundle.datasets.workPackages).toHaveLength(1);
+    expect(result.bundle.datasets.evidence).toHaveLength(2);
+  });
+
+  it('a publication decision overrides an explicit recordClassification (decision wins)', () => {
+    const bundle = baseBundle();
+    (bundle.datasets.projectIssues[0] as unknown as Record<string, unknown>).recordClassification =
+      'restricted';
+    const decisions: PublicationDecisionSet = {
+      ...decisionsAllPublic,
+      decisions: decisionsAllPublic.decisions.map((d) =>
+        d.entityKind === 'projectIssues' ? { ...d, decision: 'public' as const } : d,
+      ),
+    };
+    const result = projectCanonicalBundleToPublic(bundle, {
+      ...OPTIONS,
+      publicationDecisions: decisions,
+    });
+    expect(result.bundle.datasets.projectIssues).toHaveLength(1);
+  });
+
+  it('manifest carries a non-null publicationDecisionSetChecksum, deterministic across regenerations', () => {
+    const r1 = projectCanonicalBundleToPublic(baseBundle(), {
+      ...OPTIONS,
+      publicationDecisions: decisionsAllPublic,
+    });
+    const r2 = projectCanonicalBundleToPublic(baseBundle(), {
+      ...OPTIONS,
+      publicationDecisions: { ...decisionsAllPublic, generatedAt: '2030-01-01T00:00:00.000Z' },
+    });
+    expect(r1.manifest.publicationDecisionSetChecksum).toBeTruthy();
+    expect(r1.manifest.publicationDecisionSetChecksum).toBe(
+      r2.manifest.publicationDecisionSetChecksum,
+    );
+  });
+
+  it('unknown mode without requirePublicationDecisions still falls back to legacy recordClassification default (backward compatible)', () => {
+    const result = projectCanonicalBundleToPublic(baseBundle(), {
+      ...OPTIONS,
+      publicationDecisions: { ...decisionsAllPublic, decisions: [] },
+      requirePublicationDecisions: false,
+    });
+    expect(result.bundle.datasets.projects).toHaveLength(1);
   });
 });

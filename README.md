@@ -233,7 +233,14 @@ liệu nên bắt đầu từ [integration-kit/README.md](integration-kit/README
 nguồn, field mapping, lỗi thường gặp, ví dụ CSV đã chạy thật qua importer). Để publish dữ liệu đã
 import ra `public-static` thật, xem
 [public-release-runbook.md](docs/project-data-import/public-release-runbook.md) (Phase 6) — bước
-projection + review thủ công BẮT BUỘC trước khi stage.
+projection + review thủ công BẮT BUỘC trước khi stage. Cho một public release THẬT (không phải
+demo/fixture), projection/staging còn hai cơ chế fail-closed thêm ở Phase 7 —
+**publication decision** (mỗi record cần quyết định `public`/`excluded` RÕ RÀNG, `--require-
+publication-decisions`, ADR 0010) và **approval receipt** (buộc phê duyệt vào đúng checksum output,
+`--require-approval-receipt`) — xem
+[public-projection-policy.md](docs/project-data-import/public-projection-policy.md) và ví dụ chạy
+thật (importer CSV → projection → staging) ở
+[phase7-pilot-rehearsal.md](docs/project-data-import/phase7-pilot-rehearsal.md).
 
 ### Data Readiness (Phase 5)
 

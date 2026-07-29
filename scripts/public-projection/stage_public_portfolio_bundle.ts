@@ -12,6 +12,15 @@
  *   - Bundle có `metadata.classification === 'public'` — KHÔNG stage một bundle chưa thực sự là public
  *     projection output (an toàn kép, độc lập với việc `project:public-data` đã đặt giá trị này).
  *   - Manifest có `projectionVersion` (tối thiểu, không parse toàn bộ shape ở đây — CLI đã kiểm khi sinh).
+ *
+ * Phase 7 (ADR 0010) — hai flag tuỳ chọn thêm approval-receipt fail-closed:
+ *   --approval-receipt <path>       Đọc một PublicApprovalReceipt (JSON) và so khớp CHÍNH XÁC với
+ *                                   manifest đang stage (checksums, policy version, publication-
+ *                                   decision checksum) trước khi ghi — receipt không khớp thì KHÔNG
+ *                                   stage gì cả.
+ *   --require-approval-receipt      Bắt buộc phải có --approval-receipt hợp lệ mới được stage — dùng
+ *                                   cho một public release THẬT. Không bật flag này giữ nguyên hành vi
+ *                                   Phase 6 (stage không cần receipt) cho demo/fixture.
  */
 import {
   existsSync,
@@ -29,6 +38,10 @@ import {
   compileCanonicalBundleValidator,
   validateAgainstCanonicalSchema,
 } from '../import-data/schemaValidation';
+import {
+  parsePublicApprovalReceipt,
+  validateReceiptMatchesManifest,
+} from '../../src/entities/project/publicProjection/approvalReceipt';
 
 function resolveRepoRoot(): string {
   try {
@@ -68,7 +81,8 @@ function writeFileAtomically(targetPath: string, content: string): void {
   }
 }
 
-const KNOWN_FLAGS = new Set(['--input']);
+const KNOWN_FLAGS = new Set(['--input', '--approval-receipt', '--require-approval-receipt']);
+const VALUE_FLAGS = new Set(['--input', '--approval-receipt']);
 
 export async function main(argv: readonly string[]): Promise<number> {
   for (let i = 0; i < argv.length; i += 1) {
@@ -81,15 +95,24 @@ export async function main(argv: readonly string[]): Promise<number> {
       console.error(`Tham số không xác định: ${token}`);
       return 2;
     }
-    if (token === '--input') i += 1;
+    if (VALUE_FLAGS.has(token)) i += 1;
   }
 
   const inputFlagIndex = argv.indexOf('--input');
   const inputDir = inputFlagIndex >= 0 ? argv[inputFlagIndex + 1] : undefined;
+  const requireApprovalReceipt = argv.includes('--require-approval-receipt');
+  const approvalReceiptFlagIndex = argv.indexOf('--approval-receipt');
+  const approvalReceiptPath =
+    approvalReceiptFlagIndex >= 0 ? argv[approvalReceiptFlagIndex + 1] : undefined;
   if (!inputDir) {
     console.error(
-      'Usage: npm run stage:public-portfolio -- --input <dir sinh bởi project:public-data>',
+      'Usage: npm run stage:public-portfolio -- --input <dir sinh bởi project:public-data> ' +
+        '[--approval-receipt <path>] [--require-approval-receipt]',
     );
+    return 2;
+  }
+  if (requireApprovalReceipt && !approvalReceiptPath) {
+    console.error('--require-approval-receipt cần --approval-receipt <path>.');
     return 2;
   }
   const resolvedInputDir = resolve(inputDir);
@@ -148,6 +171,43 @@ export async function main(argv: readonly string[]): Promise<number> {
     console.error(
       "Manifest thiếu 'projectionVersion' — không phải output hợp lệ của project:public-data.",
     );
+    return 1;
+  }
+
+  if (approvalReceiptPath) {
+    const resolvedReceiptPath = resolve(approvalReceiptPath);
+    if (!existsSync(resolvedReceiptPath)) {
+      console.error(`Không tìm thấy approval receipt: ${resolvedReceiptPath}`);
+      return requireApprovalReceipt ? 1 : 2;
+    }
+    let receipt;
+    try {
+      receipt = parsePublicApprovalReceipt(JSON.parse(readFileSync(resolvedReceiptPath, 'utf8')));
+    } catch (error) {
+      console.error(
+        `Approval receipt không hợp lệ: ${error instanceof Error ? error.message : error}`,
+      );
+      return 1;
+    }
+    const manifestForCheck = manifest as unknown as {
+      sourceNormalizedContentChecksum: string;
+      projectedContentChecksum: string;
+      allowedFieldPolicyVersion: string;
+      publicationDecisionSetChecksum?: string | null;
+    };
+    const check = validateReceiptMatchesManifest(receipt, manifestForCheck);
+    if (!check.valid) {
+      console.error('Approval receipt KHÔNG khớp với manifest đang stage — KHÔNG ghi output:');
+      for (const reason of check.reasons) console.error(`  - ${reason}`);
+      return 1;
+    }
+    console.log(
+      `Approval receipt hợp lệ (reviewer=${receipt.reviewer}, decidedAt=${receipt.decidedAt}).`,
+    );
+  } else if (requireApprovalReceipt) {
+    // Đã chặn ở validate tham số phía trên (`--require-approval-receipt` cần `--approval-receipt`) —
+    // nhánh này chỉ còn lại như phòng thủ kép, không nên chạm được trong thực tế.
+    console.error('Thiếu approval receipt bắt buộc — KHÔNG stage.');
     return 1;
   }
 
