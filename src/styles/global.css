@@ -37,6 +37,7 @@ button {
 .dashboard-brand {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   min-width: 0;
 }
 .control-label--mobile,
@@ -106,6 +107,12 @@ h1 i {
   gap: 22px;
   color: #acc5bc;
   font-size: 12px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.header-meta::-webkit-scrollbar {
+  display: none;
 }
 .mode-tabs {
   display: flex;

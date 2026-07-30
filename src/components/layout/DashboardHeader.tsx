@@ -12,8 +12,9 @@ const modes = [
 ] as const;
 
 // Primary navigation (Phase 2A): the four mutually-exclusive top-level experiences. Distinct from
-// the `modes` thematic tabs above (which only apply within the 3D/2D map experiences) and from the
-// quick-toggle buttons further down (kept unchanged for existing keyboard muscle-memory/tests).
+// the `modes` thematic tabs above (which only apply within the 3D/2D map experiences, gated to
+// viewMode 3d/table below — see the header-declutter fix that removed a since-redundant duplicate
+// set of view-switch buttons that used to live in header-meta alongside these).
 // Label is "Tổng quan điều hành" (not "Tổng quan") specifically to avoid an accessible-name clash
 // with the `modes` data-mode tab of the same literal text — the two are unrelated concepts
 // (top-level view vs. 3D thematic overlay) and must resolve unambiguously by role+name in tests.
@@ -81,136 +82,98 @@ export function DashboardHeader() {
           </button>
         ))}
       </nav>
-      <nav className="mode-tabs" aria-label={t('header.modeTabs.ariaLabel')}>
-        {modes.map(([mode, labelKey]) => (
-          <button
-            key={mode}
-            className={dataMode === mode ? 'active' : ''}
-            aria-pressed={dataMode === mode}
-            onClick={() => changeDataMode(mode)}
-          >
-            {t(labelKey)}
-          </button>
-        ))}
-      </nav>
+      {(viewMode === '3d' || viewMode === 'table') && (
+        <nav className="mode-tabs" aria-label={t('header.modeTabs.ariaLabel')}>
+          {modes.map(([mode, labelKey]) => (
+            <button
+              key={mode}
+              className={dataMode === mode ? 'active' : ''}
+              aria-pressed={dataMode === mode}
+              onClick={() => changeDataMode(mode)}
+            >
+              {t(labelKey)}
+            </button>
+          ))}
+        </nav>
+      )}
       <div className="header-meta">
         <span>{t('header.unitsCount', { count: datasetManifest.administrativeUnitCount })}</span>
-        <button
-          onClick={() => setViewMode('overview')}
-          aria-pressed={viewMode === 'overview'}
-          aria-label={t('header.openOverview.ariaLabel')}
-        >
-          <span className="control-label control-label--desktop">
-            {t('header.openOverview.label')}
-          </span>
-          <span className="control-label control-label--mobile" aria-hidden="true">
-            {t('header.openOverview.shortLabel')}
-          </span>
-        </button>
-        <button
-          onClick={() => setViewMode(viewMode === '3d' ? 'table' : '3d')}
-          aria-pressed={viewMode === 'table'}
-          aria-label={
-            viewMode === '3d'
-              ? t('header.toggle3dTable.ariaLabelOpenTable')
-              : t('header.toggle3dTable.ariaLabelOpen3d')
-          }
-        >
-          <span className="control-label control-label--desktop">
-            {viewMode === '3d'
-              ? t('header.toggle3dTable.label2d')
-              : t('header.toggle3dTable.label3d')}
-          </span>
-          <span className="control-label control-label--mobile" aria-hidden="true">
-            {viewMode === '3d'
-              ? t('header.toggle3dTable.shortLabel2d')
-              : t('header.toggle3dTable.shortLabel3d')}
-          </span>
-        </button>
-        <button
-          onClick={() => setViewMode(viewMode === 'map' ? '3d' : 'map')}
-          aria-pressed={viewMode === 'map'}
-          aria-label={
-            viewMode === 'map'
-              ? t('header.toggleDetailMap.ariaLabelClose')
-              : t('header.toggleDetailMap.ariaLabelOpen')
-          }
-        >
-          <span className="control-label control-label--desktop">
-            {viewMode === 'map'
-              ? t('header.toggleDetailMap.labelClose')
-              : t('header.toggleDetailMap.labelOpen')}
-          </span>
-          <span className="control-label control-label--mobile" aria-hidden="true">
-            {t('header.toggleDetailMap.shortLabel')}
-          </span>
-        </button>
-        <button
-          onClick={toggleAutoRotate}
-          aria-pressed={autoRotate}
-          disabled={reducedMotion}
-          aria-label={
-            reducedMotion
-              ? t('header.autoRotate.ariaLabelReducedMotion')
-              : autoRotate
-                ? t('header.autoRotate.ariaLabelStop')
-                : t('header.autoRotate.ariaLabelStart')
-          }
-          title={
-            reducedMotion ? t('header.autoRotate.titleReducedMotion') : t('header.autoRotate.title')
-          }
-        >
-          <span className="control-label control-label--desktop">
-            {reducedMotion
-              ? t('header.autoRotate.labelReducedMotion')
-              : autoRotate
-                ? t('header.autoRotate.labelStop')
-                : t('header.autoRotate.labelStart')}
-          </span>
-          <span className="control-label control-label--mobile" aria-hidden="true">
-            {t('header.autoRotate.shortLabel')}
-          </span>
-        </button>
-        <button
-          onClick={toggleRoads}
-          aria-pressed={roadsVisible}
-          aria-label={
-            roadsVisible ? t('header.roads.ariaLabelHide') : t('header.roads.ariaLabelShow')
-          }
-        >
-          <span className="control-label control-label--desktop">
-            {roadsVisible ? t('header.roads.labelHide') : t('header.roads.labelShow')}
-          </span>
-          <span className="control-label control-label--mobile" aria-hidden="true">
-            {t('header.roads.shortLabel')}
-          </span>
-        </button>
-        <button
-          onClick={toggleLabels}
-          aria-pressed={labelsVisible}
-          aria-label={
-            labelsVisible
-              ? t('header.centerLabels.ariaLabelHide')
-              : t('header.centerLabels.ariaLabelShow')
-          }
-        >
-          <span className="control-label control-label--desktop">
-            {labelsVisible
-              ? t('header.centerLabels.labelHide')
-              : t('header.centerLabels.labelShow')}
-          </span>
-          <span className="control-label control-label--mobile" aria-hidden="true">
-            {t('header.centerLabels.shortLabel')}
-          </span>
-        </button>
-        <button
-          className="header-secondary-control"
-          onClick={requestCameraReset}
-          aria-label={t('header.resetCamera.ariaLabel')}
-          title={t('header.resetCamera.title')}
-        >
-          {t('header.resetCamera.label')}
-        </button>
+        {viewMode === '3d' && (
+          <button
+            onClick={toggleAutoRotate}
+            aria-pressed={autoRotate}
+            disabled={reducedMotion}
+            aria-label={
+              reducedMotion
+                ? t('header.autoRotate.ariaLabelReducedMotion')
+                : autoRotate
+                  ? t('header.autoRotate.ariaLabelStop')
+                  : t('header.autoRotate.ariaLabelStart')
+            }
+            title={
+              reducedMotion
+                ? t('header.autoRotate.titleReducedMotion')
+                : t('header.autoRotate.title')
+            }
+          >
+            <span className="control-label control-label--desktop">
+              {reducedMotion
+                ? t('header.autoRotate.labelReducedMotion')
+                : autoRotate
+                  ? t('header.autoRotate.labelStop')
+                  : t('header.autoRotate.labelStart')}
+            </span>
+            <span className="control-label control-label--mobile" aria-hidden="true">
+              {t('header.autoRotate.shortLabel')}
+            </span>
+          </button>
+        )}
+        {(viewMode === '3d' || viewMode === 'table') && (
+          <>
+            <button
+              onClick={toggleRoads}
+              aria-pressed={roadsVisible}
+              aria-label={
+                roadsVisible ? t('header.roads.ariaLabelHide') : t('header.roads.ariaLabelShow')
+              }
+            >
+              <span className="control-label control-label--desktop">
+                {roadsVisible ? t('header.roads.labelHide') : t('header.roads.labelShow')}
+              </span>
+              <span className="control-label control-label--mobile" aria-hidden="true">
+                {t('header.roads.shortLabel')}
+              </span>
+            </button>
+            <button
+              onClick={toggleLabels}
+              aria-pressed={labelsVisible}
+              aria-label={
+                labelsVisible
+                  ? t('header.centerLabels.ariaLabelHide')
+                  : t('header.centerLabels.ariaLabelShow')
+              }
+            >
+              <span className="control-label control-label--desktop">
+                {labelsVisible
+                  ? t('header.centerLabels.labelHide')
+                  : t('header.centerLabels.labelShow')}
+              </span>
+              <span className="control-label control-label--mobile" aria-hidden="true">
+                {t('header.centerLabels.shortLabel')}
+              </span>
+            </button>
+          </>
+        )}
+        {viewMode === '3d' && (
+          <button
+            className="header-secondary-control"
+            onClick={requestCameraReset}
+            aria-label={t('header.resetCamera.ariaLabel')}
+            title={t('header.resetCamera.title')}
+          >
+            {t('header.resetCamera.label')}
+          </button>
+        )}
         <button
           className="header-secondary-control"
           onClick={shareDashboard}
