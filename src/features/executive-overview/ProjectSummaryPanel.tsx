@@ -1,4 +1,5 @@
 import { useEffect, useRef, type RefObject } from 'react';
+import { isFocusable } from '../../components/provenance/provenanceFocusTrigger';
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
@@ -45,7 +46,7 @@ export function ProjectSummaryPanel({
     // cleanup) since the ref's `.current` could point elsewhere by the time cleanup runs.
     const target = restoreFocusTo.current;
     return () => {
-      if (target?.isConnected) target.focus();
+      if (isFocusable(target)) target.focus();
     };
   }, [restoreFocusTo]);
 

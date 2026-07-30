@@ -11,7 +11,7 @@ import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
 import { DataStatusSummary } from './DataStatusSummary';
-import { consumeProvenanceFocusTrigger } from './provenanceFocusTrigger';
+import { consumeProvenanceFocusTrigger, isFocusable } from './provenanceFocusTrigger';
 
 const CLASSIFICATION_KEYS: Record<DatasetDescriptor['classification'], MessageKey> = {
   public: 'classification.public',
@@ -251,9 +251,12 @@ export function DataProvenancePanel() {
   useEffect(() => {
     const previouslyFocused = consumeProvenanceFocusTrigger();
     return () => {
-      const target = previouslyFocused?.isConnected
+      const headerFallback = document.getElementById('open-data-provenance-panel');
+      const target = isFocusable(previouslyFocused)
         ? previouslyFocused
-        : document.getElementById('open-data-provenance-panel');
+        : isFocusable(headerFallback)
+          ? headerFallback
+          : null;
       target?.focus();
     };
   }, []);

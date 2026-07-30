@@ -23,3 +23,22 @@ export function consumeProvenanceFocusTrigger(): HTMLElement | null {
   lastTrigger = null;
   return trigger;
 }
+
+/**
+ * Review finding F-012: `element.isConnected` alone is not enough to decide whether
+ * `element.focus()` will actually move focus — an element can stay connected to the DOM while a
+ * responsive breakpoint sets `display: none` on it (e.g. `.header-secondary-control` at narrow
+ * viewports, see `src/styles/global.css`). Calling `.focus()` on such an element silently no-ops,
+ * so focus falls through to `<body>` instead of returning anywhere a keyboard user can see —
+ * reproduced by opening this dialog via a still-visible trigger, then closing after the viewport
+ * narrows past the breakpoint that hides the original trigger.
+ *
+ * Deliberately checks computed `display`/`visibility` rather than layout geometry (e.g.
+ * `getClientRects()`/`offsetParent`, which jsdom never populates because it does not run a layout
+ * engine) so this stays correct under both the real browser and the existing jsdom test suite.
+ */
+export function isFocusable(element: HTMLElement | null): element is HTMLElement {
+  if (!element || !element.isConnected) return false;
+  const style = getComputedStyle(element);
+  return style.display !== 'none' && style.visibility !== 'hidden';
+}
