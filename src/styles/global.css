@@ -851,9 +851,22 @@ footer a {
     display: none;
   }
   .header-meta {
-    flex: 0 0 auto;
+    /* flex:1 1 0 (+ min-width:0) bounds this row to the remaining header space instead of
+       growing to fit its content (the previous `flex: 0 0 auto` let it size to content, which
+       defeats overflow-x below). The visible control set (nav shortcuts + language switch) can
+       exceed 375px-wide viewports; `body`/`#root` clip overflow (see html,body,#root above),
+       which silently cut off trailing buttons — including the language switcher — with no way
+       to reach them. Scrolling this row internally keeps every button reachable instead. */
+    flex: 1 1 0%;
+    min-width: 0;
     margin-left: 6px;
     gap: 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .header-meta::-webkit-scrollbar {
+    display: none;
   }
   .header-meta button {
     display: grid;
@@ -1094,7 +1107,16 @@ footer a {
     display: none;
   }
   .header-meta {
+    /* Same overflow fix as the portrait breakpoint above — see the comment there. */
+    flex: 1 1 0%;
+    min-width: 0;
     gap: 6px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .header-meta::-webkit-scrollbar {
+    display: none;
   }
   .header-meta > span {
     display: none;
