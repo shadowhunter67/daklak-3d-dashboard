@@ -242,6 +242,19 @@ publication-decisions`, ADR 0010) và **approval receipt** (buộc phê duyệt 
 thật (importer CSV → projection → staging) ở
 [phase7-pilot-rehearsal.md](docs/project-data-import/phase7-pilot-rehearsal.md).
 
+Hai flag fail-closed ở trên vẫn TUỲ CHỌN trên `project:public-data`/`stage:public-portfolio` gốc (để
+không phá demo/fixture) — chạy thiếu flag chỉ in cảnh báo ra `stderr`, không chặn. Cho một **public
+release thật**, dùng hai npm script Phase 8 hardcode sẵn flag bắt buộc thay vì lệnh gốc:
+
+```bash
+npm run project:public-data:release -- --input ... --output ... --publication-decisions ...
+npm run stage:public-portfolio:release -- --bundle ... --approval-receipt ...
+```
+
+Xem [ADR 0011](docs/adr/0011-fail-closed-flag-enforcement-warnings.md) — lý do không chặn cứng lệnh
+gốc, và `scripts/public-projection/pilotRehearsal.test.ts` (chạy trong CI qua `test:public-projection`)
+tự động re-run toàn bộ chuỗi pilot để bắt regression, thay vì chỉ ghi lại trong tài liệu.
+
 ### Data Readiness (Phase 5)
 
 Trang `#/data-readiness` (link "Xem Data Readiness" trong panel Data Health của Tổng quan điều hành)
@@ -284,13 +297,15 @@ liệu (cần xem xét) / cảnh báo nghiệp vụ (thông tin, không phải l
   [ADR 0001 — Project là entity trung tâm](docs/adr/0001-project-centric-domain.md) ·
   [ADR 0002 — Hash routing cho Danh mục/Chi tiết dự án](docs/adr/0002-static-host-routing.md) ·
   [domain model](docs/domain-model.md)
-- Nhập dữ liệu dự án nội bộ thật (`docs/project-data-import/`, Phase 1-6 hoàn thành): [chỉ
+- Nhập dữ liệu dự án nội bộ thật (`docs/project-data-import/`, Phase 1-8 hoàn thành): [chỉ
   mục](docs/project-data-import/README.md) ·
   [ADR 0005 — Project portfolio source abstraction và static data modes](docs/adr/0005-project-portfolio-source-abstraction.md) ·
   [ADR 0006 — Canonical project portfolio data contract](docs/adr/0006-canonical-project-portfolio-data-contract.md) ·
   [ADR 0007 — Offline importer và last-known-good promotion](docs/adr/0007-offline-project-data-importer-and-last-known-good-promotion.md) ·
   [ADR 0008 — Demo scenario strategy và Data Readiness](docs/adr/0008-demo-scenario-strategy-and-data-readiness-experience.md) ·
   [ADR 0009 — Public projection và UI review gate](docs/adr/0009-public-projection-and-ui-review-gate.md) ·
+  [ADR 0010 — Representative pilot và fail-closed publication decisions](docs/adr/0010-representative-pilot-and-fail-closed-publication-decisions.md) ·
+  [ADR 0011 — Enforcement không im lặng cho flag fail-closed](docs/adr/0011-fail-closed-flag-enforcement-warnings.md) ·
   [canonical data dictionary](docs/project-data-import/canonical-data-dictionary.md) ·
   [import runbook](docs/project-data-import/import-runbook.md) ·
   [public projection policy](docs/project-data-import/public-projection-policy.md) ·
