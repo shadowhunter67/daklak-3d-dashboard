@@ -3,6 +3,7 @@ import { datasetManifest } from '../../data/datasetManifest';
 import { captureProvenanceFocusTrigger } from '../provenance/provenanceFocusTrigger';
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
+import { useScrollEdgeFade } from '../../hooks/useScrollEdgeFade';
 import type { MessageKey } from '../../i18n/messages';
 
 const modes = [
@@ -55,6 +56,10 @@ export function DashboardHeader() {
   const requestHelp = useMapStore((state) => state.requestHelp);
   const openProvenancePanel = useMapStore((state) => state.openProvenancePanel);
   const openDataSourcesPanel = useMapStore((state) => state.openDataSourcesPanel);
+  const primaryNavRef = useRef<HTMLElement>(null);
+  const headerMetaRef = useRef<HTMLDivElement>(null);
+  useScrollEdgeFade(primaryNavRef);
+  useScrollEdgeFade(headerMetaRef);
 
   return (
     <header className="dashboard-header">
@@ -70,7 +75,7 @@ export function DashboardHeader() {
       <span className="header-mock-badge" role="note">
         {t('header.mockBadge')}
       </span>
-      <nav className="primary-nav" aria-label={t('header.nav.ariaLabel')}>
+      <nav className="primary-nav" aria-label={t('header.nav.ariaLabel')} ref={primaryNavRef}>
         {primaryViews.map(([mode, labelKey, shortLabelKey]) => (
           <button
             key={mode}
@@ -100,7 +105,7 @@ export function DashboardHeader() {
           ))}
         </nav>
       )}
-      <div className="header-meta">
+      <div className="header-meta" ref={headerMetaRef}>
         <span>{t('header.unitsCount', { count: datasetManifest.administrativeUnitCount })}</span>
         {viewMode === '3d' && (
           <button
