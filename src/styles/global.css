@@ -836,6 +836,27 @@ footer a {
     padding: 6px 10px;
     font-size: 10px;
   }
+  /* Scroll affordance: at 390px this row and .header-meta can be tight enough that most of
+     their content sits off-screen with nothing to hint it's swipeable (a real user-reported
+     concern — "how would anyone know to scroll?"). A sticky edge-fade doesn't require a wrapper
+     element or scroll-position JS: `position: sticky` keeps it pinned to the visible right edge
+     of the scroll container as it scrolls, and the negative margin pulls it back so it doesn't
+     add extra scrollable width of its own. It stays visible even once fully scrolled to the end
+     (no JS to detect that) — a minor imperfection, but it costs nothing to interact with
+     (pointer-events: none) and reliably signals "there's more here" on first paint, which is the
+     case that actually matters. */
+  .primary-nav::after,
+  .header-meta::after {
+    content: '';
+    position: sticky;
+    top: 0;
+    right: 0;
+    flex: 0 0 18px;
+    margin-left: -18px;
+    height: 100%;
+    background: linear-gradient(to right, transparent, #071918);
+    pointer-events: none;
+  }
   .mode-tabs button {
     flex: 1 1 0;
     min-width: 0;
@@ -1177,6 +1198,19 @@ footer a {
   .header-meta button {
     min-height: 44px;
     padding: 6px 10px;
+  }
+  .primary-nav::after,
+  .header-meta::after {
+    /* Same scroll affordance as the portrait breakpoint above — see the comment there. */
+    content: '';
+    position: sticky;
+    top: 0;
+    right: 0;
+    flex: 0 0 18px;
+    margin-left: -18px;
+    height: 100%;
+    background: linear-gradient(to right, transparent, #071918);
+    pointer-events: none;
   }
   .mode-tabs {
     margin-left: 12px;
