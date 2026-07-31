@@ -839,12 +839,13 @@ footer a {
   /* Scroll affordance: at 390px this row and .header-meta can be tight enough that most of
      their content sits off-screen with nothing to hint it's swipeable (a real user-reported
      concern — "how would anyone know to scroll?"). A sticky edge-fade doesn't require a wrapper
-     element or scroll-position JS: `position: sticky` keeps it pinned to the visible right edge
-     of the scroll container as it scrolls, and the negative margin pulls it back so it doesn't
-     add extra scrollable width of its own. It stays visible even once fully scrolled to the end
-     (no JS to detect that) — a minor imperfection, but it costs nothing to interact with
-     (pointer-events: none) and reliably signals "there's more here" on first paint, which is the
-     case that actually matters. */
+     element: `position: sticky` keeps it pinned to the visible right edge of the scroll
+     container as it scrolls, and the negative margin pulls it back so it doesn't add extra
+     scrollable width of its own. It reliably signals "there's more here" on first paint, which
+     is the case that actually matters — and `useScrollEdgeFade` (src/hooks/useScrollEdgeFade.ts)
+     toggles `data-scroll-end` on the container once scrolled (or already fitting) to the true
+     end, so the rule below hides the fade there instead of leaving a misleading "more content"
+     signal once there is none (Phase 9 runtime verification). */
   .primary-nav::after,
   .header-meta::after {
     content: '';
@@ -856,6 +857,10 @@ footer a {
     height: 100%;
     background: linear-gradient(to right, transparent, #071918);
     pointer-events: none;
+  }
+  .primary-nav[data-scroll-end]::after,
+  .header-meta[data-scroll-end]::after {
+    opacity: 0;
   }
   .mode-tabs button {
     flex: 1 1 0;
@@ -1211,6 +1216,10 @@ footer a {
     height: 100%;
     background: linear-gradient(to right, transparent, #071918);
     pointer-events: none;
+  }
+  .primary-nav[data-scroll-end]::after,
+  .header-meta[data-scroll-end]::after {
+    opacity: 0;
   }
   .mode-tabs {
     margin-left: 12px;
