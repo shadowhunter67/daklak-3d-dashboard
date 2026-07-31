@@ -19,11 +19,11 @@ const modes = [
 // with the `modes` data-mode tab of the same literal text — the two are unrelated concepts
 // (top-level view vs. 3D thematic overlay) and must resolve unambiguously by role+name in tests.
 const primaryViews = [
-  ['overview', 'header.nav.overview'],
-  ['3d', 'header.nav.3d'],
-  ['table', 'header.nav.table'],
-  ['map', 'header.nav.map'],
-] as const satisfies ReadonlyArray<readonly [string, MessageKey]>;
+  ['overview', 'header.nav.overview', 'header.nav.overviewShort'],
+  ['3d', 'header.nav.3d', 'header.nav.3d'],
+  ['table', 'header.nav.table', 'header.nav.table'],
+  ['map', 'header.nav.map', 'header.nav.mapShort'],
+] as const satisfies ReadonlyArray<readonly [string, MessageKey, MessageKey]>;
 
 export function DashboardHeader() {
   const { t, locale, setLocale } = useTranslation();
@@ -71,14 +71,18 @@ export function DashboardHeader() {
         {t('header.mockBadge')}
       </span>
       <nav className="primary-nav" aria-label={t('header.nav.ariaLabel')}>
-        {primaryViews.map(([mode, labelKey]) => (
+        {primaryViews.map(([mode, labelKey, shortLabelKey]) => (
           <button
             key={mode}
             className={viewMode === mode ? 'active' : ''}
             aria-current={viewMode === mode ? 'page' : undefined}
+            aria-label={t(labelKey)}
             onClick={() => setViewMode(mode)}
           >
-            {t(labelKey)}
+            <span className="control-label control-label--desktop">{t(labelKey)}</span>
+            <span className="control-label control-label--mobile" aria-hidden="true">
+              {t(shortLabelKey)}
+            </span>
           </button>
         ))}
       </nav>

@@ -19,20 +19,17 @@ test.describe('Internationalization (vi/en)', () => {
     ).toBeVisible();
   });
 
-  test('switching to English updates the visible text and html lang', async ({
-    page,
-  }, testInfo) => {
+  test('switching to English updates the visible text and html lang', async ({ page }) => {
     await page.goto('./');
     await page.getByRole('button', { name: 'Switch to English' }).click();
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await expect(
       page.getByRole('heading', { name: 'Key Project Executive Overview' }),
     ).toBeVisible();
-    // `.primary-nav` is intentionally hidden below 900px (mobile uses the compact header-meta
-    // buttons instead — see global.css) — only assert it on desktop viewports.
-    if (!testInfo.project.name.includes('mobile')) {
-      await expect(page.getByRole('navigation', { name: 'Primary navigation' })).toBeVisible();
-    }
+    // `.primary-nav` renders on every viewport, including mobile (scrolling internally if
+    // needed) — see the header-declutter fix that removed the duplicate header-meta buttons
+    // this used to be conditionally skipped on mobile in favor of.
+    await expect(page.getByRole('navigation', { name: 'Primary navigation' })).toBeVisible();
   });
 
   test('?lang=en direct-loads in English without any prior interaction', async ({ page }) => {

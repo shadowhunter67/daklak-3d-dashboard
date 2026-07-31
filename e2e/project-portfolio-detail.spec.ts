@@ -76,9 +76,8 @@ test.describe('Project Portfolio (Phase 2B1)', () => {
 
   test('keyboard-only: can tab to and open a project row', async ({ page }, testInfo) => {
     // Touch-emulated mobile Chromium does not reliably deliver a synthetic Enter-key click the
-    // same way real keyboard hardware does — the same caveat the pre-existing keyboard-nav test
-    // in dashboard.spec.ts documents (`Primary nav is a desktop-only control`). This assertion is
-    // about real keyboard operability, which desktop-chromium and desktop-webkit both cover.
+    // same way real keyboard hardware does. This assertion is about real keyboard operability,
+    // which desktop-chromium and desktop-webkit both cover.
     test.skip(
       testInfo.project.name.includes('mobile'),
       'Keyboard/Enter emulation is unreliable on touch-emulated mobile browsers',
