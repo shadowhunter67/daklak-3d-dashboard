@@ -30,20 +30,6 @@ describe('DashboardHeader', () => {
     expect(useMapStore.getState().dataMode).toBe('energy');
   });
 
-  it('switches to the accessible directory', () => {
-    renderHeader();
-    fireEvent.click(screen.getByRole('button', { name: 'Mở danh sách 2D' }));
-    expect(useMapStore.getState().viewMode).toBe('table');
-  });
-
-  it('opens and exits the detail map', () => {
-    renderHeader();
-    fireEvent.click(screen.getByRole('button', { name: 'Mở bản đồ chi tiết' }));
-    expect(useMapStore.getState().viewMode).toBe('map');
-    fireEvent.click(screen.getByRole('button', { name: 'Thoát bản đồ chi tiết' }));
-    expect(useMapStore.getState().viewMode).toBe('3d');
-  });
-
   it('offers camera reset and contextual help without changing selection', () => {
     useMapStore.setState({ selectedCode: '24580', resetCameraSignal: 0, helpSignal: 0 });
     renderHeader();
@@ -61,6 +47,20 @@ describe('DashboardHeader', () => {
     expect(useMapStore.getState().viewMode).toBe('overview');
   });
 
+  it('navigates to the accessible 2D list via the primary nav', () => {
+    useMapStore.setState({ viewMode: '3d' });
+    renderHeader();
+    fireEvent.click(screen.getByRole('button', { name: 'Danh sách' }));
+    expect(useMapStore.getState().viewMode).toBe('table');
+  });
+
+  it('navigates to the detail map via the primary nav', () => {
+    useMapStore.setState({ viewMode: '3d' });
+    renderHeader();
+    fireEvent.click(screen.getByRole('button', { name: 'Bản đồ chi tiết' }));
+    expect(useMapStore.getState().viewMode).toBe('map');
+  });
+
   it('marks the active primary nav item with aria-current', () => {
     useMapStore.setState({ viewMode: 'table' });
     renderHeader();
@@ -71,11 +71,50 @@ describe('DashboardHeader', () => {
     expect(screen.getByRole('button', { name: '3D' })).not.toHaveAttribute('aria-current');
   });
 
-  it('offers a compact "Tổng quan điều hành" toggle in header-meta (reachable on mobile)', () => {
-    useMapStore.setState({ viewMode: '3d' });
-    renderHeader();
-    fireEvent.click(screen.getByRole('button', { name: 'Mở tổng quan điều hành' }));
-    expect(useMapStore.getState().viewMode).toBe('overview');
+  describe('view-scoped controls (mode tabs, 3D/2D toggles)', () => {
+    it('shows the mode tabs and map-layer toggles in the 3D view', () => {
+      useMapStore.setState({ viewMode: '3d' });
+      renderHeader();
+      expect(screen.getByRole('navigation', { name: 'Chế độ dữ liệu' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Hiện lớp đường giao thông' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Ẩn nhãn trung tâm' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Xoay bản đồ' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Đưa camera về toàn tỉnh' })).toBeInTheDocument();
+    });
+
+    it('shows the mode tabs and map-layer toggles, but not the 3D-only camera controls, in the 2D list view', () => {
+      useMapStore.setState({ viewMode: 'table' });
+      renderHeader();
+      expect(screen.getByRole('navigation', { name: 'Chế độ dữ liệu' })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: 'Hiện lớp đường giao thông' })).toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Đưa camera về toàn tỉnh' }),
+      ).not.toBeInTheDocument();
+      expect(screen.queryByRole('button', { name: 'Xoay bản đồ' })).not.toBeInTheDocument();
+    });
+
+    it('hides the mode tabs and all map-layer/camera toggles in Executive Overview and the detail map', () => {
+      useMapStore.setState({ viewMode: 'overview' });
+      const { rerender } = renderHeader();
+      expect(screen.queryByRole('navigation', { name: 'Chế độ dữ liệu' })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Hiện lớp đường giao thông' }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Đưa camera về toàn tỉnh' }),
+      ).not.toBeInTheDocument();
+
+      useMapStore.setState({ viewMode: 'map' });
+      rerender(
+        <I18nProvider>
+          <DashboardHeader />
+        </I18nProvider>,
+      );
+      expect(screen.queryByRole('navigation', { name: 'Chế độ dữ liệu' })).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', { name: 'Hiện lớp đường giao thông' }),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it('opens the data provenance panel without changing selection', () => {

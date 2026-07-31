@@ -37,6 +37,7 @@ button {
 .dashboard-brand {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   min-width: 0;
 }
 .control-label--mobile,
@@ -106,6 +107,12 @@ h1 i {
   gap: 22px;
   color: #acc5bc;
   font-size: 12px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.header-meta::-webkit-scrollbar {
+  display: none;
 }
 .mode-tabs {
   display: flex;
@@ -810,6 +817,25 @@ footer a {
     border-radius: 0;
     background: #061715ed;
   }
+  .primary-nav {
+    /* Same reasoning as .header-meta below: bound to remaining header space and scroll
+       internally instead of relying on a separate compact button set that used to live in
+       header-meta (removed as a duplicate of this nav — see the header-declutter fix). */
+    flex-shrink: 1;
+    min-width: 0;
+    margin-left: 8px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .primary-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .primary-nav button {
+    flex-shrink: 0;
+    padding: 6px 10px;
+    font-size: 10px;
+  }
   .mode-tabs button {
     flex: 1 1 0;
     min-width: 0;
@@ -851,13 +877,16 @@ footer a {
     display: none;
   }
   .header-meta {
-    /* flex:1 1 0 (+ min-width:0) bounds this row to the remaining header space instead of
-       growing to fit its content (the previous `flex: 0 0 auto` let it size to content, which
-       defeats overflow-x below). The visible control set (nav shortcuts + language switch) can
-       exceed 375px-wide viewports; `body`/`#root` clip overflow (see html,body,#root above),
-       which silently cut off trailing buttons — including the language switcher — with no way
-       to reach them. Scrolling this row internally keeps every button reachable instead. */
-    flex: 1 1 0%;
+    /* `.primary-nav` (also flex-shrink:1, flex-basis:auto since the header-declutter fix made it
+       render on mobile too) and this row now both compete for the same leftover header space —
+       flex-basis:auto on both means the browser shrinks each roughly proportional to its own
+       content size instead of `.header-meta` collapsing to 0 (which is what a 0% flex-basis here
+       caused: with nothing to shrink from, it never got any space while `.primary-nav` absorbed
+       all of it). min-width:0 + overflow-x:auto keeps every button reachable via internal scroll
+       even though both rows end up visually cramped on narrow phones — see the comment on the
+       equivalent `.primary-nav` rule above for the original single-row overflow-clip bug this
+       scrolling pattern fixes. */
+    flex: 1 1 auto;
     min-width: 0;
     margin-left: 6px;
     gap: 4px;
@@ -1106,9 +1135,26 @@ footer a {
   .eyebrow {
     display: none;
   }
+  .primary-nav {
+    /* Same overflow fix as the portrait breakpoint above — see the comment there. */
+    flex-shrink: 1;
+    min-width: 0;
+    margin-left: 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .primary-nav::-webkit-scrollbar {
+    display: none;
+  }
+  .primary-nav button {
+    flex-shrink: 0;
+    padding: 6px 10px;
+    font-size: 10px;
+  }
   .header-meta {
     /* Same overflow fix as the portrait breakpoint above — see the comment there. */
-    flex: 1 1 0%;
+    flex: 1 1 auto;
     min-width: 0;
     gap: 6px;
     overflow-x: auto;
@@ -1575,12 +1621,6 @@ footer a {
     display: none;
   }
 }
-@media (max-width: 900px) {
-  .primary-nav {
-    display: none;
-  }
-}
-
 .executive-overview {
   position: absolute;
   z-index: 4;

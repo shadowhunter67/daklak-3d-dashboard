@@ -3,8 +3,18 @@ import { expect, test, type Locator } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 async function openMobileDirectory(page: import('@playwright/test').Page) {
-  const toggle = page.getByRole('button', { name: 'Danh sách', exact: true });
+  // Scoped to the 2D map's own pane switcher (labelled "Nội dung bản đồ 2D") — `.primary-nav`
+  // now also has a "Danh sách" button (see the header-declutter fix), so an unscoped query would
+  // be ambiguous between the two.
+  const toggle = page.getByLabel('Nội dung bản đồ 2D').getByRole('button', {
+    name: 'Danh sách',
+    exact: true,
+  });
   if (await toggle.isVisible()) await toggle.click();
+}
+
+function primaryNav(page: import('@playwright/test').Page) {
+  return page.getByRole('navigation', { name: 'Điều hướng chính' });
 }
 
 test.beforeEach(async ({ page }) => {
@@ -60,7 +70,7 @@ test.describe('dashboard smoke tests', () => {
     page,
   }) => {
     await page.goto('./?view=3d');
-    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }).click();
     await openMobileDirectory(page);
 
     const search = page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' });
@@ -87,7 +97,7 @@ test.describe('dashboard smoke tests', () => {
   test('preserves native arrow-key behavior on interactive controls', async ({ page }) => {
     await page.goto('./?view=3d');
     await expect(page.locator('canvas')).toBeVisible();
-    const switchView = page.getByRole('button', { name: 'Mở danh sách 2D' });
+    const switchView = primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true });
     const controlEventWasNotCancelled = await switchView.evaluate((element) =>
       element.dispatchEvent(
         new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }),
@@ -131,7 +141,7 @@ test.describe('dashboard smoke tests', () => {
       ),
     ).toEqual([]);
 
-    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }).click();
     const tableResults = await new AxeBuilder({ page }).analyze();
     expect(
       tableResults.violations.filter(({ impact }) => impact === 'critical' || impact === 'serious'),
@@ -221,7 +231,7 @@ test.describe('dashboard smoke tests', () => {
     const selectedRow = page.locator('[role="row"][aria-selected="true"]');
     await expect(selectedRow).toContainText(/Tuy Ho/);
 
-    await page.getByRole('button', { name: 'Mở bản đồ 3D' }).click();
+    await primaryNav(page).getByRole('button', { name: '3D', exact: true }).click();
     await expect(page).toHaveURL(/view=3d&mode=energy&ward=22015/);
     await expect(page.locator('#map-viewport')).toBeFocused();
     await page.goBack();
@@ -307,7 +317,9 @@ test.describe('mobile dashboard composition', () => {
   test('keeps the compact header, tabs, and map inside portrait viewport', async ({ page }) => {
     await page.goto('./?view=3d&mode=overview');
     await expect(page.locator('canvas')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Mở danh sách 2D' })).toBeVisible();
+    await expect(
+      primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }),
+    ).toBeVisible();
     await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'closed');
     const layout = await page.evaluate(() => {
       const header = document.querySelector('header')?.getBoundingClientRect();
@@ -348,7 +360,7 @@ test.describe('mobile dashboard composition', () => {
       'aria-pressed',
       'true',
     );
-    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }).click();
     await openMobileDirectory(page);
     await expect(page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' })).toBeVisible();
     expect(
@@ -427,7 +439,7 @@ test.describe('mobile dashboard composition', () => {
       animations: 'disabled',
       maxDiffPixelRatio: 0.03,
     });
-    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }).click();
     await openMobileDirectory(page);
     await expect(page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' })).toBeVisible();
     await expect(page).toHaveScreenshot('dashboard-mobile-directory.png', {
@@ -665,11 +677,11 @@ test.describe('Vietnamese detail name visual coverage', () => {
 test.describe('detail map (MapLibre)', () => {
   test('opens from the header, updates the URL, and restores on Back/Forward', async ({ page }) => {
     await page.goto('./?view=3d');
-    await page.getByRole('button', { name: 'Mở bản đồ chi tiết' }).click();
+    await primaryNav(page).getByRole('button', { name: 'Bản đồ chi tiết', exact: true }).click();
     await expect(page.locator('#detail-map-viewport')).toBeVisible();
     await expect(page).toHaveURL(/view=map/);
 
-    await page.getByRole('button', { name: 'Thoát bản đồ chi tiết' }).click();
+    await primaryNav(page).getByRole('button', { name: '3D', exact: true }).click();
     await expect(page).toHaveURL(/view=3d/);
     await expect(page.locator('#detail-map-viewport')).toHaveCount(0);
 
@@ -781,7 +793,7 @@ test.describe('detail map (MapLibre)', () => {
     await expect(
       page.getByText('không hỗ trợ WebGL nên không thể mở bản đồ chi tiết'),
     ).toBeVisible();
-    await page.getByRole('button', { name: 'Mở danh sách 2D' }).click();
+    await primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }).click();
     await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
   });
 
@@ -842,26 +854,28 @@ test.describe('Executive Overview (Phase 2A)', () => {
     await expect(page.locator('#detail-map-viewport')).toBeVisible();
   });
 
-  test('reaches every primary destination by keyboard alone', async ({ page }, testInfo) => {
-    // `.primary-nav` is desktop-only by design (hidden under ~900px, see global.css) — on mobile,
-    // the same destinations are reachable via the compact header-meta toggle buttons instead
-    // (covered elsewhere, e.g. 'Mở danh sách 2D'/'Mở bản đồ chi tiết' clicks throughout this file),
-    // which are plain keyboard-focusable <button> elements too.
-    test.skip(testInfo.project.name.includes('mobile'), 'Primary nav is a desktop-only control');
+  test('reaches every primary destination by keyboard alone', async ({ page }) => {
+    // `.primary-nav` is now the only view-switch control (the duplicate header-meta toggle
+    // buttons it used to coexist with were removed as dead-weight clutter — see the
+    // header-declutter fix) and renders on every viewport, including mobile, scrolling
+    // internally if needed rather than being hidden — so this test now runs unconditionally.
     await page.goto('./');
-    const threeD = page.getByRole('button', { name: '3D', exact: true });
+    const threeD = primaryNav(page).getByRole('button', { name: '3D', exact: true });
     await threeD.focus();
     await threeD.press('Enter');
     await expect(page.locator('canvas')).toBeVisible();
 
-    const overview = page.getByRole('button', { name: 'Tổng quan điều hành', exact: true });
+    const overview = primaryNav(page).getByRole('button', {
+      name: 'Tổng quan điều hành',
+      exact: true,
+    });
     await overview.focus();
     await overview.press('Enter');
     await expect(
       page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
     ).toBeVisible();
 
-    const table = page.getByRole('button', { name: 'Danh sách', exact: true });
+    const table = primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true });
     await table.focus();
     await table.press('Enter');
     await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();

@@ -113,7 +113,7 @@ describe('App', () => {
     expect(
       screen.queryByText(/không hỗ trợ WebGL nên không thể mở bản đồ chi tiết/),
     ).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Mở bản đồ chi tiết' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Bản đồ chi tiết' }));
     expect(
       await screen.findByText(
         /không hỗ trợ WebGL nên không thể mở bản đồ chi tiết/,
