@@ -93,8 +93,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const t = useCallback(
     (key: MessageKey, vars?: Record<string, string | number>) =>
-      interpolate(enDictionary?.[key] ?? vi[key], vars),
-    [enDictionary],
+      interpolate(locale === 'en' ? (enDictionary?.[key] ?? vi[key]) : vi[key], vars),
+    [locale, enDictionary],
   );
 
   const value = useMemo<I18nContextValue>(() => ({ locale, setLocale, t }), [locale, setLocale, t]);

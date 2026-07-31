@@ -11,6 +11,10 @@ function Probe() {
     <div>
       <p data-testid="locale">{locale}</p>
       <p data-testid="greeting">{t('header.lang.vi')}</p>
+      {/* Differs between dictionaries ("Tổng quan điều hành" vs "Executive Overview") — unlike
+          header.lang.vi above (literally "VI" in both), this actually proves translated text
+          tracks `locale`, not just that the locale string itself updated. */}
+      <p data-testid="translated-text">{t('header.nav.overview')}</p>
       <button onClick={() => setLocale('en')}>to-en</button>
       <button onClick={() => setLocale('vi')}>to-vi</button>
     </div>
@@ -135,8 +139,29 @@ describe('I18nProvider', () => {
     );
     fireEvent.click(screen.getByText('to-en'));
     await screen.findByText('en');
-    // header.lang.vi is intentionally the literal "VI" in both dictionaries — assert against a
-    // key we know differs between languages instead, to prove translation actually applies.
+  });
+
+  it('renders translated text in English, and back in Vietnamese again after switching back', async () => {
+    // Regression test: `t()` used to read `enDictionary?.[key] ?? vi[key]` without checking
+    // `locale` at all — once the English dictionary had loaded once (any prior switch to 'en'
+    // in the session), it stayed preferred forever, so switching back to 'vi' updated
+    // `document.documentElement.lang` and the URL correctly but left the visible UI text stuck
+    // in English. Reported live as "chuyển VI/EN không tự chuyển luôn" (switching sometimes does
+    // nothing visible) after rapid VI/EN toggling — but it reproduces with a single clean
+    // switch-and-switch-back too, not just rapid clicking.
+    render(
+      <I18nProvider>
+        <Probe />
+      </I18nProvider>,
+    );
+    expect(screen.getByTestId('translated-text')).toHaveTextContent('Tổng quan điều hành');
+
+    fireEvent.click(screen.getByText('to-en'));
+    await screen.findByText('Executive Overview');
+    expect(screen.getByTestId('translated-text')).toHaveTextContent('Executive Overview');
+
+    fireEvent.click(screen.getByText('to-vi'));
+    expect(screen.getByTestId('translated-text')).toHaveTextContent('Tổng quan điều hành');
   });
 });
 
