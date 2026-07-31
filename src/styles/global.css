@@ -862,7 +862,14 @@ footer a {
     font-size: 11px;
   }
   .dashboard-brand {
-    flex: 1 1 auto;
+    /* flex-shrink:0 (not the previous `flex: 1 1 auto`, which allowed shrinking) — this was fine
+       when `.dashboard-brand` only competed with `.header-meta` for space, but now `.primary-nav`
+       also renders on mobile (see the header-declutter fix) and is a second shrink-competing
+       sibling, which squeezed the brand hard enough to truncate "ĐẮK LẮK 3D" down to just "ĐẮK"
+       — reported live as text looking cut off/overlapping on mobile. Keeping `overflow: hidden`
+       as a safety net in case the brand's own natural width ever exceeds available space, but it
+       should no longer be reachable in practice since it never voluntarily shrinks now. */
+    flex-shrink: 0;
     overflow: hidden;
   }
   .dashboard-brand .eyebrow {
