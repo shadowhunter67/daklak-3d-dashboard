@@ -120,6 +120,16 @@ export const vi = {
   'kpi.unavailable': 'Chưa đủ dữ liệu',
   'kpi.unavailableExplanation': 'Thiếu dữ liệu đầu vào cần thiết.',
   'kpi.daysValue': '{value} ngày',
+  'kpi.totalProjects.explanation': 'Tổng số dự án trong danh mục.',
+  'kpi.totalApprovedBudget.explanation': 'Tổng approvedBudget của các dự án hợp lệ.',
+  'kpi.disbursementRate.explanation':
+    'Tổng disbursedAmount / tổng ngân sách hiệu lực (adjustedBudget hoặc approvedBudget) × 100.',
+  'kpi.disbursementRate.unavailableExplanation':
+    'Không có dự án nào có ngân sách hợp lệ để tính tỷ lệ giải ngân toàn danh mục.',
+  'kpi.onTrackProjects.explanation':
+    "Số dự án status='active' (không ở trạng thái rủi ro/chậm/tạm dừng).",
+  'kpi.atRiskProjects.explanation': "Số dự án status='at-risk'.",
+  'kpi.delayedProjects.explanation': "Số dự án status='delayed'.",
 
   // Alerts
   'alerts.heading': 'Danh sách cảnh báo',

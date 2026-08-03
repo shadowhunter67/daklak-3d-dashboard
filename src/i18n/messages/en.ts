@@ -115,6 +115,16 @@ export const en: Partial<Record<MessageKey, string>> = {
   'kpi.unavailable': 'Not enough data',
   'kpi.unavailableExplanation': 'Missing required input data.',
   'kpi.daysValue': '{value} days',
+  'kpi.totalProjects.explanation': 'Total number of projects in the portfolio.',
+  'kpi.totalApprovedBudget.explanation': 'Sum of approvedBudget across valid projects.',
+  'kpi.disbursementRate.explanation':
+    'Total disbursedAmount / total effective budget (adjustedBudget or approvedBudget) × 100.',
+  'kpi.disbursementRate.unavailableExplanation':
+    'No project has a valid budget to calculate the portfolio-wide disbursement rate.',
+  'kpi.onTrackProjects.explanation':
+    "Number of projects with status='active' (not at-risk/delayed/on-hold).",
+  'kpi.atRiskProjects.explanation': "Number of projects with status='at-risk'.",
+  'kpi.delayedProjects.explanation': "Number of projects with status='delayed'.",
 
   // Alerts
   'alerts.heading': 'Alert list',

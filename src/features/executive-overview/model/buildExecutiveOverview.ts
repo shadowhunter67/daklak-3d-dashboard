@@ -22,6 +22,7 @@ import {
 } from '../../../entities/project/types';
 import { summarizeDataQuality } from '../../../entities/project/dataQualitySummary';
 import { PROJECT_STATUS_LABELS } from '../../../entities/project/labels';
+import { tStatic } from '../../../i18n/staticTranslate';
 import type { DataQualityContext } from '../../../entities/project/validation/dataQualityRules';
 import type { ProjectPortfolioProvenance } from '../../../entities/project/adapters/ProjectPortfolioSource';
 import type {
@@ -188,14 +189,14 @@ export function buildExecutiveOverview({
         bundles.length,
         'count',
         [],
-        'Tổng số dự án trong danh mục.',
+        tStatic('kpi.totalProjects.explanation'),
         asOf,
       ),
       totalApprovedBudget: availableKpi(
         totalApprovedBudget,
         'VND',
         [],
-        'Tổng approvedBudget của các dự án hợp lệ.',
+        tStatic('kpi.totalApprovedBudget.explanation'),
         asOf,
       ),
       disbursementRate:
@@ -204,7 +205,7 @@ export function buildExecutiveOverview({
               (totalDisbursed / totalBudgetCeiling) * 100,
               '%',
               [],
-              'Tổng disbursedAmount / tổng ngân sách hiệu lực (adjustedBudget hoặc approvedBudget) × 100.',
+              tStatic('kpi.disbursementRate.explanation'),
               asOf,
             )
           : {
@@ -214,28 +215,27 @@ export function buildExecutiveOverview({
               calculatedAt: asOf.toISOString(),
               sourceDatasetIds: [],
               missingInputs: ['approvedBudget'],
-              explanation:
-                'Không có dự án nào có ngân sách hợp lệ để tính tỷ lệ giải ngân toàn danh mục.',
+              explanation: tStatic('kpi.disbursementRate.unavailableExplanation'),
             },
       onTrackProjects: availableKpi(
         validBundles.filter((b) => b.project.status === 'active').length,
         'count',
         [],
-        "Số dự án status='active' (không ở trạng thái rủi ro/chậm/tạm dừng).",
+        tStatic('kpi.onTrackProjects.explanation'),
         asOf,
       ),
       atRiskProjects: availableKpi(
         validBundles.filter((b) => b.project.status === 'at-risk').length,
         'count',
         [],
-        "Số dự án status='at-risk'.",
+        tStatic('kpi.atRiskProjects.explanation'),
         asOf,
       ),
       delayedProjects: availableKpi(
         validBundles.filter((b) => b.project.status === 'delayed').length,
         'count',
         [],
-        "Số dự án status='delayed'.",
+        tStatic('kpi.delayedProjects.explanation'),
         asOf,
       ),
       overdueIssues: overdueIssueCount(allIssues, asOf),

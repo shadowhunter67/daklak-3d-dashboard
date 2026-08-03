@@ -38,6 +38,10 @@ export default defineConfig(({ mode }) => {
   const activePortfolioSourceModule = resolveActivePortfolioSourceModule(portfolioDataMode);
 
   return {
+    // Hard-coded, not an oversight: the only shipping deployment target is GitHub Pages at
+    // https://shadowhunter67.github.io/daklak-3d-dashboard/ (see README.md "Live demo"), which
+    // serves every mode (demo/internal-static/public-static) from that same repo-name subpath.
+    // There is no documented internal/custom-hosting-path use case this would break.
     base: '/daklak-3d-dashboard/',
     resolve: {
       alias: {
