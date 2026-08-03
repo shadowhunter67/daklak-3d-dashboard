@@ -370,6 +370,33 @@ test.describe('mobile dashboard composition', () => {
     ).toBe(false);
   });
 
+  test('hides the primary-nav edge-fade once scrolled to the true end (real-browser regression for useScrollEdgeFade)', async ({
+    page,
+  }) => {
+    // jsdom unit tests (useScrollEdgeFade.test.ts) stub scrollWidth/clientWidth and cannot catch
+    // real CSS/pseudo-element/sticky-positioning bugs — this is exactly the kind of bug that
+    // shipped in Phase 9 (edge-fade staying visible with nothing left to scroll to). This test
+    // exercises the real `.primary-nav::after` pseudo-element in a real browser at a mobile
+    // viewport instead of asserting only on the `data-scroll-end` attribute.
+    await page.goto('./?view=3d&mode=overview');
+    const nav = primaryNav(page);
+    const fadeOpacity = () =>
+      nav.evaluate((element) => window.getComputedStyle(element, '::after').opacity);
+
+    // Only meaningful when there's actually something to scroll — assert the pre-scroll fade is
+    // visible in that case, since it's the "there's more here" affordance this hook exists for.
+    const hasOverflow = await nav.evaluate(
+      (element) => element.scrollWidth - element.clientWidth > 1,
+    );
+    if (hasOverflow) await expect.poll(fadeOpacity).toBe('1');
+
+    await nav.evaluate((element) => {
+      element.scrollLeft = element.scrollWidth;
+      element.dispatchEvent(new Event('scroll'));
+    });
+    await expect.poll(fadeOpacity).toBe('0');
+  });
+
   test('recomposes safely after an orientation-sized resize', async ({ page }) => {
     await page.goto('./?view=3d&mode=overview');
     const canvas = page.locator('canvas');
