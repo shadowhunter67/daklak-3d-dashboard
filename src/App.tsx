@@ -34,6 +34,16 @@ const DataReadinessView = lazy(() =>
   })),
 );
 
+// Lazy: Phase T1 "Khám phá Đắk Lắk 3D" (`?view=world`, reports/tourism-digital-twin/) — its own
+// Three.js scene chunk, only fetched when a user actually opens ?view=world. Never pulled in by
+// ?view=overview or any other existing route; see check_build_budget.mjs / the
+// "does not load the world-exploration chunk" E2E assertion for the real guarantee.
+const WorldExplorationView = lazy(() =>
+  import('./features/world-exploration/WorldExplorationView').then((module) => ({
+    default: module.WorldExplorationView,
+  })),
+);
+
 function ProjectRouteLoading() {
   const { t } = useTranslation();
   return (
@@ -114,7 +124,9 @@ export default function App() {
         ? 'map-2d-title'
         : viewMode === 'overview'
           ? 'executive-overview'
-          : 'map-viewport';
+          : viewMode === 'world'
+            ? 'world-viewport'
+            : 'map-viewport';
     requestAnimationFrame(() => document.getElementById(targetId)?.focus());
   }, [viewMode]);
 
@@ -150,7 +162,9 @@ export default function App() {
         ? 'detail-map-viewport'
         : viewMode === 'overview'
           ? 'executive-overview'
-          : 'map-viewport';
+          : viewMode === 'world'
+            ? 'world-viewport'
+            : 'map-viewport';
 
   const goToPortfolio = (filters: PortfolioFilters = {}, opts?: { replace?: boolean }) =>
     navigate(serializePortfolioHash(filters), opts);
@@ -201,6 +215,11 @@ export default function App() {
             </Suspense>
           )}
           {viewMode === 'overview' && <ExecutiveOverview onOpenPortfolio={() => goToPortfolio()} />}
+          {viewMode === 'world' && (
+            <Suspense fallback={<MapLoading />}>
+              <WorldExplorationView />
+            </Suspense>
+          )}
           <DashboardPanels />
         </>
       )}
@@ -228,7 +247,9 @@ export default function App() {
               ? t('app.live.openedMap')
               : viewMode === 'overview'
                 ? t('app.live.openedOverview')
-                : t('app.live.opened3d')}{' '}
+                : viewMode === 'world'
+                  ? t('app.live.openedWorld')
+                  : t('app.live.opened3d')}{' '}
         {selectedName ? t('app.live.selected', { name: selectedName }) : ''}
       </p>
       <DatasetFooter />

@@ -17,6 +17,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'app.live.openedProjectDetail': 'Project detail opened.',
   'app.live.selected': '{name} selected.',
   'app.live.openedDataReadiness': 'Data Readiness page opened.',
+  'app.live.openedWorld': 'Explore Đắk Lắk 3D opened.',
   'app.loading': 'Loading…',
 
   // Header
@@ -520,6 +521,17 @@ export const en: Partial<Record<MessageKey, string>> = {
   'mapViewport.coordinates': '12°39′N · 108°02′E',
   'mapViewport.tagline': 'From the basalt highlands to the Phú Yên coast',
   'mapLoading.text': 'Loading terrain and map layers…',
+
+  // World Exploration (Phase T1, ?view=world)
+  'worldExploration.aria': 'Explore Đắk Lắk 3D — illustrative scenario',
+  'worldExploration.title': 'Explore Đắk Lắk 3D',
+  'worldExploration.tagline':
+    'Fly over the Đắk Lắk province terrain — a foundation for a tourism digital twin.',
+  'worldExploration.illustrativeBadge': 'ILLUSTRATIVE — DEMO SCENARIO',
+  'worldExploration.illustrativeAria': 'Illustrative scene, not real tourism content yet',
+  'worldExploration.webglUnsupportedReason':
+    'This browser or device does not support WebGL, so the illustrative 3D scene cannot render.',
+  'worldExploration.backToOverview': 'Back to Executive Overview',
 
   // TwoDimensionalView switch
   'twoDView.switchAria': '2D map content',

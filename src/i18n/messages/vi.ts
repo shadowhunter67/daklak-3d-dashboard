@@ -22,6 +22,7 @@ export const vi = {
   'app.live.openedProjectDetail': 'Đã mở chi tiết dự án.',
   'app.live.selected': 'Đã chọn {name}.',
   'app.live.openedDataReadiness': 'Đã mở trang Mức độ sẵn sàng dữ liệu.',
+  'app.live.openedWorld': 'Đã mở Khám phá Đắk Lắk 3D.',
   'app.loading': 'Đang tải…',
 
   // Header
@@ -524,6 +525,17 @@ export const vi = {
   'mapViewport.coordinates': '12°39′ BẮC · 108°02′ ĐÔNG',
   'mapViewport.tagline': 'Từ cao nguyên bazan đến duyên hải Phú Yên',
   'mapLoading.text': 'Đang tải địa hình và lớp bản đồ…',
+
+  // World Exploration (Phase T1, ?view=world — reports/tourism-digital-twin/). Illustrative
+  // vertical slice: camera fly-in over the existing terrain mesh, no real tourism content yet.
+  'worldExploration.aria': 'Khám phá Đắk Lắk 3D — kịch bản minh họa',
+  'worldExploration.title': 'Khám phá Đắk Lắk 3D',
+  'worldExploration.tagline': 'Bay qua địa hình tỉnh Đắk Lắk — nền tảng cho bản đồ số du lịch.',
+  'worldExploration.illustrativeBadge': 'ILLUSTRATIVE — KỊCH BẢN MINH HỌA',
+  'worldExploration.illustrativeAria': 'Cảnh minh họa, chưa phải nội dung du lịch thật',
+  'worldExploration.webglUnsupportedReason':
+    'Trình duyệt hoặc thiết bị này không hỗ trợ WebGL nên không thể hiển thị cảnh 3D minh họa.',
+  'worldExploration.backToOverview': 'Về Tổng quan điều hành',
 
   // TwoDimensionalView switch
   'twoDView.switchAria': 'Nội dung bản đồ 2D',
