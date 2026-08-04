@@ -53,11 +53,11 @@ terms were in effect for that specific commit at the time it was obtained.
 
 ## Timeline
 
-| Version tag / period  | License                                    | Notes                                                        |
-| ---------------------- | ------------------------------------------ | ------------------------------------------------------------- |
-| `mit-final-1.0.0`      | MIT                                        | Last MIT release before the SAEL transition.                  |
-| SAEL period            | Source-Available Evaluation License (SAEL) | See prior revisions of `LICENSE`, `COMMERCIAL-LICENSE.md`, `TRADEMARKS.md`. |
-| Current                | MIT                                        | Reverted to MIT. See `LICENSE`, `TRADEMARKS.md`.               |
+| Version tag / period | License                                    | Notes                                                                       |
+| -------------------- | ------------------------------------------ | --------------------------------------------------------------------------- |
+| `mit-final-1.0.0`    | MIT                                        | Last MIT release before the SAEL transition.                                |
+| SAEL period          | Source-Available Evaluation License (SAEL) | See prior revisions of `LICENSE`, `COMMERCIAL-LICENSE.md`, `TRADEMARKS.md`. |
+| Current              | MIT                                        | Reverted to MIT. See `LICENSE`, `TRADEMARKS.md`.                            |
 
 ## Not legal advice
 
