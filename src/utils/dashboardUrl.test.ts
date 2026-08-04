@@ -46,6 +46,13 @@ describe('dashboard URL state', () => {
       selectedCode: '24133',
     });
   });
+  it('parses the world-exploration view mode (view=world), Phase T1 tourism digital twin', () => {
+    expect(parseDashboardUrl('?view=world', codes)).toEqual({
+      viewMode: 'world',
+      dataMode: 'overview',
+      selectedCode: null,
+    });
+  });
   it('serializes only canonical dashboard parameters', () => {
     expect(
       serializeDashboardUrl({ viewMode: '3d', dataMode: 'heatmap', selectedCode: '24133' }),
@@ -55,6 +62,11 @@ describe('dashboard URL state', () => {
     expect(
       serializeDashboardUrl({ viewMode: 'map', dataMode: 'overview', selectedCode: null }),
     ).toBe('?view=map&mode=overview');
+  });
+  it('serializes the world-exploration view mode as view=world', () => {
+    expect(
+      serializeDashboardUrl({ viewMode: 'world', dataMode: 'overview', selectedCode: null }),
+    ).toBe('?view=world&mode=overview');
   });
   it('serializes Executive Overview as the canonical view=overview', () => {
     expect(

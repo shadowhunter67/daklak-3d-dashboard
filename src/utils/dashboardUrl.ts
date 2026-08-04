@@ -7,7 +7,10 @@
 // parseViewMode below. It is additive too: every previously-working `?view=3d`/`?view=2d`/
 // `?view=map` URL still resolves to exactly the same view it always did. Only the absence of a
 // `view` param (or an unrecognized one) now resolves to 'overview' instead of '3d'.
-export type DashboardView = 'overview' | '3d' | 'table' | 'map';
+// 'world' (Phase T1, Tourism Digital Twin foundation — reports/tourism-digital-twin/) is a
+// separate, additive, lazy-loaded illustrative exploration route. It does not replace or read
+// from any of the other four views' state; see src/features/world-exploration/.
+export type DashboardView = 'overview' | '3d' | 'table' | 'map' | 'world';
 export type DashboardMode = 'overview' | 'energy' | 'heatmap';
 
 export interface DashboardUrlState {
@@ -22,6 +25,7 @@ function parseViewMode(raw: string | null): DashboardView {
   if (raw === '3d') return '3d';
   if (raw === '2d') return 'table';
   if (raw === 'map') return 'map';
+  if (raw === 'world') return 'world';
   // No param, or an unrecognized value (including the explicit canonical 'overview'): land on
   // Executive Overview. Before Phase 2A this fell back to '3d' — see docs/adr for the rationale.
   return 'overview';
@@ -31,6 +35,7 @@ function serializeViewMode(viewMode: DashboardView): string {
   if (viewMode === 'table') return '2d';
   if (viewMode === 'map') return 'map';
   if (viewMode === '3d') return '3d';
+  if (viewMode === 'world') return 'world';
   return 'overview';
 }
 

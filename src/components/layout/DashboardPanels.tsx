@@ -24,6 +24,10 @@ export function DashboardPanels() {
   // stat/detail panels below are specific to the 3D experience.
   if (viewMode === 'overview') return null;
   if (viewMode === 'map') return null;
+  // Phase T1 world-exploration owns its own full-screen scene (see App.tsx) — the floating 3D
+  // stat/detail panels below are specific to the `3d` analytical view and read admin-unit
+  // selection state the world scene deliberately does not touch (see WorldTerrainMesh.tsx).
+  if (viewMode === 'world') return null;
   if (viewMode === 'table') return <TwoDimensionalView />;
   if (mobilePortrait) return <MobileDashboardSheet />;
   return (

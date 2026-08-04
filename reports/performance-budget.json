@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-08-03T02:23:56.195Z",
+  "generatedAt": "2026-08-04T14:30:57.168Z",
   "limits": {
     "totalJavaScriptBytes": 3400000,
     "totalJavaScriptGzipBytes": 950000,
@@ -10,18 +10,18 @@
     "totalBuildBytes": 6400000
   },
   "actual": {
-    "totalJavaScriptBytes": 2881363,
-    "totalJavaScriptGzipBytes": 766412,
-    "largestJavaScriptGzipBytes": 250272,
+    "totalJavaScriptBytes": 2886564,
+    "totalJavaScriptGzipBytes": 769442,
+    "largestJavaScriptGzipBytes": 250176,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 5850237
+    "totalBuildBytes": 5855438
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-C_ywIceb.js",
-      "bytes": 201589,
-      "gzipBytes": 63748
+      "file": "assets/AdministrativeMap-fKU76sdG.js",
+      "bytes": 28648,
+      "gzipBytes": 10335
     },
     {
       "file": "assets/daklak-labels-D8Nz6tfh.js",
@@ -50,78 +50,88 @@
       "bytes": 719308
     },
     {
-      "file": "assets/DataProvenancePanel-gw0TO5Kk.js",
-      "bytes": 10497,
-      "gzipBytes": 3422
+      "file": "assets/DataProvenancePanel-C0zobXQG.js",
+      "bytes": 10484,
+      "gzipBytes": 3414
     },
     {
-      "file": "assets/DataReadinessView-BLWFdFyj.js",
+      "file": "assets/DataReadinessView-DJ7qxRKk.js",
       "bytes": 9154,
-      "gzipBytes": 2350
+      "gzipBytes": 2348
     },
     {
-      "file": "assets/datasets-C1KPyx8A.js",
+      "file": "assets/datasets-Dm0Eb7d-.js",
       "bytes": 19501,
-      "gzipBytes": 5322
+      "gzipBytes": 5321
     },
     {
-      "file": "assets/DataSourcesPanel-hL0dR7Qd.js",
-      "bytes": 3831,
-      "gzipBytes": 1478
+      "file": "assets/DataSourcesPanel-BoJLtVb6.js",
+      "bytes": 3825,
+      "gzipBytes": 1471
     },
     {
-      "file": "assets/DetailMapViewport-JBxZPciJ.js",
+      "file": "assets/DetailMapViewport-D_k0E2kC.js",
       "bytes": 17748,
-      "gzipBytes": 5608
+      "gzipBytes": 5607
     },
     {
-      "file": "assets/en-BxIIMGW-.js",
-      "bytes": 32943,
-      "gzipBytes": 9055
+      "file": "assets/en-BVeRwyLS.js",
+      "bytes": 33599,
+      "gzipBytes": 9204
     },
     {
-      "file": "assets/esm-xvg_75QE.js",
-      "bytes": 18558,
-      "gzipBytes": 7222
+      "file": "assets/esm-BqkwEpae.js",
+      "bytes": 18512,
+      "gzipBytes": 7215
     },
     {
-      "file": "assets/index-CYjp8LmT.js",
-      "bytes": 823069,
-      "gzipBytes": 222350
+      "file": "assets/graphicsQuality-x1CKIC5T.js",
+      "bytes": 173203,
+      "gzipBytes": 54282
     },
     {
       "file": "assets/index-DQKZWFHs.css",
       "bytes": 41914
     },
     {
-      "file": "assets/maplibre-gl-Bee-HVIi.js",
-      "bytes": 974079,
-      "gzipBytes": 250272
+      "file": "assets/index-hIpxkHTk.js",
+      "bytes": 824118,
+      "gzipBytes": 222611
     },
     {
-      "file": "assets/ProjectDetailView-O-bdiPJk.js",
+      "file": "assets/maplibre-gl-Cpsd-6ZT.js",
+      "bytes": 973506,
+      "gzipBytes": 250176
+    },
+    {
+      "file": "assets/ProjectDetailView-CC76whrx.js",
       "bytes": 20647,
       "gzipBytes": 4831
     },
     {
-      "file": "assets/ProjectPortfolioView-DZB2eQtO.js",
+      "file": "assets/ProjectPortfolioView-DkEFBdJs.js",
       "bytes": 12058,
       "gzipBytes": 3165
     },
     {
-      "file": "assets/rolldown-runtime-QTnfLwEv.js",
-      "bytes": 694,
-      "gzipBytes": 422
+      "file": "assets/rolldown-runtime-hePW80VL.js",
+      "bytes": 716,
+      "gzipBytes": 428
     },
     {
-      "file": "assets/StatPanel-CqxjOSpH.js",
-      "bytes": 3455,
-      "gzipBytes": 1161
+      "file": "assets/StatPanel-LsZV4hWx.js",
+      "bytes": 3452,
+      "gzipBytes": 1159
     },
     {
-      "file": "assets/three-vendor-BiGAt4_t.js",
-      "bytes": 724632,
-      "gzipBytes": 183290
+      "file": "assets/three-vendor-CQjBSN39.js",
+      "bytes": 724399,
+      "gzipBytes": 183245
+    },
+    {
+      "file": "assets/WorldExplorationView-BkXPwCtr.js",
+      "bytes": 4086,
+      "gzipBytes": 1914
     },
     {
       "file": "build-info.json",

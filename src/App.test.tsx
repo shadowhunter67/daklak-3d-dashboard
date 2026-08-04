@@ -122,4 +122,25 @@ describe('App', () => {
       ),
     ).toBeInTheDocument();
   });
+
+  // Phase T1 (reports/tourism-digital-twin/) — `?view=world`. jsdom has no real WebGL (same as
+  // the detail-map/3D-overview tests above), so this exercises the lazy-chunk mount + the
+  // documented WebGL-unsupported fallback, not the actual Three.js scene.
+  it('lazily mounts the world-exploration route and shows its illustrative badge/fallback once viewMode becomes "world"', async () => {
+    renderApp();
+    expect(
+      screen.queryByLabelText('Khám phá Đắk Lắk 3D — kịch bản minh họa'),
+    ).not.toBeInTheDocument();
+    act(() => useMapStore.getState().setViewMode('world'));
+    const section = await screen.findByLabelText(
+      'Khám phá Đắk Lắk 3D — kịch bản minh họa',
+      {},
+      LAZY_CHUNK_TIMEOUT,
+    );
+    expect(section).toBeInTheDocument();
+    expect(screen.getByText('ILLUSTRATIVE — KỊCH BẢN MINH HỌA')).toBeInTheDocument();
+    expect(
+      screen.getByText(/không hỗ trợ WebGL nên không thể hiển thị cảnh 3D minh họa/),
+    ).toBeInTheDocument();
+  });
 });
