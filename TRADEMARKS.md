@@ -4,10 +4,9 @@
 identify this project (collectively, the "Marks") are used by the Licensor
 to identify this specific project and its official releases.
 
-The Source-Available Evaluation License (`LICENSE`) grants rights to the
-source code; it does not grant any trademark or branding rights. In
-particular, permitted evaluation/local use under `LICENSE` Section 2 does
-not include:
+The MIT License (`LICENSE`) grants rights to the source code; it does not
+grant any trademark or branding rights. In particular, use of the Marks
+should not include:
 
 - using the Marks to imply endorsement, sponsorship, or official
   affiliation with the Licensor;

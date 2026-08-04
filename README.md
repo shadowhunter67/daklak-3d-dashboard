@@ -2,7 +2,7 @@
 
 [![quality](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/quality.yml/badge.svg)](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/quality.yml)
 [![Deploy GitHub Pages](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/deploy-pages.yml)
-[![Source available: commercial use requires a license](https://img.shields.io/badge/source--available-commercial%20use%20requires%20license-orange.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 **Tiếng Việt** (chính) · [**English**](README.en.md)
 
@@ -282,7 +282,7 @@ liệu (cần xem xét) / cảnh báo nghiệp vụ (thông tin, không phải l
 - [Vận hành production](docs/operations.md)
 - [Benchmark thiết bị thật](docs/device-benchmark.md)
 - [Chính sách bảo mật](SECURITY.md) và [hướng dẫn đóng góp](CONTRIBUTING.md)
-- [Giấy phép](LICENSE) · [Cấp phép thương mại](COMMERCIAL-LICENSE.md) · [Lịch sử giấy phép](LICENSE-HISTORY.md) · [Thương hiệu](TRADEMARKS.md)
+- [Giấy phép](LICENSE) · [Lịch sử giấy phép](LICENSE-HISTORY.md) · [Thương hiệu](TRADEMARKS.md)
 - [ADR 0003 — Internationalization (vi/en)](docs/adr/0003-internationalization.md)
 - Nền tảng dữ liệu (`src/data-platform/`): [kiến trúc](docs/data-platform-architecture.md) ·
   [nguồn công khai](docs/public-data-sources.md) ·
@@ -366,9 +366,9 @@ Tên/số lượng theo Nghị quyết 1660/NQ-UBTVQH15; mã theo Quyết địn
 
 ## Giấy phép
 
-Repository này **public nhưng không phải open source** — kể từ commit ngay sau tag [`mit-final-1.0.0`](https://github.com/shadowhunter67/daklak-3d-dashboard/releases/tag/mit-final-1.0.0), mã nguồn được phát hành theo **Source-Available Evaluation License** (xem [LICENSE](LICENSE)): được phép xem, clone, chạy local, đánh giá, học tập và kiểm thử phi thương mại; **không** được phép dùng thương mại, triển khai production, cung cấp dưới dạng SaaS, bán lại, cấp phép lại, white-label, dùng trong công việc trả phí cho khách hàng/đấu thầu, xây sản phẩm cạnh tranh, hoặc phân phối lại — trừ khi có thỏa thuận thương mại riêng bằng văn bản với chủ sở hữu (xem [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md) để biết cách liên hệ).
+Repository này là **open source theo giấy phép MIT** (xem [LICENSE](LICENSE)): được phép dùng, sao chép, chỉnh sửa, hợp nhất, phát hành, phân phối, cấp phép lại và bán bản sao của phần mềm, miễn là giữ nguyên thông báo bản quyền.
 
-Mọi commit tại hoặc trước tag `mit-final-1.0.0` **vẫn giữ nguyên giấy phép MIT** đã cấp tại thời điểm đó — việc đổi giấy phép không hồi tố, xem [LICENSE-HISTORY.md](LICENSE-HISTORY.md). Dependency npm/Python và dữ liệu/ảnh bên thứ ba (OpenStreetMap, Sentinel-2, SRTM, `vietnamese-provinces-database`...) giữ nguyên license riêng của từng nguồn, không bị ảnh hưởng bởi thay đổi này — xem [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) và [ATTRIBUTION.md](ATTRIBUTION.md). Tên/logo dự án được ghi chú riêng tại [TRADEMARKS.md](TRADEMARKS.md). Văn bản license này chưa qua rà soát pháp lý — xem lưu ý trong [LICENSE](LICENSE) trước khi dùng cho giao dịch thương mại thực tế.
+Dự án từng có giai đoạn chuyển sang Source-Available Evaluation License rồi quay lại MIT — xem [LICENSE-HISTORY.md](LICENSE-HISTORY.md) để biết lịch sử. Dependency npm/Python và dữ liệu/ảnh bên thứ ba (OpenStreetMap, Sentinel-2, SRTM, `vietnamese-provinces-database`...) giữ nguyên license riêng của từng nguồn, không bị ảnh hưởng bởi giấy phép của repository này — xem [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) và [ATTRIBUTION.md](ATTRIBUTION.md). Tên/logo dự án được ghi chú riêng tại [TRADEMARKS.md](TRADEMARKS.md).
 
 ## Giới hạn và roadmap
 

@@ -30,21 +30,34 @@ metadata were checked:
 ## The `mit-final-1.0.0` tag
 
 `mit-final-1.0.0` marks the last commit released under the MIT License,
-before this Source-Available Evaluation License transition. See the
+before the temporary Source-Available Evaluation License transition
+described below. See the
 [GitHub release](https://github.com/shadowhunter67/daklak-3d-dashboard/releases/tag/mit-final-1.0.0).
 
-**This transition is not retroactive.** Anyone who obtained a copy of this
-repository at or before `mit-final-1.0.0` keeps full MIT rights (use,
+**That transition was not retroactive.** Anyone who obtained a copy of this
+repository at or before `mit-final-1.0.0` kept full MIT rights (use,
 modify, distribute, sublicense, sell) over that historical copy, exactly as
 granted by the MIT License text present in `LICENSE` at that commit. This
 document does not revoke, and cannot revoke, those already-granted rights.
 
+## Reverting to MIT
+
+The repository owner (`shadowhunter67`, the sole copyright holder per the
+audit above) subsequently decided to revert the project to the MIT License
+in full, effective from the commit that restored `LICENSE` to the MIT text.
+`COMMERCIAL-LICENSE.md` was removed as no longer applicable, and
+`CONTRIBUTING.md`/`TRADEMARKS.md` were updated to reflect MIT terms. This
+reversion applies going forward; it does not change the status of any
+commit made during the SAEL period, which remains available under whatever
+terms were in effect for that specific commit at the time it was obtained.
+
 ## Timeline
 
-| Version tag          | License                                    | Notes                                                      |
-| -------------------- | ------------------------------------------ | ---------------------------------------------------------- |
-| `mit-final-1.0.0`    | MIT                                        | Last MIT release. All commits at/before this tag stay MIT. |
-| (next commit onward) | Source-Available Evaluation License (SAEL) | See `LICENSE`, `COMMERCIAL-LICENSE.md`, `TRADEMARKS.md`.   |
+| Version tag / period  | License                                    | Notes                                                        |
+| ---------------------- | ------------------------------------------ | ------------------------------------------------------------- |
+| `mit-final-1.0.0`      | MIT                                        | Last MIT release before the SAEL transition.                  |
+| SAEL period            | Source-Available Evaluation License (SAEL) | See prior revisions of `LICENSE`, `COMMERCIAL-LICENSE.md`, `TRADEMARKS.md`. |
+| Current                | MIT                                        | Reverted to MIT. See `LICENSE`, `TRADEMARKS.md`.               |
 
 ## Not legal advice
 

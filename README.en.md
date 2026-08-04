@@ -2,7 +2,7 @@
 
 [![quality](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/quality.yml/badge.svg)](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/quality.yml)
 [![Deploy GitHub Pages](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/workflows/deploy-pages.yml)
-[![Source available: commercial use requires a license](https://img.shields.io/badge/source--available-commercial%20use%20requires%20license-orange.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 [Tiếng Việt](README.md) (primary, most complete) · **English** (this file — a summary, not a full translation)
 
@@ -90,21 +90,15 @@ and output artifact list — they are not duplicated here to avoid the two files
 
 ## Licensing
 
-This repository is **public but not open source**. Starting from the commit right after the
-[`mit-final-1.0.0`](https://github.com/shadowhunter67/daklak-3d-dashboard/releases/tag/mit-final-1.0.0)
-tag, the source is released under a **Source-Available Evaluation License** (see [LICENSE](LICENSE)):
-viewing, cloning, local evaluation, learning, and non-commercial testing are permitted; commercial
-use, production deployment, hosting as a service, resale, sublicensing, white-labeling, use in paid
-client work, building a competing product, or redistribution are **not** — a separate written
-commercial agreement is required (see [COMMERCIAL-LICENSE.md](COMMERCIAL-LICENSE.md)).
+This repository is **open source under the MIT License** (see [LICENSE](LICENSE)): use, copy,
+modify, merge, publish, distribute, sublicense, and/or sell copies of the software are all
+permitted, subject to inclusion of the copyright notice.
 
-Every commit at or before `mit-final-1.0.0` remains under the MIT License it was released under —
-this transition is not retroactive (see [LICENSE-HISTORY.md](LICENSE-HISTORY.md)). Third-party
-dependencies and data (OpenStreetMap, Sentinel-2, SRTM, `vietnamese-provinces-database`, ...) keep
-their own licenses regardless of this project's license — see
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and [ATTRIBUTION.md](ATTRIBUTION.md). This license
-text has not been reviewed by a lawyer — see the notice in [LICENSE](LICENSE) before relying on it
-for an actual commercial transaction.
+The project briefly moved to a Source-Available Evaluation License and has since reverted to MIT —
+see [LICENSE-HISTORY.md](LICENSE-HISTORY.md) for the full history. Third-party dependencies and data
+(OpenStreetMap, Sentinel-2, SRTM, `vietnamese-provinces-database`, ...) keep their own licenses
+regardless of this repository's license — see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and
+[ATTRIBUTION.md](ATTRIBUTION.md).
 
 ## Technical documentation
 
