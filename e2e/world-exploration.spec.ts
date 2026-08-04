@@ -62,7 +62,15 @@ test.describe('world exploration (Phase T1)', () => {
 
     await expect(page.getByLabel('Khám phá Đắk Lắk 3D — kịch bản minh họa')).toBeVisible();
     await expect(page.getByText('ILLUSTRATIVE — KỊCH BẢN MINH HỌA')).toBeVisible();
-    await expect(page.getByText('Khám phá Đắk Lắk 3D', { exact: true })).toBeVisible();
+    // The title/tagline caption reuses `.map-caption` (see WorldExplorationView.tsx), which the
+    // app's existing CSS already hides at narrow/mobile-portrait widths (global.css, the same
+    // `max-width: 767px` rule the existing `3d` view's caption is subject to) — so only assert its
+    // visibility on a wide-enough viewport, matching real, pre-existing app behavior rather than
+    // asserting a viewport-invariant UI that was never actually true for `.map-caption`.
+    const viewportWidth = page.viewportSize()?.width ?? 1280;
+    if (viewportWidth > 767) {
+      await expect(page.getByText('Khám phá Đắk Lắk 3D', { exact: true })).toBeVisible();
+    }
 
     if (process.env.E2E_PRODUCTION) {
       await expect
