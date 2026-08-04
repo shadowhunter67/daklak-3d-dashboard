@@ -19,10 +19,10 @@ test.describe('world exploration (Phase T1)', () => {
     const responses: string[] = [];
     page.on('response', (response) => responses.push(response.url()));
     await page.goto('./?view=overview');
-    await expect(page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' })).toBeVisible();
-    expect(
-      responses.some((url) => /\/assets\/WorldExplorationView-.*\.js/.test(url)),
-    ).toBe(false);
+    await expect(
+      page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
+    ).toBeVisible();
+    expect(responses.some((url) => /\/assets\/WorldExplorationView-.*\.js/.test(url))).toBe(false);
   });
 
   test('does not load the world-exploration chunk from the existing 3D/2D/map routes', async ({

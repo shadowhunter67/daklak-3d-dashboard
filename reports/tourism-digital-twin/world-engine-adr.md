@@ -39,13 +39,14 @@ lazy-loaded route**?
   (terrain textures) / `scripts/build_daklak_roads.py` (roads) — all Python, all already producing
   the assets under `src/assets/maps/daklak/` that ship in the app today.
 - Bundle budget (`scripts/check_build_budget.mjs`, verified by running `npm run build && npm run
-  check:budget` on this branch): the existing `three-vendor` chunk is ~183 KB gzip, shared and
+check:budget` on this branch): the existing `three-vendor` chunk is ~183 KB gzip, shared and
   already paid for by the `3d` view; total JS budget is 950 KB gzip with real headroom (see
   `reports/tourism-digital-twin/phase-status.md` for the actual measured numbers on this branch).
 
 ## Option A — Extend the existing R3F/Three.js pipeline
 
 **Pros**, each tied to something verified above:
+
 - Terrain, camera, device-tier quality, and roads are already real, already province-scale, and
   already shipped — zero new asset pipeline to build for T1.
 - Zero new dependency. `three-vendor` is already a paid-for shared chunk; a new `?view=world` route
@@ -60,6 +61,7 @@ lazy-loaded route**?
   tourism scene, not hypothetical.
 
 **Cons / real limits found in the code:**
+
 - The terrain is a single flat-shaded displacement-mapped plane, not a tiled/streamed globe — fine
   at province scale (192×160 segments over ~220 km × ~170 km) but would need a different approach
   (chunked LOD terrain) if the product ever needs seamless zoom from province-view down to
@@ -76,6 +78,7 @@ lazy-loaded route**?
 ## Option B — CesiumJS as a separate lazy-loaded route
 
 **What would actually justify this**, and why none of it is true today:
+
 - Cesium's real strength is a streamed, tiled, globe-scale terrain/imagery pipeline with built-in
   viewshed/terrain-query tooling. That matters when you need seamless global scale or true
   continuous zoom from orbit to street level, or when you need Cesium's built-in viewshed analysis

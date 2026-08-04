@@ -9,7 +9,7 @@ worktree). Everything below is **verified from source** by reading the actual fi
 - Single-page app, no router library. Two independent URL mechanisms:
   - `src/utils/dashboardUrl.ts` — query-string state (`?view=&mode=&ward=`), parsed/serialized by
     `parseDashboardUrl`/`serializeDashboardUrl`, backing `DashboardView =
-    'overview'|'3d'|'table'|'map'` (pre-Phase-T1). Consumed by `src/stores/mapStore.ts`
+'overview'|'3d'|'table'|'map'` (pre-Phase-T1). Consumed by `src/stores/mapStore.ts`
     (`viewMode`) and synced to `window.location` by `src/hooks/useDashboardUrlSync.ts`.
   - `src/routing/hashRoute.ts` — hash-based routing (`#/projects`, `#/projects/:id`,
     `#/data-readiness`) for Project Portfolio/Detail/Data-Readiness, deliberately a **separate**
@@ -40,7 +40,7 @@ worktree). Everything below is **verified from source** by reading the actual fi
   mobile sheets) and keyboard (arrow/WASD) angle nudging gated through `shouldHandleCameraKey`.
 - Device-tier quality: `src/utils/graphicsQuality.ts` — pure function from
   `devicePixelRatio`/`hardwareConcurrency` to `{tier, maxDevicePixelRatio, antialias,
-  contactShadows}`, decided once per mount, documented as deliberately *not* reactive to
+contactShadows}`, decided once per mount, documented as deliberately _not_ reactive to
   `reducedMotion` (see its doc comment).
 - Roads: `src/components/map/RoadLayer3D.tsx` + `daklak-roads.json` (pinned OSM Overpass
   snapshot, `scripts/build_daklak_roads.py`), toggled by `roadsVisible` in the store.
@@ -91,11 +91,11 @@ worktree). Everything below is **verified from source** by reading the actual fi
   instead of crashing the app shell.
 - Keyboard focus: each top-level view has a `tabIndex={-1}` focusable root element that `App.tsx`
   moves focus to on view change (`requestAnimationFrame(() => document.getElementById(targetId)
-  ?.focus())`), and a matching skip-link target.
+?.focus())`), and a matching skip-link target.
 - All visible strings are routed through `src/i18n/messages/{vi,en}.ts` + `useTranslation()`/
   `tStatic()`; `scripts/check_i18n_hardcoded_strings.mjs` enforces this in `npm test`.
 - Illustrative/demo data is always labeled in-UI (`illustrative-watermark` CSS class, `"DỮ LIỆU
-  MINH HỌA"` badge pattern in `MapViewport.tsx`) — this is the pattern Phase T1's `?view=world`
+MINH HỌA"` badge pattern in `MapViewport.tsx`) — this is the pattern Phase T1's `?view=world`
   badge follows (`"ILLUSTRATIVE — KỊCH BẢN MINH HỌA"`).
 
 ## 7. Bundle budget
