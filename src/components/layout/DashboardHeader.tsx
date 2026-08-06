@@ -24,6 +24,7 @@ const primaryViews = [
   ['3d', 'header.nav.3d', 'header.nav.3d'],
   ['table', 'header.nav.table', 'header.nav.table'],
   ['map', 'header.nav.map', 'header.nav.mapShort'],
+  ['world', 'header.nav.world', 'header.nav.worldShort'],
 ] as const satisfies ReadonlyArray<readonly [string, MessageKey, MessageKey]>;
 
 export function DashboardHeader() {

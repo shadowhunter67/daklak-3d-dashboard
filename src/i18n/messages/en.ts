@@ -30,6 +30,8 @@ export const en: Partial<Record<MessageKey, string>> = {
   'header.nav.table': 'List',
   'header.nav.map': 'Detail map',
   'header.nav.mapShort': 'Map',
+  'header.nav.world': 'Explore Đắk Lắk 3D',
+  'header.nav.worldShort': 'Explore',
   'header.modeTabs.ariaLabel': 'Data mode',
   'header.mode.overview': 'Overview',
   'header.mode.energy': 'Energy',

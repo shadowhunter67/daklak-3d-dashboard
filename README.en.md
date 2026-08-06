@@ -14,6 +14,13 @@ needing attention, alerts, data health), the 3D overview, an accessible 2D list,
 (`?view=map`) using **MapLibre GL JS + self-hosted PMTiles** — no Google Maps Platform dependency,
 no API key or billing required.
 
+Beyond those four, an **"Explore"** button (`?view=world`) opens an early preview — a fly-over of
+the province terrain, the initial foundation for a "Tourism Digital Twin" direction. This is a
+**clearly-labeled illustrative scenario** (an "ILLUSTRATIVE" badge is shown directly on the scene),
+with no real destinations/tour routes yet — see
+[reports/tourism-digital-twin/phase-status.md](reports/tourism-digital-twin/phase-status.md) for
+current status and limitations.
+
 The project is transitioning from a "3D map dashboard" toward a "provincial key-project executive
 platform that uses the map as a contextual layer" — see [ADR 0001](docs/adr/0001-project-centric-domain.md)
 and the [domain model](docs/domain-model.md). Executive Overview, Project Portfolio, and Project
@@ -22,7 +29,7 @@ operational figures.
 
 ## Demo
 
-**Live demo:** https://shadowhunter67.github.io/daklak-3d-dashboard/
+**Live demo:** https://shadowhunter67.github.io/daklak-3d-dashboard/ · [**Explore Đắk Lắk 3D**](https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world) (early preview, illustrative)
 
 > **Disclaimer:** all project/work-package/milestone/budget/disbursement/issue data shown in
 > Executive Overview and the map experiences is **deterministic illustrative data** (a fixed seed

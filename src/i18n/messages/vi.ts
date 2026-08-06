@@ -35,6 +35,8 @@ export const vi = {
   'header.nav.table': 'Danh sách',
   'header.nav.map': 'Bản đồ chi tiết',
   'header.nav.mapShort': 'Bản đồ',
+  'header.nav.world': 'Khám phá Đắk Lắk 3D',
+  'header.nav.worldShort': 'Khám phá',
   'header.modeTabs.ariaLabel': 'Chế độ dữ liệu',
   'header.mode.overview': 'Tổng quan',
   'header.mode.energy': 'Năng lượng',
