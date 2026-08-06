@@ -111,6 +111,71 @@ commits behind the merge commit.
   `https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world` on the live origin is
   reasonable due diligence but was not additionally performed in this session.
 
+## Post-merge fix — onboarding dialog leaked onto `?view=world`
+
+**Found live, on the deployed site, after merge — not caught by this session's pre-merge testing.**
+A fresh-profile visit to `https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world` showed
+the _existing_ `3d`/admin-boundary view's onboarding dialog (`OnboardingOverlay.tsx`, heading "102
+xã, phường trong một bản đồ tương tác") auto-popped on top of the world scene. The world scene
+itself rendered correctly underneath (terrain, title, tagline, illustrative badge, no console
+errors) — only the overlay was wrong.
+
+**Why pre-merge testing missed it**: every test in `e2e/world-exploration.spec.ts` (and the
+repo-wide `dashboard.spec.ts` convention it copied) pre-seeded
+`localStorage['daklak-dashboard:onboarding-dismissed'] = 'true'` in `beforeEach`, before navigating
+— which is exactly what a genuinely first-time visitor's browser does not have. This session's
+"live re-verification" after the first merge was also insufficient: it used `WebFetch` (a static
+HTML fetch, converted to markdown, no JS execution) against the deployed URL, which can confirm the
+page _responds_ but cannot observe anything React renders client-side — so it could not have caught
+a client-rendered-only bug like this regardless. A real fresh-browser-context check (which the
+coordinator performed manually) was needed and had not been done.
+
+**Root cause** (found by reading `src/components/layout/OnboardingOverlay.tsx`, not guessed):
+the overlay is a single global component (mounted unconditionally in `App.tsx`, gating its own
+content/visibility internally by `viewMode`), with exactly two onboarding-copy variants —
+detail-map gestures and admin-boundary "drag to rotate / tap for detail" gestures. Its auto-open
+condition was `!hasSeenOnboarding() && viewMode !== 'overview'` — `'overview'` was the only
+excluded view, so the newly-added `'world'` viewMode fell into the same default bucket as `3d`/
+`table` and got the admin-boundary copy by default.
+
+**Fix** (branch `fix/world-onboarding-decouple`, off `main` at `b063dd0`): added a
+`VIEWS_WITHOUT_ONBOARDING = new Set(['overview', 'world'])` used for the auto-open condition, and
+additionally excluded `'world'` (but deliberately **not** `'overview'`, whose manual-help behavior
+is pre-existing, tested, and intentionally left unchanged — see `OnboardingOverlay.test.tsx`) from
+the manual "?" help-control path too, since neither existing copy variant is honest for the world
+scene's actual camera controls (a simpler fixed-range orbit — see `WorldFlyInCamera.tsx` — with no
+pan and no keyboard control, unlike either existing variant). A world-specific onboarding tour is
+deferred to T2+ as a deliberate choice, not written now, rather than reusing/adapting copy that
+would need its own verification. No new dependency, no changes to `overview`/`3d`/`table`/`map`'s
+onboarding behavior.
+
+One implementation wrinkle: the first attempt added a plain `if (viewMode === 'world') return;`
+early-return inside the existing `helpSignal` effect, which broke `react-hooks/set-state-in-effect`
+(a lint rule this repo enforces) — the rule's heuristic only recognized the original "ref-diff
+guard, then one direct `setState` call" shape, not an added branch in between. Fixed by keeping the
+effect's shape identical to the original (single `setOpen(...)` call, no extra branch) and instead
+computing the boolean argument (`useMapStore.getState().viewMode !== 'world'`) — same outcome,
+lint-clean.
+
+**Regression coverage added**: a new `e2e/world-exploration.spec.ts` describe block,
+`'world exploration — first-time visitor, no pre-existing onboarding state'`, deliberately without
+the onboarding-dismissed `localStorage` seeding every other test in the file uses — this is what
+would have caught the bug pre-merge, and is what proves the fix (plus a sanity-check test that the
+existing `3d` view's onboarding still fires for the same fresh profile, proving the fix is scoped,
+not a global suppression). Matching unit tests added to `OnboardingOverlay.test.tsx`.
+
+**Verification for this fix** (all commands re-run against the fix branch): `npm run typecheck` /
+`lint` / `format:check` — pass; `npm test` — 113 files / **1158** tests passed (3 new); `node
+scripts/check_i18n_hardcoded_strings.mjs` — clean; `npm run build` / `check:budget` — pass, 0
+failures, limits unchanged (`reports/performance-budget.json`'s diff is only regenerated content
+hashes and a ~49-byte shift from the actual code change, not a threshold edit); full Playwright
+suite (`playwright.prod.config.ts`, all three projects: desktop-chromium, mobile-chromium,
+desktop-webkit) — **291 passed, 12 skipped (pre-existing), 0 failed**, including both the
+newly-failing-then-fixed fresh-context tests and the `3d`-view sanity check.
+
+<!-- Fix-PR number, CI status, merge commit, and final live re-verification are filled in below
+     once that PR exists — placeholder replaced in the same session, not left dangling. -->
+
 ## Next action — recommendation for Phase T2
 
 1. Confirm PR #76 CI is green on the final pushed SHA, take it out of draft, and merge (or merge it

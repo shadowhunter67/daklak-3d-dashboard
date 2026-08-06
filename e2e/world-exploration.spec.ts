@@ -104,3 +104,48 @@ test.describe('world exploration (Phase T1)', () => {
     await expect(page).toHaveURL(/view=world/);
   });
 });
+
+// Deliberately its own describe block, with NO `localStorage` pre-seeding of
+// `daklak-dashboard:onboarding-dismissed` — every test above (and dashboard.spec.ts's own
+// beforeEach) seeds that flag before navigating, which is exactly why a real bug shipped past that
+// suite: a genuinely first-time visitor (fresh profile, nothing in localStorage) landing on
+// `?view=world` got the *existing* `3d`/admin-boundary view's onboarding dialog
+// (`OnboardingOverlay.tsx`, heading "102 xã, phường trong một bản đồ tương tác") auto-popped on top
+// of the world scene — copy that describes the wrong view's gestures and admin-boundary concept
+// entirely. Root cause: `OnboardingOverlay` is a single global overlay (rendered unconditionally in
+// App.tsx) whose auto-open condition was `viewMode !== 'overview'` — true for `'world'` too, since
+// `'overview'` was the only viewMode ever excluded. Fixed in `OnboardingOverlay.tsx` by also
+// excluding `'world'` from both the auto-open condition and the manual "?" help-triggered open
+// (`src/components/layout/OnboardingOverlay.tsx`) — this describe block is what would have caught
+// it, and is what proves the fix.
+test.describe('world exploration — first-time visitor, no pre-existing onboarding state', () => {
+  test('does not show the 3D/admin-boundary onboarding dialog on a fresh visit to ?view=world', async ({
+    page,
+  }) => {
+    await page.goto('./?view=world');
+    await expect(page.getByLabel('Khám phá Đắk Lắk 3D — kịch bản minh họa')).toBeVisible();
+    await expect(
+      page.getByRole('dialog', { name: /102 xã, phường trong một bản đồ tương tác/ }),
+    ).not.toBeVisible();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+  });
+
+  test('does not show the 3D/admin-boundary onboarding dialog on ?view=world even via the manual help control', async ({
+    page,
+  }) => {
+    await page.goto('./?view=world');
+    await expect(page.getByLabel('Khám phá Đắk Lắk 3D — kịch bản minh họa')).toBeVisible();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Mở hướng dẫn sử dụng' }).click();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+  });
+
+  test('sanity check: the same fresh profile still gets the onboarding dialog on the existing 3D view (proves the fix is scoped, not a global suppression)', async ({
+    page,
+  }) => {
+    await page.goto('./?view=3d');
+    await expect(
+      page.getByRole('dialog', { name: /102 xã, phường trong một bản đồ tương tác/ }),
+    ).toBeVisible();
+  });
+});
