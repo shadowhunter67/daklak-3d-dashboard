@@ -5,9 +5,12 @@
 - Baseline SHA reviewed: `1741ed0cdee017b9eeee896ac651cc9800af8e39` (main)
 - Actual base SHA this branch forked from: `1741ed0cdee017b9eeee896ac651cc9800af8e39` (identical —
   confirmed via `git log -5 --oneline` at session start, no drift on `main` during this session)
-- Branch: `feat/tourism-world-foundation`
-- Head SHA (all CI green, about to merge): `699053ba0ca8b590b0d0d70835825c1657f3aa67`
-- PR: https://github.com/shadowhunter67/daklak-3d-dashboard/pull/76
+- Branch: `feat/tourism-world-foundation` (merged into `main`)
+- Final pre-merge head SHA (all CI green): `699053ba0ca8b590b0d0d70835825c1657f3aa67` (PR body/CI
+  discussion also references `88e1e71`, a docs-only follow-up on top of it finalizing this same
+  report — also all-green before merge)
+- **Merge commit on `main`: `2c8ebc08f751fed1a0cfecfdbb13ebd69c0f681c`**
+- PR: https://github.com/shadowhunter67/daklak-3d-dashboard/pull/76 (state: MERGED)
 
 ## What's verified, and how
 
@@ -75,13 +78,38 @@ not design blockers):
 
 ## Merge status
 
-**Merging now.** All conditions in the task's auto-merge authorization (rule #9) are met: PR taken
-out of draft, all CI checks green on the exact pushed SHA (`699053b`, see above), this agent's own
-Playwright runtime verification passed both locally and in CI, `check:budget` passed without any
-threshold changes (`check_build_budget.mjs`'s existing limits were not touched), and the change is
-additive/scoped exactly as described (diff limited to `src/utils/dashboardUrl.ts`, `src/App.tsx`,
+**Merged.** All conditions in the task's auto-merge authorization (rule #9) were met: PR taken out
+of draft, all CI checks green on the exact pushed SHA (first `699053b`, then re-confirmed green
+again on the docs-only follow-up `88e1e71` before merging), this agent's own Playwright runtime
+verification passed both locally and in CI, `check:budget` passed without any threshold changes
+(`check_build_budget.mjs`'s existing limits were not touched), and the change is additive/scoped
+exactly as described (diff limited to `src/utils/dashboardUrl.ts`, `src/App.tsx`,
 `src/components/layout/DashboardPanels.tsx`, `src/i18n/messages/{vi,en}.ts`, new files under
 `src/features/world-exploration/`, `e2e/world-exploration.spec.ts`, and `reports/`).
+
+PR #76 was merged via `gh pr merge 76 --merge` (regular merge commit, matching this repo's existing
+convention — see `git log`'s prior "Merge pull request #NN" commits), producing merge commit
+`2c8ebc08f751fed1a0cfecfdbb13ebd69c0f681c` on `main`. Confirmed via `git fetch origin main && git
+log origin/main` that `main` advanced from `1741ed0` to `2c8ebc0` with exactly this branch's 4
+commits behind the merge commit.
+
+### Post-merge deployment (verified, not assumed)
+
+- The push to `main` triggered the `quality` workflow (`push` trigger,
+  run [30928847674](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/runs/30928847674),
+  13m47s, **success**) and `CodeQL` (**success**) on the merge commit.
+- `Deploy GitHub Pages` (`workflow_run` trigger, fires after `quality` succeeds on `main`) then ran
+  as run [30929971320](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/runs/30929971320)
+  and **succeeded** (22s).
+- Fetched `https://shadowhunter67.github.io/daklak-3d-dashboard/` directly (this agent's own
+  `WebFetch`, not assumed from CI success alone): the page loads and its title resolves to **"Đắk
+  Lắk 3D · Nhịp đất đại ngàn"** — the real app shell, not a 404/blank page. This confirms the
+  deployment is live, though it does **not** by itself prove `?view=world` renders correctly on the
+  live GitHub Pages origin (base-path `/daklak-3d-dashboard/`) — that was verified pre-merge against
+  a local production preview server (`npm run preview`) with the same build output, per the
+  Playwright evidence above, not against the live Pages URL itself. A follow-up manual check of
+  `https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world` on the live origin is
+  reasonable due diligence but was not additionally performed in this session.
 
 ## Next action — recommendation for Phase T2
 
