@@ -173,8 +173,34 @@ suite (`playwright.prod.config.ts`, all three projects: desktop-chromium, mobile
 desktop-webkit) — **291 passed, 12 skipped (pre-existing), 0 failed**, including both the
 newly-failing-then-fixed fresh-context tests and the `3d`-view sanity check.
 
-<!-- Fix-PR number, CI status, merge commit, and final live re-verification are filled in below
-     once that PR exists — placeholder replaced in the same session, not left dangling. -->
+**Fix PR**: https://github.com/shadowhunter67/daklak-3d-dashboard/pull/82 (state: MERGED). All CI
+checks green on head SHA (`static-analysis`, `security`, `build-and-budget`, `contract-and-modes`,
+`unit-and-data`, `analyze (javascript-typescript)`, `analyze (python)`, `review`, both `e2e` matrix
+runs — 13m32s and 13m22s). Merged via `gh pr merge 82 --merge`, producing merge commit
+`252a4da5a0344b3431d213b15c7f36537237a532` on `main`. Post-merge `quality`
+(run [31106409439](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/runs/31106409439),
+15m39s) and `CodeQL` both **succeeded** on the merge commit.
+
+**Deployment — blocked on GitHub-side infrastructure, not this repository.** `Deploy GitHub Pages`
+(run [31107670908](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/runs/31107670908))
+was attempted **three times** (initial trigger + two manual `gh run rerun`s) and **failed all three
+times** with an identical pattern: the `actions/deploy-pages` step creates the Pages deployment
+successfully (deployment ID matches the merge commit SHA), then polls
+`Getting Pages deployment status...` and receives `Current status: deployment_in_progress` on every
+poll — for the full 10-minute action timeout on two attempts, and a near-immediate
+`##[error]Deployment cancelled.` on the third — without ever reaching `succeed`. This is GitHub
+Pages' own deployment backend not advancing past `deployment_in_progress`, not a build/code issue:
+`quality` (which builds and validates the exact artifact Pages deploys) passed cleanly all three
+times, and `curl https://www.githubstatus.com/api/v2/status.json` reported "All Systems Operational"
+each time checked (so not a broadly-reported incident, but empirically reproducible for this specific
+deployment 3/3 times). As of this report, `https://shadowhunter67.github.io/daklak-3d-dashboard/`
+is still serving the **pre-fix** commit `b063dd0` (confirmed via `build-info.json`'s `gitCommit`
+field) — the onboarding-overlay bug is fixed in `main` but not yet live. Per the task's own
+infrastructure-failure guidance (stop after repeated external failures rather than loop
+indefinitely), automatic retries were stopped after the third failure and escalated for a decision;
+this documentation commit itself is an attempt to force a fresh build/deployment ID rather than
+reusing the stuck one. **Final live re-verification of `?view=world` on the deployed origin is still
+pending** on this deployment succeeding — do not treat this report as proof the fix is live.
 
 ## Next action — recommendation for Phase T2
 
