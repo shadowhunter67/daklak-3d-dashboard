@@ -40,6 +40,36 @@ describe('OnboardingOverlay', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
+  // Phase T1 bugfix (reports/tourism-digital-twin/phase-status.md, "Post-merge fix"): a real
+  // production bug where a first-time visitor to `?view=world` got this dialog's admin-boundary
+  // "102 xã, phường" copy auto-popped on top of the illustrative world scene, because `world` fell
+  // into the same default bucket as `3d`/`table`. `world` must behave like `overview` for auto-open
+  // ...
+  it('does not auto-open on first visit while landing on World Exploration (?view=world)', () => {
+    useMapStore.setState({ viewMode: 'world' });
+    render(<OnboardingOverlay />);
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  // ...but UNLIKE `overview`, `world` also suppresses the manual "?" help control, since neither
+  // existing content variant (detail-map gestures, admin-boundary drag/tap gestures) honestly
+  // describes the world scene's actual camera controls — see OnboardingOverlay.tsx's
+  // VIEWS_WITHOUT_ONBOARDING doc comment for the full rationale.
+  it('does NOT open from the help control while on World Exploration, unlike Executive Overview', () => {
+    useMapStore.setState({ viewMode: 'world' });
+    render(<OnboardingOverlay />);
+    act(() => useMapStore.getState().requestHelp());
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('still opens from the help control on the existing 3D view (proves the World fix is scoped, not a global regression)', () => {
+    useMapStore.setState({ viewMode: '3d' });
+    window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true');
+    render(<OnboardingOverlay />);
+    act(() => useMapStore.getState().requestHelp());
+    expect(screen.getByRole('dialog', { name: /102 xã, phường/i })).toBeInTheDocument();
+  });
+
   it('can be opened again from the help control', () => {
     window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true');
     render(<OnboardingOverlay />);
