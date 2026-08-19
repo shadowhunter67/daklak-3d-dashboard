@@ -92,8 +92,9 @@ GIS validation):
 npm run quality
 ```
 
-See [README.md](README.md#chạy-dự-án) for the complete command reference, GIS rebuild instructions,
-and output artifact list — they are not duplicated here to avoid the two files drifting apart.
+See [CONTRIBUTING.md](CONTRIBUTING.md#command-reference) for the complete command reference and
+[scripts/README.md](scripts/README.md) for GIS rebuild instructions — not duplicated here to avoid
+the files drifting apart.
 
 ## Licensing
 
@@ -109,6 +110,5 @@ regardless of this repository's license — see [THIRD_PARTY_NOTICES.md](THIRD_P
 
 ## Technical documentation
 
-See the [Tài liệu kỹ thuật](README.md#tài-liệu-kỹ-thuật) section of the Vietnamese README for the
-full list of architecture, testing, performance, accessibility, data-platform, and ADR documents —
-maintained in one place to avoid duplication/drift between the two READMEs.
+See the [`docs/`](docs/) folder for architecture, testing, performance, accessibility, data-platform,
+and ADR documents — maintained in one place to avoid duplication/drift between the two READMEs.
