@@ -60,8 +60,13 @@ test.describe('world exploration (Phase T1)', () => {
 
     await page.goto('./?view=world');
 
-    await expect(page.getByLabel('Khám phá Đắk Lắk 3D — kịch bản minh họa')).toBeVisible();
-    await expect(page.getByText('ILLUSTRATIVE — KỊCH BẢN MINH HỌA')).toBeVisible();
+    // Scoped to the world-scene region, not the page as a whole: the primary-nav button that opens
+    // this route (added when the route was surfaced in navigation) renders the same visible text
+    // ("Khám phá Đắk Lắk 3D") as the in-scene title, so an unscoped page-wide text match is
+    // ambiguous once both are on screen together.
+    const worldRegion = page.getByLabel('Khám phá Đắk Lắk 3D — kịch bản minh họa');
+    await expect(worldRegion).toBeVisible();
+    await expect(worldRegion.getByText('ILLUSTRATIVE — KỊCH BẢN MINH HỌA')).toBeVisible();
     // The title/tagline caption reuses `.map-caption` (see WorldExplorationView.tsx), which the
     // app's existing CSS already hides at narrow/mobile-portrait widths (global.css, the same
     // `max-width: 767px` rule the existing `3d` view's caption is subject to) — so only assert its
@@ -69,7 +74,7 @@ test.describe('world exploration (Phase T1)', () => {
     // asserting a viewport-invariant UI that was never actually true for `.map-caption`.
     const viewportWidth = page.viewportSize()?.width ?? 1280;
     if (viewportWidth > 767) {
-      await expect(page.getByText('Khám phá Đắk Lắk 3D', { exact: true })).toBeVisible();
+      await expect(worldRegion.getByText('Khám phá Đắk Lắk 3D', { exact: true })).toBeVisible();
     }
 
     if (process.env.E2E_PRODUCTION) {
