@@ -52,7 +52,7 @@
     "build:roads": "python scripts/build_daklak_roads.py"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.0",
+    "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.7.0",
     "d3-geo": "^3.1.1",
     "maplibre-gl": "^6.1.0",
