@@ -553,6 +553,75 @@ export const vi = {
     'Thông tin điểm đến này đã được xác minh và có nguồn trích dẫn — xem liên kết nguồn bên dưới.',
   'worldExploration.destination.sourceLabel': 'Nguồn:',
   'worldExploration.destination.sourceLinkAria': 'Mở nguồn dữ liệu của {name} (mở tab mới)',
+  'worldExploration.destination.descriptionViOnly':
+    'Mô tả điểm đến này hiện chỉ có bằng tiếng Việt.',
+
+  // World Exploration — Walk/Fly/Tour (Phase T3, reports/tourism-digital-twin/). Player
+  // controller, CPU terrain sampler, POI tương tác, teleport, HUD, tour hướng dẫn.
+  'worldExploration.mode.groupAria': 'Chế độ khám phá',
+  'worldExploration.mode.walk': 'Đi bộ',
+  'worldExploration.mode.walkAria': 'Chuyển sang chế độ đi bộ trên địa hình',
+  'worldExploration.mode.fly': 'Bay',
+  'worldExploration.mode.flyAria': 'Chuyển sang chế độ bay tự do',
+  'worldExploration.mode.tour': 'Tour',
+  'worldExploration.mode.tourAria': 'Mở danh sách tuyến tham quan có hướng dẫn',
+  'worldExploration.hud.compassAria': 'La bàn, hướng nhìn hiện tại {degrees} độ',
+  'worldExploration.hud.compassNorth': 'B',
+  'worldExploration.hud.altitude': 'Cao độ ước tính: {meters} m',
+  'worldExploration.hud.coordinates': '{lat}, {lon}',
+  'worldExploration.hud.nearestPoi': 'Gần nhất: {name} — {distance} m',
+  'worldExploration.hud.noNearbyPoi': 'Không có điểm đến nào gần đây',
+  'worldExploration.hud.interactHint': 'Nhấn E hoặc chạm vào điểm đến để xem thông tin',
+  'worldExploration.hud.terrainLoading': 'Đang tải dữ liệu địa hình…',
+  'worldExploration.hud.helpButton': 'Trợ giúp',
+  'worldExploration.hud.helpButtonAria': 'Mở hướng dẫn điều khiển',
+  'worldExploration.hud.poiListButton': 'Danh sách điểm đến',
+  'worldExploration.hud.poiListButtonAria':
+    'Mở danh sách điểm đến dạng văn bản (thay thế cho nhãn 3D)',
+  'worldExploration.hud.teleportButton': 'Di chuyển nhanh',
+  'worldExploration.hud.teleportButtonAria':
+    'Mở menu di chuyển nhanh tới điểm đến hoặc tuyến tham quan',
+  'worldExploration.poi.listTitle': 'Danh sách điểm đến',
+  'worldExploration.poi.listCloseLabel': 'Đóng danh sách',
+  'worldExploration.poi.teleportToButton': 'Đi tới {name}',
+  'worldExploration.poi.viewDetailButton': 'Xem chi tiết {name}',
+  'worldExploration.poi.distanceMeters': '{distance} m',
+  'worldExploration.teleport.menuTitle': 'Di chuyển nhanh',
+  'worldExploration.teleport.menuCloseLabel': 'Đóng menu di chuyển nhanh',
+  'worldExploration.teleport.poiSectionTitle': 'Điểm đến',
+  'worldExploration.teleport.tourSectionTitle': 'Tuyến tham quan',
+  'worldExploration.tour.startButton': 'Bắt đầu tour: {title}',
+  'worldExploration.tour.pauseButton': 'Tạm dừng tour',
+  'worldExploration.tour.resumeButton': 'Tiếp tục tour',
+  'worldExploration.tour.stopButton': 'Kết thúc tour',
+  'worldExploration.tour.stopsLabel': '{count} điểm dừng',
+  'worldExploration.tour.playingStatus': 'Đang phát tour: {title} — điểm {current}/{total}',
+  'worldExploration.tour.pausedStatus': 'Đã tạm dừng: {title} — điểm {current}/{total}',
+  'worldExploration.tour.lakesAndWaterfalls.title': 'Hồ & Thác — Đắk Lắk sông nước',
+  'worldExploration.tour.lakesAndWaterfalls.description':
+    'Hồ Lắk và thác Đray Nur — hai điểm đến gắn với sông Sêrêpốk.',
+  'worldExploration.tour.forestAndVillage.title': 'Rừng quốc gia & Buôn làng voi',
+  'worldExploration.tour.forestAndVillage.description':
+    'Vườn quốc gia Yok Đôn và Buôn Đôn — thiên nhiên và lịch sử thuần dưỡng voi rừng.',
+  'worldExploration.tour.grandTour.title': 'Khám phá trọn vẹn Đắk Lắk',
+  'worldExploration.tour.grandTour.description':
+    'Cả 4 điểm đến đã xác minh: Yok Đôn, Buôn Đôn, Đray Nur, Hồ Lắk.',
+  'worldExploration.onboarding.title': 'Bắt đầu khám phá',
+  'worldExploration.onboarding.body':
+    'Đây là bản đồ số minh họa dựa trên địa hình thật tỉnh Đắk Lắk, có thể đi bộ, bay tự do và xem tour hướng dẫn.',
+  'worldExploration.onboarding.walkHint':
+    'WASD hoặc phím mũi tên để di chuyển, chuột để nhìn quanh.',
+  'worldExploration.onboarding.flyHint': 'Giữ Space để lên cao, giữ Shift để hạ thấp.',
+  'worldExploration.onboarding.interactHint':
+    'Nhấn E hoặc chạm khi ở gần điểm đến để xem thông tin.',
+  'worldExploration.onboarding.escapeHint': 'Nhấn Esc để thoát chế độ khóa chuột.',
+  'worldExploration.onboarding.startButton': 'Bắt đầu',
+  'worldExploration.help.title': 'Hướng dẫn điều khiển',
+  'worldExploration.help.closeLabel': 'Đóng hướng dẫn',
+  'worldExploration.touch.moveAria': 'Cần điều khiển di chuyển (kéo để đi)',
+  'worldExploration.touch.lookAria': 'Kéo vào vùng này để nhìn quanh',
+  'worldExploration.touch.interactButton': 'Tương tác',
+  'worldExploration.touch.interactButtonAria': 'Tương tác với điểm đến gần nhất',
 
   // TwoDimensionalView switch
   'twoDView.switchAria': 'Nội dung bản đồ 2D',

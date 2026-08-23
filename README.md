@@ -23,7 +23,7 @@ Dashboard bản đồ 3D thể hiện 102 xã/phường của tỉnh Đắk Lắ
 - **Bản đồ 3D** — địa hình tỉnh dựng từ dữ liệu vệ tinh thật (SRTM + Sentinel-2), xoay/phóng được, click vào từng xã để xem hồ sơ nhanh.
 - **Danh sách** — phiên bản 2D dễ dùng, phù hợp máy yếu, điều hướng bàn phím và trình đọc màn hình.
 - **Bản đồ chi tiết** — bản đồ MapLibre, xem lớp đường giao thông, đo khoảng cách.
-- **Khám phá** _(bản xem trước, minh họa)_ — bay qua địa hình tỉnh, bước đầu cho hướng phát triển bản đồ số du lịch.
+- **Khám phá** _(nền địa hình minh họa, dữ liệu điểm đến là thật)_ — đi bộ hoặc bay tự do trên địa hình tỉnh (bám địa hình thật qua CPU terrain sampler), xem 4 điểm đến du lịch đã xác minh nguồn (Hồ Lắk, Yok Đôn, Đray Nur, Buôn Đôn), teleport nhanh, và 3 tuyến tham quan có hướng dẫn. Xem [docs/world-exploration.md](docs/world-exploration.md).
 - **Danh mục dự án** và **Chi tiết dự án** — xem đầy đủ ngân sách, tiến độ, gói thầu, vướng mắc của từng dự án.
 - Giao diện có cả **tiếng Việt và tiếng Anh**, chuyển đổi ngay không cần tải lại trang.
 

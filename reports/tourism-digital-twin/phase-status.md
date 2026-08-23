@@ -398,3 +398,107 @@ with exactly this branch's 3 commits behind the merge commit.
     `THREE.Clock` deprecation warning (pre-existing, unrelated to this change) — zero errors.
 
 This confirms Phase T2 is live and working on the real deployed site, not just in local preview.
+
+## Phase T3 — Walk/Fly/Tour interactive exploration
+
+- Branch: `feat/world-walk-fly-tour`, forked from `main` at `35b9213` (Phase T2's merge commit,
+  confirmed via `git log`/`git pull` at session start — already up to date).
+- Full architecture reference: `docs/world-exploration.md`. Decision record: this directory's
+  `player-terrain-sampler-adr.md` (CPU terrain sampler decode strategy; no physics engine).
+
+### What was built
+
+- **CPU-side terrain height sampler** (`src/features/world-exploration/terrain/`) — the gap
+  `world-engine-adr.md` explicitly flagged as unimplemented. Decodes the already-shipped
+  `daklak-terrain-height.png` via `<canvas>`, once, cached; bilinear sampling is a separate pure
+  module tested with hand-checkable synthetic grids.
+- **Player controller** (`src/features/world-exploration/player/`) — Walk (WASD, mouse-look via
+  Pointer Lock, ground-snapped to the real terrain height including gravity/jump) and Fly (full 3D
+  free movement, clamped to the real data bounds), split across input/movement/rig files, no
+  physics engine (see ADR).
+- **Guided tours** (`src/features/world-exploration/tours/`) — a pure, data-driven playback engine
+  (`tourEngine.ts`) over 3 tours built entirely from Phase T2's 4 real, verified destinations (no
+  new/fabricated POIs): "Hồ & Thác — Đắk Lắk sông nước" (Hồ Lắk -> Đray Nur), "Rừng quốc gia & Buôn
+  làng voi" (Yok Đôn -> Buôn Đôn), "Khám phá trọn vẹn Đắk Lắk" (all 4).
+- **POI proximity/teleport** (`src/features/world-exploration/poi/`) — a thin runtime adapter over
+  `verifiedTourismDestinations.ts` (not a second data model), `E`-interact within a proximity
+  radius, and `requestTeleport()` wired through `PlayerRig.tsx`.
+- **DOM-level HUD** (`src/features/world-exploration/hud/`) — mode switch, compass/coordinates
+  /altitude/nearest-POI status bar, an accessible non-canvas POI list (independent of camera
+  position, unlike the in-canvas marker panel), a teleport/tour-picker menu, live tour controls
+  (pause/resume/stop), a world-specific first-time guide dialog (separate from the existing
+  `OnboardingOverlay.tsx`, per Phase T1's own deferral note), and minimal mobile touch controls
+  (joystick, drag-to-look, interact button) shown only on coarse-pointer devices.
+- **Shared coordinate utilities** (`src/features/world-exploration/coordinates/
+worldCoordinates.ts`) — `latLonToWorld`/`worldToLatLon`/`getWorldBounds`/
+  `haversineDistanceMeters`, derived from and cross-checked against the existing scene graph and
+  GIS pipeline, not assumed.
+- Its own Zustand store (`state/worldExplorationStore.ts`), isolated from `useMapStore` — same
+  rationale every prior phase file in this feature already documents.
+- New `worldExploration.*` i18n keys (mode/HUD/POI/teleport/tour/onboarding/touch), full VI+EN
+  parity (`dictionaryParity.test.ts`), no hardcoded strings
+  (`scripts/check_i18n_hardcoded_strings.mjs`).
+
+### Explicitly not done this phase (see `docs/world-exploration.md`, "Future extension")
+
+Ground-anchoring destination markers to real elevation (attempted, reverted — broke the intro
+camera's fixed framing for some real destinations, see `WorldDestinationMarkers.tsx`'s doc
+comment), vegetation/water/atmosphere/day-light presets, road-layer reuse inside `?view=world`,
+additional tours/POIs (blocked on finding more real, citable coordinate sources, not on engine
+capability).
+
+### Two real bugs found and fixed during this phase's own verification
+
+1. **HUD buttons/dialogs unclickable in a real browser** (not caught by component tests, which
+   don't exercise CSS cascade) — `.world-hud`'s `pointer-events: none` (needed so clicks pass
+   through to the canvas where no HUD element is) was silently inherited by every descendant,
+   including `.onboarding-backdrop`-based dialogs (`WorldPoiList.tsx`/`WorldTeleportMenu.tsx`)
+   nested under it, which never explicitly re-enabled `pointer-events: auto` the way the
+   always-visible button clusters did. Found via real Playwright clicks
+   (`e2e/world-exploration.spec.ts`) timing out with "element intercepts pointer events"; a static
+   DOM inspection immediately after page load did not reproduce it (the dialogs only exist once
+   opened), which is why this needed the actual e2e run, not just a visual check.
+2. **Mobile touch controls covering the entire HUD** — `.world-hud__touch-look` (a full-screen,
+   `pointer-events: auto` drag-to-look surface, visible only on coarse-pointer/touch devices) is
+   rendered last in `WorldHud.tsx`'s DOM order, so on a real touch viewport it painted over every
+   other HUD button/dialog and intercepted all of their taps. Found only on the `mobile-chromium`
+   Playwright project (desktop-chromium has a fine pointer, so `.world-hud__touch-controls` stays
+   `display: none` there and never reproduces this). Fixed with explicit sibling z-index ordering
+   inside `.world-hud`'s stacking context, not a full redesign.
+3. A camera-pose approximation bug: `PlayerRig.tsx`'s initial pose was originally a rough guess at
+   where `WorldFlyInCamera.tsx`'s intro settles, close enough to _look_ right but numerically
+   different — this shifted marker screen positions enough (in `prefers-reduced-motion: reduce`
+   mode, where the intro component is skipped entirely and this pose is the very first frame
+   rendered) to break the existing Phase T2 "plausible marker positions" e2e assertion. Fixed by
+   computing the exact yaw/pitch a real `THREE.PerspectiveCamera.lookAt()` produces for the intro's
+   settled position, instead of hand-derived trig.
+
+### Verified by command (actually run on this branch, exit codes/output checked)
+
+| Command                                                                                                                                  | Result                                                                                                                                   |
+| ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm run typecheck`                                                                                                                      | pass                                                                                                                                     |
+| `npm run lint`                                                                                                                           | pass                                                                                                                                     |
+| `npx prettier --check .`                                                                                                                 | pass                                                                                                                                     |
+| `node scripts/check_i18n_hardcoded_strings.mjs`                                                                                          | clean                                                                                                                                    |
+| `npm test` (vitest)                                                                                                                      | **128 test files / 1328 tests passed**, 0 failed (up from T2's 115/1179 — 13 new files, ~149 new tests)                                  |
+| `npm run build`                                                                                                                          | pass — `WorldExplorationView-*.js` own chunk, 31.8 KB raw / 10.5 KB gzip (up from T2's 9.22 KB/3.92 KB, still its own lazy-loaded chunk) |
+| `npm run check:budget`                                                                                                                   | pass, 0 failures, no thresholds touched                                                                                                  |
+| `npm run build:metrics`                                                                                                                  | Budget: passed; JS gzip 0.74 MiB total                                                                                                   |
+| `npx playwright test --config=playwright.prod.config.ts` (full suite, all 3 projects: desktop-chromium, mobile-chromium, desktop-webkit) | **324 passed, 12 skipped (pre-existing), 0 failed**                                                                                      |
+
+### CI status
+
+PR: https://github.com/shadowhunter67/daklak-3d-dashboard/pull/95. All checks green on head SHA
+`6da7d20` (confirmed via `gh pr checks 95`): `static-analysis`, `unit-and-data`,
+`contract-and-modes`, `build-and-budget`, `security`, `e2e` (12m40s, all three Playwright
+projects). Merging required first resolving a real merge conflict against `main` (two other PRs —
+`#94`, a codeql-action version bump, and two dependabot PRs — merged into `main` after this branch
+was forked): the conflict was entirely in this file (`phase-status.md`, both branches appending a
+new section after the same "Post-merge deployment: Pending" placeholder) — resolved by keeping
+both sections in sequence (Phase T2's real post-merge deployment record, then this Phase T3
+section), no code conflict.
+
+### Merge status
+
+_Pending — not yet merged at the time of writing this section._

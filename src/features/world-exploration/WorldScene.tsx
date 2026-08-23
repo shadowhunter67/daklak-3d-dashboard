@@ -1,18 +1,36 @@
 import { Canvas } from '@react-three/fiber';
-import { Suspense } from 'react';
+import { PerspectiveCamera } from '@react-three/drei';
+import { Suspense, useEffect, useState } from 'react';
 import { getGraphicsQualityConfigForCurrentDevice } from '../../utils/graphicsQuality';
 import { MapLoading } from '../../components/map/MapFallback';
 import { WorldDestinationMarkers } from './WorldDestinationMarkers';
-import { WorldFlyInCamera } from './WorldFlyInCamera';
+import { WorldFlyInCamera, FLY_IN_DURATION_SECONDS } from './WorldFlyInCamera';
 import { WorldTerrainMesh } from './WorldTerrainMesh';
+import { PlayerRig } from './player/PlayerRig';
+import { TourRig } from './player/TourRig';
 
 /**
- * Phase T1 illustrative scene root. Same graphics-quality decision function as the existing 3D
- * view (`AdministrativeMap.tsx`) — decided once per mount from cheap device signals, never
- * reactive, see `graphicsQuality.ts`.
+ * Phase T1 illustrative scene root, extended in Phase T3 with interactive Walk/Fly/Tour
+ * exploration (`reports/tourism-digital-twin/`). Same graphics-quality decision function as the
+ * existing 3D view (`AdministrativeMap.tsx`) — decided once per mount from cheap device signals,
+ * never reactive, see `graphicsQuality.ts`.
+ *
+ * The original one-shot fly-in intro (`WorldFlyInCamera`) is kept exactly as Phase T1 shipped it
+ * — not replaced — and hands off to the interactive `PlayerRig`/`TourRig` once it settles
+ * (immediately, with `reducedMotion`), so a first-time visitor's first impression of the scene is
+ * unchanged. `PlayerRig`'s initial pose approximates where the intro settles (see its own doc
+ * comment) so the handoff reads as a continuation, not a jump.
  */
 export function WorldScene({ reducedMotion }: { reducedMotion: boolean }) {
   const graphicsQuality = getGraphicsQualityConfigForCurrentDevice();
+  const [introSettled, setIntroSettled] = useState(reducedMotion);
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    const timer = window.setTimeout(() => setIntroSettled(true), FLY_IN_DURATION_SECONDS * 1000);
+    return () => window.clearTimeout(timer);
+  }, [reducedMotion]);
+
   return (
     <Suspense fallback={<MapLoading />}>
       <Canvas
@@ -27,7 +45,19 @@ export function WorldScene({ reducedMotion }: { reducedMotion: boolean }) {
           <WorldTerrainMesh />
           <WorldDestinationMarkers />
         </group>
-        <WorldFlyInCamera reducedMotion={reducedMotion} />
+        {introSettled ? (
+          <>
+            {/* Same fov as WorldFlyInCamera.tsx's intro camera — matching it here avoids a jarring
+                zoom-jump the instant the handoff happens (PlayerRig.tsx's initial pose already
+                matches the intro's settled position/orientation exactly, see its own doc
+                comment). */}
+            <PerspectiveCamera makeDefault fov={45} near={0.05} far={100} />
+            <PlayerRig />
+            <TourRig />
+          </>
+        ) : (
+          <WorldFlyInCamera reducedMotion={reducedMotion} />
+        )}
       </Canvas>
     </Suspense>
   );

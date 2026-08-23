@@ -3,7 +3,10 @@ import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 import { PerspectiveCamera as PerspectiveCameraImpl } from 'three';
 
-const FLY_IN_DURATION_SECONDS = 2.4;
+/** Also read by `WorldScene.tsx` to know when to hand off from this one-shot intro to the
+ * interactive `PlayerRig`/`TourRig` (Walk/Fly/Tour, Phase T3) — kept as the single source of
+ * truth for the intro's length rather than a second hardcoded duration. */
+export const FLY_IN_DURATION_SECONDS = 2.4;
 const START_RADIUS = 9.5;
 const END_RADIUS = 5.2;
 const START_HEIGHT = 6.5;
