@@ -1,18 +1,24 @@
 import { Html } from '@react-three/drei';
 import { useState } from 'react';
 import { verifiedTourismDestinations } from '../../entities/tourism/verifiedTourismDestinations';
-import type { TourismDestination, TourismDestinationCategory } from '../../entities/tourism/types';
+import type { TourismDestination } from '../../entities/tourism/types';
 import { useTranslation } from '../../i18n/useTranslation';
 import { projection } from '../../utils/geo';
-import type { MessageKey } from '../../i18n/messages';
+import { useWorldExplorationStore } from './state/worldExplorationStore';
+import { CATEGORY_MESSAGE_KEY } from './poi/poiCategoryMessages';
 
 /**
  * Phase T2 (reports/tourism-digital-twin/) — real, sourced destination markers on top of the
  * illustrative terrain (`src/entities/tourism/verifiedTourismDestinations.ts`).
  *
- * Deliberately local `useState` for hover/selection, NOT `useMapStore`'s `hoveredCode`/
- * `selectedCode` — same isolation reasoning `WorldTerrainMesh.tsx` already documents: this scene
- * must not mutate state the existing `3d`/analytical view's camera/selection logic reacts to.
+ * Selection (`selectedId`) moved in Phase T3 to `worldExplorationStore.ts`'s `selectedPoiId` —
+ * still NOT `useMapStore`'s `hoveredCode`/`selectedCode` (same isolation reasoning
+ * `WorldTerrainMesh.tsx` documents: this scene must not mutate state the existing `3d`/analytical
+ * view's camera/selection logic reacts to), but now shared with `PlayerRig.tsx`'s "E" interact
+ * and `WorldPoiList.tsx`'s "view details" so all three entry points open the exact same panel
+ * below (unchanged markup/behavior — every existing Phase T2 e2e assertion on this panel's DOM
+ * structure, `role="dialog"`, close button, etc. still passes unmodified). `hovered` stays local
+ * `useState` — purely visual, per-marker, never needed outside this component.
  *
  * Coordinate transform: identical to `terrainConfig.ts`'s own `terrainNorthWest`/`terrainCenter`
  * derivation — `projection([lon, lat])` then negate Y (`ringToPoints` in `src/utils/geo.ts` does
@@ -20,16 +26,22 @@ import type { MessageKey } from '../../i18n/messages';
  * they sit on.
  */
 
-const CATEGORY_MESSAGE_KEY: Record<TourismDestinationCategory, MessageKey> = {
-  lake: 'worldExploration.destination.category.lake',
-  'national-park': 'worldExploration.destination.category.nationalPark',
-  waterfall: 'worldExploration.destination.category.waterfall',
-  'cultural-village': 'worldExploration.destination.category.culturalVillage',
-};
-
 /** Small pin above the terrain surface — the terrain group is rotated `[-Math.PI / 2, 0, 0]` in
  * `WorldScene.tsx`, so a positive local Z here lifts the marker above the ground plane once
- * rotated into world space, same as `MapAnnotations.tsx`'s existing `0.34` marker Z-offset. */
+ * rotated into world space, same as `MapAnnotations.tsx`'s existing `0.34` marker Z-offset.
+ *
+ * Phase T3 considered switching this to the real per-POI terrain height via the shared CPU
+ * sampler (`useTerrainSampler.ts`, the same one `PlayerRig.tsx`/`TourRig.tsx` use), and rejected
+ * it after it broke `world-exploration.spec.ts`'s existing Phase T2 "plausible marker positions"
+ * assertion: `WorldFlyInCamera.tsx`'s fixed, zoomed-in fly-in framing was tuned around this flat
+ * `0.5`, and several real destinations (e.g. lower-elevation ones) sit low enough on the real
+ * terrain that they moved outside that fixed camera's frame entirely. Ground-anchoring markers
+ * to real elevation is a real, reasonable T2.1+ enhancement, but it needs the fly-in camera
+ * framing revisited alongside it (or Walk/Fly mode, where the player's own camera moves freely
+ * and this constraint doesn't apply) — not a one-line height swap that quietly makes some real
+ * destinations undiscoverable in the illustrative intro. Player/POI proximity/teleport (the
+ * actual "ground-anchored" gameplay requirement) already use the shared sampler; only this
+ * decorative marker offset stays fixed. */
 const MARKER_Z = 0.5;
 
 function DestinationMarker({
@@ -131,7 +143,8 @@ function DestinationMarker({
 }
 
 export function WorldDestinationMarkers() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const selectedId = useWorldExplorationStore((state) => state.selectedPoiId);
+  const setSelectedId = useWorldExplorationStore((state) => state.selectPoi);
   return (
     <>
       {verifiedTourismDestinations.map((destination) => (

@@ -262,6 +262,342 @@ h1 i {
   color: #77e9ff;
   word-break: break-all;
 }
+/* World Exploration HUD (Phase T3, reports/tourism-digital-twin/) — DOM overlay, sibling of the
+   R3F <Canvas> in WorldExplorationView.tsx, not inside it. `.world-hud` itself has
+   pointer-events:none so clicks pass through to the canvas (needed for Pointer Lock) except where
+   a child explicitly re-enables them. */
+.world-hud {
+  position: absolute;
+  inset: 0;
+  /* Higher than any other overlay z-index used elsewhere in this stylesheet (max seen: 60, the
+     detail-map's own modal layer) — this HUD must always be clickable above the Three.js canvas
+     and its own dialogs regardless of which other overlay classes happen to be present in the
+     DOM at the same time (see e2e/world-exploration.spec.ts's Phase T3 describe block, which
+     caught real click-interception bugs against a lower value during manual verification). */
+  z-index: 70;
+  pointer-events: none;
+}
+.world-hud__top-left,
+.world-hud__top-right,
+.world-hud__bottom-left,
+.world-hud__bottom-center {
+  position: absolute;
+  pointer-events: auto;
+  /* Above `.world-hud__touch-controls` (z-index 1, below) within this shared stacking context —
+     without this, `.world-hud__touch-look`'s full-screen drag-to-look surface (rendered later in
+     the DOM, visible on any coarse-pointer/touch device) paints over these buttons and intercepts
+     every tap meant for them. Found via a real mobile-chromium e2e failure
+     (e2e/world-exploration.spec.ts), not by inspection alone. */
+  z-index: 2;
+}
+/* `.onboarding-backdrop` (reused as-is from OnboardingOverlay.tsx for WorldPoiList.tsx/
+   WorldTeleportMenu.tsx's full-screen dialogs) is normally a direct child of <body>-ish content,
+   never itself inside a `pointer-events: none` ancestor — but here it's nested under `.world-hud`
+   (see above), so every descendant would otherwise silently inherit `none` and become entirely
+   unclickable despite being visibly on top. Scoped to `.world-hud` so the shared class's behavior
+   elsewhere in the app (OnboardingOverlay.tsx) is completely unaffected. Same touch-controls
+   stacking note as above applies here too.*/
+.world-hud .onboarding-backdrop {
+  pointer-events: auto;
+  z-index: 2;
+}
+.world-hud__top-left {
+  left: 3.3vw;
+  top: 128px;
+}
+.world-hud__top-right {
+  right: 3.3vw;
+  top: 128px;
+  text-align: right;
+}
+.world-hud__bottom-left {
+  left: 3.3vw;
+  bottom: 24px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.world-hud__bottom-center {
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  text-align: center;
+}
+.world-hud__mode-switch {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid #8bb3a433;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #0b2924e8, #071b19e2);
+  backdrop-filter: blur(18px);
+}
+.world-hud__mode-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: #cfe3db;
+  background: transparent;
+  cursor: pointer;
+}
+.world-hud__mode-button--active {
+  background: #d4a446;
+  color: #071b19;
+  font-weight: 600;
+}
+.world-hud__status {
+  padding: 10px 14px;
+  border: 1px solid #8bb3a433;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #0b2924e8, #071b19e2);
+  backdrop-filter: blur(18px);
+  color: #dcebe5;
+  font-size: 11px;
+  min-width: 180px;
+}
+.world-hud__compass {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin: 0 0 6px auto;
+  border: 1px solid #d4a44666;
+  border-radius: 50%;
+}
+.world-hud__compass-needle {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 16px;
+  margin: -16px 0 0 -1px;
+  background: #ffd36c;
+  transform-origin: 50% 16px;
+}
+.world-hud__compass-label {
+  position: absolute;
+  left: 50%;
+  top: 2px;
+  transform: translateX(-50%);
+  font-size: 8px;
+  color: #e4bc5e;
+}
+.world-hud__coordinates,
+.world-hud__altitude,
+.world-hud__nearest-poi,
+.world-hud__interact-hint {
+  margin: 2px 0;
+}
+.world-hud__interact-hint {
+  color: #ffe49a;
+}
+.world-hud__bottom-left button,
+.world-hud__tour-buttons button {
+  border: 1px solid #d4a44688;
+  border-radius: 999px;
+  padding: 8px 14px;
+  color: #e7c471;
+  background: #d4a44612;
+  cursor: pointer;
+  font-size: 11px;
+}
+.world-hud__tour-controls {
+  padding: 8px 16px;
+  border: 1px solid #8bb3a433;
+  border-radius: 10px;
+  background: linear-gradient(145deg, #0b2924e8, #071b19e2);
+  backdrop-filter: blur(18px);
+  color: #dcebe5;
+  font-size: 11px;
+}
+.world-hud__tour-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 6px;
+}
+
+/* Full-screen dialogs (POI list, teleport menu) — reuse `.onboarding-backdrop` for the fixed,
+   blurred, centered scrim (see OnboardingOverlay.tsx); only the card content differs. */
+.world-hud__poi-list,
+.world-hud__teleport-menu {
+  width: min(420px, 100%);
+  max-height: 80vh;
+  overflow-y: auto;
+  padding: 20px;
+  border: 1px solid #d4a44666;
+  border-radius: 14px;
+  color: #dcebe5;
+  background: linear-gradient(145deg, #0b2924fa, #071b19fc);
+  box-shadow: 0 28px 90px #000a;
+}
+.world-hud__panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.world-hud__panel-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #f0cf7a;
+}
+.world-hud__teleport-menu h3 {
+  margin: 16px 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #9fc0b4;
+}
+.world-hud__panel-close {
+  border: 0;
+  background: transparent;
+  color: #acc5bc;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+.world-hud__poi-list-items,
+.world-hud__teleport-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.world-hud__teleport-list button {
+  width: 100%;
+  text-align: left;
+  border: 1px solid #d4a44655;
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: #e7c471;
+  background: #d4a44612;
+  cursor: pointer;
+  font-size: 12px;
+}
+.world-hud__poi-list-row {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  border: 1px solid #8bb3a433;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #0b292455;
+  color: #dcebe5;
+  cursor: pointer;
+  text-align: left;
+}
+.world-hud__poi-list-name {
+  flex: 1;
+  font-size: 13px;
+}
+.world-hud__poi-list-category {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #e4bc5e;
+}
+.world-hud__poi-list-distance {
+  font-size: 11px;
+  color: #9fc0b4;
+}
+.world-hud__poi-list-detail {
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #cfe3db;
+}
+.world-hud__poi-list-detail a {
+  display: block;
+  margin: 6px 0;
+  color: #77e9ff;
+  word-break: break-all;
+  font-size: 11px;
+}
+.world-hud__poi-list-teleport {
+  border: 1px solid #d4a44688;
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: #e7c471;
+  background: #d4a44612;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+/* Touch controls — visible only on coarse-pointer (touch) devices; a mouse/trackpad user never
+   sees a joystick meant for a thumb. */
+.world-hud__touch-controls {
+  display: none;
+  position: relative;
+  z-index: 1;
+}
+@media (pointer: coarse) {
+  .world-hud__touch-controls {
+    display: block;
+  }
+}
+.world-hud__touch-look {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  touch-action: none;
+}
+.world-hud__joystick {
+  position: absolute;
+  left: 24px;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  border: 1px solid #d4a44666;
+  background: #071b19aa;
+  pointer-events: auto;
+  touch-action: none;
+}
+.world-hud__joystick-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border-radius: 50%;
+  background: #d4a446cc;
+}
+.world-hud__touch-interact,
+.world-hud__touch-ascend {
+  position: absolute;
+  right: 24px;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  min-width: 56px;
+  min-height: 56px;
+  border-radius: 50%;
+  border: 1px solid #d4a44688;
+  background: #d4a44622;
+  color: #e7c471;
+  pointer-events: auto;
+  cursor: pointer;
+  font-size: 11px;
+}
+.world-hud__touch-ascend {
+  right: 96px;
+  font-size: 18px;
+}
+@media (max-width: 767px) {
+  .world-hud__top-left,
+  .world-hud__top-right {
+    top: var(--mobile-header-height, 58px);
+  }
+  .world-hud__status {
+    max-width: 46vw;
+    font-size: 10px;
+  }
+  .world-hud__bottom-left {
+    bottom: calc(var(--mobile-sheet-closed-height, 52px) + 8px);
+  }
+}
+
 .header-meta button {
   border: 1px solid #d4a44655;
   background: #d4a44612;
