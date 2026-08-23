@@ -574,6 +574,11 @@ export const en: Partial<Record<MessageKey, string>> = {
     'Open the text destination list (alternative to 3D labels)',
   'worldExploration.hud.teleportButton': 'Quick travel',
   'worldExploration.hud.teleportButtonAria': 'Open the quick-travel menu for destinations or tours',
+  'worldExploration.environment.groupLabel': 'Illustrative lighting',
+  'worldExploration.environment.dawn': 'Dawn',
+  'worldExploration.environment.day': 'Day',
+  'worldExploration.environment.sunset': 'Sunset',
+  'worldExploration.environment.presetButtonAria': 'Switch illustrative lighting to {preset}',
   'worldExploration.poi.listTitle': 'Destination list',
   'worldExploration.poi.listCloseLabel': 'Close list',
   'worldExploration.poi.teleportToButton': 'Go to {name}',
@@ -592,13 +597,13 @@ export const en: Partial<Record<MessageKey, string>> = {
   'worldExploration.tour.pausedStatus': 'Paused: {title} — stop {current}/{total}',
   'worldExploration.tour.lakesAndWaterfalls.title': 'Lakes & Waterfalls — Đắk Lắk’s waterways',
   'worldExploration.tour.lakesAndWaterfalls.description':
-    'Lak Lake and Đray Nur Waterfall — two destinations tied to the Serepốk River.',
+    'Lak Lake, Đray Nur Waterfall, and Krông Kmar Waterfall — three destinations tied to Đắk Lắk’s rivers.',
   'worldExploration.tour.forestAndVillage.title': 'National Park & Elephant Village',
   'worldExploration.tour.forestAndVillage.description':
     'Yok Đôn National Park and Buôn Đôn — nature and the history of taming wild elephants.',
   'worldExploration.tour.grandTour.title': 'The Full Đắk Lắk Tour',
   'worldExploration.tour.grandTour.description':
-    'All 4 verified destinations: Yok Đôn, Buôn Đôn, Đray Nur, Lak Lake.',
+    'All 5 verified destinations: Yok Đôn, Buôn Đôn, Đray Nur, Krông Kmar, Lak Lake.',
   'worldExploration.onboarding.title': 'Start exploring',
   'worldExploration.onboarding.body':
     'An illustrative digital map built on real Đắk Lắk terrain — walk, free-fly, or follow a guided tour.',

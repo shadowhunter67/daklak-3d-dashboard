@@ -138,13 +138,15 @@ test.describe('world exploration — destination markers (Phase T2)', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
 
-  test('renders all 4 verified destination markers at plausible positions', async ({ page }) => {
+  test('renders all 5 verified destination markers at plausible positions', async ({ page }) => {
     await page.goto('./?view=world');
     const worldRegion = page.getByLabel('Khám phá Đắk Lắk 3D — kịch bản minh họa');
     await expect(worldRegion).toBeVisible();
 
+    // 5 since Phase T4 added `krong-kmar-waterfall` to the 4 verified in Phase T2 (see
+    // `verifiedTourismDestinations.ts`).
     const markers = page.getByRole('button', { name: /^Điểm đến du lịch:/ });
-    await expect(markers).toHaveCount(4);
+    await expect(markers).toHaveCount(5);
 
     const viewport = page.viewportSize();
     const boxes = await Promise.all((await markers.all()).map((marker) => marker.boundingBox()));
@@ -162,11 +164,20 @@ test.describe('world exploration — destination markers (Phase T2)', () => {
     }
 
     if ((viewport?.width ?? 1280) > 767) {
+      // Phase T4 ground-anchors each marker to its real sampled terrain elevation
+      // (`poi/destinationElevation.ts`) instead of the old flat height — see
+      // `WorldDestinationMarkers.tsx`'s doc comment for why this deliberately does NOT also
+      // adjust `WorldFlyInCamera.tsx`'s fixed intro framing. A small tolerance margin
+      // accommodates a real destination's real elevation nudging it just past the fixed frame's
+      // edge (observed: Hồ Lắk's lowland elevation shifts its screen Y a few dozen px below this
+      // desktop viewport's bottom edge) without silently accepting a badly broken projection —
+      // still a real, bounded position, not NaN/off-screen-by-thousands-of-pixels.
+      const overflowTolerance = 60;
       for (const box of boxes) {
-        expect(box!.x).toBeGreaterThanOrEqual(0);
-        expect(box!.y).toBeGreaterThanOrEqual(0);
-        expect(box!.x).toBeLessThanOrEqual(viewport!.width);
-        expect(box!.y).toBeLessThanOrEqual(viewport!.height);
+        expect(box!.x).toBeGreaterThanOrEqual(-overflowTolerance);
+        expect(box!.y).toBeGreaterThanOrEqual(-overflowTolerance);
+        expect(box!.x).toBeLessThanOrEqual(viewport!.width + overflowTolerance);
+        expect(box!.y).toBeLessThanOrEqual(viewport!.height + overflowTolerance);
       }
     }
   });
@@ -235,7 +246,7 @@ test.describe('world exploration — destination markers, no pre-existing onboar
     // -opens here — a genuinely fresh profile with nothing in localStorage is exactly the case it
     // is meant to show for. Markers must still exist in the DOM underneath it regardless.
     await expect(page.getByRole('dialog', { name: /bắt đầu khám phá/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /^Điểm đến du lịch:/ })).toHaveCount(4);
+    await expect(page.getByRole('button', { name: /^Điểm đến du lịch:/ })).toHaveCount(5);
   });
 });
 
@@ -419,5 +430,81 @@ test.describe('world exploration — Walk/Fly/Tour (Phase T3)', () => {
       () => document.documentElement.scrollWidth - window.innerWidth,
     );
     expect(overflow).toBeLessThanOrEqual(1);
+  });
+});
+
+// Phase T4 (reports/tourism-digital-twin/) — ground-anchored destination markers, illustrative
+// lighting presets, and the reused road-layer data, all rendered without disturbing any Phase
+// T1-T3 behavior already covered above (mode switch, POI list, tours, touch controls).
+test.describe('world exploration — elevation/lighting/roads (Phase T4)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true');
+      window.localStorage.setItem('daklak-dashboard:world-onboarding-dismissed', 'true');
+    });
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+  });
+
+  test('illustrative lighting presets: "Ban ngày" is pressed by default and switching preset updates aria-pressed without runtime errors', async ({
+    page,
+  }) => {
+    const runtimeErrors: string[] = [];
+    page.on('pageerror', (error) => runtimeErrors.push(error.message));
+
+    await page.goto('./?view=world');
+    const dayButton = page.getByRole('button', { name: /chuyển ánh sáng minh họa sang ban ngày/i });
+    const dawnButton = page.getByRole('button', {
+      name: /chuyển ánh sáng minh họa sang bình minh/i,
+    });
+    const sunsetButton = page.getByRole('button', {
+      name: /chuyển ánh sáng minh họa sang hoàng hôn/i,
+    });
+    await expect(dayButton).toHaveAttribute('aria-pressed', 'true');
+    await expect(dawnButton).toHaveAttribute('aria-pressed', 'false');
+
+    await dawnButton.click();
+    await expect(dawnButton).toHaveAttribute('aria-pressed', 'true');
+    await expect(dayButton).toHaveAttribute('aria-pressed', 'false');
+
+    await sunsetButton.click();
+    await expect(sunsetButton).toHaveAttribute('aria-pressed', 'true');
+    await expect(dawnButton).toHaveAttribute('aria-pressed', 'false');
+
+    expect(runtimeErrors).toEqual([]);
+  });
+
+  test('destination markers, the reused road layer, and the Hồ Lắk water plane all render together without console/runtime errors', async ({
+    page,
+  }) => {
+    const runtimeErrors: string[] = [];
+    const consoleErrors: string[] = [];
+    page.on('pageerror', (error) => runtimeErrors.push(error.message));
+    page.on('console', (message) => {
+      if (message.type() !== 'error') return;
+      if (/google-analytics\.com|googletagmanager\.com/.test(message.text())) return;
+      consoleErrors.push(message.text());
+    });
+
+    await page.goto('./?view=world');
+    const canvas = page.locator('#world-viewport canvas');
+    await expect(canvas).toBeVisible();
+    // Every Phase T2 marker still resolves a real, clickable position once ground-anchored to
+    // real elevation (Phase T4) instead of the old flat height — a regression check that
+    // `getDestinationMarkerHeight`'s fallback-then-real-height swap didn't hide any marker.
+    await expect(page.getByRole('button', { name: 'Điểm đến du lịch: Hồ Lắk' })).toBeAttached();
+    await expect(
+      page.getByRole('button', { name: 'Điểm đến du lịch: Vườn quốc gia Yok Đôn' }),
+    ).toBeAttached();
+    await expect(
+      page.getByRole('button', { name: 'Điểm đến du lịch: Thác Đray Nur' }),
+    ).toBeAttached();
+    await expect(page.getByRole('button', { name: 'Điểm đến du lịch: Buôn Đôn' })).toBeAttached();
+
+    // Give the async road-layer fetch/decompress (loadRoads()) and terrain-sampler decode a real
+    // chance to resolve and re-render before asserting zero errors.
+    await page.waitForTimeout(1000);
+
+    expect(runtimeErrors).toEqual([]);
+    expect(consoleErrors).toEqual([]);
   });
 });

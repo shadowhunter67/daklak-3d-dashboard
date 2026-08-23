@@ -36,7 +36,8 @@ describe('WorldTourControls', () => {
     render(<WorldTourControls />);
     const status = screen.getByRole('status');
     expect(status).toHaveTextContent('Hồ & Thác — Đắk Lắk sông nước');
-    expect(status).toHaveTextContent('1/2');
+    // 3 stops since Phase T4 added 'krong-kmar-waterfall' to this tour (see worldTours.ts).
+    expect(status).toHaveTextContent('1/3');
   });
 
   it('shows Pause while playing, Resume while paused', () => {

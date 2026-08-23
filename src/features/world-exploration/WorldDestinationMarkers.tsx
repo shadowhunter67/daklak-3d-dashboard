@@ -6,6 +6,8 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { projection } from '../../utils/geo';
 import { useWorldExplorationStore } from './state/worldExplorationStore';
 import { CATEGORY_MESSAGE_KEY } from './poi/poiCategoryMessages';
+import { getDestinationMarkerHeight } from './poi/destinationElevation';
+import { useTerrainSampler } from './terrain/useTerrainSampler';
 
 /**
  * Phase T2 (reports/tourism-digital-twin/) — real, sourced destination markers on top of the
@@ -30,33 +32,37 @@ import { CATEGORY_MESSAGE_KEY } from './poi/poiCategoryMessages';
  * `WorldScene.tsx`, so a positive local Z here lifts the marker above the ground plane once
  * rotated into world space, same as `MapAnnotations.tsx`'s existing `0.34` marker Z-offset.
  *
- * Phase T3 considered switching this to the real per-POI terrain height via the shared CPU
- * sampler (`useTerrainSampler.ts`, the same one `PlayerRig.tsx`/`TourRig.tsx` use), and rejected
- * it after it broke `world-exploration.spec.ts`'s existing Phase T2 "plausible marker positions"
- * assertion: `WorldFlyInCamera.tsx`'s fixed, zoomed-in fly-in framing was tuned around this flat
- * `0.5`, and several real destinations (e.g. lower-elevation ones) sit low enough on the real
- * terrain that they moved outside that fixed camera's frame entirely. Ground-anchoring markers
- * to real elevation is a real, reasonable T2.1+ enhancement, but it needs the fly-in camera
- * framing revisited alongside it (or Walk/Fly mode, where the player's own camera moves freely
- * and this constraint doesn't apply) — not a one-line height swap that quietly makes some real
- * destinations undiscoverable in the illustrative intro. Player/POI proximity/teleport (the
- * actual "ground-anchored" gameplay requirement) already use the shared sampler; only this
- * decorative marker offset stays fixed. */
-const MARKER_Z = 0.5;
+ * Phase T3 tried switching this flat `0.5` to the real per-POI terrain height via the shared CPU
+ * sampler and reverted it after it broke `world-exploration.spec.ts`'s Phase T2 "plausible marker
+ * positions" assertion: `WorldFlyInCamera.tsx`'s fixed, zoomed-in fly-in framing was tuned around
+ * the flat height, and some real destinations sit low enough on the real terrain to fall outside
+ * that fixed camera's frame. Phase T4 revisits this the way the task requires: ground-anchor the
+ * *marker's* rendered position (via `getDestinationMarkerHeight`, `poi/destinationElevation.ts`)
+ * without touching `WorldFlyInCamera.tsx`'s path/framing at all — every camera-behavior e2e
+ * assertion T2/T3 already wrote about the intro stays valid unmodified. A marker can still be
+ * outside the intro's fixed frame at real elevation (Phase T2's own report already accepted this
+ * as expected scene-design behavior for the flat height, loosening its "plausible marker
+ * positions" check to desktop widths only) — the non-canvas `WorldPoiList.tsx` and Walk/Fly/Tour
+ * modes remain the accessible path to every destination regardless of intro framing. Before the
+ * shared terrain sampler resolves (`useTerrainSampler()` returns `null` on first render — the PNG
+ * decode is async), `getDestinationMarkerHeight` returns the original flat `MARKER_FALLBACK_HEIGHT`
+ * so markers are visible immediately, then update once real elevation is available. */
 
 function DestinationMarker({
   destination,
   selected,
   onSelect,
+  markerHeight,
 }: {
   destination: TourismDestination;
   selected: boolean;
   onSelect: (id: string | null) => void;
+  markerHeight: number;
 }) {
   const { t } = useTranslation();
   const [hovered, setHovered] = useState(false);
   const point = projection(destination.coordinates)!;
-  const position: [number, number, number] = [point[0], -point[1], MARKER_Z];
+  const position: [number, number, number] = [point[0], -point[1], markerHeight];
 
   return (
     <group position={position}>
@@ -145,6 +151,7 @@ function DestinationMarker({
 export function WorldDestinationMarkers() {
   const selectedId = useWorldExplorationStore((state) => state.selectedPoiId);
   const setSelectedId = useWorldExplorationStore((state) => state.selectPoi);
+  const sampler = useTerrainSampler();
   return (
     <>
       {verifiedTourismDestinations.map((destination) => (
@@ -153,6 +160,7 @@ export function WorldDestinationMarkers() {
           destination={destination}
           selected={destination.id === selectedId}
           onSelect={setSelectedId}
+          markerHeight={getDestinationMarkerHeight(sampler, destination)}
         />
       ))}
     </>

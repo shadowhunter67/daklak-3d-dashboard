@@ -1,13 +1,15 @@
 /**
  * REAL, SOURCED dataset — không phải dữ liệu minh hoạ. Cố ý KHÔNG đặt tên `*.demo.ts` /
  * `illustrative*.ts` (quy ước repo dùng cho dữ liệu giả, ví dụ
- * `illustrativeProjectPortfolio.ts`) vì 4 bản ghi dưới đây là toạ độ và mô tả có trích dẫn nguồn
+ * `illustrativeProjectPortfolio.ts`) vì các bản ghi dưới đây là toạ độ và mô tả có trích dẫn nguồn
  * thật (Wikipedia/Wikidata), đã xác minh thủ công trước khi đưa vào Phase T2
  * (reports/tourism-digital-twin/phase-status.md).
  *
- * Chỉ 4 điểm đến này — KHÔNG thêm điểm đến nào khác vào file này trừ khi có nguồn toạ độ đã xác
- * minh tương đương (xem phase-status.md, mục "Rejected/deferred candidates" cho 6 ứng viên đã
- * nghiên cứu nhưng bị loại vì không tìm được toạ độ có nguồn).
+ * 5 điểm đến — 4 điểm gốc của Phase T2, cộng `krong-kmar-waterfall` thêm ở Phase T4 (nguồn toạ độ
+ * Wikipedia xác minh qua chính MediaWiki API — xem phase-status.md, mục "Phase T4"). KHÔNG thêm
+ * điểm đến nào khác vào file này trừ khi có nguồn toạ độ đã xác minh tương đương (xem
+ * phase-status.md, mục "Rejected/deferred candidates" cho các ứng viên còn lại vẫn bị loại vì
+ * không tìm được toạ độ có nguồn, kể cả sau nỗ lực tìm kiếm bổ sung ở Phase T4).
  */
 import type { TourismDestination } from './types';
 
@@ -68,5 +70,19 @@ export const verifiedTourismDestinations: TourismDestination[] = [
     confidence: 'verified',
     verificationStatus: 'reviewed',
     dataOwner: 'tourism-digital-twin-phase-t2',
+  },
+  {
+    id: 'krong-kmar-waterfall',
+    name: 'Thác Krông Kmar',
+    category: 'waterfall',
+    description:
+      'Thác nước trên dòng sông Krông Kmar, dưới chân dãy núi Chư Yang Sin, thuộc huyện Krông Bông, cách Buôn Ma Thuột khoảng 60 km. Bãi đá trải dài ven sông cùng những bãi tắm tự nhiên từng là điểm du lịch nổi tiếng của tỉnh; từ năm 2008, nhà máy thủy điện Krông Kmar (công suất 12 MW) xây dựng trên chính dòng suối này đã làm thay đổi cảnh quan sinh thái khu vực.',
+    coordinates: [108.340884, 12.484197],
+    sourceUrl: 'https://vi.wikipedia.org/wiki/Th%C3%A1c_Kr%C3%B4ng_Kmar',
+    // Không có ảnh tự do đã xác minh — cố ý KHÔNG thêm imageUrl placeholder (cùng quy ước với
+    // dray-nur-waterfall/buon-don ở trên).
+    confidence: 'verified',
+    verificationStatus: 'reviewed',
+    dataOwner: 'tourism-digital-twin-phase-t4',
   },
 ];

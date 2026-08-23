@@ -1,10 +1,11 @@
 # World Exploration (`?view=world`)
 
-Technical reference for the "Khám phá Đắk Lắk 3D" route across its three phases:
+Technical reference for the "Khám phá Đắk Lắk 3D" route across its four phases:
 
 - **Phase T1** — illustrative fly-in intro over the real terrain mesh (`WorldFlyInCamera.tsx`, `WorldTerrainMesh.tsx`).
 - **Phase T2** — 4 real, sourced tourism destinations (`src/entities/tourism/`), rendered as clickable markers (`WorldDestinationMarkers.tsx`).
-- **Phase T3** (this document's main subject) — interactive Walk/Fly/Tour exploration: a CPU-side terrain sampler, a first-person player controller, POI proximity/interaction, teleport, guided tours, and a DOM-level HUD.
+- **Phase T3** — interactive Walk/Fly/Tour exploration: a CPU-side terrain sampler, a first-person player controller, POI proximity/interaction, teleport, guided tours, and a DOM-level HUD.
+- **Phase T4** (this document's latest additions) — ground-anchored destination markers, illustrative lighting presets, the reused road-layer data, and a 5th verified destination (`krong-kmar-waterfall`).
 
 See `reports/tourism-digital-twin/` for the phase-by-phase build history, decisions, and verification evidence. This document is the standing architecture reference; that directory is the dated log.
 
@@ -14,14 +15,21 @@ See `reports/tourism-digital-twin/` for the phase-by-phase build history, decisi
 WorldExplorationView.tsx        <section id="world-viewport">, WebGL fallback, mounts WorldScene + WorldHud
 ├── WorldScene.tsx               <Canvas>: lights, terrain group, camera (intro -> PlayerRig/TourRig handoff)
 │   ├── WorldTerrainMesh.tsx      reused terrain textures (Phase T1, unchanged)
-│   ├── WorldDestinationMarkers   Phase T2 markers + in-canvas info panel (unchanged)
+│   ├── roads/WorldRoadLayer.tsx  Phase T4 — reused road-layer data, ground-anchored (new)
+│   ├── environment/WorldWaterPlane.tsx  Phase T4 — illustrative water disc at Hồ Lắk (new)
+│   ├── WorldDestinationMarkers   Phase T2 markers + in-canvas info panel; Phase T4 ground-anchors
+│   │                             each marker's Y to real elevation (poi/destinationElevation.ts)
 │   ├── WorldFlyInCamera.tsx      one-shot intro (Phase T1, unchanged) — owns the camera until settled
 │   ├── player/PlayerRig.tsx      owns the camera for Walk/Fly — input, movement, camera, teleport
 │   └── player/TourRig.tsx        owns the camera for Tour — tour playback, camera framing
 ├── hud/WorldHud.tsx              DOM overlay: mode switch, status bar, dialogs, touch controls
+│   └── hud/WorldEnvironmentControls.tsx  Phase T4 — dawn/day/sunset lighting preset buttons (new)
+├── environment/lightingPresets.ts  Phase T4 — illustrative lighting mood definitions (new)
 ├── state/worldExplorationStore.ts  Zustand store, isolated from useMapStore (see below)
-├── terrain/terrainHeightSampler.ts CPU-side elevation query (the main new capability)
-├── poi/worldPoi.ts               runtime adapter over Phase T2's TourismDestination[]
+├── terrain/terrainHeightSampler.ts CPU-side elevation query (built Phase T3, reused by Phase T4)
+├── poi/worldPoi.ts               runtime adapter over Phase T2/T4's TourismDestination[]
+├── poi/destinationElevation.ts   Phase T4 — marker ground-anchoring height lookup (new)
+├── roads/worldRoadPoint.ts       Phase T4 — ground-anchored road-vertex projector (new)
 ├── tours/{worldTours,tourEngine}.ts data-driven guided tours
 └── coordinates/worldCoordinates.ts single shared lon/lat <-> world-space conversion
 ```
@@ -65,7 +73,7 @@ interface TerrainSampler {
 
 **Testing the decode itself.** `jsdom` (this repo's vitest environment) has no real `<canvas>` 2D rendering and no `createImageBitmap` — adding a real decoder (`canvas` npm package) would be a new dependency. `terrainHeightSampler.test.ts` instead mocks exactly those two browser primitives with a small, fully-controlled synthetic 2x2 image, so the _real_ wiring under test (fetch -> decode -> row/column mapping -> displacement formula -> caching/retry-after-failure) runs for real; only the PNG bytes are faked. The real shipped PNG is exercised end-to-end by `e2e/world-exploration.spec.ts`'s Walk-mode assertions (real Chromium, real decode).
 
-**Shared by everything ground-anchored.** `terrain/useTerrainSampler.ts` is the one hook `PlayerRig.tsx`, `TourRig.tsx` use to get the sampler — never a second ad hoc loader. (Phase T2's destination markers deliberately keep their original fixed float height rather than switching to real per-POI elevation — see `WorldDestinationMarkers.tsx`'s doc comment for why: the illustrative intro camera's fixed framing was tuned around the flat height, and several real destinations sit low enough on real terrain to fall outside that fixed frame. Player/POI-proximity/teleport — the actual "ground-anchored" requirement — do use the shared sampler.)
+**Shared by everything ground-anchored.** `terrain/useTerrainSampler.ts` is the one hook `PlayerRig.tsx`, `TourRig.tsx`, and (as of Phase T4) `WorldDestinationMarkers.tsx`/`roads/WorldRoadLayer.tsx` use to get the sampler — never a second ad hoc loader. Phase T2/T3 kept destination markers at a fixed flat height because ground-anchoring them once broke `WorldFlyInCamera.tsx`'s fixed intro framing for some real destinations (see `WorldDestinationMarkers.tsx`'s doc comment); Phase T4 ground-anchors the _marker_ position via `poi/destinationElevation.ts` without touching the camera at all, accepting that a marker can legitimately sit outside the intro's fixed frame at its real elevation (the non-canvas `WorldPoiList.tsx` and Walk/Fly/Tour modes remain the accessible path regardless).
 
 ## Player controller
 
@@ -100,7 +108,7 @@ Tour mode has no direct movement input — see below.
 
 ## POI system
 
-`poi/worldPoi.ts` is a **runtime adapter** over Phase T2's `TourismDestination[]`, not a second, forked data model — it adds one field (`world: {x, z}`, precomputed once at module load) on top of the real, sourced dataset (`src/entities/tourism/verifiedTourismDestinations.ts`, 4 entries, each with a cited `sourceUrl`; see that file's own doc comment for why no more may be added without an equivalent source). There is deliberately no `nameEn`/`descriptionEn` — the source data has none, and fabricating an English translation would violate this domain's own provenance rule; the English UI shows the same Vietnamese description text.
+`poi/worldPoi.ts` is a **runtime adapter** over Phase T2/T4's `TourismDestination[]`, not a second, forked data model — it adds one field (`world: {x, z}`, precomputed once at module load) on top of the real, sourced dataset (`src/entities/tourism/verifiedTourismDestinations.ts`, 5 entries as of Phase T4 — the original 4 plus `krong-kmar-waterfall`, each with a cited `sourceUrl`; see that file's own doc comment for why no more may be added without an equivalent source). There is deliberately no `nameEn`/`descriptionEn` — the source data has none, and fabricating an English translation would violate this domain's own provenance rule; the English UI shows the same Vietnamese description text.
 
 `findNearestPoi(position)` + `POI_PROXIMITY_RADIUS` drive: the HUD's "nearest POI" display (always shown, whatever the distance), the Walk-mode interact hint (only within range), and `PlayerRig.tsx`'s `E`-interact handler (`selectPoi()` only fires within range).
 
@@ -108,11 +116,11 @@ Tour mode has no direct movement input — see below.
 
 ## Guided tours
 
-`tours/worldTours.ts` is plain data (`{id, titleKey, descriptionKey, stops: string[]}`); `tours/tourEngine.ts` is the one playback engine every tour runs through — no per-tour hardcoded logic. With exactly 4 real, verified destinations in this repo, the 3 shipped tours are themed groupings of those same 4 stops (not the task brief's illustrative "coffee & culture" example — there is no sourced coffee/agriculture POI yet, and inventing one would violate the domain's provenance rule):
+`tours/worldTours.ts` is plain data (`{id, titleKey, descriptionKey, stops: string[]}`); `tours/tourEngine.ts` is the one playback engine every tour runs through — no per-tour hardcoded logic. With 5 real, verified destinations in this repo as of Phase T4, the 3 shipped tours are themed groupings of those same 5 stops (not the task brief's illustrative "coffee & culture" example — there is no sourced coffee/agriculture POI yet, and inventing one would violate the domain's provenance rule):
 
-- **Hồ & Thác — Đắk Lắk sông nước**: Hồ Lắk -> Đray Nur.
+- **Hồ & Thác — Đắk Lắk sông nước**: Hồ Lắk -> Đray Nur -> Krông Kmar (Phase T4 added the third stop once `krong-kmar-waterfall` was verified).
 - **Rừng quốc gia & Buôn làng voi**: Yok Đôn -> Buôn Đôn.
-- **Khám phá trọn vẹn Đắk Lắk**: all 4, in one tour.
+- **Khám phá trọn vẹn Đắk Lắk**: all 5, in one tour.
 
 `advanceTourProgress` is a pure state machine (`dwelling -> traveling -> dwelling -> ... -> finished`), driven by `TourRig.tsx`'s `useFrame`. Travel duration per leg is derived from real inter-POI distance / a fixed travel speed (not a fixed per-leg duration — `tourEngine.test.ts` specifically asserts the phase-completion decision and the reported camera position never drift apart, which an earlier version of this code had a bug in: the completion check used a hardcoded 1-second cutoff while position interpolation used a real distance-derived duration).
 
@@ -120,12 +128,13 @@ Tour mode has no direct movement input — see below.
 
 ## Performance
 
-- **Still lazy-loaded, still isolated.** `App.tsx`'s dynamic `import()` for `WorldExplorationView` is unchanged; `?view=overview`/`3d`/`2d`/`map` never fetch this chunk (`e2e/world-exploration.spec.ts`'s Phase T1 chunk-isolation tests, unmodified, still pass). The chunk grew from Phase T2's 9.22 KB raw / 3.92 KB gzip to **31.8 KB raw / 10.5 KB gzip** with all of Phase T3's new code — still a small fraction of the shared `three-vendor` chunk every other 3D-using view already pays for.
+- **Still lazy-loaded, still isolated.** `App.tsx`'s dynamic `import()` for `WorldExplorationView` is unchanged; `?view=overview`/`3d`/`2d`/`map` never fetch this chunk (`e2e/world-exploration.spec.ts`'s Phase T1 chunk-isolation tests, unmodified, still pass). The chunk grew from Phase T3's 31.8 KB raw / 10.5 KB gzip to **35.68 KB raw / 11.72 KB gzip** with Phase T4's road layer, lighting presets, and elevation code — still a small fraction of the shared `three-vendor` chunk every other 3D-using view already pays for; `check:budget` passed with 0 threshold changes.
 - **No per-frame allocation in the hot path.** `playerMovement.ts`'s functions return a new `PlayerBodyState` object per call (unavoidable, and cheap — a handful of numbers), but do not allocate arrays/closures inside the loop body beyond that.
 - **Throttled HUD commits.** `PlayerRig.tsx`/`TourRig.tsx` keep the authoritative, continuously-updated pose in a local ref/the camera itself, and only commit a throttled (150ms) snapshot to `worldExplorationStore`'s `pose`/`nearestPoiId` for HUD display — subscribing the HUD to per-frame state would force it to re-render 60x/second for numbers nothing needs updated that fast.
-- **One terrain decode, ever.** `loadTerrainHeightSampler()`'s module-level promise cache means the PNG is fetched/decoded exactly once regardless of how many components (`PlayerRig`, `TourRig`) call `useTerrainSampler()`.
+- **One terrain decode, ever.** `loadTerrainHeightSampler()`'s module-level promise cache means the PNG is fetched/decoded exactly once regardless of how many components (`PlayerRig`, `TourRig`, and — as of Phase T4 — `WorldDestinationMarkers`/`WorldRoadLayer`/`WorldWaterPlane`) call `useTerrainSampler()`.
 - **Existing device-tier system reused unchanged** (`graphicsQuality.ts`, `WorldScene.tsx`) — DPR cap, antialiasing, on constrained devices.
-- **Not done in this phase** (see "Future extension"): vegetation instancing, LOD/frustum culling beyond what Three.js does by default, road-layer reuse. The terrain mesh is still the same single `192x160`-segment plane Phase T1 shipped — adequate at this scale, unchanged.
+- **Road geometry built once, memoized.** `WorldRoadLayer.tsx` derives its `BufferGeometry` buckets via `useMemo` (not effect+`setState`, which this repo's `react-hooks/set-state-in-effect` lint rule flags as a cascading-render risk) — recomputed only when the fetched road data or the terrain sampler changes (i.e. once, when the sampler resolves after the initial flat-height render).
+- **Not done in this phase** (see "Future extension"): vegetation instancing, LOD/frustum culling beyond what Three.js does by default. The terrain mesh is still the same single `192x160`-segment plane Phase T1 shipped — adequate at this scale, unchanged.
 
 ## Accessibility
 
@@ -139,18 +148,21 @@ Tour mode has no direct movement input — see below.
 
 ## i18n
 
-All Phase T3 UI strings are new `worldExploration.*` keys in `src/i18n/messages/{vi,en}.ts` (vi is the source of truth; `dictionaryParity.test.ts` enforces 100% en coverage and matching `{placeholder}` tokens). No hardcoded visible strings — `scripts/check_i18n_hardcoded_strings.mjs` (run in `npm test`) verifies this.
+All Phase T3/T4 UI strings are new `worldExploration.*` keys in `src/i18n/messages/{vi,en}.ts` (vi is the source of truth; `dictionaryParity.test.ts` enforces 100% en coverage and matching `{placeholder}` tokens). No hardcoded visible strings — `scripts/check_i18n_hardcoded_strings.mjs` (run in `npm test`) verifies this. Phase T4 added `worldExploration.environment.*` (lighting-preset button labels) and updated the tour title/description strings that now mention `krong-kmar-waterfall`.
 
 ## Data provenance
 
-No new external dataset was fetched for Phase T3 — it builds entirely on already-shipped, already-attributed assets: the terrain height/color/normal/mask textures (`daklak-terrain-metadata.json`, NASA SRTM via Mapzen Terrarium tiles + Sentinel-2 cloudless 2016 by EOX, both already documented) and the 4 verified tourism destinations from Phase T2 (`verifiedTourismDestinations.ts`, each citing a Wikipedia/Wikidata source). See `docs/data-provenance.md` and `reports/tourism-digital-twin/phase-status.md` (Phase T2 section) for the existing, unmodified provenance records.
+Phase T3 built entirely on already-shipped, already-attributed assets. **Phase T4** adds one new sourced fact: `krong-kmar-waterfall`'s coordinates, found via WebSearch and verified directly against Vietnamese Wikipedia's MediaWiki API (`action=query&prop=coordinates`, not just the rendered page — see `reports/tourism-digital-twin/phase-status.md`'s Phase T4 section for the exact API call and response used to cross-check against a second, independent English Wikipedia article on Krông Bông district). The reused road layer (`src/data/loadRoads.ts`) and terrain textures were already documented in prior phases; no new provenance record was needed for them. See `docs/data-provenance.md` and `reports/tourism-digital-twin/phase-status.md` for the full, dated provenance records.
 
 ## Future extension
 
-Explicitly out of scope for this phase, listed here so a future phase doesn't have to re-derive why:
+Explicitly out of scope for Phase T4, listed here so a future phase doesn't have to re-derive why:
 
-- **Ground-anchoring destination markers to real elevation** — needs the intro camera's fixed framing revisited alongside it (see `WorldDestinationMarkers.tsx`'s doc comment for the concrete failure mode this phase hit and reverted).
-- **Vegetation, water, atmosphere/fog, day-light presets** — explicitly lower-priority in the task brief ("Nên làm nếu đủ dữ liệu và hiệu năng"); skipped to protect time for the required interaction/POI/tour/accessibility/testing work.
-- **Road/route visualization inside `?view=world`** — `daklak-roads.json`/`RoadLayer3D.tsx` already exist for the `3d` view; reusing them here (following the same "reuse the data, not the component" pattern `WorldTerrainMesh.tsx` set for the terrain) is a reasonable, scoped follow-up.
-- **More guided tours / more POIs** — blocked on finding more real, citable coordinate sources (same standard `verifiedTourismDestinations.ts` already holds itself to), not on engine capability — `tourEngine.ts` plays any `WorldTour` over any `WorldPoi[]` unchanged.
+- **Additional tours/POIs beyond `krong-kmar-waterfall`.** Phase T4 re-attempted sourcing for the 6 candidates T2 rejected (Buôn Akô Đhông, Đắk Lắk Museum, Khải Đoan Pagoda, Bảo Đại's Palace, Ngã sáu Ban Mê monument, Thác Krông Kmar) and found a real, verified Wikipedia coordinate for exactly one (Thác Krông Kmar, now added). The other 5 remain blocked — see `phase-status.md`'s Phase T4 section for what was checked and why each still lacks a citable source.
+- **Road name/reference labels inside `?view=world`.** `WorldRoadLayer.tsx` renders only line geometry, not `RoadLayer3D.tsx`'s label placement/dedup logic — a reasonable, scoped follow-up, not required by this phase.
+- **A precise Hồ Lắk shoreline.** `WorldWaterPlane.tsx` is a modest illustrative disc at the real point location, not a real GIS shoreline polygon (none exists in this repo) — see that file's doc comment for why drawing one would violate the "no fabricated geographic data" rule.
+- Prior-phase items not re-attempted this phase (see "Not done in this phase" list above): vegetation instancing, LOD/frustum culling beyond Three.js defaults, a physics engine.
+
+Items carried over from Phase T3's own list that Phase T4 completed (ground-anchored markers, lighting presets, road-layer reuse — see above) are no longer listed here. Still open:
+
 - **A physics engine** — only if a future feature genuinely needs body-to-body collision this height-based approach can't provide (see "No physics engine" above).

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { LightingPresetId } from '../environment/lightingPresets';
 
 /**
  * World-exploration's OWN store — deliberately not `useMapStore` (`src/stores/mapStore.ts`).
@@ -53,6 +54,10 @@ export interface WorldExplorationState {
   tourPlaying: boolean;
   teleportRequest: TeleportRequest | null;
   reducedMotion: boolean;
+  /** Phase T4 — selectable illustrative lighting mood (`environment/lightingPresets.ts`). Defaults
+   * to `'day'`, which reproduces Phase T1-T3's original fixed lighting exactly, so a first-time
+   * visitor's scene is visually unchanged unless they pick a different preset. */
+  lightingPreset: LightingPresetId;
 
   setMode: (mode: WorldExplorationMode) => void;
   setPose: (pose: WorldPose) => void;
@@ -70,6 +75,7 @@ export interface WorldExplorationState {
   stopTour: () => void;
   setTourStopIndex: (index: number) => void;
   setReducedMotion: (reduced: boolean) => void;
+  setLightingPreset: (preset: LightingPresetId) => void;
 }
 
 let teleportRequestCounter = 0;
@@ -91,6 +97,7 @@ export function createWorldExplorationStore() {
     tourPlaying: false,
     teleportRequest: null,
     reducedMotion: false,
+    lightingPreset: 'day',
 
     setMode: (mode) =>
       set((state) => ({
@@ -116,6 +123,7 @@ export function createWorldExplorationStore() {
     stopTour: () => set({ activeTourId: null, tourPlaying: false, tourStopIndex: 0 }),
     setTourStopIndex: (tourStopIndex) => set({ tourStopIndex }),
     setReducedMotion: (reducedMotion) => set({ reducedMotion }),
+    setLightingPreset: (lightingPreset) => set({ lightingPreset }),
   }));
 }
 
