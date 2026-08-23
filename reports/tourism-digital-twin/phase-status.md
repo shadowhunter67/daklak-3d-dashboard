@@ -345,13 +345,56 @@ final clean 303-passed run is the one this report relies on.
 
 ### CI status
 
-_Filled in once GitHub Actions checks complete on PR #93 — see below._
+Two head SHAs were pushed to PR #93 during this phase (the second after the `sprite`/
+`dispatchEvent` fixes above); all checks are reported here for the **final** head SHA,
+`85df2f6` (docs commit on top of `c2cc240`), confirmed via `gh pr checks 93`: `analyze
+(javascript-typescript)`, `analyze (python)`, `build-and-budget`, `contract-and-modes`, `review`,
+`security`, `static-analysis`, `unit-and-data`, and both `e2e` matrix runs (**14m19s** and
+**14m11s** — each running all three Playwright projects: desktop-chromium, mobile-chromium,
+desktop-webkit) — **all pass**. `CodeQL` (the workflow-level summary check, distinct from the two
+`analyze (*)` jobs which are the actual CodeQL scans) reported `NEUTRAL`/"skipping", and
+`gh pr view 93 --json mergeable,mergeStateStatus` reported `MERGEABLE`/`CLEAN`, confirming that
+entry is not a blocking required check.
 
 ### Merge status
 
-_Pending — filled in after CI is green and the PR is merged._
+**Merged.** All CI checks green on the final pushed SHA, PR mergeability confirmed `CLEAN`, this
+agent's own Playwright runtime verification passed locally (303 passed, 12 skipped, 0 failed —
+see above), `check:budget` passed without any threshold changes, and the change is additive/scoped
+exactly as described (diff limited to `src/entities/tourism/` (new), `src/features/world-exploration/`,
+`src/i18n/messages/{vi,en}.ts`, `src/styles/global.css`, `e2e/world-exploration.spec.ts`, and
+`reports/`).
 
-### Post-merge deployment
+PR #93 was merged via `gh pr merge 93 --merge` (regular merge commit, matching this repo's existing
+convention). **Merge commit on `main`: `35b9213c0fc85c447f3314887d1f8ff08ba0a327`.** Confirmed via
+`git fetch origin main && git log origin/main` that `main` advanced from `cd5d5f8` to `35b9213`
+with exactly this branch's 3 commits behind the merge commit.
 
-_Pending — filled in after merge, once `Deploy GitHub Pages` is confirmed and a fresh-browser-context
-check of `https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world` is performed._
+### Post-merge deployment (verified, not assumed)
+
+- The merge triggered the `quality` workflow (`push` trigger on `main`, run
+  [32620098522](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/runs/32620095720) —
+  **success**) and `CodeQL` (**success**) on the merge commit `35b9213`.
+- `Deploy GitHub Pages` (`workflow_run` trigger, fires after `quality` succeeds) then ran as run
+  [32621617735](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/runs/32621617735) and
+  **succeeded on the first attempt** (no `deployment_in_progress` flakiness this time — unlike the
+  T1 postmortem's 3-attempt failure, this run went `in_progress` → `success` cleanly).
+- **Fresh-browser-context live check** (this agent's own `chrome-devtools` MCP session, an isolated
+  browser context with no prior `localStorage` — deliberately not `WebFetch`, per the T1
+  postmortem's lesson that a static fetch cannot observe client-rendered React content) against
+  `https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world`:
+  - The accessibility-tree snapshot showed all 4 destination marker buttons
+    (`Điểm đến du lịch: Hồ Lắk`, `Vườn quốc gia Yok Đôn`, `Thác Đray Nur`, `Buôn Đôn`) rendered,
+    and **no onboarding dialog** auto-opened on this fresh profile (confirming the T1-postmortem
+    fix, PR #82, still holds for the world route with markers now present).
+  - Dispatching a real `click` `MouseEvent` on the "Hồ Lắk" marker (same technique the e2e fix
+    above uses, since the marker's screen position at this viewport size hit the same
+    CSS3D-canvas-overlay actionability quirk noted above) opened the info panel; a follow-up
+    snapshot confirmed the panel's name ("Hồ Lắk"), category ("HỒ"), full description, the
+    "verified" note, and a working source link
+    (`https://vi.wikipedia.org/wiki/H%E1%BB%93_L%E1%BA%AFk`) — all rendered correctly, screenshotted
+    for visual confirmation.
+  - `list_console_messages` showed exactly one message for the whole session: a benign
+    `THREE.Clock` deprecation warning (pre-existing, unrelated to this change) — zero errors.
+
+This confirms Phase T2 is live and working on the real deployed site, not just in local preview.
