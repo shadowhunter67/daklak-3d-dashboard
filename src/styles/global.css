@@ -171,6 +171,97 @@ h1 i {
   padding: 3px 5px;
   font-size: 6px;
 }
+.tourism-marker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.tourism-marker__dot {
+  display: block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ffd36c;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  background: #d4a446;
+  box-shadow:
+    0 0 6px #ffd36c,
+    0 0 18px #d4a44688;
+}
+.tourism-marker--hovered .tourism-marker__dot,
+.tourism-marker--selected .tourism-marker__dot {
+  background: #ffe49a;
+  box-shadow:
+    0 0 10px #ffe49a,
+    0 0 26px #ffd36caa;
+}
+.tourism-marker__label {
+  white-space: nowrap;
+  color: #f4e6c4;
+  background: #061923dc;
+  border: 1px solid #d4a44688;
+  padding: 3px 7px;
+  font-size: 11px;
+  border-radius: 4px;
+}
+.tourism-info-panel {
+  position: relative;
+  width: 260px;
+  padding: 14px 16px;
+  border: 1px solid #d4a44688;
+  border-radius: 8px;
+  background: #071b19f2;
+  color: #dcebe5;
+  box-shadow: 0 16px 40px #0007;
+  pointer-events: auto;
+  transform: translateY(-100%) translateY(-18px);
+}
+.tourism-info-panel__close {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  border: 0;
+  background: transparent;
+  color: #acc5bc;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+.tourism-info-panel__category {
+  margin: 0 20px 4px 0;
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #e4bc5e;
+}
+.tourism-info-panel__name {
+  margin: 0 20px 8px 0;
+  font-size: 15px;
+  color: #f4e6c4;
+}
+.tourism-info-panel__description {
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #cfe3db;
+}
+.tourism-info-panel__verified-note {
+  margin: 0 0 8px;
+  font-size: 10px;
+  font-style: italic;
+  color: #9fc0b4;
+}
+.tourism-info-panel__source {
+  display: inline-block;
+  font-size: 11px;
+  color: #77e9ff;
+  word-break: break-all;
+}
 .header-meta button {
   border: 1px solid #d4a44655;
   background: #d4a44612;

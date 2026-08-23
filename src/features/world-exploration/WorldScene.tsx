@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import { Suspense } from 'react';
 import { getGraphicsQualityConfigForCurrentDevice } from '../../utils/graphicsQuality';
 import { MapLoading } from '../../components/map/MapFallback';
+import { WorldDestinationMarkers } from './WorldDestinationMarkers';
 import { WorldFlyInCamera } from './WorldFlyInCamera';
 import { WorldTerrainMesh } from './WorldTerrainMesh';
 
@@ -24,6 +25,7 @@ export function WorldScene({ reducedMotion }: { reducedMotion: boolean }) {
         <directionalLight position={[-6, 9, 7]} intensity={3.4} color="#fff0c2" />
         <group rotation={[-Math.PI / 2, 0, 0]}>
           <WorldTerrainMesh />
+          <WorldDestinationMarkers />
         </group>
         <WorldFlyInCamera reducedMotion={reducedMotion} />
       </Canvas>
