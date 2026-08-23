@@ -8,6 +8,10 @@ import { WorldFlyInCamera, FLY_IN_DURATION_SECONDS } from './WorldFlyInCamera';
 import { WorldTerrainMesh } from './WorldTerrainMesh';
 import { PlayerRig } from './player/PlayerRig';
 import { TourRig } from './player/TourRig';
+import { WorldRoadLayer } from './roads/WorldRoadLayer';
+import { WorldWaterPlane } from './environment/WorldWaterPlane';
+import { LIGHTING_PRESETS } from './environment/lightingPresets';
+import { useWorldExplorationStore } from './state/worldExplorationStore';
 
 /**
  * Phase T1 illustrative scene root, extended in Phase T3 with interactive Walk/Fly/Tour
@@ -24,6 +28,10 @@ import { TourRig } from './player/TourRig';
 export function WorldScene({ reducedMotion }: { reducedMotion: boolean }) {
   const graphicsQuality = getGraphicsQualityConfigForCurrentDevice();
   const [introSettled, setIntroSettled] = useState(reducedMotion);
+  // Phase T4 — illustrative lighting preset (`environment/lightingPresets.ts`); default `'day'`
+  // reproduces this scene's original fixed lighting exactly, see that module's doc comment.
+  const lightingPreset = useWorldExplorationStore((state) => state.lightingPreset);
+  const preset = LIGHTING_PRESETS[lightingPreset];
 
   useEffect(() => {
     if (reducedMotion) return;
@@ -38,11 +46,20 @@ export function WorldScene({ reducedMotion }: { reducedMotion: boolean }) {
         gl={{ antialias: graphicsQuality.antialias, powerPreference: 'high-performance' }}
         shadows={false}
       >
-        <color attach="background" args={['#04110f']} />
-        <hemisphereLight args={['#b9f0dd', '#031b19', 1.35]} />
-        <directionalLight position={[-6, 9, 7]} intensity={3.4} color="#fff0c2" />
+        <color attach="background" args={[preset.backgroundColor]} />
+        <fog attach="fog" args={[preset.fogColor, preset.fogNear, preset.fogFar]} />
+        <hemisphereLight
+          args={[preset.hemisphereSky, preset.hemisphereGround, preset.hemisphereIntensity]}
+        />
+        <directionalLight
+          position={preset.directionalPosition}
+          intensity={preset.directionalIntensity}
+          color={preset.directionalColor}
+        />
         <group rotation={[-Math.PI / 2, 0, 0]}>
           <WorldTerrainMesh />
+          <WorldRoadLayer />
+          <WorldWaterPlane />
           <WorldDestinationMarkers />
         </group>
         {introSettled ? (

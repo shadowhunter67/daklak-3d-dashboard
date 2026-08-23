@@ -581,6 +581,11 @@ export const vi = {
   'worldExploration.hud.teleportButton': 'Di chuyển nhanh',
   'worldExploration.hud.teleportButtonAria':
     'Mở menu di chuyển nhanh tới điểm đến hoặc tuyến tham quan',
+  'worldExploration.environment.groupLabel': 'Ánh sáng minh họa',
+  'worldExploration.environment.dawn': 'Bình minh',
+  'worldExploration.environment.day': 'Ban ngày',
+  'worldExploration.environment.sunset': 'Hoàng hôn',
+  'worldExploration.environment.presetButtonAria': 'Chuyển ánh sáng minh họa sang {preset}',
   'worldExploration.poi.listTitle': 'Danh sách điểm đến',
   'worldExploration.poi.listCloseLabel': 'Đóng danh sách',
   'worldExploration.poi.teleportToButton': 'Đi tới {name}',
@@ -599,13 +604,13 @@ export const vi = {
   'worldExploration.tour.pausedStatus': 'Đã tạm dừng: {title} — điểm {current}/{total}',
   'worldExploration.tour.lakesAndWaterfalls.title': 'Hồ & Thác — Đắk Lắk sông nước',
   'worldExploration.tour.lakesAndWaterfalls.description':
-    'Hồ Lắk và thác Đray Nur — hai điểm đến gắn với sông Sêrêpốk.',
+    'Hồ Lắk, thác Đray Nur và thác Krông Kmar — ba điểm đến gắn với sông nước Đắk Lắk.',
   'worldExploration.tour.forestAndVillage.title': 'Rừng quốc gia & Buôn làng voi',
   'worldExploration.tour.forestAndVillage.description':
     'Vườn quốc gia Yok Đôn và Buôn Đôn — thiên nhiên và lịch sử thuần dưỡng voi rừng.',
   'worldExploration.tour.grandTour.title': 'Khám phá trọn vẹn Đắk Lắk',
   'worldExploration.tour.grandTour.description':
-    'Cả 4 điểm đến đã xác minh: Yok Đôn, Buôn Đôn, Đray Nur, Hồ Lắk.',
+    'Cả 5 điểm đến đã xác minh: Yok Đôn, Buôn Đôn, Đray Nur, Krông Kmar, Hồ Lắk.',
   'worldExploration.onboarding.title': 'Bắt đầu khám phá',
   'worldExploration.onboarding.body':
     'Đây là bản đồ số minh họa dựa trên địa hình thật tỉnh Đắk Lắk, có thể đi bộ, bay tự do và xem tour hướng dẫn.',

@@ -7,6 +7,7 @@ import { WorldTeleportMenu } from './WorldTeleportMenu';
 import { WorldTourControls } from './WorldTourControls';
 import { WorldGuideDialog } from './WorldGuideDialog';
 import { WorldTouchControls } from './WorldTouchControls';
+import { WorldEnvironmentControls } from './WorldEnvironmentControls';
 
 /**
  * DOM-level HUD, mounted as a sibling of the R3F `<Canvas>` (see `WorldExplorationView.tsx`) —
@@ -52,6 +53,7 @@ export function WorldHud() {
         >
           {t('worldExploration.hud.helpButton')}
         </button>
+        <WorldEnvironmentControls />
       </div>
 
       <WorldPoiList />

@@ -5,12 +5,13 @@ import { TOURISM_DESTINATION_CATEGORIES } from './types';
 import terrainMetadata from '../../assets/maps/daklak/daklak-terrain-metadata.json';
 
 describe('verifiedTourismDestinations', () => {
-  it('has exactly the 4 verified Phase T2 entries', () => {
-    expect(verifiedTourismDestinations).toHaveLength(4);
+  it('has exactly the 4 verified Phase T2 entries plus Phase T4’s krong-kmar-waterfall', () => {
+    expect(verifiedTourismDestinations).toHaveLength(5);
     expect(verifiedTourismDestinations.map((d) => d.id).sort()).toEqual([
       'buon-don',
       'dray-nur-waterfall',
       'ho-lak',
+      'krong-kmar-waterfall',
       'yok-don-national-park',
     ]);
   });

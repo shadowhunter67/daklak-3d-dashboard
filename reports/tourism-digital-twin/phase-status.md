@@ -537,3 +537,171 @@ capability):
    standard: no fabricated destinations), not on engine capability. Six candidates were already
    researched and rejected in T2 for lacking a verified source (see above); a T2.1-style sourcing
    pass would need to happen before any new tour content.
+
+## Phase T4 — elevation, lighting presets, road-layer reuse, one new sourced destination
+
+- Branch: `feat/world-t4-elevation-vegetation-roads`, forked from `main` at `d31b74e` (Phase T3's
+  docs-only follow-up commit, confirmed via `git log --oneline -10` at session start — working tree
+  clean apart from one pre-existing untracked file unrelated to this repo's app code).
+- Full architecture reference: `docs/world-exploration.md` (updated this phase). This section
+  covers all 4 sub-items from T3's "Explicitly not done this phase" note.
+
+### 1. Ground-anchored destination markers to real elevation
+
+`src/features/world-exploration/poi/destinationElevation.ts` (new) — `getDestinationMarkerHeight(sampler, destination)`
+samples the shared CPU terrain sampler (`terrain/terrainHeightSampler.ts`, built in Phase T3) at
+each destination's real `[lon, lat]` and returns the sampled ground height plus a small
+`MARKER_GROUND_OFFSET` lift, falling back to the original flat `MARKER_FALLBACK_HEIGHT` (`0.5`)
+while the sampler is still loading. `WorldDestinationMarkers.tsx` now calls this via
+`useTerrainSampler()` instead of the fixed `MARKER_Z = 0.5` constant Phase T2/T3 shipped.
+**Deliberately does not touch `WorldFlyInCamera.tsx`** — the exact requirement this sub-item's
+task description called for, matching why T3's own attempt at this was reverted (see that file's
+updated doc comment).
+
+**A real, expected regression, found and handled deliberately, not silently fixed away**: with
+real elevation applied, `e2e/world-exploration.spec.ts`'s pre-existing "plausible marker positions"
+test failed on `desktop-chromium` — one marker's screen position landed ~15px past the viewport's
+bottom edge (734.9px vs. a 720px-tall viewport), because Hồ Lắk's real, comparatively low elevation
+shifts it slightly outside `WorldFlyInCamera.tsx`'s fixed intro framing. This is exactly the
+tradeoff the task's own instructions anticipated ("A marker can still be outside the intro's fixed
+frame at real elevation"; T2's report already established the precedent of loosening this same
+check for narrow viewports). Fixed by widening the existing desktop-width containment check with a
+60px tolerance margin (not by silently increasing it to "always pass," and not by adjusting the
+camera) — still fails on a truly broken/NaN projection, now tolerates the small, expected,
+real-elevation-driven shift.
+
+**Unit test coverage** (per the task's explicit request for elevation-lookup coverage at each of
+the destinations, sanity-range not GPS-survey-precision):
+
+- `poi/destinationElevation.test.ts` (6 tests) — fallback-while-loading, fallback-outside-bbox,
+  correct world-position query for every verified destination, additive-offset math, monotonicity,
+  finite-position sanity — all against a mocked `TerrainSampler` (matching this repo's existing
+  `terrainHeightSampler.test.ts` convention of mocking the browser-only canvas decode).
+- `poi/destinationElevation.realTerrain.test.ts` (6 tests, **new pattern for this repo**) — decodes
+  the actual shipped `daklak-terrain-height.png` (grayscale, 8-bit, non-interlaced — confirmed via
+  raw IHDR bytes) using Node's built-in `zlib.inflateSync` plus a hand-written PNG scanline
+  unfilter (spec §9.2), avoiding both `jsdom`'s missing real `<canvas>` decode and a new `canvas`
+  npm dependency. Confirmed real elevation for all 5 verified destinations (see sub-item 4) falls
+  in a plausible 50-1200m sanity range (province's documented SRTM clip is 0-1609m) and that the
+  destinations don't all resolve to the same elevation — both would fail on a broken lookup.
+
+### 2. Illustrative lighting presets + a modest water feature
+
+Checked `WorldTerrainMesh.tsx`/`WorldScene.tsx` first, per the task's instruction — no existing
+water/vegetation/lighting-preset layer in the world scene (Phase T1's lighting was one fixed
+`hemisphereLight`/`directionalLight` pair).
+
+- `environment/lightingPresets.ts` (new) — 3 hand-picked presets (`dawn`/`day`/`sunset`), each
+  defining background/fog color, hemisphere sky/ground/intensity, and directional light
+  color/intensity/position. `'day'` reproduces Phase T1-T3's original fixed values exactly
+  (asserted in `lightingPresets.test.ts`) so the default look is visually unchanged.
+- `worldExplorationStore.ts` gained `lightingPreset`/`setLightingPreset` (default `'day'`).
+  `WorldScene.tsx` now reads the active preset for its `<color>`/`<fog>`/`<hemisphereLight>`/
+  `<directionalLight>` props, and a new `<fog>` element was added (none existed before).
+- `hud/WorldEnvironmentControls.tsx` (new) — 3 real `<button>`s (not canvas-drawn), `aria-pressed`
+  marks the active preset, mounted in `WorldHud.tsx`'s existing bottom-left control cluster. New
+  `worldExploration.environment.*` i18n keys (VI source of truth + EN parity).
+- `environment/WorldWaterPlane.tsx` (new) — a small, explicitly illustrative, semi-transparent
+  circular disc centered on Hồ Lắk's real coordinates (read from `verifiedTourismDestinations.ts`,
+  not duplicated), ground-anchored to the shared terrain sampler. Its doc comment is explicit that
+  this is **not** a real shoreline polygon — no sourced GIS boundary for Hồ Lắk exists in this
+  repo, and drawing one would violate the "no fabricated geographic data" rule; the disc's radius
+  is an arbitrary, visually-legible constant, not derived from the lake's real ~6.2 km² area (which
+  would imply a shoreline precision this component doesn't have).
+- No vegetation was added — the task's own guidance said only to add it "if presented as
+  illustrative styling," and this phase judged a water feature + lighting presets sufficient scope
+  without also inventing tree/canopy placement data that doesn't exist for this terrain.
+- `lightingPresets.test.ts` (6 tests): exactly the 3 documented presets, `'day'` reproduces the
+  original fixed values exactly, every preset has a visually distinct background color, every
+  preset has sane positive intensity/fog-range values, `isLightingPresetId` accepts/rejects
+  correctly.
+
+### 3. Road-layer reuse inside `?view=world`
+
+Found real, already-shipped road data: `src/data/loadRoads.ts` (`daklak-roads.json.gz`) and
+`src/components/map/roadLabels3D.ts`'s pure `buildRoadGeometryBuckets`, both already used by
+`src/components/map/RoadLayer3D.tsx` for the `3d` view. Not fabricated — reused directly.
+
+- `roads/worldRoadPoint.ts` (new) — `projectRoadPoint(sampler, coordinate)`, a per-vertex projector
+  ground-anchored to this scene's shared terrain sampler (mirroring `poi/destinationElevation.ts`'s
+  approach), following the exact pattern `WorldDestinationMarkers.tsx`/`WorldTerrainMesh.tsx`
+  already use for projecting real geo data into the rotated scene group.
+- `roads/WorldRoadLayer.tsx` (new) — calls `loadRoads()` (same fetch/decompress as `RoadLayer3D.tsx`)
+  and reuses `roadLabels3D.ts`'s already-tested `buildRoadGeometryBuckets` unchanged, only supplying
+  a different per-vertex projector. Deliberately does **not** reuse `RoadLayer3D.tsx` itself (it
+  reads/writes `useMapStore`'s `labelsVisible` — the same state-isolation rule every prior phase
+  file already documents) and deliberately does **not** render road name/reference labels (kept
+  modest, a reasonable scoped follow-up per its own doc comment).
+- `worldRoadPoint.test.ts` (5 tests): correct x/z mapping matching `latLonToWorld`, ground-anchored
+  Y with the lift offset, fallback while loading / outside bbox, correct sampler query position.
+- One real lint finding, fixed: the first draft's `WorldRoadLayer.tsx` built geometry inside a
+  `useEffect` + `setState` — flagged by this repo's `react-hooks/set-state-in-effect` rule
+  (cascading-render risk). Fixed by deriving the geometry via `useMemo` instead, with a separate
+  cleanup-only `useEffect` for `BufferGeometry.dispose()`.
+
+### 4. Additional tours/POIs
+
+Re-searched (WebSearch + WebFetch, including direct MediaWiki API calls, not just the rendered
+page) all 6 candidates T2 rejected for lacking a verified coordinate source:
+
+| Candidate                                                  | Result               | Evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ---------------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Buôn Akô Đhông                                             | Still blocked        | vi.wikipedia.org article exists but has no coordinate/geo template — confirmed by reading the full article; only relative directions given ("từ ngã sáu Ban Mê đi theo đường Phan Chu Trinh khoảng 2 km").                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| Đắk Lắk Museum (Bảo tàng các dân tộc Việt Nam tại Đắk Lắk) | Still blocked        | vi.wikipedia.org article exists (infobox: founding year, street address) but no coordinates.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| Khải Đoan Pagoda                                           | Still blocked        | vi.wikipedia.org article exists but no coordinates anywhere in the article.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Bảo Đại's Palace (Biệt điện Bảo Đại / Dinh Bảo Đại)        | Still blocked        | vi.wikipedia.org's "Dinh Bảo Đại" article lists multiple Bảo Đại residences across Vietnam including the Buôn Ma Thuột one, but gives no coordinates for any of them.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Ngã sáu Ban Mê monument (Buon Ma Thuot Victory Monument)   | Still blocked        | No Wikipedia/Wikidata article found at all — only travel-aggregator sites (Tripadvisor, Vinpearl, kupi.com), which do not meet this repo's Wikipedia/Wikidata-or-equivalent sourcing bar (same standard every other entry in `verifiedTourismDestinations.ts` already holds itself to).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| **Thác Krông Kmar**                                        | **Verified — added** | vi.wikipedia.org has a real `{{Coord}}`/geo-template coordinate. Confirmed two independent ways: (1) reading the rendered article's infobox coordinate text ("12°29′03″B 108°20′27″Đ / 12,484197°B 108,340884°Đ"), and (2) calling Wikipedia's own MediaWiki API directly — `GET https://vi.wikipedia.org/w/api.php?action=query&titles=Th%C3%A1c%20Kr%C3%B4ng%20Kmar&prop=coordinates&format=json`, returning `{"coordinates":[{"lat":12.484197,"lon":108.340884,...}]}` — a machine-readable confirmation independent of any page-summarization risk. The waterfall's district (Krông Bông, not the "Krông Năng" text one summarization pass produced — an artifact, not trusted) was independently cross-checked against a _second_, unrelated English Wikipedia article ("Krông Bông district"), which states "A large power plant has been built at Krông Kmar Waterfall ... to supply electricity for the entire surrounding area" and names Krông Kmar township as the district's capital. |
+
+**Added**: `krong-kmar-waterfall` to `verifiedTourismDestinations.ts` (category `waterfall`,
+coordinates `[108.340884, 12.484197]`, `sourceUrl` the vi.wikipedia.org article, no image — none
+verified, same all-or-nothing rule as `dray-nur-waterfall`/`buon-don`), `dataOwner:
+'tourism-digital-twin-phase-t4'`. Description text only states facts corroborated across multiple
+independent sources (river name, Chư Yang Sin foothill location, ~60km from Buôn Ma Thuột,
+national-park proximity, the 2008 12MW hydropower plant's ecological impact) — the disputed
+"Krông Năng" administrative detail was deliberately omitted from the shipped description since it
+could not be independently corroborated.
+
+**Downstream updates for the 5th destination** (all existing patterns, not new ones): added to the
+"Hồ & Thác" and "Khám phá trọn vẹn" guided tours (`worldTours.ts`); `verifiedTourismDestinations.test.ts`
+now expects 5 entries; e2e marker-count assertions updated 4 -> 5; `WorldTourControls.test.tsx`'s
+stop-count assertion updated 1/2 -> 1/3 for the now-3-stop "Hồ & Thác" tour; VI/EN tour
+title/description strings updated to mention the new stop.
+
+### Verified by command (actually run on this branch, exit codes/output checked)
+
+| Command                                                                                            | Result                                                                                                        |
+| -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `git status` / `git log --oneline -10` (session start)                                             | clean except one pre-existing unrelated untracked file; base confirmed at `d31b74e`                           |
+| `npm run typecheck`                                                                                | pass                                                                                                          |
+| `npm run lint`                                                                                     | pass                                                                                                          |
+| `npx prettier --check .`                                                                           | pass                                                                                                          |
+| `node scripts/check_i18n_hardcoded_strings.mjs`                                                    | clean                                                                                                         |
+| `npm test` (vitest)                                                                                | **132 test files / 1358 tests passed**, 0 failed (up from T3's 128/1328 — 4 new files, 30 new tests)          |
+| `npm run build`                                                                                    | pass — `WorldExplorationView-*.js` own chunk, **35.68 KB raw / 11.72 KB gzip** (up from T3's 31.8 KB/10.5 KB) |
+| `npm run check:budget`                                                                             | pass, **0 failures**, no thresholds touched                                                                   |
+| `npx playwright test --config=playwright.prod.config.ts --project=desktop-chromium` (full project) | **112 passed, 2 skipped (pre-existing), 0 failed**                                                            |
+| `npx playwright test --config=playwright.prod.config.ts --project=mobile-chromium` (full project)  | **111 passed, 3 skipped (pre-existing), 0 failed**                                                            |
+| `npx playwright test --config=playwright.prod.config.ts --project=desktop-webkit` (full project)   | **107 passed, 7 skipped (pre-existing), 0 failed**                                                            |
+
+**Total across all 3 required Playwright projects: 330 passed, 12 skipped (pre-existing, matching
+T3's own skip count exactly), 0 failed** — same combined totals T3 reported (324 passed + this
+phase's 6 new Phase-T4-tagged tests × ~1 per project, minus the coincidental skip-count match being
+exact because no new tests were skipped). Run project-by-project (not `--workers` across all 3 at
+once) after two earlier attempts at a combined 3-project run were killed by this machine's own
+10-minute command timeout / a stale orphaned `vite preview` server holding port 4173 from a prior
+attempt (cleaned up via `taskkill` between runs) — consistent with this machine's documented 16 GB
+RAM constraint (see workspace memory); not a product defect, and each project's full run completed
+cleanly once isolated.
+
+### CI status
+
+_Filled in after PR checks complete — see below._
+
+### Merge status
+
+_Filled in after merge — see below._
+
+### Post-merge deployment
+
+_Filled in after live verification — see below._
