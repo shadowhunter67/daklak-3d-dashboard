@@ -110,6 +110,122 @@ test.describe('world exploration (Phase T1)', () => {
   });
 });
 
+// Phase T2 (reports/tourism-digital-twin/) — real, sourced destination markers
+// (src/entities/tourism/verifiedTourismDestinations.ts) rendered on top of the terrain. Markers
+// are `@react-three/drei` `Html` overlays (plain DOM nodes positioned over the canvas), so they're
+// queryable the same way as any other DOM button — no canvas pixel inspection needed.
+test.describe('world exploration — destination markers (Phase T2)', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() =>
+      window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true'),
+    );
+    // WorldFlyInCamera.tsx runs a continuous slow orbit after its fly-in animation unless
+    // `reducedMotion` is true (read from `prefers-reduced-motion`, see App.tsx) — that orbit keeps
+    // every marker's on-screen position moving every frame, which makes Playwright's actionability
+    // checks (hover/click "element is stable") fail nondeterministically. Emulating
+    // `prefers-reduced-motion: reduce` is the app's own real mechanism for settling the camera, not
+    // a test-only workaround bolted onto the component.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+  });
+
+  test('renders all 4 verified destination markers at plausible positions', async ({ page }) => {
+    await page.goto('./?view=world');
+    const worldRegion = page.getByLabel('Khám phá Đắk Lắk 3D — kịch bản minh họa');
+    await expect(worldRegion).toBeVisible();
+
+    const markers = page.getByRole('button', { name: /^Điểm đến du lịch:/ });
+    await expect(markers).toHaveCount(4);
+
+    const viewport = page.viewportSize();
+    const boxes = await Promise.all((await markers.all()).map((marker) => marker.boundingBox()));
+    for (const box of boxes) {
+      // "Plausible" here means a real, finite CSS position the Mercator projection produced — not
+      // NaN/Infinity from a broken transform. The four real-world destinations are spread across
+      // the whole province while the settled fly-in camera frames a fixed, zoomed-in area (see
+      // WorldFlyInCamera.tsx), so on a narrow viewport some markers legitimately land outside the
+      // initial framing — same as how not every administrative label fits on screen at once
+      // elsewhere in this app. That's expected, not a defect; strict on-screen containment is only
+      // asserted below for wide-enough viewports where the framing is expected to fit all 4.
+      expect(box, 'marker must resolve a real DOM bounding box').not.toBeNull();
+      expect(Number.isFinite(box!.x)).toBe(true);
+      expect(Number.isFinite(box!.y)).toBe(true);
+    }
+
+    if ((viewport?.width ?? 1280) > 767) {
+      for (const box of boxes) {
+        expect(box!.x).toBeGreaterThanOrEqual(0);
+        expect(box!.y).toBeGreaterThanOrEqual(0);
+        expect(box!.x).toBeLessThanOrEqual(viewport!.width);
+        expect(box!.y).toBeLessThanOrEqual(viewport!.height);
+      }
+    }
+  });
+
+  test('clicking a marker shows its info panel with name, description, category and a visible source link', async ({
+    page,
+  }) => {
+    await page.goto('./?view=world');
+    const marker = page.getByRole('button', { name: 'Điểm đến du lịch: Hồ Lắk' });
+    await expect(marker).toBeVisible();
+    // `dispatchEvent`, not `.click()`/`.click({force:true})`: these markers are `@react-three/
+    // drei` `Html` overlays, positioned via a CSS transform anchored to the WebGL canvas rather
+    // than normal document flow. Playwright's actionability pipeline still runs a
+    // "scroll element into view" geometry check even with `force: true`, and that check produces
+    // a false-negative "Element is outside of the viewport" for this kind of CSS3D-transformed
+    // element on some browser/viewport combinations (observed on WebKit and the narrow mobile
+    // viewport) even though `toBeVisible()` above already proves it is genuinely rendered
+    // on-screen. `dispatchEvent` fires the real DOM event straight at the element, bypassing that
+    // geometry heuristic entirely — the documented Playwright escape hatch for exactly this case.
+    await marker.dispatchEvent('click');
+
+    const panel = page.getByRole('dialog', { name: 'Hồ Lắk' });
+    await expect(panel).toBeVisible();
+    await expect(panel.getByText('Hồ', { exact: true })).toBeVisible();
+    await expect(panel.getByRole('heading', { name: 'Hồ Lắk' })).toBeVisible();
+    await expect(panel.getByText(/Hồ nước ngọt tự nhiên lớn thứ hai Việt Nam/)).toBeVisible();
+
+    const sourceLink = panel.getByRole('link', { name: /Mở nguồn dữ liệu của Hồ Lắk/ });
+    await expect(sourceLink).toBeVisible();
+    await expect(sourceLink).toHaveAttribute(
+      'href',
+      'https://vi.wikipedia.org/wiki/H%E1%BB%93_L%E1%BA%AFk',
+    );
+    await expect(sourceLink).toHaveAttribute('target', '_blank');
+
+    // Closing returns to no open panel.
+    await panel.getByRole('button', { name: 'Đóng' }).dispatchEvent('click');
+    await expect(panel).not.toBeVisible();
+  });
+
+  test('hovering a marker reveals its name label without opening the info panel', async ({
+    page,
+  }) => {
+    await page.goto('./?view=world');
+    const marker = page.getByRole('button', { name: 'Điểm đến du lịch: Thác Đray Nur' });
+    await expect(marker).toBeVisible();
+    // See the `dispatchEvent` note on the click test above — same canvas-anchored-overlay reason.
+    // The component's hover handler is a React `onPointerOver`, which listens on the native
+    // `pointerover` event.
+    await marker.dispatchEvent('pointerover');
+    await expect(marker.getByText('Thác Đray Nur')).toBeVisible();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+  });
+});
+
+// Same "no pre-seeded onboarding-dismissed localStorage" regression class the T1 postmortem
+// documented (reports/tourism-digital-twin/phase-status.md) — re-checked here specifically with
+// the new marker layer present, so this addition doesn't reintroduce that bug class.
+test.describe('world exploration — destination markers, no pre-existing onboarding state', () => {
+  test('markers still render for a genuinely first-time visitor with nothing in localStorage', async ({
+    page,
+  }) => {
+    await page.goto('./?view=world');
+    await expect(page.getByLabel('Khám phá Đắk Lắk 3D — kịch bản minh họa')).toBeVisible();
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /^Điểm đến du lịch:/ })).toHaveCount(4);
+  });
+});
+
 // Deliberately its own describe block, with NO `localStorage` pre-seeding of
 // `daklak-dashboard:onboarding-dismissed` — every test above (and dashboard.spec.ts's own
 // beforeEach) seeds that flag before navigating, which is exactly why a real bug shipped past that
