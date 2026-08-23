@@ -539,6 +539,21 @@ export const vi = {
     'Trình duyệt hoặc thiết bị này không hỗ trợ WebGL nên không thể hiển thị cảnh 3D minh họa.',
   'worldExploration.backToOverview': 'Về Tổng quan điều hành',
 
+  // World Exploration — điểm đến du lịch (Phase T2, reports/tourism-digital-twin/) — dữ liệu thật,
+  // có nguồn (src/entities/tourism/verifiedTourismDestinations.ts), hiển thị trên nền địa hình minh
+  // hoạ. Cảnh render vẫn là minh hoạ; dữ kiện điểm đến và liên kết nguồn là thật, nên có
+  // "verifiedNote" để phân biệt rõ trên UI.
+  'worldExploration.destination.category.lake': 'Hồ',
+  'worldExploration.destination.category.nationalPark': 'Vườn quốc gia',
+  'worldExploration.destination.category.waterfall': 'Thác nước',
+  'worldExploration.destination.category.culturalVillage': 'Làng văn hóa',
+  'worldExploration.destination.markerAriaLabel': 'Điểm đến du lịch: {name}',
+  'worldExploration.destination.closeLabel': 'Đóng',
+  'worldExploration.destination.verifiedNote':
+    'Thông tin điểm đến này đã được xác minh và có nguồn trích dẫn — xem liên kết nguồn bên dưới.',
+  'worldExploration.destination.sourceLabel': 'Nguồn:',
+  'worldExploration.destination.sourceLinkAria': 'Mở nguồn dữ liệu của {name} (mở tab mới)',
+
   // TwoDimensionalView switch
   'twoDView.switchAria': 'Nội dung bản đồ 2D',
   'twoDView.mapTab': 'Bản đồ',
