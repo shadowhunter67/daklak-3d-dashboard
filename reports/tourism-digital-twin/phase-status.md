@@ -501,4 +501,39 @@ section), no code conflict.
 
 ### Merge status
 
-_Pending — not yet merged at the time of writing this section._
+**Merged.** PR #95 was mergeable (`mergeStateStatus: CLEAN`) with all CI checks green
+(`static-analysis`, `unit-and-data`, `contract-and-modes`, `build-and-budget`, `security`,
+`e2e` — both matrix runs, `analyze (javascript-typescript)`, `analyze (python)`, `review`).
+Merged via `gh pr merge 95 --squash --delete-branch`, fast-forwarding `main` to
+`949d5772b760833a2c48265ffb45a01c8b62b7b7`.
+
+### Post-merge deployment (verified, not assumed)
+
+- `quality` (run `32641...`, on `949d577`) and `CodeQL` both **succeeded** on the merge commit.
+- `Deploy GitHub Pages` (`workflow_run` trigger) **succeeded** on the first attempt (run
+  [32641082008](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/runs/32641082008)).
+- **Fresh-browser-context live check** (chrome-devtools MCP, isolated context, no prior
+  `localStorage` — per the T1 postmortem's lesson that `WebFetch` cannot observe client-rendered
+  React content) against `https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world`:
+  the page redirected to `?view=world&mode=overview&lang=vi` (new T3 query param, confirming the
+  new build is live), the accessibility snapshot showed the Walk/Fly/Tour mode switch, all 4
+  destination-marker buttons, the HUD (compass, coordinates, altitude, nearest-POI, destination
+  list, teleport menu, guided-tour list), and the world-specific "Bắt đầu khám phá" guide dialog —
+  with **no** leak of the unrelated `OnboardingOverlay`. `list_console_messages` showed exactly one
+  message: the pre-existing benign `THREE.Clock` deprecation warning — zero errors.
+
+This confirms Phase T3 is live and working on the real deployed site, not just in local preview.
+
+## Next action — recommendation for Phase T4
+
+Per T3's own "Explicitly not done this phase" note, unstarted work (not blocked on engine
+capability):
+
+1. Ground-anchoring destination markers to real elevation (attempted once in T3, reverted — see
+   `WorldDestinationMarkers.tsx`'s doc comment for why it broke the intro camera's fixed framing).
+2. Vegetation/water/atmosphere/day-light presets for the illustrative scene.
+3. Reusing the existing road-layer data inside `?view=world`.
+4. Additional tours/POIs — blocked on finding more real, citable coordinate sources (same T2
+   standard: no fabricated destinations), not on engine capability. Six candidates were already
+   researched and rejected in T2 for lacking a verified source (see above); a T2.1-style sourcing
+   pass would need to happen before any new tour content.
