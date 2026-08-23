@@ -48,7 +48,7 @@ function DestinationMarker({
 
   return (
     <group position={position}>
-      <Html transform sprite distanceFactor={2.4} zIndexRange={[10, 5]}>
+      <Html transform sprite center distanceFactor={2.4} zIndexRange={[10, 5]}>
         <button
           type="button"
           className={`tourism-marker${selected ? ' tourism-marker--selected' : ''}${
@@ -81,6 +81,8 @@ function DestinationMarker({
         <Html
           position={[0, 0, 0]}
           transform
+          sprite
+          center
           distanceFactor={2.4}
           zIndexRange={[20, 15]}
           occlude={false}

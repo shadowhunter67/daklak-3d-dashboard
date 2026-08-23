@@ -219,6 +219,7 @@ h1 i {
   color: #dcebe5;
   box-shadow: 0 16px 40px #0007;
   pointer-events: auto;
+  transform: translateY(-100%) translateY(-18px);
 }
 .tourism-info-panel__close {
   position: absolute;
