@@ -535,6 +535,21 @@ export const en: Partial<Record<MessageKey, string>> = {
     'This browser or device does not support WebGL, so the illustrative 3D scene cannot render.',
   'worldExploration.backToOverview': 'Back to Executive Overview',
 
+  // World Exploration destination markers (Phase T2, reports/tourism-digital-twin/) — real,
+  // sourced destinations (src/entities/tourism/verifiedTourismDestinations.ts), rendered on top
+  // of the illustrative terrain. The scene rendering stays illustrative; the destination facts
+  // and their source link are real, hence "verifiedNote" making that distinction visible in-UI.
+  'worldExploration.destination.category.lake': 'Lake',
+  'worldExploration.destination.category.nationalPark': 'National park',
+  'worldExploration.destination.category.waterfall': 'Waterfall',
+  'worldExploration.destination.category.culturalVillage': 'Cultural village',
+  'worldExploration.destination.markerAriaLabel': 'Tourism destination: {name}',
+  'worldExploration.destination.closeLabel': 'Close',
+  'worldExploration.destination.verifiedNote':
+    'This destination’s facts are sourced and verified — see the source link below.',
+  'worldExploration.destination.sourceLabel': 'Source:',
+  'worldExploration.destination.sourceLinkAria': 'Open the source for {name} (opens in a new tab)',
+
   // TwoDimensionalView switch
   'twoDView.switchAria': '2D map content',
   'twoDView.mapTab': 'Map',
