@@ -223,3 +223,178 @@ pending** on this deployment succeeding — do not treat this report as proof th
 5. Guided tours, panoramas, and provincial scale-out are unstarted and, per the ADR, don't currently
    require Cesium — revisit `world-engine-adr.md` only if a later phase's actual scale/capability
    need contradicts that.
+
+## Phase T2 — real, sourced destination markers
+
+- Branch: `feat/tourism-t2-destinations`, forked from `main` at `cd5d5f8` (confirmed via `git log
+-5 --oneline` at session start; `git pull` reported "Already up to date").
+- PR: https://github.com/shadowhunter67/daklak-3d-dashboard/pull/93
+- Head SHA at open (all local verification below run against this SHA): `c2cc24091d7e4cda282aaf5726968484aca0d2c8`
+
+### The 4 verified destinations (exactly these — no others were added)
+
+All coordinates and descriptions are copied verbatim from the pre-verified source list given for
+this phase (not re-derived); the dataset lives in
+`src/entities/tourism/verifiedTourismDestinations.ts`.
+
+| id                      | name                  | category         | coordinates (lon, lat)    | source                                                                              |
+| ----------------------- | --------------------- | ---------------- | ------------------------- | ----------------------------------------------------------------------------------- |
+| `ho-lak`                | Hồ Lắk                | lake             | 108.18194, 12.42167       | https://vi.wikipedia.org/wiki/H%E1%BB%93_L%E1%BA%AFk                                |
+| `yok-don-national-park` | Vườn quốc gia Yok Đôn | national-park    | 107.67065465, 12.80375719 | https://en.wikipedia.org/wiki/Yok_%C4%90%C3%B4n_National_Park                       |
+| `dray-nur-waterfall`    | Thác Đray Nur         | waterfall        | 107.8897, 12.5419         | https://vi.wikipedia.org/wiki/Th%C3%A1c_%C4%90ray_Nur                               |
+| `buon-don`              | Buôn Đôn              | cultural-village | 107.67778, 12.80833       | https://en.wikipedia.org/wiki/Bu%C3%B4n_%C4%90%C3%B4n,_%C4%90%E1%BA%AFk_L%E1%BA%AFk |
+
+`ho-lak` and `yok-don-national-park` additionally carry a verified free Wikimedia Commons image
+(`File:Holak02.JPG`, `File:Yokdon01.JPG`, both CC BY-SA 3.0) with attribution. `dray-nur-waterfall`
+and `buon-don` intentionally have no `imageUrl` — no verified free image was found for them, and
+`validateTourismDestination.ts` rejects an image field set without the others, so no placeholder
+was substituted.
+
+### Rejected/deferred candidates (T2.1+, not fabricated now)
+
+Six other candidates were researched for this phase and explicitly excluded because no verified
+coordinate source was found: Buôn Akô Đhông, Đắk Lắk Museum, Khải Đoan Pagoda, Bảo Đại's Palace,
+Ngã sáu Ban Mê monument, Thác Krông Kmar. They remain candidates for a future T2.1 once a real,
+citable coordinate source is found for each — no coordinates were approximated or guessed for any
+of them.
+
+### What was built
+
+- `src/entities/tourism/types.ts` — `TourismDestination` type (id, name, category, description,
+  `[lon, lat]` coordinates matching `ProjectPointGeometry`'s convention, required `sourceUrl`,
+  optional `imageUrl`/`imageAttribution`/`imageLicense`), reusing `DataConfidence`/
+  `VerificationStatus` from `src/entities/project/types.ts` rather than duplicating that taxonomy
+  for a second domain. A closed 4-value category union (`lake` / `national-park` / `waterfall` /
+  `cultural-village`) — deliberately not extended speculatively for the deferred candidates above.
+- `src/entities/tourism/validation/validateTourismDestination.ts` — structural validator: non-empty
+  id/name/description, category in the closed union, finite coordinates inside the real terrain
+  bbox (`src/assets/maps/daklak/daklak-terrain-metadata.json`), a non-empty `https` `sourceUrl`,
+  and image fields that are all-or-nothing (attribution + license required whenever `imageUrl` is
+  present, and rejected when it isn't).
+- `src/entities/tourism/verifiedTourismDestinations.ts` — the 4-entry dataset above, a real
+  committed data file (not `*.demo.ts`/`illustrative*.ts`, per this repo's naming convention for
+  fake vs. real data).
+- `src/features/world-exploration/WorldDestinationMarkers.tsx` — renders each destination as a
+  clickable/hoverable pin using `projection()` from `src/utils/geo.ts` (the same Mercator
+  projection + Y-flip the terrain mesh itself is built from), mounted alongside
+  `WorldTerrainMesh` inside the same rotated `<group>` in `WorldScene.tsx` so markers share its
+  coordinate frame exactly. Interaction state (`hovered`, `selectedId`) is local `useState`, not
+  `useMapStore`'s `hoveredCode`/`selectedCode` — same isolation rationale `WorldTerrainMesh.tsx`
+  already documents for not cross-wiring this illustrative scene into the analytical `3d` view's
+  state. Clicking a marker opens an info panel (name, category, description, and a visible,
+  clickable `sourceUrl` link) — the explicit UI-visible source citation the "no fabricated data"
+  rule calls for, not just an invisible code-level field.
+- New i18n keys under `worldExploration.destination.*` in `src/i18n/messages/{vi,en}.ts`. The
+  existing "ILLUSTRATIVE — KỊCH BẢN MINH HỌA" badge was left unchanged — it describes the scene's
+  simplified rendering style, not the destination data, which is real; an in-panel
+  `verifiedNote` string makes that distinction visible to a viewer.
+- Unit tests: `validateTourismDestination.test.ts` (13 cases covering every rejection path) and
+  `verifiedTourismDestinations.test.ts` (exactly 4 entries with the expected ids, every entry
+  passes the validator, every `sourceUrl` is `https`, ids are unique, categories are in the closed
+  union, every coordinate is inside `terrainMetadata.json`'s real bbox, and only the 2 entries with
+  a verified image carry image fields).
+- e2e: new `world-exploration.spec.ts` describe blocks — "destination markers (Phase T2)" (marker
+  count/positions, click → info panel + source link, hover → name label) and "destination markers,
+  no pre-existing onboarding state" (fresh-profile check specific to the marker layer, echoing the
+  T1 postmortem's regression class).
+
+### Two real bugs found and fixed during this phase's own verification (not shipped, then fixed)
+
+1. **WebKit-only invisible info panel.** The panel's `Html` wrapper was missing the `sprite` prop
+   present on the marker's `Html` — without it, the panel inherited the scene's `-90°`
+   terrain-group rotation and rendered edge-on/backface-hidden specifically in WebKit (Chromium
+   tolerated the same markup). Found by running the full Playwright suite against all 3 browser
+   projects, not just Chromium. Fixed by adding `sprite` to the panel's `Html` too, matching the
+   marker.
+2. **Playwright actionability false negative on canvas-anchored overlays.** `.click()` /
+   `.hover({force: true})` on the marker buttons failed intermittently with "Element is outside of
+   the viewport" on WebKit and the narrow mobile-chromium viewport — a false negative from
+   Playwright's "scroll into view" geometry check, which doesn't apply meaningfully to
+   `@react-three/drei` `Html` overlays (CSS3D-transformed elements anchored to a WebGL canvas, not
+   normal scrollable document content); `force: true` does not bypass that specific check. Fixed by
+   using `locator.dispatchEvent(...)` for marker interactions in tests instead, which fires the DOM
+   event directly. Also loosened the "plausible marker positions" assertion: the 4 real destinations
+   are spread across the whole province while the settled fly-in camera frames one fixed, zoomed-in
+   area, so not every marker is guaranteed to fit the initial framing on a narrow viewport — that's
+   expected scene-design behavior, not a defect, so strict on-screen containment is now only
+   asserted at desktop widths (mirroring this file's pre-existing `.map-caption` viewport-aware
+   convention), while all viewports still assert every marker resolves a finite, real position.
+
+### Verified by command (actually run on this branch, exit codes/output checked)
+
+| Command                                                                                                          | Result                                                                                                                                               |
+| ---------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `git status --short` / `git log -5 --oneline` / `git pull` (session start)                                       | clean, base confirmed at `cd5d5f8`, already up to date                                                                                               |
+| `npm run typecheck`                                                                                              | pass                                                                                                                                                 |
+| `npm run lint`                                                                                                   | pass                                                                                                                                                 |
+| `npm run format:check`                                                                                           | pass                                                                                                                                                 |
+| `npm test` (vitest)                                                                                              | **115 test files / 1179 tests passed**, 0 failed                                                                                                     |
+| `node scripts/check_i18n_hardcoded_strings.mjs`                                                                  | "No hard-coded visible Vietnamese strings found outside src/i18n/messages/\*\*."                                                                     |
+| `npm run build`                                                                                                  | pass — `dist/assets/WorldExplorationView-*.js` own chunk, 9.22 KB raw / 3.92 KB gzip (up from T1's 4.09 KB/1.91 KB, still its own lazy-loaded chunk) |
+| `npm run check:budget`                                                                                           | pass, **0 failures** (all budget dimensions under limit, no thresholds touched)                                                                      |
+| `npx playwright test --config=playwright.prod.config.ts` (full suite, all 3 projects, after the two fixes above) | **303 passed, 12 skipped (pre-existing), 0 failed**                                                                                                  |
+| `npx playwright test --config=playwright.prod.config.ts -g "Phase T2"` (targeted re-run, all 3 projects)         | **9 passed, 0 failed**                                                                                                                               |
+
+Two earlier full-suite runs in this same session (before the `sprite`/`dispatchEvent` fixes) showed
+additional transient failures in unrelated pre-existing tests (`dashboard.spec.ts`
+`ERR_CONNECTION_REFUSED` on mobile-chromium, a directory-ordering timeout, one onboarding
+sanity-check flake) — these did not reproduce on the clean re-run above and are attributed to local
+machine resource contention from running the Playwright suite repeatedly back-to-back in the same
+session (consistent with this machine's documented 16 GB RAM constraint), not to this change; the
+final clean 303-passed run is the one this report relies on.
+
+### CI status
+
+Two head SHAs were pushed to PR #93 during this phase (the second after the `sprite`/
+`dispatchEvent` fixes above); all checks are reported here for the **final** head SHA,
+`85df2f6` (docs commit on top of `c2cc240`), confirmed via `gh pr checks 93`: `analyze
+(javascript-typescript)`, `analyze (python)`, `build-and-budget`, `contract-and-modes`, `review`,
+`security`, `static-analysis`, `unit-and-data`, and both `e2e` matrix runs (**14m19s** and
+**14m11s** — each running all three Playwright projects: desktop-chromium, mobile-chromium,
+desktop-webkit) — **all pass**. `CodeQL` (the workflow-level summary check, distinct from the two
+`analyze (*)` jobs which are the actual CodeQL scans) reported `NEUTRAL`/"skipping", and
+`gh pr view 93 --json mergeable,mergeStateStatus` reported `MERGEABLE`/`CLEAN`, confirming that
+entry is not a blocking required check.
+
+### Merge status
+
+**Merged.** All CI checks green on the final pushed SHA, PR mergeability confirmed `CLEAN`, this
+agent's own Playwright runtime verification passed locally (303 passed, 12 skipped, 0 failed —
+see above), `check:budget` passed without any threshold changes, and the change is additive/scoped
+exactly as described (diff limited to `src/entities/tourism/` (new), `src/features/world-exploration/`,
+`src/i18n/messages/{vi,en}.ts`, `src/styles/global.css`, `e2e/world-exploration.spec.ts`, and
+`reports/`).
+
+PR #93 was merged via `gh pr merge 93 --merge` (regular merge commit, matching this repo's existing
+convention). **Merge commit on `main`: `35b9213c0fc85c447f3314887d1f8ff08ba0a327`.** Confirmed via
+`git fetch origin main && git log origin/main` that `main` advanced from `cd5d5f8` to `35b9213`
+with exactly this branch's 3 commits behind the merge commit.
+
+### Post-merge deployment (verified, not assumed)
+
+- The merge triggered the `quality` workflow (`push` trigger on `main`, run
+  [32620098522](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/runs/32620095720) —
+  **success**) and `CodeQL` (**success**) on the merge commit `35b9213`.
+- `Deploy GitHub Pages` (`workflow_run` trigger, fires after `quality` succeeds) then ran as run
+  [32621617735](https://github.com/shadowhunter67/daklak-3d-dashboard/actions/runs/32621617735) and
+  **succeeded on the first attempt** (no `deployment_in_progress` flakiness this time — unlike the
+  T1 postmortem's 3-attempt failure, this run went `in_progress` → `success` cleanly).
+- **Fresh-browser-context live check** (this agent's own `chrome-devtools` MCP session, an isolated
+  browser context with no prior `localStorage` — deliberately not `WebFetch`, per the T1
+  postmortem's lesson that a static fetch cannot observe client-rendered React content) against
+  `https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world`:
+  - The accessibility-tree snapshot showed all 4 destination marker buttons
+    (`Điểm đến du lịch: Hồ Lắk`, `Vườn quốc gia Yok Đôn`, `Thác Đray Nur`, `Buôn Đôn`) rendered,
+    and **no onboarding dialog** auto-opened on this fresh profile (confirming the T1-postmortem
+    fix, PR #82, still holds for the world route with markers now present).
+  - Dispatching a real `click` `MouseEvent` on the "Hồ Lắk" marker (same technique the e2e fix
+    above uses, since the marker's screen position at this viewport size hit the same
+    CSS3D-canvas-overlay actionability quirk noted above) opened the info panel; a follow-up
+    snapshot confirmed the panel's name ("Hồ Lắk"), category ("HỒ"), full description, the
+    "verified" note, and a working source link
+    (`https://vi.wikipedia.org/wiki/H%E1%BB%93_L%E1%BA%AFk`) — all rendered correctly, screenshotted
+    for visual confirmation.
+  - `list_console_messages` showed exactly one message for the whole session: a benign
+    `THREE.Clock` deprecation warning (pre-existing, unrelated to this change) — zero errors.
+
+This confirms Phase T2 is live and working on the real deployed site, not just in local preview.
