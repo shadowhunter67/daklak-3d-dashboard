@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import type { LightingPresetId } from '../environment/lightingPresets';
+import type { ScaleBand } from '../camera/cameraScaleBands';
+import { worldToMeters } from '../coordinates/worldScale';
 
 /**
  * World-exploration's OWN store — deliberately not `useMapStore` (`src/stores/mapStore.ts`).
@@ -58,6 +60,16 @@ export interface WorldExplorationState {
    * to `'day'`, which reproduces Phase T1-T3's original fixed lighting exactly, so a first-time
    * visitor's scene is visually unchanged unless they pick a different preset. */
   lightingPreset: LightingPresetId;
+  /** Camera's real altitude above the terrain directly below it, in meters — committed by
+   * `camera/ScaleDirector.tsx` (throttled, same pattern as `pose`), consumed by future LOD/density
+   * work (`reports/tourism-digital-twin/world-scale-lod-adr.md`'s PR6-8) to decide how much
+   * procedural detail to render. Defaults to the intro camera's own settled altitude
+   * (`WorldFlyInCamera.tsx`'s `END_HEIGHT`) so there is no brief "wrong band" flash before the
+   * first real frame commits. */
+  cameraAltitudeMeters: number;
+  /** Hysteresis-debounced altitude band (`camera/cameraScaleBands.ts`) — same defaulting rationale
+   * as `cameraAltitudeMeters`. */
+  scaleBand: ScaleBand;
 
   setMode: (mode: WorldExplorationMode) => void;
   setPose: (pose: WorldPose) => void;
@@ -76,6 +88,7 @@ export interface WorldExplorationState {
   setTourStopIndex: (index: number) => void;
   setReducedMotion: (reduced: boolean) => void;
   setLightingPreset: (preset: LightingPresetId) => void;
+  setCameraScale: (altitudeMeters: number, band: ScaleBand) => void;
 }
 
 let teleportRequestCounter = 0;
@@ -98,6 +111,8 @@ export function createWorldExplorationStore() {
     teleportRequest: null,
     reducedMotion: false,
     lightingPreset: 'day',
+    cameraAltitudeMeters: worldToMeters(INITIAL_POSE.y),
+    scaleBand: 'province',
 
     setMode: (mode) =>
       set((state) => ({
@@ -124,6 +139,7 @@ export function createWorldExplorationStore() {
     setTourStopIndex: (tourStopIndex) => set({ tourStopIndex }),
     setReducedMotion: (reducedMotion) => set({ reducedMotion }),
     setLightingPreset: (lightingPreset) => set({ lightingPreset }),
+    setCameraScale: (cameraAltitudeMeters, scaleBand) => set({ cameraAltitudeMeters, scaleBand }),
   }));
 }
 

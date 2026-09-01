@@ -1,6 +1,7 @@
 import { useThree, useFrame } from '@react-three/fiber';
 import { useEffect, useMemo, useRef } from 'react';
 import { FALLBACK_GROUND_HEIGHT } from './movement/playerMovement';
+import { metersToWorld } from '../coordinates/worldScale';
 import { useTerrainSampler } from '../terrain/useTerrainSampler';
 import { useWorldExplorationStore } from '../state/worldExplorationStore';
 import { getWorldTourById } from '../tours/worldTours';
@@ -14,13 +15,15 @@ import {
 } from '../tours/tourEngine';
 
 /** Aerial vantage height above the terrain surface while a tour camera holds at a stop — high
- * enough to see the destination and its surroundings, not a ground-level walk. */
-const TOUR_CAMERA_HEIGHT = 1.3;
-/** Extra altitude (world units) added on top of `TOUR_CAMERA_HEIGHT` at the midpoint of a leg,
- * scaled by `tourClimbFactor` — same order of magnitude as `WorldFlyInCamera.tsx`'s establishing
- * shot (`START_HEIGHT = 6.5`), so a leg between two stops reads as a brief aerial flyover of the
- * province rather than a flat glide at walking height. */
-const TOUR_CINEMATIC_CLIMB_HEIGHT = 2.6;
+ * enough to see the destination and its surroundings, not a ground-level walk. A real low-altitude
+ * sightseeing height (150m, roughly a small drone/light-aircraft vantage), via the shared
+ * true-scale conversion (`coordinates/worldScale.ts`) — not an independently-tuned world-unit
+ * number, see `world-scale-lod-adr.md`. */
+const TOUR_CAMERA_HEIGHT = metersToWorld(150);
+/** Extra altitude added on top of `TOUR_CAMERA_HEIGHT` at the midpoint of a leg, scaled by
+ * `tourClimbFactor` — a real 400m climb, enough for a brief aerial flyover of the surrounding
+ * terrain between stops without leaving the "sightseeing" register `TOUR_CAMERA_HEIGHT` sets. */
+const TOUR_CINEMATIC_CLIMB_HEIGHT = metersToWorld(400);
 const HUD_COMMIT_INTERVAL_SECONDS = 0.15;
 const MAX_FRAME_DELTA_SECONDS = 0.1;
 
@@ -88,9 +91,12 @@ export function TourRig() {
 
     const lookIndex = Math.min(next.fromIndex + 1, stops.length - 1);
     const lookTarget = stops[lookIndex]?.world ?? xz;
-    // Aim near ground level (not `cameraY`-relative) so climbing higher mid-leg tilts the camera
-    // further downward — the aerial pitch that sells the "flyover" rather than a flat glide.
-    camera.lookAt(lookTarget.x, groundHeight + TOUR_CAMERA_HEIGHT - 0.35, lookTarget.z);
+    // Aim at ground level (not `cameraY`-relative) so climbing higher mid-leg tilts the camera
+    // further downward — the aerial pitch that sells the "flyover" rather than a flat glide. Now
+    // that `TOUR_CAMERA_HEIGHT`/`TOUR_CINEMATIC_CLIMB_HEIGHT` are true real-world altitudes (not
+    // the old ~1.3-world-unit art-directed number), aiming at the real sampled ground height needs
+    // no extra fudge offset the way the old fixed `-0.35` subtraction did.
+    camera.lookAt(lookTarget.x, groundHeight, lookTarget.z);
 
     hudCommitAccumulator.current += rawDelta;
     if (hudCommitAccumulator.current >= HUD_COMMIT_INTERVAL_SECONDS) {

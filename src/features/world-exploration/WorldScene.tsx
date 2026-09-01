@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { getGraphicsQualityConfigForCurrentDevice } from '../../utils/graphicsQuality';
 import { MapLoading } from '../../components/map/MapFallback';
 import { WorldBuildingsLayer } from './buildings/WorldBuildingsLayer';
+import { ScaleDirector } from './camera/ScaleDirector';
 import { WorldDestinationMarkers } from './WorldDestinationMarkers';
 import { WorldFlyInCamera, FLY_IN_DURATION_SECONDS } from './WorldFlyInCamera';
 import { WorldTerrainMesh } from './WorldTerrainMesh';
@@ -69,10 +70,14 @@ export function WorldScene({ reducedMotion }: { reducedMotion: boolean }) {
             {/* Same fov as WorldFlyInCamera.tsx's intro camera — matching it here avoids a jarring
                 zoom-jump the instant the handoff happens (PlayerRig.tsx's initial pose already
                 matches the intro's settled position/orientation exactly, see its own doc
-                comment). */}
-            <PerspectiveCamera makeDefault fov={45} near={0.05} far={100} />
+                comment). near/far are no longer fixed here — ScaleDirector sets them every frame
+                from the camera's real altitude (world-scale-lod-adr.md's Question 3); the
+                three.js defaults this mounts with for one frame are immediately overwritten
+                before that frame is presented. */}
+            <PerspectiveCamera makeDefault fov={45} />
             <PlayerRig />
             <TourRig />
+            <ScaleDirector />
           </>
         ) : (
           <WorldFlyInCamera reducedMotion={reducedMotion} />
