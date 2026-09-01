@@ -3,6 +3,7 @@ import {
   advanceTourProgress,
   createInitialTourProgress,
   getTourStops,
+  tourClimbFactor,
   tourPositionForProgress,
   TOUR_DWELL_SECONDS,
   type TourProgress,
@@ -129,5 +130,34 @@ describe('tourPositionForProgress', () => {
     const position = tourPositionForProgress(stops, progress);
     expect(Number.isFinite(position.x)).toBe(true);
     expect(Number.isFinite(position.z)).toBe(true);
+  });
+});
+
+describe('tourClimbFactor', () => {
+  const stops = [poiAt('a', 0, 0), poiAt('b', 10, 0)];
+  const legDuration = 10 / 1.6; // TOUR_TRAVEL_SPEED
+
+  it('is 0 while dwelling', () => {
+    const progress = { phase: 'dwelling' as const, fromIndex: 0, phaseElapsed: 1 };
+    expect(tourClimbFactor(stops, progress)).toBe(0);
+  });
+
+  it('is 0 at the start and end of a leg, and peaks at 1 at the midpoint', () => {
+    const start = { phase: 'traveling' as const, fromIndex: 0, phaseElapsed: 0 };
+    const mid = { phase: 'traveling' as const, fromIndex: 0, phaseElapsed: legDuration / 2 };
+    const end = { phase: 'traveling' as const, fromIndex: 0, phaseElapsed: legDuration };
+    expect(tourClimbFactor(stops, start)).toBeCloseTo(0, 5);
+    expect(tourClimbFactor(stops, mid)).toBeCloseTo(1, 5);
+    expect(tourClimbFactor(stops, end)).toBeCloseTo(0, 5);
+  });
+
+  it('is 0 once finished', () => {
+    const progress = { phase: 'finished' as const, fromIndex: 1, phaseElapsed: 0 };
+    expect(tourClimbFactor(stops, progress)).toBe(0);
+  });
+
+  it('never throws or returns NaN on an empty stop list', () => {
+    const progress = { phase: 'traveling' as const, fromIndex: 0, phaseElapsed: 1 };
+    expect(tourClimbFactor([], progress)).toBe(0);
   });
 });

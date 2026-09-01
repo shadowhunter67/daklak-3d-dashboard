@@ -8,13 +8,19 @@ import {
   advanceTourProgress,
   createInitialTourProgress,
   getTourStops,
+  tourClimbFactor,
   tourPositionForProgress,
   type TourProgress,
 } from '../tours/tourEngine';
 
-/** Aerial vantage height above the terrain surface while a tour camera holds/travels between
- * stops — high enough to see the destination and its surroundings, not a ground-level walk. */
+/** Aerial vantage height above the terrain surface while a tour camera holds at a stop — high
+ * enough to see the destination and its surroundings, not a ground-level walk. */
 const TOUR_CAMERA_HEIGHT = 1.3;
+/** Extra altitude (world units) added on top of `TOUR_CAMERA_HEIGHT` at the midpoint of a leg,
+ * scaled by `tourClimbFactor` — same order of magnitude as `WorldFlyInCamera.tsx`'s establishing
+ * shot (`START_HEIGHT = 6.5`), so a leg between two stops reads as a brief aerial flyover of the
+ * province rather than a flat glide at walking height. */
+const TOUR_CINEMATIC_CLIMB_HEIGHT = 2.6;
 const HUD_COMMIT_INTERVAL_SECONDS = 0.15;
 const MAX_FRAME_DELTA_SECONDS = 0.1;
 
@@ -76,12 +82,15 @@ export function TourRig() {
 
     const xz = tourPositionForProgress(stops, next);
     const groundHeight = sampler?.getHeight(xz.x, xz.z) ?? FALLBACK_GROUND_HEIGHT;
-    const cameraY = groundHeight + TOUR_CAMERA_HEIGHT;
+    const climb = tourClimbFactor(stops, next) * TOUR_CINEMATIC_CLIMB_HEIGHT;
+    const cameraY = groundHeight + TOUR_CAMERA_HEIGHT + climb;
     camera.position.set(xz.x, cameraY, xz.z);
 
     const lookIndex = Math.min(next.fromIndex + 1, stops.length - 1);
     const lookTarget = stops[lookIndex]?.world ?? xz;
-    camera.lookAt(lookTarget.x, cameraY - 0.35, lookTarget.z);
+    // Aim near ground level (not `cameraY`-relative) so climbing higher mid-leg tilts the camera
+    // further downward — the aerial pitch that sells the "flyover" rather than a flat glide.
+    camera.lookAt(lookTarget.x, groundHeight + TOUR_CAMERA_HEIGHT - 0.35, lookTarget.z);
 
     hudCommitAccumulator.current += rawDelta;
     if (hudCommitAccumulator.current >= HUD_COMMIT_INTERVAL_SECONDS) {
