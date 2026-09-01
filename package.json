@@ -49,7 +49,8 @@
     "validate:data": "python scripts/validate_daklak_data.py",
     "build:gis": "npm run prepare:gis-source && python scripts/build_daklak_geojson.py",
     "build:terrain": "python scripts/generate_daklak_terrain.py",
-    "build:roads": "python scripts/build_daklak_roads.py"
+    "build:roads": "python scripts/build_daklak_roads.py",
+    "build:buildings": "python scripts/build_daklak_buildings.py"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.8",

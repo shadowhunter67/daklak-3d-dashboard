@@ -10,6 +10,32 @@ Geometry comes from the MIT-licensed `thanglequoc/vietnamese-provinces-database`
 
 Rebuild from the verified in-project cache with `npm run build:gis`, then run `npm run build:terrain` and `npm run validate:data`. Review any hash change as a data change; do not update generated outputs without updating provenance and attribution.
 
+## 3D building footprints (pilot: phường Buôn Ma Thuột only)
+
+`?view=world`'s `WorldBuildingsLayer` renders real OpenStreetMap building footprints, extruded to
+an illustrative height — but only for one ward, code `24133` (phường Buôn Ma Thuột), not the whole
+province. `scripts/build_daklak_buildings.py` queries the Overpass API for `way["building"]` inside
+that ward's bounding box, clips each footprint to the ward's real administrative polygon, and
+estimates a height per building: the OSM `height` tag if present, else `building:levels` × 3.3m,
+else a documented per-`building=*`-type default level count (see `DEFAULT_LEVELS_BY_TYPE` in the
+script) — every feature records which method produced its `heightMeters` in its own
+`heightMethod` field, so an estimated height is never indistinguishable from a measured one.
+
+Snapshot pinned at `osm-buon-ma-thuot-buildings-20260901` (raw Overpass response cached at
+`.cache/building-source/`, not committed; re-fetch with `--fetch`). Output:
+`src/assets/maps/daklak/daklak-buildings-buon-ma-thuot.json` (canonical),
+`building-source-registry.json` (OpenStreetMap contributors, ODbL 1.0 — same license terms as the
+existing road layer), and `building-metadata.json` (checksums, query text, per-height-method
+feature counts). The runtime asset is `public/data/daklak-buildings-buon-ma-thuot.json.gz`. Rebuild
+with `npm run build:buildings` (requires `daklak-wards.geojson` to already exist —
+run `build:gis` first).
+
+Not yet done, as a deliberate pilot-scope limit rather than an oversight: the other 101 wards have
+no building layer, and this dataset is not yet registered in `src/data-platform/catalog/` (the
+typed dataset/layer catalog `docs/data-platform-architecture.md` describes — the existing road
+layer is registered there; this pilot intentionally is not, to avoid guessing at that schema before
+the pilot itself is reviewed).
+
 ## Detail map data (roads, boundaries) — not yet built
 
 The detail map (`?view=map`, see [docs/detail-map-integration.md](detail-map-integration.md)) is
