@@ -36,18 +36,19 @@ no building layer. (Registered as `building-footprints-buon-ma-thuot-pilot` in
 entries must resolve against a real catalog dataset id; see that file's own status
 `partially-verified`.)
 
-**Known limitation, found and partly fixed 2026-09-01**: the first shipped version of
-`worldBuildingGeometry.ts`'s height scale was tuned only against the walking camera's eye height,
-without checking it against the whole-province overview camera in an actual browser. That made this
-ward's one real 19-story tower render as a ~5-world-unit spike — visibly broken, reported by a user
-looking at the deployed `?view=world` overview. The scale was re-tuned (empirically, screenshots via
-Chrome DevTools MCP) so the tallest real building stays a small, bounded bump instead — see
-`worldBuildingGeometry.ts`'s own doc comment for the exact before/after numbers and the regression
-test that guards against it recurring. Trade-off accepted, not yet solved: at the corrected scale,
-ordinary buildings are shorter than a walking player's eye height, so up close this pilot reads as
-low, true-footprint-shaped massing rather than photorealistic to-scale buildings. Fixing that without
-reintroducing the overview-camera spike would mean drawing footprints artificially larger than their
-real extent (a further design decision, deliberately not made in this pilot).
+**Height scale history (2026-09-01)**: the first two shipped versions of
+`worldBuildingGeometry.ts`'s height scale (`0.08` linear, then `0.12`/`0.015 * sqrt(meters)`) were
+each independently "tuned by feel" against the walking camera's eye height, without a shared
+ground-truth ratio to check against — and without checking the result against the whole-province
+overview camera in an actual browser. That made this ward's one real 19-story tower render as a
+multi-world-unit spike — visibly broken, reported by a user looking at the deployed `?view=world`
+overview (PR #105 fixed the symptom by lowering the scale). Root-caused and fixed properly in the
+human-scale/procedural-density work that followed (`reports/tourism-digital-twin/world-scale-lod-adr.md`):
+buildings now use `metersToWorld` (`coordinates/worldScale.ts`) — true 1:1 real-world height,
+derived from the same Mercator projection every other real coordinate in this scene already uses,
+not an independent scale. See that ADR for why objects use the true horizontal scale while terrain
+keeps its own exaggerated vertical scale, and for the camera-side work (altitude-relative near/far
+and movement speed) needed to make a true-scale building actually read as tall from up close.
 
 ## Detail map data (roads, boundaries) — not yet built
 

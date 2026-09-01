@@ -1,40 +1,30 @@
 import { ExtrudeGeometry } from 'three';
 import { geometryToShapes } from '../../../utils/geo';
+import { metersToWorld } from '../coordinates/worldScale';
 import type { BuildingCollection } from '../../../data/loadBuildings';
 
 /**
- * Illustrative real-height -> world-unit scale for extruded buildings, empirically tuned (not
- * derived from a literal meters-per-world-unit ratio — nothing else placed directly in this scene
- * is either, e.g. `WALK_SPEED`/`FLY_SPEED` in `playerMovement.ts`) against a real regression this
- * pilot shipped and had to fix:
+ * True 1:1 real-world height, via the shared `metersToWorld` conversion
+ * (`coordinates/worldScale.ts`) — not an independently-tuned scale. This replaces two earlier
+ * versions (`0.08` linear, then `0.12 * sqrt(meters)`, then `0.015 * sqrt(meters)`) that were each
+ * tuned "by feel" against the walking camera's eye height in isolation, without a shared
+ * ground-truth ratio to check against. The first version shipped a real bug: the one real 19-story
+ * tower in this dataset ("Chung cư Hoàng Anh BIDV", `osm-way-228989476`, 62.7m) rendered ~1-5 world
+ * units tall — a sizable fraction of the entire province's ~5.16-unit width — a spike piercing
+ * off-screen from the overview camera (fixed ad hoc in PR #105, root-caused and fixed properly
+ * here — see `reports/tourism-digital-twin/world-scale-lod-adr.md`'s Question 2 for why objects
+ * use the *horizontal* true scale, not terrain's exaggerated vertical one).
  *
- * A first version (`0.08` linear, later `0.12 * sqrt(meters)`) was tuned only against the walking
- * camera's eye height (`PlayerRig.tsx`'s `EYE_HEIGHT = 0.16`). It missed that footprints
- * (`geometryToShapes`) sit in this scene's *true*, Mercator-accurate horizontal scale — a real
- * building footprint is only ~0.0003-0.003 world units wide — while `EYE_HEIGHT`/
- * `TOUR_CAMERA_HEIGHT` are already a ~1000x *game*-scale exaggeration over true-to-life, chosen for
- * player legibility, not geometric consistency with the footprints. Tuning height against the
- * player made this dataset's one real 19-story tower ("Chung cư Hoàng Anh BIDV",
- * `osm-way-228989476`, 62.7m) render ~1 world unit tall — a fifth of this scene's entire terrain
- * width (`terrainConfig.ts`'s `terrainWidth`, ~5.16) — a single spike piercing off-screen from the
- * province overview camera, confirmed live via `?view=world` in a browser (this pilot's original
- * ship missed that check — see PR history).
- *
- * `0.015 * sqrt(meters)` was then re-tuned empirically (rebuild + look, repeatedly) against the
- * *overview* camera instead, so the tallest real building in this dataset stays a small, clearly
- * -bounded bump rather than a spike (`worldBuildingGeometry.test.ts` encodes that bound as a
- * regression guard). Known, accepted limitation of that trade-off: at this scale, ordinary 1-story
- * buildings (`BUILDING_HEIGHT_SCALE * sqrt(3.3) ≈ 0.027`) sit *below* the walking camera's eye
- * height rather than towering over it — up close, this pilot's buildings read as low, honestly
- * true-footprint-shaped massing rather than photorealistic 1:1 buildings. Making them read as
- * "tall" at walking distance without breaking the overview camera would need footprints drawn
- * larger than their real extent (a further, deliberately not-yet-made design decision — see
- * `docs/data-provenance.md`'s building-footprints section).
+ * Trade-off, now principled rather than incidental: buildings are genuinely tiny relative to the
+ * whole-province overview camera (a real building IS nearly invisible at that zoom in reality
+ * too), and at true scale a footprint's own width and its extruded height are finally
+ * proportionate to each other — no more needle-shaped buildings relative to their own base. Making
+ * buildings *read* as tall from the walking camera without reintroducing the spike needs the
+ * camera's own near/far and altitude-relative behavior to change (PR3 in the same sequence), not a
+ * further height hack.
  */
-export const BUILDING_HEIGHT_SCALE = 0.015;
-
 export function buildingHeightWorldUnits(heightMeters: number): number {
-  return BUILDING_HEIGHT_SCALE * Math.sqrt(Math.max(0, heightMeters));
+  return metersToWorld(Math.max(0, heightMeters));
 }
 
 export interface BuildingGeometryData {
