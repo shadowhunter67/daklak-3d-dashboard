@@ -3,6 +3,7 @@ import { PerspectiveCamera } from '@react-three/drei';
 import { Suspense, useEffect, useState } from 'react';
 import { getGraphicsQualityConfigForCurrentDevice } from '../../utils/graphicsQuality';
 import { MapLoading } from '../../components/map/MapFallback';
+import { WorldBuildingsLayer } from './buildings/WorldBuildingsLayer';
 import { WorldDestinationMarkers } from './WorldDestinationMarkers';
 import { WorldFlyInCamera, FLY_IN_DURATION_SECONDS } from './WorldFlyInCamera';
 import { WorldTerrainMesh } from './WorldTerrainMesh';
@@ -59,6 +60,7 @@ export function WorldScene({ reducedMotion }: { reducedMotion: boolean }) {
         <group rotation={[-Math.PI / 2, 0, 0]}>
           <WorldTerrainMesh />
           <WorldRoadLayer />
+          <WorldBuildingsLayer />
           <WorldWaterPlane />
           <WorldDestinationMarkers />
         </group>

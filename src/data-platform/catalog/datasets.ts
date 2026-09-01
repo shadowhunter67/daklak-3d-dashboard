@@ -10,12 +10,15 @@ import dashboardSources from '../../assets/data/dashboard-sources.json';
 import metricProvenance from '../../assets/data/metric-provenance.json';
 import roadMetadata from '../../assets/maps/daklak/road-metadata.json';
 import roadSourceRegistry from '../../assets/maps/daklak/road-source-registry.json';
+import buildingMetadata from '../../assets/maps/daklak/building-metadata.json';
+import buildingSourceRegistry from '../../assets/maps/daklak/building-source-registry.json';
 import terrainMetadata from '../../assets/maps/daklak/daklak-terrain-metadata.json';
 import mapMetadata from '../../assets/maps/daklak/daklak-metadata.json';
 import sourceSummary from '../../assets/maps/daklak/daklak-source-summary.json';
 import type { DatasetDescriptor } from '../schemas/dataset';
 
 const roadRegistryEntry = roadSourceRegistry[0];
+const buildingRegistryEntry = buildingSourceRegistry[0];
 const overviewProvenance = metricProvenance['overview.grdpGrowthPercent'];
 
 export const ADMINISTRATIVE_UNITS_DATASET: DatasetDescriptor = {
@@ -216,6 +219,47 @@ export const ROAD_NETWORK_3D2D_DATASET: DatasetDescriptor = {
       roadRegistryEntry?.methodologyNote ??
         'Supplementary open data; not an official or legal road record.',
       roadRegistryEntry?.coverageNote ?? '',
+    ].filter(Boolean),
+  },
+  access: { delivery: 'bundled-static', requiresAuthentication: false },
+};
+
+/**
+ * Pilot scope — one ward only (code 24133, phường Buôn Ma Thuột), not the whole province. See
+ * `scripts/build_daklak_buildings.py` and `docs/data-provenance.md`'s "3D building footprints"
+ * section for why, and for the per-feature `heightMethod` provenance this dataset's own quality
+ * notes reference.
+ */
+export const BUILDING_FOOTPRINTS_BUON_MA_THUOT_DATASET: DatasetDescriptor = {
+  id: 'building-footprints-buon-ma-thuot-pilot',
+  title: 'Dấu chân công trình 3D (OpenStreetMap) — thí điểm phường Buôn Ma Thuột',
+  description:
+    'Hình khối nhà 3D minh hoạ (massing), extrude từ dấu chân công trình thật trên OpenStreetMap, chỉ phủ 1 phường (mã 24133, phường Buôn Ma Thuột) làm thí điểm — chưa phải toàn tỉnh. Chiều cao lấy từ thẻ height/building:levels khi có, còn lại là mặc định theo loại công trình (xem heightMethod từng feature).',
+  domain: 'infrastructure',
+  classification: 'public',
+  authority: 'open-community',
+  publicationStatus: 'published',
+  administrativeLevel: 'commune',
+  temporalResolution: 'static',
+  spatialRepresentation: 'polygon',
+  source: {
+    organization: buildingRegistryEntry?.issuingAuthority ?? 'OpenStreetMap contributors',
+    documentNumber: buildingRegistryEntry?.sourceId,
+    sourceUrl: buildingRegistryEntry?.sourceUrl,
+    retrievalDate: buildingRegistryEntry?.accessedAt,
+    license: buildingRegistryEntry?.license,
+  },
+  version: buildingMetadata.sourceId,
+  period: { label: buildingRegistryEntry?.publishedAt ?? buildingMetadata.generatedAt },
+  generatedAt: buildingMetadata.generatedAt,
+  checksum: buildingMetadata.artifactChecksum,
+  refreshPolicy: { mode: 'manual', expectedInterval: 'P1Y' },
+  quality: {
+    status: 'partially-verified',
+    knownLimitations: [
+      buildingRegistryEntry?.coverageNote ?? 'Pilot: only one ward, not the whole province.',
+      buildingRegistryEntry?.methodologyNote ??
+        'Illustrative massing heights, not surveyed building heights.',
     ].filter(Boolean),
   },
   access: { delivery: 'bundled-static', requiresAuthentication: false },
@@ -505,6 +549,7 @@ export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   ENERGY_ILLUSTRATIVE_DATASET,
   HEATMAP_ILLUSTRATIVE_DATASET,
   ROAD_NETWORK_3D2D_DATASET,
+  BUILDING_FOOTPRINTS_BUON_MA_THUOT_DATASET,
   TERRAIN_IMAGERY_DATASET,
   DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET,
   PROJECT_PORTFOLIO_ILLUSTRATIVE_DATASET,
