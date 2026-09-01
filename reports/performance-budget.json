@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-09-01T12:08:33.492Z",
+  "generatedAt": "2026-09-01T13:06:41.073Z",
   "limits": {
     "totalJavaScriptBytes": 3400000,
     "totalJavaScriptGzipBytes": 950000,
@@ -10,18 +10,18 @@
     "totalBuildBytes": 6400000
   },
   "actual": {
-    "totalJavaScriptBytes": 2943411,
-    "totalJavaScriptGzipBytes": 786066,
+    "totalJavaScriptBytes": 2943435,
+    "totalJavaScriptGzipBytes": 786075,
     "largestJavaScriptGzipBytes": 251770,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 1829459,
-    "totalBuildBytes": 5945613
+    "totalBuildBytes": 5945637
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-CbMjS78p.js",
+      "file": "assets/AdministrativeMap-CSNfGTwy.js",
       "bytes": 19964,
-      "gzipBytes": 7296
+      "gzipBytes": 7297
     },
     {
       "file": "assets/daklak-labels-D8Nz6tfh.js",
@@ -50,27 +50,27 @@
       "bytes": 719308
     },
     {
-      "file": "assets/DataProvenancePanel-PE4PB0uY.js",
+      "file": "assets/DataProvenancePanel-DqXZ_bPE.js",
       "bytes": 10495,
-      "gzipBytes": 3415
+      "gzipBytes": 3412
     },
     {
-      "file": "assets/DataReadinessView-E19H2vuD.js",
+      "file": "assets/DataReadinessView-lnH479gw.js",
       "bytes": 9160,
-      "gzipBytes": 2351
+      "gzipBytes": 2352
     },
     {
-      "file": "assets/datasets-PNoEYp7_.js",
+      "file": "assets/datasets-KwqaUkvL.js",
       "bytes": 22231,
-      "gzipBytes": 6109
+      "gzipBytes": 6110
     },
     {
-      "file": "assets/DataSourcesPanel-BwXICNHI.js",
+      "file": "assets/DataSourcesPanel-RThxHfh3.js",
       "bytes": 3828,
-      "gzipBytes": 1471
+      "gzipBytes": 1472
     },
     {
-      "file": "assets/DetailMapViewport-D1adHPnp.js",
+      "file": "assets/DetailMapViewport-BjfolDlk.js",
       "bytes": 17749,
       "gzipBytes": 5602
     },
@@ -85,14 +85,14 @@
       "gzipBytes": 7397
     },
     {
-      "file": "assets/graphicsQuality-C3FlrqTo.js",
+      "file": "assets/graphicsQuality-dxJBYUQi.js",
       "bytes": 184003,
-      "gzipBytes": 57992
+      "gzipBytes": 57993
     },
     {
-      "file": "assets/index-B7wdTIol.js",
+      "file": "assets/index-c8D-d2WK.js",
       "bytes": 829899,
-      "gzipBytes": 224185
+      "gzipBytes": 224182
     },
     {
       "file": "assets/index-D8a6zKGw.css",
@@ -104,14 +104,14 @@
       "gzipBytes": 251770
     },
     {
-      "file": "assets/ProjectDetailView-CPX3UP-x.js",
+      "file": "assets/ProjectDetailView-D3qCOsEh.js",
       "bytes": 20650,
-      "gzipBytes": 4833
+      "gzipBytes": 4832
     },
     {
-      "file": "assets/ProjectPortfolioView-SKfzhnwZ.js",
+      "file": "assets/ProjectPortfolioView-Nb5r3nMP.js",
       "bytes": 12059,
-      "gzipBytes": 3174
+      "gzipBytes": 3176
     },
     {
       "file": "assets/rolldown-runtime-hePW80VL.js",
@@ -119,9 +119,9 @@
       "gzipBytes": 428
     },
     {
-      "file": "assets/StatPanel-BbuZ_WDr.js",
+      "file": "assets/StatPanel-FHMZhzTe.js",
       "bytes": 3452,
-      "gzipBytes": 1157
+      "gzipBytes": 1159
     },
     {
       "file": "assets/three-vendor-DLwaNKwB.js",
@@ -129,9 +129,9 @@
       "gzipBytes": 183256
     },
     {
-      "file": "assets/WorldExplorationView-Cx_VA3tO.js",
-      "bytes": 37693,
-      "gzipBytes": 12434
+      "file": "assets/WorldExplorationView-C7WeE9Sr.js",
+      "bytes": 37717,
+      "gzipBytes": 12441
     },
     {
       "file": "build-info.json",

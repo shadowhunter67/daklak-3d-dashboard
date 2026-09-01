@@ -3,19 +3,38 @@ import { geometryToShapes } from '../../../utils/geo';
 import type { BuildingCollection } from '../../../data/loadBuildings';
 
 /**
- * Illustrative real-height -> world-unit scale for extruded buildings, tuned by feel against this
- * scene's existing human-scale constants — nothing else in this scene is derived from a literal
- * meters-per-world-unit ratio either (`WALK_SPEED`/`FLY_SPEED` in `playerMovement.ts` are the same
- * "tuned by feel" kind of constant). A typical 1-story building (~3.3m, matching
- * `build_daklak_buildings.py`'s `METERS_PER_LEVEL`) should read as clearly taller than the walking
- * camera's eye height (`PlayerRig.tsx`'s `EYE_HEIGHT = 0.16` world units), and a multi-story
- * landmark should still register from the tour camera's aerial vantage
- * (`TourRig.tsx`'s `TOUR_CAMERA_HEIGHT = 1.3` world units).
+ * Illustrative real-height -> world-unit scale for extruded buildings, empirically tuned (not
+ * derived from a literal meters-per-world-unit ratio — nothing else placed directly in this scene
+ * is either, e.g. `WALK_SPEED`/`FLY_SPEED` in `playerMovement.ts`) against a real regression this
+ * pilot shipped and had to fix:
+ *
+ * A first version (`0.08` linear, later `0.12 * sqrt(meters)`) was tuned only against the walking
+ * camera's eye height (`PlayerRig.tsx`'s `EYE_HEIGHT = 0.16`). It missed that footprints
+ * (`geometryToShapes`) sit in this scene's *true*, Mercator-accurate horizontal scale — a real
+ * building footprint is only ~0.0003-0.003 world units wide — while `EYE_HEIGHT`/
+ * `TOUR_CAMERA_HEIGHT` are already a ~1000x *game*-scale exaggeration over true-to-life, chosen for
+ * player legibility, not geometric consistency with the footprints. Tuning height against the
+ * player made this dataset's one real 19-story tower ("Chung cư Hoàng Anh BIDV",
+ * `osm-way-228989476`, 62.7m) render ~1 world unit tall — a fifth of this scene's entire terrain
+ * width (`terrainConfig.ts`'s `terrainWidth`, ~5.16) — a single spike piercing off-screen from the
+ * province overview camera, confirmed live via `?view=world` in a browser (this pilot's original
+ * ship missed that check — see PR history).
+ *
+ * `0.015 * sqrt(meters)` was then re-tuned empirically (rebuild + look, repeatedly) against the
+ * *overview* camera instead, so the tallest real building in this dataset stays a small, clearly
+ * -bounded bump rather than a spike (`worldBuildingGeometry.test.ts` encodes that bound as a
+ * regression guard). Known, accepted limitation of that trade-off: at this scale, ordinary 1-story
+ * buildings (`BUILDING_HEIGHT_SCALE * sqrt(3.3) ≈ 0.027`) sit *below* the walking camera's eye
+ * height rather than towering over it — up close, this pilot's buildings read as low, honestly
+ * true-footprint-shaped massing rather than photorealistic 1:1 buildings. Making them read as
+ * "tall" at walking distance without breaking the overview camera would need footprints drawn
+ * larger than their real extent (a further, deliberately not-yet-made design decision — see
+ * `docs/data-provenance.md`'s building-footprints section).
  */
-export const BUILDING_WORLD_UNITS_PER_METER = 0.08;
+export const BUILDING_HEIGHT_SCALE = 0.015;
 
 export function buildingHeightWorldUnits(heightMeters: number): number {
-  return heightMeters * BUILDING_WORLD_UNITS_PER_METER;
+  return BUILDING_HEIGHT_SCALE * Math.sqrt(Math.max(0, heightMeters));
 }
 
 export interface BuildingGeometryData {

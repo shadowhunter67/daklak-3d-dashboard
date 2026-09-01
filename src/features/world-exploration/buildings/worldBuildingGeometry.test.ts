@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildBuildingGeometryData,
   buildingHeightWorldUnits,
-  BUILDING_WORLD_UNITS_PER_METER,
+  BUILDING_HEIGHT_SCALE,
 } from './worldBuildingGeometry';
 import type { BuildingCollection } from '../../../data/loadBuildings';
 
@@ -38,12 +38,22 @@ function collectionWithOneSquare(heightMeters: number): BuildingCollection {
 }
 
 describe('buildingHeightWorldUnits', () => {
-  it('scales meters by BUILDING_WORLD_UNITS_PER_METER', () => {
-    expect(buildingHeightWorldUnits(10)).toBeCloseTo(10 * BUILDING_WORLD_UNITS_PER_METER, 10);
+  it('scales by sqrt(meters) * BUILDING_HEIGHT_SCALE', () => {
+    expect(buildingHeightWorldUnits(10)).toBeCloseTo(BUILDING_HEIGHT_SCALE * Math.sqrt(10), 10);
   });
 
   it('is positive for any positive height', () => {
     expect(buildingHeightWorldUnits(3.3)).toBeGreaterThan(0);
+  });
+
+  it('compresses a ~19x real height range (3.3m house vs a real 62.7m tower) to well under 19x in world units — the actual bug this scale fixes', () => {
+    const house = buildingHeightWorldUnits(3.3);
+    const tower = buildingHeightWorldUnits(62.7);
+    expect(tower / house).toBeLessThan(6);
+  });
+
+  it('keeps the tallest real building in the pilot dataset (62.7m, the "Chung cư Hoàng Anh BIDV" tower) well under the ~1 world unit spike this scale was shipped-then-fixed to avoid (see the doc comment above) — regression guard, verified live in a browser before this bound was set', () => {
+    expect(buildingHeightWorldUnits(62.7)).toBeLessThan(0.3);
   });
 });
 

@@ -31,10 +31,23 @@ with `npm run build:buildings` (requires `daklak-wards.geojson` to already exist
 run `build:gis` first).
 
 Not yet done, as a deliberate pilot-scope limit rather than an oversight: the other 101 wards have
-no building layer, and this dataset is not yet registered in `src/data-platform/catalog/` (the
-typed dataset/layer catalog `docs/data-platform-architecture.md` describes — the existing road
-layer is registered there; this pilot intentionally is not, to avoid guessing at that schema before
-the pilot itself is reviewed).
+no building layer. (Registered as `building-footprints-buon-ma-thuot-pilot` in
+`src/data-platform/catalog/datasets.ts` — required, not optional, since `config/public-data-files.json`
+entries must resolve against a real catalog dataset id; see that file's own status
+`partially-verified`.)
+
+**Known limitation, found and partly fixed 2026-09-01**: the first shipped version of
+`worldBuildingGeometry.ts`'s height scale was tuned only against the walking camera's eye height,
+without checking it against the whole-province overview camera in an actual browser. That made this
+ward's one real 19-story tower render as a ~5-world-unit spike — visibly broken, reported by a user
+looking at the deployed `?view=world` overview. The scale was re-tuned (empirically, screenshots via
+Chrome DevTools MCP) so the tallest real building stays a small, bounded bump instead — see
+`worldBuildingGeometry.ts`'s own doc comment for the exact before/after numbers and the regression
+test that guards against it recurring. Trade-off accepted, not yet solved: at the corrected scale,
+ordinary buildings are shorter than a walking player's eye height, so up close this pilot reads as
+low, true-footprint-shaped massing rather than photorealistic to-scale buildings. Fixing that without
+reintroducing the overview-camera spike would mean drawing footprints artificially larger than their
+real extent (a further design decision, deliberately not made in this pilot).
 
 ## Detail map data (roads, boundaries) — not yet built
 
