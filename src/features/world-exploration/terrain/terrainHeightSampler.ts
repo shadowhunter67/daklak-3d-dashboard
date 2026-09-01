@@ -3,9 +3,11 @@ import {
   displacementScale,
   terrainHeightUrl,
   terrainMetadata,
+  terrainSegments,
 } from '../../../components/map/terrainConfig';
 import { getWorldBounds, type WorldBounds } from '../coordinates/worldCoordinates';
 import { sampleHeightGrid, type HeightGrid } from './terrainGrid';
+import { buildMeshSurface } from './terrainMeshSurface';
 
 /**
  * CPU-side terrain height query — the gap `reports/tourism-digital-twin/world-engine-adr.md`
@@ -37,16 +39,32 @@ import { sampleHeightGrid, type HeightGrid } from './terrainGrid';
  * Elevation reconstruction: `daklak-terrain-metadata.json`'s `elevationMinMeters`/
  * `elevationMaxMeters` are the exact percentile clip bounds `generate_daklak_terrain.py` used to
  * normalize raw SRTM meters into the PNG's 0..255 grayscale (`normalized*255`, after which a
- * Gaussian blur was applied — the blurred, saved PNG is decoded here, so this reconstructs
- * "displayed" elevation, matching the rendered mesh exactly, not a hypothetical unblurred value).
+ * Gaussian blur was applied — the blurred, saved PNG is decoded here).
+ *
+ * `getHeight` vs `getElevationMeters` — two different, deliberately separate contracts (PR4/9,
+ * `reports/tourism-digital-twin/world-scale-lod-adr.md`):
+ * - `getHeight` answers "where is the surface I must place an object on" — it must match the
+ *   *rendered mesh*, not the raw texture. `WorldTerrainMesh.tsx` displaces a coarse
+ *   `terrainSegments` (192x160) plane over this texture, i.e. the texture is subsampled to a
+ *   193x161 vertex grid and linearly rasterized between vertices — a bilinear read of the full-res
+ *   texture (what this used to do, and what `getElevationMeters` still does) can disagree with the
+ *   actual rendered surface by up to ~180m. That's ~14x the height of a true-scale PR2 building —
+ *   enough to bury buildings and place the player through the visible ground on sloped terrain.
+ *   `getHeight` now goes through `terrainMeshSurface.ts`'s `buildMeshSurface`, which reconstructs
+ *   the exact GPU-rasterized surface (texel-centre texture addressing + `PlaneGeometry`'s real
+ *   triangulation) — see that module's doc comment for the measured numbers.
+ * - `getElevationMeters` answers "what is the real-world elevation here", for HUD display —
+ *   data-accuracy against the full-resolution source is what matters there, not mesh-rasterization
+ *   fidelity, so it deliberately keeps reading `sampleHeightGrid` (the raw texture) unchanged.
  */
 export interface TerrainSampler {
-  /** World-space displaced height (same units as everything else placed in this scene — e.g.
-   * `terrainCenter`, marker positions), or `null` outside the real terrain data extent. */
+  /** World-space displaced height at the surface the rendered mesh actually shows (same units as
+   * everything else placed in this scene — e.g. `terrainCenter`, marker positions), or `null`
+   * outside the real terrain data extent. */
   getHeight(worldX: number, worldZ: number): number | null;
   /** Approximate real-world elevation in meters, for HUD display only — reconstructed from the
-   * same normalized grayscale value as `getHeight`, see module doc comment. `null` outside the
-   * data extent. */
+   * full-resolution grayscale texture (see module doc comment for why this differs from
+   * `getHeight`). `null` outside the data extent. */
   getElevationMeters(worldX: number, worldZ: number): number | null;
 }
 
@@ -66,9 +84,10 @@ function decodeGrayscalePng(bitmap: ImageBitmap): HeightGrid {
 
 function buildSampler(grid: HeightGrid, bounds: WorldBounds): TerrainSampler {
   const { elevationMinMeters, elevationMaxMeters } = terrainMetadata;
+  const surface = buildMeshSurface(grid, bounds, terrainSegments);
   return {
     getHeight(worldX, worldZ) {
-      const normalized = sampleHeightGrid(grid, bounds, worldX, worldZ);
+      const normalized = surface.getNormalizedHeight(worldX, worldZ);
       if (normalized === null) return null;
       return normalized * displacementScale + displacementBias;
     },
