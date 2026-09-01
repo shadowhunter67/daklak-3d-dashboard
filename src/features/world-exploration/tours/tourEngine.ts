@@ -80,13 +80,23 @@ export function advanceTourProgress(
   return { phase: 'dwelling', fromIndex: progress.fromIndex + 1, phaseElapsed: 0 };
 }
 
+/** Eased (ease-in-out) fraction along the current leg, 0 at departure and 1 on arrival — shared by
+ * `tourPositionForProgress` (ground track) and `tourClimbFactor` (camera altitude arc) so both
+ * stay in lockstep with the same cinematic pacing instead of drifting apart. Symmetric around 0.5,
+ * so it doesn't change the halfway-point position `tourEngine.test.ts` already asserts. */
+function legFraction(stops: WorldPoi[], clampedIndex: number, phaseElapsed: number): number {
+  const legDuration = legDurationSeconds(stops, clampedIndex);
+  const raw = legDuration > 0 ? Math.min(1, phaseElapsed / legDuration) : 1;
+  return raw < 0.5 ? 4 * raw * raw * raw : 1 - (-2 * raw + 2) ** 3 / 2;
+}
+
 /**
- * World-space XZ position for the current progress. `traveling` interpolates linearly between
- * `stops[fromIndex]` and `stops[fromIndex + 1]` at a speed-derived fraction (not a fixed
- * duration — a long leg and a short leg both feel like the same travel speed, matching how the
- * task frames Fly mode's "giới hạn tốc độ hợp lý" for consistency between the two camera modes).
- * `dwelling`/`finished` sit exactly on `stops[fromIndex]` (clamped to the last stop once
- * finished).
+ * World-space XZ position for the current progress. `traveling` eases between `stops[fromIndex]`
+ * and `stops[fromIndex + 1]` (accelerating out of a stop, decelerating into the next one) over a
+ * speed-derived leg duration (not a fixed duration — a long leg and a short leg both feel like the
+ * same travel speed, matching how the task frames Fly mode's "giới hạn tốc độ hợp lý" for
+ * consistency between the two camera modes). `dwelling`/`finished` sit exactly on
+ * `stops[fromIndex]` (clamped to the last stop once finished).
  */
 export function tourPositionForProgress(stops: WorldPoi[], progress: TourProgress): WorldXZ {
   const clampedIndex = Math.min(progress.fromIndex, stops.length - 1);
@@ -94,7 +104,20 @@ export function tourPositionForProgress(stops: WorldPoi[], progress: TourProgres
   if (progress.phase !== 'traveling') return from;
 
   const to = stops[Math.min(clampedIndex + 1, stops.length - 1)]!.world;
-  const legDuration = legDurationSeconds(stops, clampedIndex);
-  const t = legDuration > 0 ? Math.min(1, progress.phaseElapsed / legDuration) : 1;
+  const t = legFraction(stops, clampedIndex, progress.phaseElapsed);
   return { x: from.x + (to.x - from.x) * t, z: from.z + (to.z - from.z) * t };
+}
+
+/**
+ * Cinematic climb bonus (0..1) for the current progress — 0 while dwelling/finished or at either
+ * end of a leg, rising to 1 at the leg's midpoint. `TourRig.tsx` scales this by a fixed altitude
+ * bonus so the tour camera arcs up into an aerial "province flyover" between stops and settles
+ * back down to ground level on arrival, instead of gliding in a flat line at walking height.
+ */
+export function tourClimbFactor(stops: WorldPoi[], progress: TourProgress): number {
+  if (progress.phase !== 'traveling' || stops.length === 0) return 0;
+  const clampedIndex = Math.min(progress.fromIndex, stops.length - 1);
+  const legDuration = legDurationSeconds(stops, clampedIndex);
+  const raw = legDuration > 0 ? Math.min(1, progress.phaseElapsed / legDuration) : 1;
+  return Math.sin(Math.PI * raw);
 }
