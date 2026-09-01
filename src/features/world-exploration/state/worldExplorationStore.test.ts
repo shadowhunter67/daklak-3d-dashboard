@@ -102,6 +102,19 @@ describe('POI selection and proximity', () => {
   });
 });
 
+describe('camera scale (altitude/band)', () => {
+  it('defaults to a plausible altitude matching the intro camera settled position, and the province band', () => {
+    expect(state().cameraAltitudeMeters).toBeGreaterThan(0);
+    expect(state().scaleBand).toBe('province');
+  });
+
+  it('setCameraScale commits both fields together', () => {
+    state().setCameraScale(15, 'human');
+    expect(state().cameraAltitudeMeters).toBe(15);
+    expect(state().scaleBand).toBe('human');
+  });
+});
+
 describe('two independent store instances', () => {
   it('do not share state (factory, not a singleton)', () => {
     const other = createWorldExplorationStore();

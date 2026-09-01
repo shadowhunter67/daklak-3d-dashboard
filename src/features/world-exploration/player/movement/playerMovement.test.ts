@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
+import { metersToWorld } from '../../coordinates/worldScale';
 import {
   computeFlyMovement,
   computeWalkMovement,
   FALLBACK_GROUND_HEIGHT,
-  FLY_SPEED,
+  flySpeedMetersPerSecond,
   GRAVITY,
   JUMP_VELOCITY,
   RUN_MULTIPLIER,
@@ -88,7 +89,9 @@ describe('computeWalkMovement', () => {
       1,
       flatGround,
     );
-    expect(Math.abs(next.x)).toBeGreaterThan(0.5);
+    // Relative to WALK_SPEED, not a hardcoded magnitude — WALK_SPEED is now a true-scale
+    // conversion (`metersToWorld(1.4)`), not an arbitrary world-unit number.
+    expect(Math.abs(next.x)).toBeCloseTo(WALK_SPEED, 10);
     expect(Math.abs(next.z)).toBeLessThan(1e-6);
   });
 
@@ -161,7 +164,7 @@ describe('computeFlyMovement', () => {
   const bounds = { minX: -10, maxX: 10, minZ: -10, maxZ: 10 };
 
   it('does not move when no input is held', () => {
-    const next = computeFlyMovement(baseState(), noInput, 1, bounds);
+    const next = computeFlyMovement(baseState(), noInput, 1, bounds, flatGround);
     expect(next.x).toBeCloseTo(0, 10);
     expect(next.y).toBeCloseTo(0, 10);
     expect(next.z).toBeCloseTo(0, 10);
@@ -169,16 +172,22 @@ describe('computeFlyMovement', () => {
 
   it('is frame-rate independent for horizontal movement', () => {
     const input = { ...noInput, forward: true };
-    const oneStep = computeFlyMovement(baseState(), input, 1, bounds);
-    let twoSteps = computeFlyMovement(baseState(), input, 0.5, bounds);
-    twoSteps = computeFlyMovement(twoSteps, input, 0.5, bounds);
+    const oneStep = computeFlyMovement(baseState(), input, 1, bounds, flatGround);
+    let twoSteps = computeFlyMovement(baseState(), input, 0.5, bounds, flatGround);
+    twoSteps = computeFlyMovement(twoSteps, input, 0.5, bounds, flatGround);
     expect(twoSteps.z).toBeCloseTo(oneStep.z, 6);
   });
 
   it('Space (jumpOrAscend) climbs; Shift (run) descends', () => {
-    const up = computeFlyMovement(baseState(), { ...noInput, jumpOrAscend: true }, 1, bounds);
+    const up = computeFlyMovement(
+      baseState(),
+      { ...noInput, jumpOrAscend: true },
+      1,
+      bounds,
+      flatGround,
+    );
     expect(up.y).toBeGreaterThan(0);
-    const down = computeFlyMovement(baseState(), { ...noInput, run: true }, 1, bounds);
+    const down = computeFlyMovement(baseState(), { ...noInput, run: true }, 1, bounds, flatGround);
     expect(down.y).toBeLessThan(0);
   });
 
@@ -188,22 +197,42 @@ describe('computeFlyMovement', () => {
       { ...noInput, forward: true },
       1,
       bounds,
+      flatGround,
     );
     expect(next.grounded).toBe(false);
     expect(next.velocityY).toBe(0);
   });
 
-  it('clamps horizontal position to stay near the real data bounds even with sustained input', () => {
-    let state = baseState({ z: -9.9 });
+  it('speed increases with altitude above ground — this is the "seamless zoom" behavior (near ground: precise, high up: fast)', () => {
     const input = { ...noInput, forward: true };
-    for (let i = 0; i < 500; i++) state = computeFlyMovement(state, input, 0.1, bounds);
+    const nearGround = computeFlyMovement(baseState({ y: 0 }), input, 1, bounds, flatGround);
+    const highUp = computeFlyMovement(
+      baseState({ y: metersToWorld(50_000) }),
+      input,
+      1,
+      bounds,
+      flatGround,
+    );
+    expect(Math.abs(highUp.z)).toBeGreaterThan(Math.abs(nearGround.z) * 10);
+  });
+
+  it('speed never drops to zero even sitting exactly on the ground (a minimum floor speed)', () => {
+    const input = { ...noInput, forward: true };
+    const next = computeFlyMovement(baseState({ y: 0 }), input, 1, bounds, flatGround);
+    expect(Math.abs(next.z)).toBeGreaterThan(0);
+  });
+
+  it('clamps horizontal position to stay near the real data bounds even with sustained input at altitude', () => {
+    let state = baseState({ z: -9.9, y: metersToWorld(50_000) });
+    const input = { ...noInput, forward: true };
+    for (let i = 0; i < 500; i++) state = computeFlyMovement(state, input, 0.1, bounds, flatGround);
     expect(state.z).toBeGreaterThanOrEqual(bounds.minZ - 1.5 - 1e-6);
   });
 
   it('clamps altitude to a sane range even with sustained ascend input', () => {
     let state = baseState();
     const input = { ...noInput, jumpOrAscend: true };
-    for (let i = 0; i < 500; i++) state = computeFlyMovement(state, input, 0.1, bounds);
+    for (let i = 0; i < 500; i++) state = computeFlyMovement(state, input, 0.1, bounds, flatGround);
     expect(state.y).toBeLessThanOrEqual(4 + 1e-6);
   });
 
@@ -213,8 +242,31 @@ describe('computeFlyMovement', () => {
       { ...noInput, forward: true },
       1,
       bounds,
+      flatGround,
     );
     expect(lookingUp.y).toBeGreaterThan(0);
+  });
+
+  it('falls back to FALLBACK_GROUND_HEIGHT (not state.y) as ground when the sampler has no data — the player is likely high above ground exactly when data is missing, not standing on whatever altitude it currently reports', () => {
+    const noData = () => null;
+    const withNoData = computeFlyMovement(
+      baseState({ y: 5 }),
+      { ...noInput, forward: true },
+      1,
+      bounds,
+      noData,
+    );
+    const withKnownFallbackGround = computeFlyMovement(
+      baseState({ y: 5 }),
+      { ...noInput, forward: true },
+      1,
+      bounds,
+      () => FALLBACK_GROUND_HEIGHT,
+    );
+    // Both should move identically: a missing sampler reading is equivalent to a known ground
+    // height of exactly FALLBACK_GROUND_HEIGHT, not to "no altitude at all".
+    expect(withNoData.z).toBeCloseTo(withKnownFallbackGround.z, 10);
+    expect(Math.abs(withNoData.z)).toBeGreaterThan(0);
   });
 });
 
@@ -241,10 +293,22 @@ describe('updateLookAngles', () => {
 // catches an accidental typo (e.g. a missing decimal point) turning WALK_SPEED into something
 // wildly too fast/slow without needing to eyeball it in a real browser every time.
 describe('tuning constants', () => {
-  it('WALK_SPEED/FLY_SPEED/GRAVITY/JUMP_VELOCITY/FALLBACK_GROUND_HEIGHT are all positive and finite', () => {
-    for (const value of [WALK_SPEED, FLY_SPEED, GRAVITY, JUMP_VELOCITY, FALLBACK_GROUND_HEIGHT]) {
+  it('WALK_SPEED/GRAVITY/JUMP_VELOCITY/FALLBACK_GROUND_HEIGHT are all positive and finite', () => {
+    for (const value of [WALK_SPEED, GRAVITY, JUMP_VELOCITY, FALLBACK_GROUND_HEIGHT]) {
       expect(value).toBeGreaterThan(0);
       expect(Number.isFinite(value)).toBe(true);
+    }
+  });
+
+  it('flySpeedMetersPerSecond is bounded and monotonically non-decreasing with altitude', () => {
+    expect(flySpeedMetersPerSecond(0)).toBeGreaterThan(0);
+    expect(flySpeedMetersPerSecond(-100)).toBeGreaterThan(0); // clamps, never negative/zero
+    expect(Number.isFinite(flySpeedMetersPerSecond(10_000_000))).toBe(true);
+    let previous = flySpeedMetersPerSecond(0);
+    for (const altitude of [10, 100, 1_000, 10_000, 100_000]) {
+      const speed = flySpeedMetersPerSecond(altitude);
+      expect(speed).toBeGreaterThanOrEqual(previous);
+      previous = speed;
     }
   });
 });

@@ -17,6 +17,7 @@ import {
   type PlayerBodyState,
 } from './movement/playerMovement';
 import { getWorldBounds } from '../coordinates/worldCoordinates';
+import { metersToWorld } from '../coordinates/worldScale';
 import { findNearestPoi, POI_PROXIMITY_RADIUS } from '../poi/worldPoi';
 import { useTerrainSampler } from '../terrain/useTerrainSampler';
 import { useWorldExplorationStore } from '../state/worldExplorationStore';
@@ -24,8 +25,13 @@ import { useWorldExplorationStore } from '../state/worldExplorationStore';
 /** Camera height above the terrain surface while standing (Walk mode) — folded into the ground
  * -height function passed to `computeWalkMovement` so the player's `PlayerBodyState.y` already
  * represents eye height throughout (jump/gravity math then just works relative to that shifted
- * baseline, no separate offset to keep in sync elsewhere). */
-const EYE_HEIGHT = 0.16;
+ * baseline, no separate offset to keep in sync elsewhere). A real average adult eye height
+ * (1.7m), via the shared true-scale conversion (`coordinates/worldScale.ts`) — not an
+ * independently-tuned number, see `world-scale-lod-adr.md`. */
+const EYE_HEIGHT = metersToWorld(1.7);
+/** Altitude Fly mode arrives at after a teleport (e.g. from the destination picker) — a modest
+ * "arrived from the sky" aerial vantage, real meters via the same conversion. */
+const FLY_TELEPORT_ALTITUDE = metersToWorld(100);
 /** Look sensitivity, radians per raw pointer-movement pixel — tuned by feel (a full 360 turn is
  * roughly one and a half mouse-pad sweeps at typical OS pointer speed), not derived from anything
  * else. */
@@ -120,7 +126,7 @@ export function PlayerRig() {
     if (teleportRequest.yaw !== undefined) body.yaw = teleportRequest.yaw;
     const ground =
       (sampler?.getHeight(body.x, body.z) ?? FALLBACK_GROUND_HEIGHT) +
-      (mode === 'fly' ? 1.1 : EYE_HEIGHT);
+      (mode === 'fly' ? FLY_TELEPORT_ALTITUDE : EYE_HEIGHT);
     body.y = ground;
     body.velocityY = 0;
     body.grounded = mode !== 'fly';
@@ -168,7 +174,14 @@ export function PlayerRig() {
         (sampler?.getHeight(x, z) ?? FALLBACK_GROUND_HEIGHT) + EYE_HEIGHT;
       bodyRef.current = computeWalkMovement(bodyRef.current, input, delta, groundHeightAt);
     } else if (mode === 'fly') {
-      bodyRef.current = computeFlyMovement(bodyRef.current, input, delta, getWorldBounds());
+      const groundHeightAt = (x: number, z: number) => sampler?.getHeight(x, z) ?? null;
+      bodyRef.current = computeFlyMovement(
+        bodyRef.current,
+        input,
+        delta,
+        getWorldBounds(),
+        groundHeightAt,
+      );
     }
 
     camera.position.set(bodyRef.current.x, bodyRef.current.y, bodyRef.current.z);
