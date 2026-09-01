@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { verifiedTourismDestinations } from '../../../entities/tourism/verifiedTourismDestinations';
 import { latLonToWorld } from '../coordinates/worldCoordinates';
+import { metersToWorld, worldToMeters } from '../coordinates/worldScale';
 import type { TerrainSampler } from '../terrain/terrainHeightSampler';
 import {
   getDestinationMarkerHeight,
@@ -62,5 +63,20 @@ describe('getDestinationMarkerHeight', () => {
       expect(Number.isFinite(x)).toBe(true);
       expect(Number.isFinite(z)).toBe(true);
     }
+  });
+
+  // PR4/9 (world-scale-lod-adr.md): MARKER_GROUND_OFFSET is now expressed in real meters via
+  // metersToWorld — cross-check the real-world meaning, not just the formula that produced it.
+  it('MARKER_GROUND_OFFSET means a plausible real signpost height, not the old terrain-vertical fudge', () => {
+    const meters = worldToMeters(MARKER_GROUND_OFFSET);
+    expect(meters).toBeCloseTo(2, 3);
+    expect(meters).toBeGreaterThan(0.5);
+    expect(meters).toBeLessThan(10);
+  });
+
+  it('is now smaller than even the shortest plausible pilot building height (the invariant the old 0.05wu/~400m value violated)', () => {
+    // A conservative shortest-building floor, not tied to any specific pilot dataset value.
+    const shortestBuildingHeightWorldUnits = metersToWorld(5);
+    expect(MARKER_GROUND_OFFSET).toBeLessThan(shortestBuildingHeightWorldUnits);
   });
 });
