@@ -1,9 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import {
-  buildBuildingGeometryData,
-  buildingHeightWorldUnits,
-  BUILDING_HEIGHT_SCALE,
-} from './worldBuildingGeometry';
+import { buildBuildingGeometryData, buildingHeightWorldUnits } from './worldBuildingGeometry';
+import { metersToWorld } from '../coordinates/worldScale';
 import type { BuildingCollection } from '../../../data/loadBuildings';
 
 function collectionWithOneSquare(heightMeters: number): BuildingCollection {
@@ -38,22 +35,29 @@ function collectionWithOneSquare(heightMeters: number): BuildingCollection {
 }
 
 describe('buildingHeightWorldUnits', () => {
-  it('scales by sqrt(meters) * BUILDING_HEIGHT_SCALE', () => {
-    expect(buildingHeightWorldUnits(10)).toBeCloseTo(BUILDING_HEIGHT_SCALE * Math.sqrt(10), 10);
+  it('delegates exactly to the shared metersToWorld conversion — no independent scale factor', () => {
+    for (const meters of [0, 3.3, 10, 62.7]) {
+      expect(buildingHeightWorldUnits(meters)).toBe(metersToWorld(meters));
+    }
   });
 
-  it('is positive for any positive height', () => {
+  it('is positive for any positive height, zero at zero', () => {
     expect(buildingHeightWorldUnits(3.3)).toBeGreaterThan(0);
+    expect(buildingHeightWorldUnits(0)).toBe(0);
   });
 
-  it('compresses a ~19x real height range (3.3m house vs a real 62.7m tower) to well under 19x in world units — the actual bug this scale fixes', () => {
+  it('clamps negative input to 0 instead of producing a negative depth', () => {
+    expect(buildingHeightWorldUnits(-5)).toBe(0);
+  });
+
+  it('is linear (true scale) — height ratio between two buildings exactly matches their real-meter ratio, unlike the old sqrt-compressed version', () => {
     const house = buildingHeightWorldUnits(3.3);
     const tower = buildingHeightWorldUnits(62.7);
-    expect(tower / house).toBeLessThan(6);
+    expect(tower / house).toBeCloseTo(62.7 / 3.3, 6);
   });
 
-  it('keeps the tallest real building in the pilot dataset (62.7m, the "Chung cư Hoàng Anh BIDV" tower) well under the ~1 world unit spike this scale was shipped-then-fixed to avoid (see the doc comment above) — regression guard, verified live in a browser before this bound was set', () => {
-    expect(buildingHeightWorldUnits(62.7)).toBeLessThan(0.3);
+  it('keeps the tallest real building in the pilot dataset (62.7m, the "Chung cư Hoàng Anh BIDV" tower) a small fraction of the whole province width (~5.16 world units) — regression guard against the spike bug (PR #105) recurring', () => {
+    expect(buildingHeightWorldUnits(62.7)).toBeLessThan(0.01);
   });
 });
 
