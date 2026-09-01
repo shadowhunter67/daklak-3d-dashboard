@@ -69,7 +69,9 @@ describe('buildBuildingGeometryData', () => {
   it('falls back to the given ground height when the sampler returns null', () => {
     const fallback = 0.42;
     const data = buildBuildingGeometryData(collectionWithOneSquare(5), () => null, fallback);
-    const minY = Math.min(...Array.from({ length: data.positions.length / 3 }, (_, i) => data.positions[i * 3 + 2]!));
+    const minY = Math.min(
+      ...Array.from({ length: data.positions.length / 3 }, (_, i) => data.positions[i * 3 + 2]!),
+    );
     expect(minY).toBeCloseTo(fallback, 5);
   });
 

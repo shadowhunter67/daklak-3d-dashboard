@@ -49,6 +49,20 @@
       "checksum": "c7958cb8cf7f06f57ab8dffefb0abbc02fac150034485ab41f643023094a67b4"
     },
     {
+      "path": "src/assets/maps/daklak/building-metadata.json",
+      "datasetIds": ["building-footprints-buon-ma-thuot-pilot"],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "206a554e6b0615e74ef4e7c445eb7ed262239a19a96cbc289eac69935053d759"
+    },
+    {
+      "path": "src/assets/maps/daklak/building-source-registry.json",
+      "datasetIds": ["building-footprints-buon-ma-thuot-pilot"],
+      "classification": "public",
+      "delivery": "bundled-static",
+      "checksum": "8d3d5876f53d1fa904845382675c8f35060b265c89836e3490baa5fc3739880b"
+    },
+    {
       "path": "src/assets/maps/daklak/daklak-terrain-metadata.json",
       "datasetIds": ["terrain-imagery"],
       "classification": "public",
@@ -83,6 +97,14 @@
       "delivery": "public-static-asset",
       "checksum": "7dbdc16218fd9dfc3f8b9ce4b30982ec1037ec34cc6e5623e7136b637a286ce8",
       "note": "Gzip-compressed road geometry fetched at runtime by src/data/loadRoads.ts; Vite copies public/ verbatim, so this is not bundled into a JS chunk."
+    },
+    {
+      "path": "public/data/daklak-buildings-buon-ma-thuot.json.gz",
+      "datasetIds": ["building-footprints-buon-ma-thuot-pilot"],
+      "classification": "public",
+      "delivery": "public-static-asset",
+      "checksum": "7d13f93228dac61e827ca2b8cb3a232af776b119f354e44e95f187c295727ca7",
+      "note": "Gzip-compressed building-footprint geometry fetched at runtime by src/data/loadBuildings.ts; Vite copies public/ verbatim, so this is not bundled into a JS chunk."
     },
     {
       "path": "src/assets/data/data-refresh-source-health.json",
