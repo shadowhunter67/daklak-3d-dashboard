@@ -41,7 +41,14 @@ const SETTLEMENT_PLACES = ['city', 'town'];
  * `PLACE_LABELS_LAYER_ID`'s minzoom 8 with every other place tier, which papered the province-wide
  * overview in thousands of hamlet names (e.g. zoom ~8.8 showing "Thôn 1", "Thôn 2A", ...). They now
  * get their own higher minzoom so they only appear once a viewer has zoomed into a specific ward. */
-const HAMLET_PLACES = ['village', 'suburb', 'quarter', 'neighbourhood', 'hamlet', 'isolated_dwelling'];
+const HAMLET_PLACES = [
+  'village',
+  'suburb',
+  'quarter',
+  'neighbourhood',
+  'hamlet',
+  'isolated_dwelling',
+];
 
 /** HTML attribution string for MapLibre's attribution control (a plain-text/HTML-link string is
  * what the control expects — distinct from the plain-text `map2d.osmAttribution` i18n key used
