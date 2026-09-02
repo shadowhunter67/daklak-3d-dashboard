@@ -60,6 +60,7 @@ honestly disabled:
 | Layer                                                        | Status                                                                                                                                                                                                                                                                                                                       |
 | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Administrative boundaries, ward selection highlight          | **Real, always on** — bundled `daklak-wards-render.json` (`wardBoundaryLayers.ts`), no env dependency.                                                                                                                                                                                                                       |
+| Ward/commune **name** labels                                 | **Real, on by default** — bundled `daklak-labels.json` (102 curated anchors + `priority`, `wardLabelLayers.ts`), the same data the 2D SVG map labels from. Needs only the self-hosted glyphs, **not** the PMTiles source; own `Tên xã/phường` toggle / `wardlabels` URL param. The selected ward's name stays shown even with the toggle off. |
 | Roads, road labels, buildings, place labels                  | **Real** — built from a real Geofabrik OSM extract into `public/maps/daklak.pmtiles`, same-origin (`VITE_DETAIL_MAP_SOURCE_URL=maps/daklak.pmtiles` in the committed `.env.production`). Empty by default in dev/local/CI (offline determinism). See "Building the real PMTiles source" below and `docs/data-provenance.md`. |
 | Dashboard metric fill, heatmap                               | **Disabled** — a separate, still-unbuilt illustrative-demographic feature, not part of the OSM pipeline above; deliberately not gated by the same env var (see `DetailMapViewport.tsx`'s `readSourceAvailability()` doc comment).                                                                                            |
 | Terrain (`Địa hình` basemap)                                 | **Disabled** — no DEM/terrain-RGB source configured (`VITE_TERRAIN_SOURCE_URL` empty).                                                                                                                                                                                                                                       |
@@ -79,8 +80,8 @@ from a rendering failure (see the "no source configured" report that prompted th
   map background", once this PR's copy fix landed.
 - In `BaseMapSelector`, the terrain/satellite basemap radios are genuinely `disabled` (with a
   `title`/`aria-describedby` explanation) because picking either would be a permanent dead end in
-  the current session. In `MapLayerPanel`, the seven layer checkboxes (roads/road labels/place
-  labels/boundaries/buildings/metrics/heatmap) are deliberately **not** `disabled` — they stay
+  the current session. In `MapLayerPanel`, the eight layer checkboxes (roads/road labels/place
+  labels/boundaries/ward names/buildings/metrics/heatmap) are deliberately **not** `disabled` — they stay
   interactive and keep updating the store/URL (`roads=1`, `buildings=1`, `heatmap=1`, …) so a
   shared link still encodes the intended layers even for the two (metrics/heatmap) that still have
   no real data source. Each unavailable one gets a `title` plus an `aria-describedby` note

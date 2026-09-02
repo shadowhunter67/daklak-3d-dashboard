@@ -13,6 +13,9 @@ export interface DetailMapLayerState {
   roadLabelsVisible: boolean;
   placeLabelsVisible: boolean;
   administrativeBoundariesVisible: boolean;
+  /** Ward/commune NAME labels (`wardLabelLayers.ts`) — bundled data, own toggle, independent of
+   * the `administrativeBoundariesVisible` polygon/outline toggle. */
+  wardLabelsVisible: boolean;
   buildingsVisible: boolean;
   dashboardMetricsVisible: boolean;
   heatmapVisible: boolean;
@@ -112,6 +115,7 @@ export interface DetailedMapProvider {
   setRoadLabelsVisible(visible: boolean): void;
   setPlaceLabelsVisible(visible: boolean): void;
   setAdministrativeBoundariesVisible(visible: boolean): void;
+  setWardLabelsVisible(visible: boolean): void;
   setBuildingsVisible(visible: boolean): void;
   setDashboardMetricsVisible(visible: boolean): void;
   setHeatmapVisible(visible: boolean): void;
@@ -141,6 +145,7 @@ export const DEFAULT_DETAIL_MAP_LAYER_STATE: DetailMapLayerState = {
   roadLabelsVisible: true,
   placeLabelsVisible: true,
   administrativeBoundariesVisible: true,
+  wardLabelsVisible: true,
   buildingsVisible: true,
   dashboardMetricsVisible: false,
   heatmapVisible: false,

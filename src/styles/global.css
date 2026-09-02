@@ -3,6 +3,10 @@
   color: #e9f2ed;
   background: #071918;
   font-synthesis: none;
+  /* Height of the fixed app header (`header`/`.dashboard-header`). The header is
+     position:absolute, so full-height panels underneath it (e.g. the detail-map directory
+     sidebar) must reserve this much space at the top or their content renders behind it. */
+  --app-header-height: 98px;
 }
 * {
   box-sizing: border-box;
@@ -1454,6 +1458,9 @@ footer a {
   }
 }
 @media (max-width: 932px) and (orientation: landscape) {
+  :root {
+    --app-header-height: 64px;
+  }
   .dashboard-header {
     height: 64px;
     padding: 8px 14px;
@@ -1619,6 +1626,11 @@ footer a {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  /* Reserve the fixed header's height so the directory heading/search aren't hidden behind it
+     (the header is position:absolute and paints a translucent gradient over whatever is under
+     its top edge). Mobile re-lays this panel out as an absolute overlay below the header, so it
+     zeroes this in the max-width:767px block. */
+  padding-top: var(--app-header-height);
   border-right: 1px solid #8bb3a433;
   transition: flex-basis 200ms ease;
 }
@@ -1873,6 +1885,9 @@ footer a {
     flex-basis: auto;
     width: 100%;
     border-right: 0;
+    /* This block already offsets the panel below the header via `top`; the desktop padding-top
+       would double that gap. */
+    padding-top: 0;
   }
   .detail-map-viewport__sidebar.is-collapsed {
     display: none;

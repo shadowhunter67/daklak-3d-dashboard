@@ -90,6 +90,19 @@ export const LAYER_REGISTRY: readonly MapLayerDescriptor[] = [
     availability: 'available',
   },
   {
+    id: 'wardLabelsVisible',
+    title: 'Tên xã/phường',
+    group: 'Bản đồ chi tiết',
+    datasetId: 'administrative-units',
+    renderer: 'maplibre',
+    geometryType: 'point',
+    defaultVisible: true,
+    accessPolicyId: 'public-standard',
+    // Nhãn tên đến từ daklak-labels.json đóng gói sẵn (giống ranh giới) — không phụ thuộc nguồn
+    // PMTiles theo env; xem wardLabelLayers.ts.
+    availability: 'available',
+  },
+  {
     id: 'buildingsVisible',
     title: 'Công trình xây dựng',
     group: 'Bản đồ chi tiết',
