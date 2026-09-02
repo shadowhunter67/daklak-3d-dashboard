@@ -21,11 +21,14 @@ const modes = [
 // Label is "Tổng quan điều hành" (not "Tổng quan") specifically to avoid an accessible-name clash
 // with the `modes` data-mode tab of the same literal text — the two are unrelated concepts
 // (top-level view vs. 3D thematic overlay) and must resolve unambiguously by role+name in tests.
+// The `'world'` (Khám phá Đắk Lắk 3D / Tourism Digital Twin) entry is intentionally omitted for
+// now — the idea is paused. The route itself still resolves (`?view=world` in dashboardUrl.ts,
+// WorldExplorationView in App.tsx), so a shared link keeps working; only the nav tab is hidden.
+// Re-add `['world', 'header.nav.world', 'header.nav.worldShort']` here to bring the tab back.
 const primaryViews = [
   ['overview', 'header.nav.overview', 'header.nav.overviewShort'],
   ['3d', 'header.nav.3d', 'header.nav.3d'],
   ['map', 'header.nav.map', 'header.nav.mapShort'],
-  ['world', 'header.nav.world', 'header.nav.worldShort'],
 ] as const satisfies ReadonlyArray<readonly [string, MessageKey, MessageKey]>;
 
 export function DashboardHeader() {
