@@ -45,12 +45,13 @@ describe('DetailMapViewport', () => {
     expect(screen.queryByTestId('fake-map-provider')).toBeNull();
   });
 
-  it('opens the directory view from the WebGL-unavailable fallback', async () => {
+  it('shows the accessible ward/commune directory inline in the WebGL-unavailable fallback, without navigating away', async () => {
     hasWebGLSupportMock.mockReturnValue(false);
     render(<DetailMapViewport />);
-    const button = await screen.findByRole('button', { name: 'Mở danh sách 2D' });
-    fireEvent.click(button);
-    expect(useMapStore.getState().viewMode).toBe('table');
+    expect(
+      await screen.findByRole('heading', { name: 'Danh sách xã, phường' }),
+    ).toBeInTheDocument();
+    expect(useMapStore.getState().viewMode).toBe('map');
   });
 
   it('opens the layer panel, toggles a layer, and syncs the change to the mounted provider', async () => {

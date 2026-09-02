@@ -700,6 +700,14 @@ h1 i {
   color: #a9c3ba;
   background: radial-gradient(circle, #123a34, #071918 65%);
 }
+.map-fallback .accessible-directory {
+  width: min(720px, 88vw);
+  height: min(50vh, 420px);
+  text-align: left;
+  background: #0b2924e6;
+  border: 1px solid #d4a44666;
+  border-radius: 12px;
+}
 .map-canvas-shell {
   position: absolute;
   inset: 0;
@@ -768,154 +776,6 @@ h1 i {
   white-space: nowrap;
   pointer-events: none;
   user-select: none;
-}
-.two-dimensional-view {
-  position: absolute;
-  z-index: 4;
-  inset: 118px 3.3vw 62px;
-  max-width: 1120px;
-  margin: auto;
-  display: grid;
-  grid-template-columns: minmax(0, 1.75fr) minmax(340px, 0.9fr);
-  overflow: hidden;
-  border: 1px solid #8bb3a433;
-  background: #071b19ee;
-  box-shadow: 0 22px 60px #0005;
-}
-.two-dimensional-view__switch {
-  display: none;
-}
-.administrative-map-2d {
-  min-width: 0;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  overflow: hidden;
-  border-right: 1px solid #8bb3a433;
-  background: radial-gradient(circle at 50% 45%, #123c35, #061715 72%);
-}
-.map-2d-heading {
-  display: flex;
-  align-items: end;
-  justify-content: space-between;
-  gap: 16px;
-}
-.map-2d-heading h2 {
-  margin: 2px 0 0;
-  color: #f0cf7a;
-  font:
-    22px/1.2 Cambria,
-    'Noto Serif',
-    'DejaVu Serif',
-    serif;
-}
-.map-2d-heading > p,
-.map-2d-note {
-  margin: 0;
-  color: #8fa9a1;
-  font-size: 9px;
-}
-.administrative-map-2d__svg {
-  width: 100%;
-  min-height: 0;
-  flex: 1;
-  touch-action: manipulation;
-}
-.map-2d-polygons path {
-  stroke: #a5c9bb;
-  stroke-width: 0.7;
-  vector-effect: non-scaling-stroke;
-  cursor: pointer;
-  transition:
-    fill 120ms ease,
-    stroke-width 120ms ease,
-    opacity 120ms ease;
-}
-.map-2d-polygons path:hover,
-.map-2d-polygons path.is-hovered {
-  stroke: #fff1b8;
-  stroke-width: 1.6;
-}
-.map-2d-polygons path.is-selected {
-  fill: #b87a21;
-  stroke: #fff0a8;
-  stroke-width: 2.4;
-}
-/* Hiệu ứng "vẽ viền + phát sáng" khi chọn một phường/xã (kiểu bản đồ động, mapeffect.app). Overlay
-   riêng, không nhận sự kiện chuột (pointer-events: none) — path gốc trong .map-2d-polygons vẫn
-   giữ nguyên click/hover/fill, hiệu ứng chỉ là lớp trang trí phía trên. */
-.map-2d-highlight {
-  pointer-events: none;
-}
-.map-2d-highlight__glow {
-  fill: #f0cf7a;
-  stroke: none;
-  opacity: 0;
-  animation: map-2d-glow-in 900ms ease-out 220ms both;
-}
-.map-2d-highlight__draw {
-  fill: none;
-  stroke: #ffe9a8;
-  stroke-width: 2.6;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
-  filter: drop-shadow(0 0 3px rgb(240 207 122 / 0.85));
-  animation: map-2d-draw-in 760ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
-}
-.map-2d-highlight.is-static .map-2d-highlight__glow {
-  animation: none;
-  opacity: 0.22;
-}
-.map-2d-highlight.is-static .map-2d-highlight__draw {
-  animation: none;
-  stroke-dashoffset: 0;
-}
-@keyframes map-2d-draw-in {
-  from {
-    stroke-dashoffset: 1;
-  }
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-@keyframes map-2d-glow-in {
-  0% {
-    opacity: 0;
-  }
-  55% {
-    opacity: 0.42;
-  }
-  100% {
-    opacity: 0.22;
-  }
-}
-.map-2d-labels text {
-  fill: #fff1bd;
-  paint-order: stroke;
-  stroke: #071918;
-  stroke-width: calc(3px / var(--map-2d-zoom, 1));
-  text-anchor: middle;
-  font-size: calc(8.5px / var(--map-2d-zoom, 1));
-  font-weight: 600;
-  pointer-events: none;
-}
-.map-2d-labels text.is-emphasized {
-  font-size: calc(13px / var(--map-2d-zoom, 1));
-  font-weight: 750;
-}
-.map-road-labels text {
-  fill: #ffe29a;
-  paint-order: stroke;
-  stroke: #071918;
-  stroke-width: calc(3px / var(--map-2d-zoom, 1));
-  text-anchor: middle;
-  font-size: calc(9px / var(--map-2d-zoom, 1));
-  font-weight: 750;
-  letter-spacing: 0;
-  pointer-events: none;
 }
 .road-label-3d {
   display: inline-block;
@@ -1554,48 +1414,8 @@ footer a {
   .mobile-sheet--peek .stat-panel .hero-stat strong {
     font-size: 30px;
   }
-  .two-dimensional-view {
-    inset: calc(var(--mobile-header-height) + var(--mobile-tabs-height)) 0 0;
-    margin: 0;
-    border-width: 0;
-    grid-template-columns: 1fr;
-    grid-template-rows: 48px minmax(0, 1fr);
-    height: calc(100svh - var(--mobile-header-height) - var(--mobile-tabs-height));
-    height: calc(100dvh - var(--mobile-header-height) - var(--mobile-tabs-height));
-  }
-  .two-dimensional-view__switch {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
-    padding: 4px 8px;
-    background: #061715;
-  }
-  .two-dimensional-view__switch button {
-    min-height: 40px;
-    border: 1px solid #8bb3a444;
-    border-radius: 8px;
-    color: #adc3bb;
-    background: transparent;
-  }
-  .two-dimensional-view__switch button[aria-pressed='true'] {
-    color: #071918;
-    background: #efc65d;
-  }
-  .administrative-map-2d,
   .accessible-directory {
     min-height: 0;
-    grid-column: 1;
-    grid-row: 2;
-  }
-  .administrative-map-2d {
-    padding: 12px;
-    border: 0;
-  }
-  .two-dimensional-view--map .accessible-directory,
-  .two-dimensional-view--directory .administrative-map-2d {
-    display: none;
-  }
-  .accessible-directory {
     padding: 12px;
     height: 100%;
   }
@@ -1784,10 +1604,55 @@ footer a {
   border-width: 1px;
 }
 
-/* Detail map (MapLibre) */
+/* Detail map (MapLibre) — now the single merged map+directory experience: a sidebar (reusing
+   .accessible-directory) beside the MapLibre canvas, replacing the old standalone 'table' view. */
 .detail-map-viewport {
   position: absolute;
   inset: 0;
+  display: flex;
+}
+.detail-map-viewport__sidebar {
+  position: relative;
+  z-index: 3;
+  flex: 0 0 340px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid #8bb3a433;
+  transition: flex-basis 200ms ease;
+}
+.detail-map-viewport__sidebar.is-collapsed {
+  flex-basis: 0;
+  border-right: 0;
+}
+.detail-map-viewport__sidebar .accessible-directory {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 340px;
+}
+.detail-map-viewport__sidebar-toggle {
+  position: absolute;
+  z-index: 4;
+  top: 80px;
+  left: 340px;
+  border: 1px solid #d4a44688;
+  border-radius: 0 999px 999px 0;
+  padding: 8px 12px;
+  color: #e7c471;
+  background: #0d211fcc;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: left 200ms ease;
+}
+.detail-map-viewport__sidebar.is-collapsed + .detail-map-viewport__sidebar-toggle {
+  left: 0;
+  border-radius: 999px;
+}
+.detail-map-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 .detail-map-canvas {
   position: absolute;
@@ -1835,6 +1700,17 @@ footer a {
 .detail-map-error h2 {
   margin: 0;
   color: #e7b855;
+}
+.detail-map-error__directory {
+  width: min(720px, 100%);
+  height: min(50vh, 420px);
+  text-align: left;
+}
+.detail-map-error__directory .accessible-directory {
+  height: 100%;
+  background: #0b2924e6;
+  border: 1px solid #d4a44666;
+  border-radius: 12px;
 }
 .detail-map-error p {
   margin: 0;
@@ -1978,6 +1854,40 @@ footer a {
     max-width: none;
     max-height: 60vh;
     overflow-y: auto;
+  }
+  /* On narrow viewports the directory becomes a full-width overlay above the map (toggled via
+     detail-map-viewport__sidebar-toggle) instead of a permanent side column. `top` stops at
+     `--mobile-header-height` (not `inset: 0`) and `z-index` stays below the header's own z-index
+     of 5 (see the root `header` rule) — an earlier version used `inset: 0` + `z-index: 5`, which
+     tied with the header on stacking order and (DOM order breaking the tie) let the sidebar
+     capture clicks meant for the header/primary-nav underneath it. */
+  .detail-map-viewport__sidebar {
+    position: absolute;
+    /* Fallback value matches --mobile-header-height's own definition (portrait-orientation media
+       query only) for the landscape case, where that custom property is unset. */
+    top: var(--mobile-header-height, calc(58px + env(safe-area-inset-top)));
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 4;
+    flex-basis: auto;
+    width: 100%;
+    border-right: 0;
+  }
+  .detail-map-viewport__sidebar.is-collapsed {
+    display: none;
+  }
+  .detail-map-viewport__sidebar .accessible-directory {
+    width: 100%;
+  }
+  .detail-map-viewport__sidebar-toggle {
+    left: auto;
+    right: 16px;
+    top: 80px;
+    border-radius: 999px;
+  }
+  .detail-map-viewport__sidebar.is-collapsed + .detail-map-viewport__sidebar-toggle {
+    left: auto;
   }
 }
 .provenance-panel-backdrop {

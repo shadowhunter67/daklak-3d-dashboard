@@ -47,24 +47,17 @@ describe('DashboardHeader', () => {
     expect(useMapStore.getState().viewMode).toBe('overview');
   });
 
-  it('navigates to the accessible 2D list via the primary nav', () => {
+  it('navigates to the merged map & directory view via the primary nav', () => {
     useMapStore.setState({ viewMode: '3d' });
     renderHeader();
-    fireEvent.click(screen.getByRole('button', { name: 'Danh sách' }));
-    expect(useMapStore.getState().viewMode).toBe('table');
-  });
-
-  it('navigates to the detail map via the primary nav', () => {
-    useMapStore.setState({ viewMode: '3d' });
-    renderHeader();
-    fireEvent.click(screen.getByRole('button', { name: 'Bản đồ chi tiết' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Bản đồ & danh sách' }));
     expect(useMapStore.getState().viewMode).toBe('map');
   });
 
   it('marks the active primary nav item with aria-current', () => {
-    useMapStore.setState({ viewMode: 'table' });
+    useMapStore.setState({ viewMode: 'map' });
     renderHeader();
-    expect(screen.getByRole('button', { name: 'Danh sách' })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: 'Bản đồ & danh sách' })).toHaveAttribute(
       'aria-current',
       'page',
     );
@@ -82,18 +75,7 @@ describe('DashboardHeader', () => {
       expect(screen.getByRole('button', { name: 'Đưa camera về toàn tỉnh' })).toBeInTheDocument();
     });
 
-    it('shows the mode tabs and map-layer toggles, but not the 3D-only camera controls, in the 2D list view', () => {
-      useMapStore.setState({ viewMode: 'table' });
-      renderHeader();
-      expect(screen.getByRole('navigation', { name: 'Chế độ dữ liệu' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Hiện lớp đường giao thông' })).toBeInTheDocument();
-      expect(
-        screen.queryByRole('button', { name: 'Đưa camera về toàn tỉnh' }),
-      ).not.toBeInTheDocument();
-      expect(screen.queryByRole('button', { name: 'Xoay bản đồ' })).not.toBeInTheDocument();
-    });
-
-    it('hides the mode tabs and all map-layer/camera toggles in Executive Overview and the detail map', () => {
+    it('hides the mode tabs and all map-layer/camera toggles in Executive Overview and the merged map view', () => {
       useMapStore.setState({ viewMode: 'overview' });
       const { rerender } = renderHeader();
       expect(screen.queryByRole('navigation', { name: 'Chế độ dữ liệu' })).not.toBeInTheDocument();

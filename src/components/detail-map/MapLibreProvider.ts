@@ -19,7 +19,12 @@ import {
   WARD_SELECTED_FILL_LAYER_ID,
   WARD_SELECTED_LINE_LAYER_ID,
 } from './wardBoundaryLayers';
-import { PLACE_LABELS_LAYER_ID, ROADS_LINE_LAYER_ID, ROAD_LABELS_LAYER_ID } from './roadLayers';
+import {
+  HAMLET_LABELS_LAYER_ID,
+  PLACE_LABELS_LAYER_ID,
+  ROADS_LINE_LAYER_ID,
+  ROAD_LABELS_LAYER_ID,
+} from './roadLayers';
 import { BUILDINGS_FILL_LAYER_ID, BUILDINGS_OUTLINE_LAYER_ID } from './buildingLayers';
 import {
   WARD_FLY_DURATION_MS,
@@ -232,6 +237,7 @@ export class MapLibreProvider implements DetailedMapProvider {
   setPlaceLabelsVisible(visible: boolean): void {
     if (!this.sourceAvailability?.roads) return;
     this.setLayerVisibility(PLACE_LABELS_LAYER_ID, visible);
+    this.setLayerVisibility(HAMLET_LABELS_LAYER_ID, visible);
   }
 
   setAdministrativeBoundariesVisible(visible: boolean): void {

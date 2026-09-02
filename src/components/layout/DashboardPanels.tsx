@@ -2,7 +2,6 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { useMapStore } from '../../stores/mapStore';
 import { DetailPanel } from '../dashboard/DetailPanel';
 import { MobileDashboardSheet } from './MobileDashboardSheet';
-import { TwoDimensionalView } from './TwoDimensionalView';
 
 const StatPanel = lazy(() =>
   import('../dashboard/StatPanel').then((module) => ({ default: module.StatPanel })),
@@ -28,7 +27,6 @@ export function DashboardPanels() {
   // stat/detail panels below are specific to the `3d` analytical view and read admin-unit
   // selection state the world scene deliberately does not touch (see WorldTerrainMesh.tsx).
   if (viewMode === 'world') return null;
-  if (viewMode === 'table') return <TwoDimensionalView />;
   if (mobilePortrait) return <MobileDashboardSheet />;
   return (
     <div className="desktop-panels">

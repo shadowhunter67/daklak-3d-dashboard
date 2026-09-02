@@ -5,6 +5,12 @@
 - Liên quan: [docs/adr/0001-project-centric-domain.md](0001-project-centric-domain.md), Phase 2B1
   (Project Portfolio + Project Detail)
 
+> **Cập nhật (sau Phase 2B1)**: `viewMode: 'table'` (view độc lập "2D directory", SVG + danh sách)
+> đã được gộp vào `'map'` — xem `docs/architecture.md`. `?view=2d`/`?view=table` trên URL vẫn được
+> chấp nhận nhưng giờ alias sang `map` thay vì mở một view SVG riêng. Phần "Bối cảnh"/"Không đổi"
+> bên dưới mô tả đúng trạng thái tại thời điểm ADR này được chấp thuận (2026-07-23), không phải
+> trạng thái hiện tại của `'table'`.
+
 ## Bối cảnh
 
 Phase 2B1 thêm hai điểm vào mới có URL riêng, chia sẻ được, hỗ trợ Back/Forward và refresh:

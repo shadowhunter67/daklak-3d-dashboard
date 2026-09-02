@@ -16,7 +16,6 @@ export const vi = {
   'app.invalidConfig.title': 'Dữ liệu cấu hình không hợp lệ',
   'app.live.openedOverview': 'Đã mở tổng quan điều hành.',
   'app.live.opened3d': 'Đã mở bản đồ 3D.',
-  'app.live.openedTable': 'Đã mở danh sách 2D.',
   'app.live.openedMap': 'Đã mở bản đồ chi tiết.',
   'app.live.openedPortfolio': 'Đã mở danh mục dự án.',
   'app.live.openedProjectDetail': 'Đã mở chi tiết dự án.',
@@ -32,8 +31,7 @@ export const vi = {
   'header.nav.overview': 'Tổng quan điều hành',
   'header.nav.overviewShort': 'Tổng quan',
   'header.nav.3d': '3D',
-  'header.nav.table': 'Danh sách',
-  'header.nav.map': 'Bản đồ chi tiết',
+  'header.nav.map': 'Bản đồ & danh sách',
   'header.nav.mapShort': 'Bản đồ',
   'header.nav.world': 'Khám phá Đắk Lắk 3D',
   'header.nav.worldShort': 'Khám phá',
@@ -520,8 +518,7 @@ export const vi = {
   'errorBoundary.map3dDefaultReason': 'Bản đồ 3D gặp lỗi khi tải dữ liệu hoặc khởi tạo đồ họa.',
   'mapViewport.aria': 'Bản đồ hành chính 3D tỉnh Đắk Lắk',
   'mapViewport.webglUnsupportedReason':
-    'Trình duyệt hoặc thiết bị này không hỗ trợ WebGL. Danh sách 2D vẫn khả dụng.',
-  'mapViewport.open2dList': 'Mở danh sách 2D',
+    'Trình duyệt hoặc thiết bị này không hỗ trợ WebGL. Danh sách xã/phường bên dưới vẫn khả dụng.',
   'mapViewport.illustrativeAria': 'Chế độ đang dùng dữ liệu minh họa',
   'mapViewport.illustrativeBadge': 'DỮ LIỆU MINH HỌA',
   'mapViewport.coordinates': '12°39′ BẮC · 108°02′ ĐÔNG',
@@ -628,26 +625,6 @@ export const vi = {
   'worldExploration.touch.interactButton': 'Tương tác',
   'worldExploration.touch.interactButtonAria': 'Tương tác với điểm đến gần nhất',
 
-  // TwoDimensionalView switch
-  'twoDView.switchAria': 'Nội dung bản đồ 2D',
-  'twoDView.mapTab': 'Bản đồ',
-  'twoDView.directoryTab': 'Danh sách',
-
-  // AdministrativeMap2D
-  'map2d.eyebrow': 'BẢN ĐỒ HÀNH CHÍNH 2D',
-  'map2d.heading': '102 xã, phường',
-  'map2d.selected': 'Đang chọn {name}.',
-  'map2d.noneSelected': 'Chưa chọn đơn vị.',
-  'map2d.svgAria':
-    'Bản đồ hành chính 2D gồm {count} đơn vị. Dùng danh sách để truy cập bằng bàn phím.',
-  'map2d.roadLegendAria': 'Chú giải đường giao thông',
-  'map2d.roadNational': 'Quốc lộ',
-  'map2d.roadProvincial': 'Tỉnh lộ',
-  'map2d.roadDistrict': 'Đường huyện',
-  'map2d.osmAttribution': '© OpenStreetMap contributors · ODbL 1.0 · dữ liệu tham khảo',
-  'map2d.colorNote': 'Lớp màu sử dụng cùng bộ chỉ số minh họa với chế độ 3D.',
-  'map2d.roadNetworkAria': 'Mạng lưới đường OpenStreetMap',
-
   // BaseMapSelector (MapLibre detail map)
   'baseMap.aria': 'Loại bản đồ',
   'baseMap.default': 'Mặc định',
@@ -691,14 +668,15 @@ export const vi = {
 
   // DetailMapViewport
   'detailMapViewport.webglUnsupportedReason':
-    'Trình duyệt hoặc thiết bị này không hỗ trợ WebGL nên không thể mở bản đồ chi tiết. Danh sách 2D vẫn khả dụng.',
-  'detailMapViewport.open2dList': 'Mở danh sách 2D',
+    'Trình duyệt hoặc thiết bị này không hỗ trợ WebGL nên không thể mở bản đồ chi tiết. Danh sách xã/phường bên dưới vẫn khả dụng.',
   'detailMapViewport.errorHeading': 'Không thể tải bản đồ chi tiết',
   'detailMapViewport.errorBody':
     'Đã có lỗi khi khởi tạo bản đồ chi tiết. Bạn có thể thử lại hoặc chọn chế độ khác.',
   'detailMapViewport.retry': 'Thử lại',
   'detailMapViewport.backTo3d': 'Quay về tổng quan 3D',
   'detailMapViewport.aria': 'Bản đồ chi tiết',
+  'detailMapViewport.hideDirectory': 'Ẩn danh sách',
+  'detailMapViewport.showDirectory': 'Hiện danh sách',
 
   // DatasetFooter
   'datasetFooter.provincialIndicators': 'Chỉ tiêu cấp tỉnh:',

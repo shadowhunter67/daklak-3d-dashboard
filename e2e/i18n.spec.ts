@@ -156,10 +156,17 @@ test.describe('Internationalization (vi/en)', () => {
     await expect(page.locator('.project-detail__mock-badge')).toContainText('ILLUSTRATIVE DATA');
   });
 
-  test('the 2D directory renders in English', async ({ page }) => {
+  test('the merged map/directory view renders in English (legacy ?view=2d alias)', async ({
+    page,
+  }) => {
     await page.goto('./?lang=en&view=2d');
-    const directoryToggle = page.getByRole('button', { name: 'Directory', exact: true });
-    if (await directoryToggle.isVisible()) await directoryToggle.click();
+    // DetailMapViewport is a lazy chunk (see App.tsx) — wait for its container before checking the
+    // toggle, or the check can race the chunk fetch/Suspense fallback and find nothing.
+    await page.locator('#detail-map-viewport').waitFor({ state: 'visible' });
+    // On a narrow/mobile viewport the directory sidebar starts collapsed (see
+    // DetailMapViewport.tsx) — open it via its toggle when present; on desktop it's already open.
+    const showToggle = page.getByRole('button', { name: 'Show directory', exact: true });
+    if (await showToggle.isVisible()) await showToggle.click();
     await expect(page.getByRole('heading', { name: 'List of communes/wards' })).toBeVisible();
     await expect(page.getByLabel('Search by name or code')).toBeVisible();
   });

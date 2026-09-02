@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useMapStore } from '../../stores/mapStore';
 import { hasWebGLSupport } from '../map/webglLifecycle';
 import { MapFallback, MapLoading } from '../map/MapFallback';
+import { AccessibleDirectory } from '../dashboard/AccessibleDirectory';
 import { FakeMapProvider } from './FakeMapProvider';
 import { MapLibreProvider } from './MapLibreProvider';
 import { MapLayerPanel } from './MapLayerPanel';
@@ -88,6 +89,13 @@ export function DetailMapViewport() {
   const setDetailMapCamera = useMapStore((state) => state.setDetailMapCamera);
 
   const [webGLSupported] = useState(() => hasWebGLSupport());
+  // Sidebar directory (formerly the standalone 'table' view): open by default on desktop, closed
+  // by default on narrow/portrait viewports so it doesn't cover the map on first load — same
+  // matchMedia-on-mount idiom as DashboardPanels.tsx's mobilePortrait state. The user can toggle it
+  // either way afterwards.
+  const [directoryOpen, setDirectoryOpen] = useState(
+    () => !(window.matchMedia?.('(max-width: 767px)').matches ?? false),
+  );
   const [status, setStatus] = useState<LoadStatus>('loading');
   const [generation, setGeneration] = useState(0);
   const [interactionMode, setInteractionMode] = useState<MapInteractionMode>('browse');
@@ -199,7 +207,6 @@ export function DetailMapViewport() {
     setGeneration((value) => value + 1);
   }, []);
   const backToOverview = useCallback(() => setViewMode('3d'), [setViewMode]);
-  const openDirectory = useCallback(() => setViewMode('table'), [setViewMode]);
 
   const toggleMeasureMode = useCallback(() => {
     setInteractionMode((mode) => (mode === 'measure' ? 'browse' : 'measure'));
@@ -224,11 +231,9 @@ export function DetailMapViewport() {
 
   if (!webGLSupported) {
     return (
-      <MapFallback
-        reason={t('detailMapViewport.webglUnsupportedReason')}
-        actionLabel={t('detailMapViewport.open2dList')}
-        onRetry={openDirectory}
-      />
+      <MapFallback reason={t('detailMapViewport.webglUnsupportedReason')}>
+        <AccessibleDirectory />
+      </MapFallback>
     );
   }
 
@@ -244,9 +249,9 @@ export function DetailMapViewport() {
           <button type="button" onClick={backToOverview}>
             {t('detailMapViewport.backTo3d')}
           </button>
-          <button type="button" onClick={openDirectory}>
-            {t('detailMapViewport.open2dList')}
-          </button>
+        </div>
+        <div className="detail-map-error__directory">
+          <AccessibleDirectory />
         </div>
       </div>
     );
@@ -259,30 +264,46 @@ export function DetailMapViewport() {
       aria-label={t('detailMapViewport.aria')}
       tabIndex={-1}
     >
-      <div ref={containerRef} className="detail-map-canvas" key={generation} />
-      {status === 'loading' && <MapLoading />}
-      {status === 'ready' && !sourceAvailability.roads && <DetailMapSourceNotice />}
-      {status === 'ready' && (
-        <MapLayerPanel
-          layers={layers}
-          sourceAvailability={sourceAvailability}
-          onBaseMapChange={setDetailMapBaseMap}
-          onToggleLayer={toggleDetailMapLayer}
-          suppressEscapeClose={interactionMode === 'measure'}
-          toolsSlot={
-            <>
-              <LocalSearch onSelect={onSelectSearchResult} />
-              <DistanceMeasureTool
-                active={interactionMode === 'measure'}
-                points={measurementPoints}
-                onToggle={toggleMeasureMode}
-                onUndo={() => setMeasurementPoints((points) => undoLastMeasurementPoint(points))}
-                onClear={() => setMeasurementPoints([])}
-              />
-            </>
-          }
-        />
-      )}
+      <div className={`detail-map-viewport__sidebar${directoryOpen ? '' : ' is-collapsed'}`}>
+        {directoryOpen && <AccessibleDirectory />}
+      </div>
+      <button
+        type="button"
+        className="detail-map-viewport__sidebar-toggle"
+        aria-expanded={directoryOpen}
+        aria-controls="directory-title"
+        onClick={() => setDirectoryOpen((open) => !open)}
+      >
+        {directoryOpen
+          ? t('detailMapViewport.hideDirectory')
+          : t('detailMapViewport.showDirectory')}
+      </button>
+      <div className="detail-map-stage">
+        <div ref={containerRef} className="detail-map-canvas" key={generation} />
+        {status === 'loading' && <MapLoading />}
+        {status === 'ready' && !sourceAvailability.roads && <DetailMapSourceNotice />}
+        {status === 'ready' && (
+          <MapLayerPanel
+            layers={layers}
+            sourceAvailability={sourceAvailability}
+            onBaseMapChange={setDetailMapBaseMap}
+            onToggleLayer={toggleDetailMapLayer}
+            suppressEscapeClose={interactionMode === 'measure'}
+            toolsSlot={
+              <>
+                <LocalSearch onSelect={onSelectSearchResult} />
+                <DistanceMeasureTool
+                  active={interactionMode === 'measure'}
+                  points={measurementPoints}
+                  onToggle={toggleMeasureMode}
+                  onUndo={() => setMeasurementPoints((points) => undoLastMeasurementPoint(points))}
+                  onClear={() => setMeasurementPoints([])}
+                />
+              </>
+            }
+          />
+        )}
+      </div>
     </section>
   );
 }

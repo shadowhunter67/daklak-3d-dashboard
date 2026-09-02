@@ -8,6 +8,7 @@ import {
   WARD_SELECTED_LINE_LAYER_ID,
 } from './wardBoundaryLayers';
 import {
+  HAMLET_LABELS_LAYER_ID,
   OSM_VECTOR_SOURCE_ID,
   PLACES_SOURCE_LAYER,
   PLACE_LABELS_LAYER_ID,
@@ -104,6 +105,7 @@ describe('buildDetailMapStyle', () => {
       WARD_SELECTED_LINE_LAYER_ID,
       ROAD_LABELS_LAYER_ID,
       PLACE_LABELS_LAYER_ID,
+      HAMLET_LABELS_LAYER_ID,
     ]);
     expect(style.glyphs).toBe(GLYPHS_URL);
   });
@@ -115,6 +117,7 @@ describe('buildDetailMapStyle', () => {
     expect(ids).toContain(BUILDINGS_FILL_LAYER_ID);
     expect(ids).not.toContain(ROAD_LABELS_LAYER_ID);
     expect(ids).not.toContain(PLACE_LABELS_LAYER_ID);
+    expect(ids).not.toContain(HAMLET_LABELS_LAYER_ID);
     expect(style.glyphs).toBeUndefined();
   });
 
@@ -134,5 +137,18 @@ describe('buildDetailMapStyle', () => {
     expect(
       'source-layer' in byId[PLACE_LABELS_LAYER_ID] && byId[PLACE_LABELS_LAYER_ID]['source-layer'],
     ).toBe(PLACES_SOURCE_LAYER);
+    expect(
+      'source-layer' in byId[HAMLET_LABELS_LAYER_ID] &&
+        byId[HAMLET_LABELS_LAYER_ID]['source-layer'],
+    ).toBe(PLACES_SOURCE_LAYER);
+  });
+
+  it('splits place labels into a settlement tier (minzoom 8) and a hamlet tier (minzoom 13) so hamlet names do not clutter the province-wide overview', () => {
+    const style = buildDetailMapStyle(withRoads, PMTILES_URL, GLYPHS_URL);
+    const byId = Object.fromEntries(style.layers.map((layer) => [layer.id, layer]));
+    const placeLayer = byId[PLACE_LABELS_LAYER_ID];
+    const hamletLayer = byId[HAMLET_LABELS_LAYER_ID];
+    expect('minzoom' in placeLayer && placeLayer.minzoom).toBe(8);
+    expect('minzoom' in hamletLayer && hamletLayer.minzoom).toBe(13);
   });
 });

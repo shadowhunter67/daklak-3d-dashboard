@@ -193,7 +193,7 @@ export const ROAD_NETWORK_3D2D_DATASET: DatasetDescriptor = {
   id: 'road-network-osm-3d2d',
   title: 'Mạng lưới đường bộ (OpenStreetMap) — lớp 3D/2D',
   description:
-    'Trục đường quốc lộ/tỉnh lộ/huyện lộ trích từ OpenStreetMap, dùng cho lớp đường trong bản đồ 3D và danh sách 2D (RoadLayer2D/RoadLayer3D). Khác với nguồn PMTiles của bản đồ chi tiết (xem road-network-detail-map-pmtiles) — nguồn đó chưa được xây dựng.',
+    'Trục đường quốc lộ/tỉnh lộ/huyện lộ trích từ OpenStreetMap, dùng cho lớp đường trong bản đồ 3D (RoadLayer3D). Khác với nguồn PMTiles của bản đồ chi tiết (xem road-network-detail-map-pmtiles) — nguồn đó chưa được xây dựng.',
   domain: 'infrastructure',
   classification: 'public',
   authority: 'open-community',

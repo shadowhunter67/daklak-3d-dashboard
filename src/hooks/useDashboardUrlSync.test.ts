@@ -45,10 +45,10 @@ describe('useDashboardUrlSync', () => {
     const pushSpy = vi.spyOn(window.history, 'pushState');
     renderHook(() => useDashboardUrlSync());
 
-    useMapStore.getState().setViewMode('table');
+    useMapStore.getState().setViewMode('map');
 
     expect(pushSpy).toHaveBeenCalledTimes(1);
-    expect(pushSpy.mock.calls[0][2]).toContain('view=2d');
+    expect(pushSpy.mock.calls[0][2]).toContain('view=map');
   });
 
   it('pushes a history entry when the data mode changes', () => {
@@ -61,14 +61,14 @@ describe('useDashboardUrlSync', () => {
     expect(pushSpy.mock.calls[0][2]).toContain('mode=energy');
   });
 
-  it('restores view mode, data mode, and selected ward on popstate', () => {
+  it('restores view mode, data mode, and selected ward on popstate, aliasing the legacy ?view=2d value to the merged map view', () => {
     renderHook(() => useDashboardUrlSync());
 
     window.history.pushState(null, '', '?view=2d&mode=energy&ward=24133');
     window.dispatchEvent(new PopStateEvent('popstate'));
 
     const state = useMapStore.getState();
-    expect(state.viewMode).toBe('table');
+    expect(state.viewMode).toBe('map');
     expect(state.dataMode).toBe('energy');
     expect(state.selectedCode).toBe('24133');
   });

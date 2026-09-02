@@ -3,6 +3,7 @@ import { datasetManifest } from '../../data/datasetManifest';
 import { useMapStore } from '../../stores/mapStore';
 import { MapFallback, MapLoading } from '../map/MapFallback';
 import { hasWebGLSupport } from '../map/webglLifecycle';
+import { AccessibleDirectory } from '../dashboard/AccessibleDirectory';
 import { useTranslation } from '../../i18n/useTranslation';
 
 const AdministrativeMap = lazy(() =>
@@ -13,7 +14,6 @@ export function MapViewport() {
   const { t } = useTranslation();
   const dataMode = useMapStore((state) => state.dataMode);
   const viewMode = useMapStore((state) => state.viewMode);
-  const setViewMode = useMapStore((state) => state.setViewMode);
   const [webGLSupported] = useState(() => hasWebGLSupport());
   if (viewMode !== '3d') return null;
   return (
@@ -28,11 +28,9 @@ export function MapViewport() {
           <AdministrativeMap />
         </Suspense>
       ) : (
-        <MapFallback
-          reason={t('mapViewport.webglUnsupportedReason')}
-          actionLabel={t('mapViewport.open2dList')}
-          onRetry={() => setViewMode('table')}
-        />
+        <MapFallback reason={t('mapViewport.webglUnsupportedReason')}>
+          <AccessibleDirectory />
+        </MapFallback>
       )}
       {datasetManifest.metricStatus[dataMode] === 'illustrative' && (
         <div className="illustrative-watermark" aria-label={t('mapViewport.illustrativeAria')}>

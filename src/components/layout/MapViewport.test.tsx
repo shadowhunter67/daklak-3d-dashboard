@@ -29,7 +29,7 @@ describe('MapViewport', () => {
     hasWebGLSupportMock.mockReturnValue(true);
     render(<MapViewport />);
     await waitFor(() => expect(screen.getByTestId('administrative-map-stub')).toBeInTheDocument());
-    expect(screen.queryByRole('button', { name: 'Mở danh sách 2D' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Danh sách xã, phường' })).not.toBeInTheDocument();
   });
 
   it('never mounts the heavy 3D component when WebGL is unsupported', async () => {
@@ -44,11 +44,12 @@ describe('MapViewport', () => {
     expect(administrativeMapMock).not.toHaveBeenCalled();
   });
 
-  it('falls back to the 2D directory from the WebGL-unsupported retry action', async () => {
+  it('shows the accessible ward/commune directory inline when WebGL is unsupported, without navigating away', async () => {
     hasWebGLSupportMock.mockReturnValue(false);
     render(<MapViewport />);
-    const retry = await screen.findByRole('button', { name: 'Mở danh sách 2D' });
-    retry.click();
-    expect(useMapStore.getState().viewMode).toBe('table');
+    expect(
+      await screen.findByRole('heading', { name: 'Danh sách xã, phường' }),
+    ).toBeInTheDocument();
+    expect(useMapStore.getState().viewMode).toBe('3d');
   });
 });

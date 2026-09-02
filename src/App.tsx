@@ -120,13 +120,11 @@ export default function App() {
     // an immediate rAF here could fire before its chunk has resolved and the element even exists.
     if (viewMode === 'map') return;
     const targetId =
-      viewMode === 'table'
-        ? 'map-2d-title'
-        : viewMode === 'overview'
-          ? 'executive-overview'
-          : viewMode === 'world'
-            ? 'world-viewport'
-            : 'map-viewport';
+      viewMode === 'overview'
+        ? 'executive-overview'
+        : viewMode === 'world'
+          ? 'world-viewport'
+          : 'map-viewport';
     requestAnimationFrame(() => document.getElementById(targetId)?.focus());
   }, [viewMode]);
 
@@ -156,15 +154,13 @@ export default function App() {
       : route.kind === 'project-detail'
         ? 'project-detail'
         : 'data-readiness'
-    : viewMode === 'table'
-      ? 'map-2d-title'
-      : viewMode === 'map'
-        ? 'detail-map-viewport'
-        : viewMode === 'overview'
-          ? 'executive-overview'
-          : viewMode === 'world'
-            ? 'world-viewport'
-            : 'map-viewport';
+    : viewMode === 'map'
+      ? 'detail-map-viewport'
+      : viewMode === 'overview'
+        ? 'executive-overview'
+        : viewMode === 'world'
+          ? 'world-viewport'
+          : 'map-viewport';
 
   const goToPortfolio = (filters: PortfolioFilters = {}, opts?: { replace?: boolean }) =>
     navigate(serializePortfolioHash(filters), opts);
@@ -241,15 +237,13 @@ export default function App() {
             : route.kind === 'project-detail'
               ? t('app.live.openedProjectDetail')
               : t('app.live.openedDataReadiness')
-          : viewMode === 'table'
-            ? t('app.live.openedTable')
-            : viewMode === 'map'
-              ? t('app.live.openedMap')
-              : viewMode === 'overview'
-                ? t('app.live.openedOverview')
-                : viewMode === 'world'
-                  ? t('app.live.openedWorld')
-                  : t('app.live.opened3d')}{' '}
+          : viewMode === 'map'
+            ? t('app.live.openedMap')
+            : viewMode === 'overview'
+              ? t('app.live.openedOverview')
+              : viewMode === 'world'
+                ? t('app.live.openedWorld')
+                : t('app.live.opened3d')}{' '}
         {selectedName ? t('app.live.selected', { name: selectedName }) : ''}
       </p>
       <DatasetFooter />
