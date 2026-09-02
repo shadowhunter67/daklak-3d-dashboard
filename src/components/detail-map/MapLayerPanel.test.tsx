@@ -7,6 +7,7 @@ import { MapLayerPanel } from './MapLayerPanel';
 const availableSources = {
   roads: true,
   administrativeBoundaries: true,
+  dashboardOverlays: true,
   terrain: false,
   satellite: false,
 };
@@ -14,6 +15,7 @@ const availableSources = {
 const noSources = {
   roads: false,
   administrativeBoundaries: false,
+  dashboardOverlays: false,
   terrain: false,
   satellite: false,
 };

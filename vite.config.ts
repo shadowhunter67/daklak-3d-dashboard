@@ -74,7 +74,54 @@ export default defineConfig(({ mode }) => {
           });
         },
       },
+      {
+        // See the `optimizeDeps.exclude` comment below for the dev-server half of this problem;
+        // this is the production-build half. maplibre-gl's worker script (maplibre-gl-worker.mjs)
+        // itself does `import ... from "./maplibre-gl-shared.mjs"` — a literal, unhashed relative
+        // path baked into the npm package's own prebuilt file, not something Rollup parses (Rollup
+        // never even discovers this worker file exists, since MapLibre computes its URL from
+        // `import.meta.url` at runtime rather than a statically analyzable `new URL('literal.js',
+        // import.meta.url)`). `?url`-importing just the worker file (an earlier attempt) copies it
+        // verbatim but NOT its sibling `maplibre-gl-shared.mjs`, hashing only the file we asked
+        // for — the worker's own unrewritten `import` then 404s (or, on an SPA-fallback static
+        // server like `vite preview`, silently resolves to `index.html`), and the module worker
+        // fails to parse HTML as JS with an opaque, message-less `ErrorEvent`. The two files must
+        // be copied byte-for-byte, together, at their literal (unhashed) filenames so the worker's
+        // own relative import keeps resolving — MapLibreLoader.ts's `setWorkerUrl` then points at
+        // this fixed path instead of the URL MapLibre would otherwise compute and Rollup never
+        // tracked.
+        name: 'maplibre-gl-worker-assets',
+        apply: 'build',
+        generateBundle() {
+          const maplibreDistDir = fileURLToPath(
+            new URL('./node_modules/maplibre-gl/dist/', import.meta.url),
+          );
+          for (const fileName of ['maplibre-gl-worker.mjs', 'maplibre-gl-shared.mjs']) {
+            this.emitFile({
+              type: 'asset',
+              fileName: `assets/${fileName}`,
+              source: readFileSync(`${maplibreDistDir}${fileName}`),
+            });
+          }
+        },
+      },
     ],
+    // maplibre-gl bundles its own web worker as a separate entry point, loaded at runtime via
+    // `new Worker(new URL(...))`. Vite's dev-server dependency pre-bundler doesn't follow that
+    // dynamic worker reference, so it never emits `maplibre-gl-worker.mjs` into
+    // `node_modules/.vite/deps/` — the main chunk's rewritten import then 404s the moment
+    // MapLibre actually needs the worker (e.g. to process a GeoJSON source's features), which
+    // silently stalls the map at "loading" forever (no `load`/`error` event ever fires). This
+    // went unnoticed until PR "hiệu ứng bản đồ động" added the first real GeoJSON source/layers
+    // to the detail map — with zero sources, MapLibre never spun up a worker at all. Excluding
+    // maplibre-gl from pre-bundling makes Vite serve it as the real ESM package instead, whose
+    // own worker `new URL(...)` resolves correctly. The production build hits the same root cause
+    // for a different reason (Rollup never discovers the worker entry point at all, rather than
+    // discovering-but-not-prebundling it) — see the `maplibre-gl-worker-assets` plugin above and
+    // `MapLibreLoader.ts`'s `setWorkerUrl` call for that half of the fix.
+    optimizeDeps: {
+      exclude: ['maplibre-gl'],
+    },
     build: {
       target: 'es2022',
       rollupOptions: {

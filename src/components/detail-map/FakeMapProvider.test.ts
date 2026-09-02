@@ -24,6 +24,7 @@ describe('FakeMapProvider', () => {
       sourceAvailability: {
         roads: false,
         administrativeBoundaries: false,
+        dashboardOverlays: false,
         terrain: false,
         satellite: false,
       },
@@ -41,6 +42,7 @@ describe('FakeMapProvider', () => {
       sourceAvailability: {
         roads: false,
         administrativeBoundaries: false,
+        dashboardOverlays: false,
         terrain: false,
         satellite: false,
       },
@@ -59,6 +61,7 @@ describe('FakeMapProvider', () => {
       sourceAvailability: {
         roads: false,
         administrativeBoundaries: false,
+        dashboardOverlays: false,
         terrain: false,
         satellite: false,
       },
@@ -82,6 +85,7 @@ describe('FakeMapProvider', () => {
       sourceAvailability: {
         roads: false,
         administrativeBoundaries: false,
+        dashboardOverlays: false,
         terrain: false,
         satellite: false,
       },
@@ -102,6 +106,7 @@ describe('FakeMapProvider', () => {
       sourceAvailability: {
         roads: false,
         administrativeBoundaries: false,
+        dashboardOverlays: false,
         terrain: false,
         satellite: false,
       },
@@ -120,6 +125,7 @@ describe('FakeMapProvider', () => {
       sourceAvailability: {
         roads: false,
         administrativeBoundaries: false,
+        dashboardOverlays: false,
         terrain: false,
         satellite: false,
       },

@@ -649,7 +649,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   // DetailMapSourceNotice
   'detailMapSourceNotice.eyebrow': 'Awaiting data',
   'detailMapSourceNotice.bodyBeforeLink':
-    'No map source (PMTiles) is configured for this environment, so the map background is deliberately left blank — no placeholder data is used instead. Open',
+    'No road/basemap source (PMTiles) is configured for this environment — only administrative boundaries from local data are shown, no placeholder road data is used instead. Open',
   'detailMapSourceNotice.layerPanelLink': 'Map layers',
   'detailMapSourceNotice.bodyAfterLink': 'to see which layers are awaiting real data.',
 

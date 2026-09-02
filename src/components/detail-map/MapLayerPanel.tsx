@@ -29,8 +29,8 @@ const layerToggles: Array<{
   { key: 'roadLabelsVisible', unavailableWhen: 'roads' },
   { key: 'placeLabelsVisible', unavailableWhen: 'roads' },
   { key: 'administrativeBoundariesVisible', unavailableWhen: 'administrativeBoundaries' },
-  { key: 'dashboardMetricsVisible', unavailableWhen: 'administrativeBoundaries' },
-  { key: 'heatmapVisible', unavailableWhen: 'administrativeBoundaries' },
+  { key: 'dashboardMetricsVisible', unavailableWhen: 'dashboardOverlays' },
+  { key: 'heatmapVisible', unavailableWhen: 'dashboardOverlays' },
 ];
 
 export function MapLayerPanel({

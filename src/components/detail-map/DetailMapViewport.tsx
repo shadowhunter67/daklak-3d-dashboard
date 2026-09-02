@@ -9,6 +9,8 @@ import { DetailMapSourceNotice } from './DetailMapSourceNotice';
 import { DistanceMeasureTool } from './DistanceMeasureTool';
 import { LocalSearch } from './LocalSearch';
 import { useDetailMapCameraSync } from './useDetailMapCameraSync';
+import { getWardBounds } from './wardBounds';
+import { WARD_FLY_DURATION_MS } from './wardHighlightAnimation';
 import {
   addMeasurementPoint,
   undoLastMeasurementPoint,
@@ -28,7 +30,10 @@ function readSourceAvailability(): DetailMapSourceAvailability {
   const env = import.meta.env;
   return {
     roads: Boolean(env.VITE_DETAIL_MAP_SOURCE_URL),
-    administrativeBoundaries: Boolean(env.VITE_DETAIL_MAP_SOURCE_URL),
+    // Ranh giới hành chính đến từ GeoJSON đóng gói sẵn trong repo (daklak-wards-render.json,
+    // xem wardBoundaryLayers.ts), không phụ thuộc nguồn PMTiles theo env như các lớp còn lại.
+    administrativeBoundaries: true,
+    dashboardOverlays: Boolean(env.VITE_DETAIL_MAP_SOURCE_URL),
     terrain: Boolean(env.VITE_TERRAIN_SOURCE_URL),
     satellite: Boolean(env.VITE_SATELLITE_TILE_URL),
   };
@@ -53,6 +58,7 @@ export function DetailMapViewport() {
   const layers = useMapStore((state) => state.detailMapLayers);
   const camera = useMapStore((state) => state.detailMapCamera);
   const selectedCode = useMapStore((state) => state.selectedCode);
+  const reducedMotion = useMapStore((state) => state.reducedMotion);
   const select = useMapStore((state) => state.select);
   const setViewMode = useMapStore((state) => state.setViewMode);
   const setDetailMapBaseMap = useMapStore((state) => state.setDetailMapBaseMap);
@@ -72,6 +78,13 @@ export function DetailMapViewport() {
   useEffect(() => {
     interactionModeRef.current = interactionMode;
   }, [interactionMode]);
+  // Đọc reducedMotion qua ref (không subscribe trực tiếp trong effect chọn ward bên dưới) để
+  // việc bật/tắt hiệu ứng chuyển động của hệ điều hành giữa chừng không tự kích hoạt lại
+  // animation trên ward đang được chọn — cùng nguyên tắc với AdministrativeMap2D.tsx.
+  const reducedMotionRef = useRef(reducedMotion);
+  useEffect(() => {
+    reducedMotionRef.current = reducedMotion;
+  }, [reducedMotion]);
 
   // This component only exists in the tree while `viewMode === 'map'` (see App.tsx) — it's fully
   // mounted/unmounted per entry into the detail map, unlike MapViewport/DashboardPanels which stay
@@ -124,9 +137,18 @@ export function DetailMapViewport() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- deliberately runs once per generation
   }, [generation]);
 
+  // Chọn một ward: vừa làm nổi ranh giới (hiệu ứng sáng dần) vừa bay camera tới khung vừa vặn
+  // quanh đơn vị đó — kiểu bản đồ động mapeffect.app. Gate theo status==='ready' để
+  // ?view=map&ward=<code> cũng tự động frame/highlight ngay khi trang vừa tải xong.
   useEffect(() => {
-    providerRef.current?.setSelectedWard(selectedCode);
-  }, [selectedCode]);
+    const provider = providerRef.current;
+    if (!provider || status !== 'ready') return;
+    const animate = !reducedMotionRef.current;
+    provider.setSelectedWard(selectedCode, { animate });
+    if (!selectedCode) return;
+    const bounds = getWardBounds(selectedCode);
+    if (bounds) provider.fitBounds(bounds, { animate, durationMs: WARD_FLY_DURATION_MS });
+  }, [selectedCode, status]);
 
   // Keeps the mounted provider in sync with every layer-panel change (base map, roads, labels,
   // boundaries, metrics, heatmap). `detailMapLayers` in the store is always replaced as a whole
@@ -216,9 +238,7 @@ export function DetailMapViewport() {
     >
       <div ref={containerRef} className="detail-map-canvas" key={generation} />
       {status === 'loading' && <MapLoading />}
-      {status === 'ready' &&
-        !sourceAvailability.roads &&
-        !sourceAvailability.administrativeBoundaries && <DetailMapSourceNotice />}
+      {status === 'ready' && !sourceAvailability.roads && <DetailMapSourceNotice />}
       {status === 'ready' && (
         <MapLayerPanel
           layers={layers}

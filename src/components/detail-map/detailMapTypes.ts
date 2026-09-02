@@ -36,10 +36,17 @@ export interface DetailBounds {
 
 export type MapInteractionMode = 'browse' | 'measure';
 
-/** Which detail-map sources are actually configured for this deployment (env-driven). */
+/** Which detail-map sources are actually configured for this deployment (env-driven), with one
+ * exception: `administrativeBoundaries` is always `true` — see `wardBoundaryLayers.ts`'s doc
+ * comment (bundled local GeoJSON, not env-gated). `dashboardOverlays` is split out from
+ * `administrativeBoundaries` deliberately: `dashboardMetricsVisible`/`heatmapVisible` still gate
+ * on the env-configured PMTiles source (their layers don't exist in the style yet), so folding
+ * them into the now-always-true `administrativeBoundaries` flag would make the layer panel claim
+ * they're available when they aren't. */
 export interface DetailMapSourceAvailability {
   roads: boolean;
   administrativeBoundaries: boolean;
+  dashboardOverlays: boolean;
   terrain: boolean;
   satellite: boolean;
 }
@@ -84,7 +91,9 @@ export interface DetailedMapProvider {
 
   setBaseMap(type: DetailBaseMap): void;
   setCamera(camera: DetailMapCameraState): void;
-  fitBounds(bounds: DetailBounds): void;
+  /** `animate: false` (default `true`) jumps instantly instead of easing/flying — used when
+   * `state.reducedMotion` is set. `durationMs` only applies when animating. */
+  fitBounds(bounds: DetailBounds, options?: { animate?: boolean; durationMs?: number }): void;
 
   /**
    * Applies a full layer state at once. `detailMapLayers` in the store is always replaced as a
@@ -101,8 +110,10 @@ export interface DetailedMapProvider {
   setDashboardMetricsVisible(visible: boolean): void;
   setHeatmapVisible(visible: boolean): void;
 
-  /** Highlights a ward polygon by administrative code without necessarily moving the camera. */
-  setSelectedWard(code: string | null): void;
+  /** Highlights a ward polygon by administrative code without necessarily moving the camera.
+   * `options.animate` (default `true`) plays the glow-reveal transition; `false` (used when
+   * `state.reducedMotion` is set) snaps straight to the settled/hidden highlight state. */
+  setSelectedWard(code: string | null, options?: { animate?: boolean }): void;
 
   /** Registers a callback for user clicks resolving to an administrative code (or null for empty space). */
   onWardClick(handler: (code: string | null) => void): () => void;

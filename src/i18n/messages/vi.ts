@@ -658,7 +658,7 @@ export const vi = {
   // DetailMapSourceNotice
   'detailMapSourceNotice.eyebrow': 'Chế độ chờ dữ liệu',
   'detailMapSourceNotice.bodyBeforeLink':
-    'Chưa cấu hình nguồn bản đồ (PMTiles) cho môi trường này nên nền bản đồ đang để trống có chủ đích — không dùng dữ liệu giả thay thế. Mở',
+    'Chưa cấu hình nguồn bản đồ đường/nền (PMTiles) cho môi trường này — chỉ ranh giới hành chính từ dữ liệu cục bộ đang hiển thị, không dùng dữ liệu giả thay thế. Mở',
   'detailMapSourceNotice.layerPanelLink': 'Lớp bản đồ',
   'detailMapSourceNotice.bodyAfterLink': 'để xem từng lớp đang chờ dữ liệu thật.',
 
