@@ -152,7 +152,7 @@ describe('useDashboardUrlSync', () => {
     // constructing a new store — see the comment above.)
     it('preserves a view=map URL with custom camera/layers on initial mount, without dispatching popstate', () => {
       const canonicalSearch =
-        '?view=map&mode=overview&basemap=terrain&roads=0&labels=1&boundaries=1&buildings=1&metrics=0&heatmap=1&lat=12.9000000&lng=108.2000000&zoom=13.50&bearing=0.0&pitch=0.0';
+        '?view=map&mode=overview&basemap=terrain&roads=0&labels=1&boundaries=1&wardlabels=1&buildings=1&metrics=0&heatmap=1&lat=12.9000000&lng=108.2000000&zoom=13.50&bearing=0.0&pitch=0.0';
       window.history.replaceState(null, '', canonicalSearch);
       useMapStore.setState({
         viewMode: 'map',
@@ -164,6 +164,7 @@ describe('useDashboardUrlSync', () => {
           roadLabelsVisible: true,
           placeLabelsVisible: true,
           administrativeBoundariesVisible: true,
+          wardLabelsVisible: true,
           buildingsVisible: true,
           dashboardMetricsVisible: false,
           heatmapVisible: true,

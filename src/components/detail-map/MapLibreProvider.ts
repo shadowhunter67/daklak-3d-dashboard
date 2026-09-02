@@ -19,6 +19,7 @@ import {
   WARD_SELECTED_FILL_LAYER_ID,
   WARD_SELECTED_LINE_LAYER_ID,
 } from './wardBoundaryLayers';
+import { WARD_LABEL_LAYER_ID, WARD_SELECTED_LABEL_LAYER_ID } from './wardLabelLayers';
 import {
   HAMLET_LABELS_LAYER_ID,
   PLACE_LABELS_LAYER_ID,
@@ -78,11 +79,10 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.sourceAvailability = options.sourceAvailability;
     // Self-hosted glyphs (never a live third-party glyph server — SECURITY.md), served from the
     // same public/fonts/ path in both dev (Vite serves public/ verbatim at BASE_URL) and
-    // production. Always computed when a real source is configured; buildDetailMapStyle() skips
-    // the two label layers entirely if this were ever omitted (documented budget fallback).
-    const glyphsUrl = options.sourceAvailability.roads
-      ? `${import.meta.env.BASE_URL}fonts/{fontstack}/{range}.pbf`
-      : undefined;
+    // production. Computed unconditionally: ward-name labels (bundled data) need glyphs even when
+    // no PMTiles road source is configured. buildDetailMapStyle() still skips every label layer if
+    // this were ever omitted (documented budget fallback).
+    const glyphsUrl = `${import.meta.env.BASE_URL}fonts/{fontstack}/{range}.pbf`;
     const map = new maplibregl.Map({
       container,
       style: buildDetailMapStyle(options.sourceAvailability, options.sourceUrl, glyphsUrl),
@@ -219,6 +219,7 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.setRoadLabelsVisible(layers.roadLabelsVisible);
     this.setPlaceLabelsVisible(layers.placeLabelsVisible);
     this.setAdministrativeBoundariesVisible(layers.administrativeBoundariesVisible);
+    this.setWardLabelsVisible(layers.wardLabelsVisible);
     this.setBuildingsVisible(layers.buildingsVisible);
     this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
     this.setHeatmapVisible(layers.heatmapVisible);
@@ -247,6 +248,17 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.setLayerVisibility(WARD_BOUNDARY_FILL_LAYER_ID, visible);
     this.setLayerVisibility(WARD_SELECTED_FILL_LAYER_ID, visible);
     this.setLayerVisibility(WARD_SELECTED_LINE_LAYER_ID, visible);
+  }
+
+  setWardLabelsVisible(visible: boolean): void {
+    // Bundled/always-available (daklak-labels.json) — no availability guard, same as the ward
+    // boundaries. The layers only exist in the style when a glyphs URL is configured; the
+    // getLayer() guard in setLayerVisibility() makes this a safe no-op otherwise.
+    //
+    // Only the base (all-102) layer follows this toggle. The selected-ward name stays visible even
+    // with the toggle off — turning off "ward names" shouldn't strip the identity of the ward the
+    // user explicitly selected; its own code filter gates whether it shows anything.
+    this.setLayerVisibility(WARD_LABEL_LAYER_ID, visible);
   }
 
   setBuildingsVisible(visible: boolean): void {
@@ -291,6 +303,11 @@ export class MapLibreProvider implements DetailedMapProvider {
     }
     if (this.map?.getLayer(WARD_SELECTED_LINE_LAYER_ID)) {
       this.map.setFilter(WARD_SELECTED_LINE_LAYER_ID, codeFilter);
+    }
+    // The always-visible name label for the selected ward (text-allow-overlap) — follows the same
+    // code filter so it appears/moves with the highlight.
+    if (this.map?.getLayer(WARD_SELECTED_LABEL_LAYER_ID)) {
+      this.map.setFilter(WARD_SELECTED_LABEL_LAYER_ID, codeFilter);
     }
 
     if (!code) {

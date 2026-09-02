@@ -69,4 +69,21 @@ describe('MapLayerPanel', () => {
     const heatmap = screen.getByRole('checkbox', { name: 'Heatmap' });
     expect(heatmap).not.toHaveAttribute('aria-describedby');
   });
+
+  it('exposes a standalone "Tên xã/phường" toggle wired to wardLabelsVisible', () => {
+    const { onToggleLayer } = renderPanel(availableSources);
+    const wardNames = screen.getByRole('checkbox', { name: 'Tên xã/phường' });
+    expect(wardNames).not.toBeDisabled();
+    fireEvent.click(wardNames);
+    expect(onToggleLayer).toHaveBeenCalledWith('wardLabelsVisible');
+  });
+
+  it('marks the ward-name toggle available on the same bundled-data flag as the boundary toggle', () => {
+    // administrativeBoundaries is always true in the real app (bundled GeoJSON), so with it set
+    // neither the boundary nor the ward-name toggle carries an "unavailable" explanation.
+    renderPanel(availableSources);
+    expect(screen.getByRole('checkbox', { name: 'Tên xã/phường' })).not.toHaveAttribute(
+      'aria-describedby',
+    );
+  });
 });

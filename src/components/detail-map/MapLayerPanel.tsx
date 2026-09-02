@@ -29,6 +29,9 @@ const layerToggles: Array<{
   { key: 'roadLabelsVisible', unavailableWhen: 'roads' },
   { key: 'placeLabelsVisible', unavailableWhen: 'roads' },
   { key: 'administrativeBoundariesVisible', unavailableWhen: 'administrativeBoundaries' },
+  // Ward names ship from the same bundled data as the boundaries, so they gate on the same
+  // always-true availability flag.
+  { key: 'wardLabelsVisible', unavailableWhen: 'administrativeBoundaries' },
   { key: 'buildingsVisible', unavailableWhen: 'roads' },
   { key: 'dashboardMetricsVisible', unavailableWhen: 'dashboardOverlays' },
   { key: 'heatmapVisible', unavailableWhen: 'dashboardOverlays' },

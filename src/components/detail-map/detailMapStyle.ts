@@ -11,6 +11,11 @@ import {
   buildRoadLineLayers,
   OSM_VECTOR_SOURCE_ID,
 } from './roadLayers';
+import {
+  buildWardLabelLayers,
+  buildWardLabelSource,
+  WARD_LABEL_SOURCE_ID,
+} from './wardLabelLayers';
 import type { DetailMapSourceAvailability } from './detailMapTypes';
 
 /**
@@ -30,11 +35,16 @@ import type { DetailMapSourceAvailability } from './detailMapTypes';
  * `scripts/check_build_budget.mjs`.
  *
  * Layer draw order (style `layers` array index 0 = bottom = drawn first) is deliberate, not
- * incidental: `background` → ward fill → buildings → roads → ward outline/highlight → labels.
- * Roads/buildings must sit ABOVE the ward fill (a 55%-opaque wash would nearly hide them
- * underneath) but BELOW the ward outline/selected-highlight layers added by the ward-selection
- * feature (so a selected ward's glow always reads on top, never occluded by road/building detail).
- * Labels draw last, unconditionally on top, standard for symbol layers.
+ * incidental: `background` → ward fill → buildings → roads → ward outline/highlight → ward-name
+ * labels → OSM road/place labels. Roads/buildings must sit ABOVE the ward fill (a 55%-opaque wash
+ * would nearly hide them underneath) but BELOW the ward outline/selected-highlight layers added by
+ * the ward-selection feature (so a selected ward's glow always reads on top, never occluded by
+ * road/building detail). Labels draw last; ward-name labels sit just before the OSM label layers
+ * so commune names win collisions over hamlet-tier clutter at province-wide zoom.
+ *
+ * Ward-name labels (`wardLabelLayers.ts`) render whenever a `glyphsUrl` is configured — they need
+ * glyphs but NOT the env-gated PMTiles source, since their geometry is bundled like the ward
+ * boundaries. So a deployment with self-hosted fonts but no OSM tiles still shows ward names.
  */
 export function buildDetailMapStyle(
   sourceAvailability: DetailMapSourceAvailability,
@@ -43,12 +53,16 @@ export function buildDetailMapStyle(
 ): StyleSpecification {
   const wardLayers = buildWardBoundaryLayers();
   const [wardFillLayer, ...wardRemainingLayers] = wardLayers;
+  // Ward-name labels need glyphs (self-hosted) but not the PMTiles source — their points are
+  // bundled (daklak-labels.json), same as the ward boundaries above.
+  const wardLabelLayers = glyphsUrl ? buildWardLabelLayers() : [];
 
   const style: StyleSpecification = {
     version: 8,
     name: 'Đắk Lắk Detail Map',
     sources: {
       [WARD_BOUNDARY_SOURCE_ID]: buildWardBoundarySource(),
+      ...(glyphsUrl ? { [WARD_LABEL_SOURCE_ID]: buildWardLabelSource() } : {}),
     },
     layers: [
       {
@@ -58,8 +72,10 @@ export function buildDetailMapStyle(
       },
       wardFillLayer,
       ...wardRemainingLayers,
+      ...wardLabelLayers,
     ],
   };
+  if (glyphsUrl) style.glyphs = glyphsUrl;
 
   // `sourceAvailability.roads` and `sourceUrl` are both derived from VITE_DETAIL_MAP_SOURCE_URL,
   // but the type doesn't enforce that they agree — guard against emitting a source/layer set that
@@ -73,10 +89,9 @@ export function buildDetailMapStyle(
       ...buildRoadLineLayers(),
     ];
     style.layers.splice(wardOutlineIndex, 0, ...osmDrawLayers);
-    if (glyphsUrl) {
-      style.layers.push(...buildLabelLayers());
-      style.glyphs = glyphsUrl;
-    }
+    // OSM road/place labels draw after the ward-name labels already appended above (`style.glyphs`
+    // is set once, unconditionally, when `glyphsUrl` is present — see above).
+    if (glyphsUrl) style.layers.push(...buildLabelLayers());
   }
 
   return style;

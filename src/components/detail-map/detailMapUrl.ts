@@ -85,6 +85,11 @@ export function parseDetailMapLayers(search: string): DetailMapLayerState {
       'boundaries',
       DEFAULT_DETAIL_MAP_LAYER_STATE.administrativeBoundariesVisible,
     ),
+    wardLabelsVisible: parseBooleanParam(
+      params,
+      'wardlabels',
+      DEFAULT_DETAIL_MAP_LAYER_STATE.wardLabelsVisible,
+    ),
     buildingsVisible: parseBooleanParam(
       params,
       'buildings',
@@ -114,6 +119,7 @@ export function serializeDetailMapParams(
   params.set('roads', layers.roadsVisible ? '1' : '0');
   params.set('labels', layers.roadLabelsVisible || layers.placeLabelsVisible ? '1' : '0');
   params.set('boundaries', layers.administrativeBoundariesVisible ? '1' : '0');
+  params.set('wardlabels', layers.wardLabelsVisible ? '1' : '0');
   params.set('buildings', layers.buildingsVisible ? '1' : '0');
   params.set('metrics', layers.dashboardMetricsVisible ? '1' : '0');
   params.set('heatmap', layers.heatmapVisible ? '1' : '0');
@@ -146,6 +152,7 @@ export function layerStatesEqual(a: DetailMapLayerState, b: DetailMapLayerState)
     a.roadLabelsVisible === b.roadLabelsVisible &&
     a.placeLabelsVisible === b.placeLabelsVisible &&
     a.administrativeBoundariesVisible === b.administrativeBoundariesVisible &&
+    a.wardLabelsVisible === b.wardLabelsVisible &&
     a.buildingsVisible === b.buildingsVisible &&
     a.dashboardMetricsVisible === b.dashboardMetricsVisible &&
     a.heatmapVisible === b.heatmapVisible

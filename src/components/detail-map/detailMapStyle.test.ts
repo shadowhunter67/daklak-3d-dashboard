@@ -17,6 +17,11 @@ import {
   ROAD_LABELS_LAYER_ID,
 } from './roadLayers';
 import { BUILDINGS_FILL_LAYER_ID, BUILDINGS_OUTLINE_LAYER_ID } from './buildingLayers';
+import {
+  WARD_LABEL_LAYER_ID,
+  WARD_LABEL_SOURCE_ID,
+  WARD_SELECTED_LABEL_LAYER_ID,
+} from './wardLabelLayers';
 import type { DetailMapSourceAvailability } from './detailMapTypes';
 
 const noSources: DetailMapSourceAvailability = {
@@ -103,6 +108,8 @@ describe('buildDetailMapStyle', () => {
       WARD_BOUNDARY_LINE_LAYER_ID,
       WARD_SELECTED_FILL_LAYER_ID,
       WARD_SELECTED_LINE_LAYER_ID,
+      WARD_LABEL_LAYER_ID,
+      WARD_SELECTED_LABEL_LAYER_ID,
       ROAD_LABELS_LAYER_ID,
       PLACE_LABELS_LAYER_ID,
       HAMLET_LABELS_LAYER_ID,
@@ -110,7 +117,7 @@ describe('buildDetailMapStyle', () => {
     expect(style.glyphs).toBe(GLYPHS_URL);
   });
 
-  it('without glyphsUrl, skips both label layers but still renders roads/buildings', () => {
+  it('without glyphsUrl, skips every label layer (OSM + ward-name) but still renders roads/buildings', () => {
     const style = buildDetailMapStyle(withRoads, PMTILES_URL);
     const ids = style.layers.map((layer) => layer.id);
     expect(ids).toContain(ROADS_LINE_LAYER_ID);
@@ -118,7 +125,33 @@ describe('buildDetailMapStyle', () => {
     expect(ids).not.toContain(ROAD_LABELS_LAYER_ID);
     expect(ids).not.toContain(PLACE_LABELS_LAYER_ID);
     expect(ids).not.toContain(HAMLET_LABELS_LAYER_ID);
+    expect(ids).not.toContain(WARD_LABEL_LAYER_ID);
+    expect(style.sources[WARD_LABEL_SOURCE_ID]).toBeUndefined();
     expect(style.glyphs).toBeUndefined();
+  });
+
+  it('adds ward-name label layers + their source from glyphs alone, with no PMTiles source', () => {
+    const style = buildDetailMapStyle(noSources, undefined, GLYPHS_URL);
+    expect(style.sources[WARD_LABEL_SOURCE_ID]).toBeDefined();
+    expect(style.sources[OSM_VECTOR_SOURCE_ID]).toBeUndefined();
+    const ids = style.layers.map((layer) => layer.id);
+    // ward-name labels are the last two layers, drawn on top of the boundary/highlight layers
+    expect(ids).toEqual([
+      'background',
+      WARD_BOUNDARY_FILL_LAYER_ID,
+      WARD_BOUNDARY_LINE_LAYER_ID,
+      WARD_SELECTED_FILL_LAYER_ID,
+      WARD_SELECTED_LINE_LAYER_ID,
+      WARD_LABEL_LAYER_ID,
+      WARD_SELECTED_LABEL_LAYER_ID,
+    ]);
+    expect(ids).not.toContain(ROAD_LABELS_LAYER_ID);
+    expect(style.glyphs).toBe(GLYPHS_URL);
+    const selectedLabel = style.layers.find((l) => l.id === WARD_SELECTED_LABEL_LAYER_ID)!;
+    expect(selectedLabel.type).toBe('symbol');
+    if (selectedLabel.type === 'symbol') {
+      expect(selectedLabel.filter).toEqual(['==', ['get', 'code'], '']);
+    }
   });
 
   it('every new layer references the correct source-layer, matching the tippecanoe build contract', () => {

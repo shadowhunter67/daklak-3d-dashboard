@@ -95,6 +95,12 @@ describe('parseDetailMapLayers', () => {
   it('normalizes an invalid basemap to the default', () => {
     expect(parseDetailMapLayers('?basemap=google-satellite').baseMap).toBe('default');
   });
+
+  it('ward-name labels default on, and `wardlabels=0` turns them off', () => {
+    expect(parseDetailMapLayers('').wardLabelsVisible).toBe(true);
+    expect(parseDetailMapLayers('?wardlabels=0').wardLabelsVisible).toBe(false);
+    expect(parseDetailMapLayers('?wardlabels=1').wardLabelsVisible).toBe(true);
+  });
 });
 
 describe('serializeDetailMapParams', () => {
