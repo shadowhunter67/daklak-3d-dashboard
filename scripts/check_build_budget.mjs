@@ -12,13 +12,24 @@ const dist = join(root, 'dist');
 // guarantee that matters, not this aggregate ceiling. This is a deliberate, explained increase
 // for a genuinely new optional feature, not a cover for unexplained bloat in the shared/eager
 // chunks — those are still expected to stay flat run to run.
+//
+// totalBuildBytes raised again ("hiệu ứng bản đồ động" PR, 2026-09) to admit two more
+// maplibre-gl files: `maplibre-gl-worker.mjs` (~19KB) and `maplibre-gl-shared.mjs` (~471KB,
+// unminified — it's copied byte-for-byte from the npm package, see vite.config.ts's
+// `maplibre-gl-worker-assets` plugin doc comment for why it can't be minified/hashed like a
+// normal chunk). Same "only downloaded by a user who actually opens the detail map" reasoning as
+// the maplibre-gl chunk above — these two files are the worker maplibre-gl's GeoJSON
+// sources/layers now genuinely need at runtime (added in the same PR); without them the detail
+// map silently never finishes loading in production. Not counted in totalJavaScriptBytes/gzip
+// (extension is `.mjs`, not `.js`) since they're never part of the eagerly-executed JS the
+// gzip-over-the-wire budgets are meant to bound.
 const limits = {
   totalJavaScriptBytes: 3_400_000,
   totalJavaScriptGzipBytes: 950_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 1_900_000,
-  totalBuildBytes: 6_400_000,
+  totalBuildBytes: 7_000_000,
 };
 
 async function filesAt(directory) {
