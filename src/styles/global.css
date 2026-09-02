@@ -533,7 +533,15 @@ h1 i {
    sees a joystick meant for a thumb. */
 .world-hud__touch-controls {
   display: none;
-  position: relative;
+  /* MUST be `absolute; inset: 0`, not `relative`: every child here is absolutely positioned and
+     several anchor to `bottom:` (joystick, ascend, the "Tương tác" interact button). A `relative`
+     parent collapses to 0 height, so `bottom: 24px` resolves against y=0 and those controls jump
+     to the TOP of the screen — right on top of the header's "?" / share / language buttons, which
+     then can't be tapped (a real phone bug, and an intermittent mobile-chromium e2e failure in
+     world-exploration.spec.ts). `pointer-events` stays inherited-`none` from `.world-hud`; each
+     child re-enables its own. */
+  position: absolute;
+  inset: 0;
   z-index: 1;
 }
 @media (pointer: coarse) {
@@ -543,7 +551,12 @@ h1 i {
 }
 .world-hud__touch-look {
   position: absolute;
-  inset: 0;
+  /* Start BELOW the app header, not `inset: 0`. This is a full-viewport, pointer-events:auto
+     drag-to-look surface inside `.world-hud` (z-index 70, above the header's z-index 5), so an
+     `inset: 0` version sits over the header and swallows every tap meant for the "?", share and
+     language controls — on a real phone and, intermittently, in mobile-chromium e2e
+     (world-exploration.spec.ts's header-help test). */
+  inset: var(--mobile-header-height, 58px) 0 0 0;
   pointer-events: auto;
   touch-action: none;
 }
