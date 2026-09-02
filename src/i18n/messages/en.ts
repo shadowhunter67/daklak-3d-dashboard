@@ -656,6 +656,12 @@ export const en: Partial<Record<MessageKey, string>> = {
     'The selection is still saved and will apply as soon as a data source is available; there is no data to display on the map yet.',
   'layerPanel.baseMapHeading': 'Map type',
   'layerPanel.toolsHeading': 'Tools',
+  'layerPanel.planningHeading': 'Planning (illustrative)',
+  'layerPanel.planningAria': 'Choose an illustrative planning overlay',
+  'layerPanel.planningNone': 'Off',
+  'layerPanel.planningLegendLabel': 'Legend',
+  'layerPanel.planningDisclaimer':
+    'Illustrative schematic, generalised by administrative unit — it does not reflect any official plan and has no legal validity.',
 
   // DetailMapViewport
   'detailMapViewport.webglUnsupportedReason':

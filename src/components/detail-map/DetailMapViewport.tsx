@@ -86,6 +86,7 @@ export function DetailMapViewport() {
   const setViewMode = useMapStore((state) => state.setViewMode);
   const setDetailMapBaseMap = useMapStore((state) => state.setDetailMapBaseMap);
   const toggleDetailMapLayer = useMapStore((state) => state.toggleDetailMapLayer);
+  const setDetailMapPlanningOverlay = useMapStore((state) => state.setDetailMapPlanningOverlay);
   const setDetailMapCamera = useMapStore((state) => state.setDetailMapCamera);
 
   const [webGLSupported] = useState(() => hasWebGLSupport());
@@ -288,6 +289,7 @@ export function DetailMapViewport() {
             sourceAvailability={sourceAvailability}
             onBaseMapChange={setDetailMapBaseMap}
             onToggleLayer={toggleDetailMapLayer}
+            onPlanningOverlayChange={setDetailMapPlanningOverlay}
             suppressEscapeClose={interactionMode === 'measure'}
             toolsSlot={
               <>

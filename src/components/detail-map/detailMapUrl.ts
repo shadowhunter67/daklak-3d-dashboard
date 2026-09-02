@@ -4,9 +4,12 @@ import {
   type DetailBaseMap,
   type DetailMapCameraState,
   type DetailMapLayerState,
+  type PlanningOverlay,
 } from './detailMapTypes';
+import { PLANNING_THEME_IDS } from './planningThemes';
 
 const baseMaps = new Set<DetailBaseMap>(['default', 'terrain', 'satellite']);
+const planningOverlays = new Set<PlanningOverlay>(['none', ...PLANNING_THEME_IDS]);
 const CAMERA_EPSILON = 1e-5;
 
 export function clampLatitude(value: number): number {
@@ -67,6 +70,11 @@ export function parseDetailMapLayers(search: string): DetailMapLayerState {
     basemapParam && baseMaps.has(basemapParam)
       ? basemapParam
       : DEFAULT_DETAIL_MAP_LAYER_STATE.baseMap;
+  const planningParam = params.get('planning') as PlanningOverlay | null;
+  const planningOverlay =
+    planningParam && planningOverlays.has(planningParam)
+      ? planningParam
+      : DEFAULT_DETAIL_MAP_LAYER_STATE.planningOverlay;
   // A single `labels` URL param drives both road and place labels together — the layer panel
   // still exposes them as separate checkboxes internally, but collapsing them in the URL keeps
   // the shareable scheme short. See docs/detail-map-integration.md.
@@ -107,6 +115,7 @@ export function parseDetailMapLayers(search: string): DetailMapLayerState {
     ),
     terrainVisible: baseMap === 'terrain',
     satelliteVisible: baseMap === 'satellite',
+    planningOverlay,
   };
 }
 
@@ -120,6 +129,7 @@ export function serializeDetailMapParams(
   params.set('labels', layers.roadLabelsVisible || layers.placeLabelsVisible ? '1' : '0');
   params.set('boundaries', layers.administrativeBoundariesVisible ? '1' : '0');
   params.set('wardlabels', layers.wardLabelsVisible ? '1' : '0');
+  params.set('planning', layers.planningOverlay);
   params.set('buildings', layers.buildingsVisible ? '1' : '0');
   params.set('metrics', layers.dashboardMetricsVisible ? '1' : '0');
   params.set('heatmap', layers.heatmapVisible ? '1' : '0');
@@ -153,6 +163,7 @@ export function layerStatesEqual(a: DetailMapLayerState, b: DetailMapLayerState)
     a.placeLabelsVisible === b.placeLabelsVisible &&
     a.administrativeBoundariesVisible === b.administrativeBoundariesVisible &&
     a.wardLabelsVisible === b.wardLabelsVisible &&
+    a.planningOverlay === b.planningOverlay &&
     a.buildingsVisible === b.buildingsVisible &&
     a.dashboardMetricsVisible === b.dashboardMetricsVisible &&
     a.heatmapVisible === b.heatmapVisible

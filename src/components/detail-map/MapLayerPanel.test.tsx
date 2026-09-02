@@ -23,16 +23,18 @@ const noSources = {
 function renderPanel(sourceAvailability: typeof availableSources) {
   const onToggleLayer = vi.fn();
   const onBaseMapChange = vi.fn();
+  const onPlanningOverlayChange = vi.fn();
   render(
     <MapLayerPanel
       layers={DEFAULT_DETAIL_MAP_LAYER_STATE}
       sourceAvailability={sourceAvailability}
       onBaseMapChange={onBaseMapChange}
       onToggleLayer={onToggleLayer}
+      onPlanningOverlayChange={onPlanningOverlayChange}
     />,
   );
   fireEvent.click(screen.getByRole('button', { name: 'Lớp bản đồ' }));
-  return { onToggleLayer, onBaseMapChange };
+  return { onToggleLayer, onBaseMapChange, onPlanningOverlayChange };
 }
 
 describe('MapLayerPanel', () => {
@@ -85,5 +87,29 @@ describe('MapLayerPanel', () => {
     expect(screen.getByRole('checkbox', { name: 'Tên xã/phường' })).not.toHaveAttribute(
       'aria-describedby',
     );
+  });
+
+  it('offers the illustrative planning overlays as a radio group, defaulting to "Không hiển thị"', () => {
+    const { onPlanningOverlayChange } = renderPanel(availableSources);
+    const off = screen.getByRole('radio', { name: 'Không hiển thị' });
+    expect(off).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Lâm nghiệp (3 loại rừng)' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('radio', { name: 'Sử dụng đất' }));
+    expect(onPlanningOverlayChange).toHaveBeenCalledWith('land-use');
+  });
+
+  it('shows the active planning theme legend and the "no legal validity" disclaimer', () => {
+    render(
+      <MapLayerPanel
+        layers={{ ...DEFAULT_DETAIL_MAP_LAYER_STATE, planningOverlay: 'forestry' }}
+        sourceAvailability={availableSources}
+        onBaseMapChange={vi.fn()}
+        onToggleLayer={vi.fn()}
+        onPlanningOverlayChange={vi.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Lớp bản đồ' }));
+    expect(screen.getByText('Rừng đặc dụng')).toBeInTheDocument();
+    expect(screen.getByText(/không có giá trị pháp lý/i)).toBeInTheDocument();
   });
 });

@@ -21,6 +21,11 @@ import {
 } from './wardBoundaryLayers';
 import { WARD_LABEL_LAYER_ID, WARD_SELECTED_LABEL_LAYER_ID } from './wardLabelLayers';
 import {
+  PLANNING_FILL_LAYER_ID,
+  PLANNING_FILL_OPACITY,
+  planningFillColorExpression,
+} from './planningLayers';
+import {
   HAMLET_LABELS_LAYER_ID,
   PLACE_LABELS_LAYER_ID,
   ROADS_LINE_LAYER_ID,
@@ -220,6 +225,7 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.setPlaceLabelsVisible(layers.placeLabelsVisible);
     this.setAdministrativeBoundariesVisible(layers.administrativeBoundariesVisible);
     this.setWardLabelsVisible(layers.wardLabelsVisible);
+    this.setPlanningOverlay(layers.planningOverlay);
     this.setBuildingsVisible(layers.buildingsVisible);
     this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
     this.setHeatmapVisible(layers.heatmapVisible);
@@ -259,6 +265,20 @@ export class MapLibreProvider implements DetailedMapProvider {
     // with the toggle off — turning off "ward names" shouldn't strip the identity of the ward the
     // user explicitly selected; its own code filter gates whether it shows anything.
     this.setLayerVisibility(WARD_LABEL_LAYER_ID, visible);
+  }
+
+  setPlanningOverlay(overlay: DetailMapLayerState['planningOverlay']): void {
+    if (!this.map?.getLayer(PLANNING_FILL_LAYER_ID)) return;
+    if (overlay === 'none') {
+      this.map.setPaintProperty(PLANNING_FILL_LAYER_ID, 'fill-opacity', 0);
+      return;
+    }
+    this.map.setPaintProperty(
+      PLANNING_FILL_LAYER_ID,
+      'fill-color',
+      planningFillColorExpression(overlay),
+    );
+    this.map.setPaintProperty(PLANNING_FILL_LAYER_ID, 'fill-opacity', PLANNING_FILL_OPACITY);
   }
 
   setBuildingsVisible(visible: boolean): void {

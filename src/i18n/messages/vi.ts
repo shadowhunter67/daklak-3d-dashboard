@@ -665,6 +665,12 @@ export const vi = {
     'Lựa chọn vẫn được lưu và áp dụng ngay khi có nguồn dữ liệu; hiện chưa có dữ liệu để hiển thị trên bản đồ.',
   'layerPanel.baseMapHeading': 'Loại bản đồ',
   'layerPanel.toolsHeading': 'Công cụ',
+  'layerPanel.planningHeading': 'Quy hoạch (minh họa)',
+  'layerPanel.planningAria': 'Chọn lớp quy hoạch minh họa',
+  'layerPanel.planningNone': 'Không hiển thị',
+  'layerPanel.planningLegendLabel': 'Chú giải',
+  'layerPanel.planningDisclaimer':
+    'Sơ đồ minh họa, khái quát theo đơn vị hành chính — không phản ánh quy hoạch chính thức và không có giá trị pháp lý.',
 
   // DetailMapViewport
   'detailMapViewport.webglUnsupportedReason':
