@@ -2,6 +2,8 @@ import type {
   ErrorEvent as MapLibreErrorEvent,
   FilterSpecification,
   Map as MapLibreMap,
+  MapGeoJSONFeature,
+  Popup as MapLibrePopup,
 } from 'maplibre-gl';
 import { buildDetailMapStyle } from './detailMapStyle';
 import type {
@@ -25,6 +27,12 @@ import {
   PLANNING_FILL_OPACITY,
   planningFillColorExpression,
 } from './planningLayers';
+import {
+  KEY_PROJECTS_LINE_LAYER_ID,
+  KEY_PROJECTS_POINT_LAYER_ID,
+  KEY_PROJECT_LAYER_IDS,
+} from './keyProjectLayers';
+import { keyProjectPopupHtml } from './keyProjectPopup';
 import {
   HAMLET_LABELS_LAYER_ID,
   PLACE_LABELS_LAYER_ID,
@@ -72,9 +80,13 @@ export class MapLibreProvider implements DetailedMapProvider {
   // the first tracked rAF handle in this class. Without cancelling, a pending frame would call
   // map.setPaintProperty() on a map that's already been removed and throw.
   private highlightRaf: number | null = null;
+  // Kept so a key-project click can build a MapLibre Popup without re-importing the module.
+  private maplibregl: Awaited<ReturnType<typeof loadMapLibreModules>>['maplibregl'] | null = null;
+  private keyProjectPopup: MapLibrePopup | null = null;
 
   async initialize(container: HTMLElement, options: DetailMapInitOptions): Promise<void> {
     const { maplibregl, pmtiles } = await loadMapLibreModules();
+    this.maplibregl = maplibregl;
     if (!pmtilesProtocolRegistered) {
       const protocol = new pmtiles.Protocol();
       maplibregl.addProtocol('pmtiles', protocol.tile);
@@ -130,6 +142,9 @@ export class MapLibreProvider implements DetailedMapProvider {
 
     map.on('moveend', () => this.emitCameraChange());
     map.on('click', (event) => {
+      // A click on a visible key-project feature opens its info popup and does NOT also select the
+      // ward beneath it (which would fly the camera away from the thing the user just clicked).
+      if (this.openKeyProjectPopupAt(event.point)) return;
       const code = this.resolveWardCodeAt(event.point);
       this.wardClickHandlers.forEach((handler) => handler(code));
       this.mapClickHandlers.forEach((handler) =>
@@ -226,6 +241,7 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.setAdministrativeBoundariesVisible(layers.administrativeBoundariesVisible);
     this.setWardLabelsVisible(layers.wardLabelsVisible);
     this.setPlanningOverlay(layers.planningOverlay);
+    this.setKeyProjectsVisible(layers.keyProjectsVisible);
     this.setBuildingsVisible(layers.buildingsVisible);
     this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
     this.setHeatmapVisible(layers.heatmapVisible);
@@ -279,6 +295,37 @@ export class MapLibreProvider implements DetailedMapProvider {
       planningFillColorExpression(overlay),
     );
     this.map.setPaintProperty(PLANNING_FILL_LAYER_ID, 'fill-opacity', PLANNING_FILL_OPACITY);
+  }
+
+  setKeyProjectsVisible(visible: boolean): void {
+    for (const id of KEY_PROJECT_LAYER_IDS) this.setLayerVisibility(id, visible);
+    if (!visible) {
+      this.keyProjectPopup?.remove();
+      this.keyProjectPopup = null;
+    }
+  }
+
+  /** Returns true if a key-project feature was under the point and a popup was opened. */
+  private openKeyProjectPopupAt(point: { x: number; y: number }): boolean {
+    if (!this.map || !this.maplibregl) return false;
+    const hitLayers = [KEY_PROJECTS_POINT_LAYER_ID, KEY_PROJECTS_LINE_LAYER_ID].filter((id) =>
+      this.map?.getLayer(id),
+    );
+    if (!hitLayers.length) return false;
+    const features = this.map.queryRenderedFeatures([point.x, point.y], { layers: hitLayers });
+    const feature = features[0] as MapGeoJSONFeature | undefined;
+    if (!feature) return false;
+    // Anchor at the click for a line, or the point's own coordinate for a point.
+    const anchor =
+      feature.geometry.type === 'Point'
+        ? (feature.geometry.coordinates as [number, number])
+        : this.map.unproject([point.x, point.y]);
+    this.keyProjectPopup?.remove();
+    this.keyProjectPopup = new this.maplibregl.Popup({ closeButton: true, maxWidth: '280px' })
+      .setLngLat(anchor)
+      .setHTML(keyProjectPopupHtml(feature.properties ?? {}))
+      .addTo(this.map);
+    return true;
   }
 
   setBuildingsVisible(visible: boolean): void {
@@ -366,6 +413,8 @@ export class MapLibreProvider implements DetailedMapProvider {
   destroy(): void {
     this.settlePendingLoad?.();
     this.cancelHighlightAnimation();
+    this.keyProjectPopup?.remove();
+    this.keyProjectPopup = null;
     this.wardClickHandlers.clear();
     this.mapClickHandlers.clear();
     this.cameraChangeHandlers.clear();

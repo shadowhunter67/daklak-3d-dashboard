@@ -2,6 +2,11 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { getLayerDescriptor } from '../../data-platform/catalog/layers';
 import { BaseMapSelector } from './BaseMapSelector';
 import { PlanningOverlaySelector } from './PlanningOverlaySelector';
+import {
+  KEY_PROJECT_STATUS_COLOR,
+  KEY_PROJECT_STATUS_LABEL,
+  type KeyProjectStatus,
+} from './keyProjects';
 import { useTranslation } from '../../i18n/useTranslation';
 import type {
   DetailBaseMap,
@@ -22,6 +27,34 @@ type ToggleableLayer = Exclude<
  * the layer registry (`src/data-platform/catalog/layers.ts`), so a title/legend change has one
  * source of truth instead of being hand-duplicated here.
  */
+const KEY_PROJECT_STATUS_ORDER: KeyProjectStatus[] = [
+  'chuan-bi',
+  'sap-khoi-cong',
+  'dang-thi-cong',
+  'hoan-thanh',
+];
+
+function KeyProjectsLegend() {
+  const { t } = useTranslation();
+  return (
+    <div className="key-projects-legend">
+      <ul aria-label={t('layerPanel.keyProjectsLegendLabel')}>
+        {KEY_PROJECT_STATUS_ORDER.map((status) => (
+          <li key={status}>
+            <span
+              className="key-projects-legend__dot"
+              style={{ background: KEY_PROJECT_STATUS_COLOR[status] }}
+              aria-hidden="true"
+            />
+            {KEY_PROJECT_STATUS_LABEL[status]}
+          </li>
+        ))}
+      </ul>
+      <p className="key-projects-legend__note">{t('layerPanel.keyProjectsNote')}</p>
+    </div>
+  );
+}
+
 const layerToggles: Array<{
   key: ToggleableLayer;
   /** Which sourceAvailability flag gates this layer's actual rendering (see MapLibreProvider.ts). */
@@ -37,6 +70,8 @@ const layerToggles: Array<{
   { key: 'buildingsVisible', unavailableWhen: 'roads' },
   { key: 'dashboardMetricsVisible', unavailableWhen: 'dashboardOverlays' },
   { key: 'heatmapVisible', unavailableWhen: 'dashboardOverlays' },
+  // Bundled, externally-sourced reference layer — always available.
+  { key: 'keyProjectsVisible', unavailableWhen: 'administrativeBoundaries' },
 ];
 
 export function MapLayerPanel({
@@ -138,6 +173,7 @@ export function MapLayerPanel({
                 </div>
               );
             })}
+            {layers.keyProjectsVisible && <KeyProjectsLegend />}
           </section>
           <section aria-labelledby="detail-map-layer-panel-basemap-heading">
             <h3 id="detail-map-layer-panel-basemap-heading">{t('layerPanel.baseMapHeading')}</h3>

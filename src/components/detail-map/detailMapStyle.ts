@@ -17,6 +17,11 @@ import {
   WARD_LABEL_SOURCE_ID,
 } from './wardLabelLayers';
 import { buildPlanningFillLayer } from './planningLayers';
+import {
+  buildKeyProjectsLayers,
+  buildKeyProjectsSource,
+  KEY_PROJECTS_SOURCE_ID,
+} from './keyProjectLayers';
 import type { DetailMapSourceAvailability } from './detailMapTypes';
 
 /**
@@ -64,6 +69,7 @@ export function buildDetailMapStyle(
     sources: {
       [WARD_BOUNDARY_SOURCE_ID]: buildWardBoundarySource(),
       ...(glyphsUrl ? { [WARD_LABEL_SOURCE_ID]: buildWardLabelSource() } : {}),
+      [KEY_PROJECTS_SOURCE_ID]: buildKeyProjectsSource(),
     },
     layers: [
       {
@@ -98,6 +104,11 @@ export function buildDetailMapStyle(
     // is set once, unconditionally, when `glyphsUrl` is present — see above).
     if (glyphsUrl) style.layers.push(...buildLabelLayers());
   }
+
+  // Key-projects reference overlay draws on top of everything (labels included) — the user turns
+  // it on deliberately and it must never be occluded. Starts hidden (visibility: 'none');
+  // MapLibreProvider.setKeyProjectsVisible reveals it and its label layer needs glyphs.
+  style.layers.push(...buildKeyProjectsLayers(Boolean(glyphsUrl)));
 
   return style;
 }

@@ -671,6 +671,9 @@ export const vi = {
   'layerPanel.planningLegendLabel': 'Chú giải',
   'layerPanel.planningDisclaimer':
     'Sơ đồ minh họa, khái quát theo đơn vị hành chính — không phản ánh quy hoạch chính thức và không có giá trị pháp lý.',
+  'layerPanel.keyProjectsLegendLabel': 'Trạng thái dự án',
+  'layerPanel.keyProjectsNote':
+    'Dự án có thật, tổng hợp từ nguồn báo chí / cơ quan; vị trí và tuyến là gần đúng, chưa kiểm chứng thực địa. Chạm vào ký hiệu trên bản đồ để xem nguồn.',
 
   // DetailMapViewport
   'detailMapViewport.webglUnsupportedReason':
