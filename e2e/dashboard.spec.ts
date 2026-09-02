@@ -530,7 +530,11 @@ test.describe('directory ordering and safe bottom', () => {
       await search.fill('');
 
       const lastRow = rows.last();
-      await lastRow.scrollIntoViewIfNeeded();
+      // Plain DOM scroll, not Playwright's scrollIntoViewIfNeeded(): the latter waits for the
+      // element to be "stable" (no size/position change), which never settles on mobile-chromium
+      // while the sibling MapLibre canvas is still doing layout work — an intermittent 30s hang
+      // in CI. We only need it scrolled into view to measure it.
+      await lastRow.evaluate((el) => el.scrollIntoView({ block: 'end' }));
       const bounds = await lastRow.boundingBox();
       expect(bounds).not.toBeNull();
       expect(bounds!.y).toBeGreaterThanOrEqual(0);
