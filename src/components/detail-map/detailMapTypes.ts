@@ -28,6 +28,8 @@ export interface DetailMapLayerState {
   satelliteVisible: boolean;
   /** Illustrative planning overlay (radio, not a boolean toggle) — `'none'` by default. */
   planningOverlay: PlanningOverlay;
+  /** Externally-sourced "key projects" reference overlay (`keyProjects.ts`) — off by default. */
+  keyProjectsVisible: boolean;
 }
 
 export interface DetailMapCameraState {
@@ -124,6 +126,7 @@ export interface DetailedMapProvider {
   setAdministrativeBoundariesVisible(visible: boolean): void;
   setWardLabelsVisible(visible: boolean): void;
   setPlanningOverlay(overlay: PlanningOverlay): void;
+  setKeyProjectsVisible(visible: boolean): void;
   setBuildingsVisible(visible: boolean): void;
   setDashboardMetricsVisible(visible: boolean): void;
   setHeatmapVisible(visible: boolean): void;
@@ -160,6 +163,7 @@ export const DEFAULT_DETAIL_MAP_LAYER_STATE: DetailMapLayerState = {
   terrainVisible: false,
   satelliteVisible: false,
   planningOverlay: 'none',
+  keyProjectsVisible: false,
 };
 
 /** Centered roughly over Đắk Lắk province; matches the 3D overview's default framing. */

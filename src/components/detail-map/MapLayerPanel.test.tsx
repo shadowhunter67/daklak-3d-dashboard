@@ -98,6 +98,29 @@ describe('MapLayerPanel', () => {
     expect(onPlanningOverlayChange).toHaveBeenCalledWith('land-use');
   });
 
+  it('offers the key-projects reference toggle, and reveals its status legend + caveat when on', () => {
+    const { onToggleLayer } = renderPanel(availableSources);
+    const toggle = screen.getByRole('checkbox', { name: 'Dự án trọng điểm (tham khảo)' });
+    expect(toggle).not.toBeChecked();
+    fireEvent.click(toggle);
+    expect(onToggleLayer).toHaveBeenCalledWith('keyProjectsVisible');
+
+    // legend only renders when the layer is on
+    cleanup();
+    render(
+      <MapLayerPanel
+        layers={{ ...DEFAULT_DETAIL_MAP_LAYER_STATE, keyProjectsVisible: true }}
+        sourceAvailability={availableSources}
+        onBaseMapChange={vi.fn()}
+        onToggleLayer={vi.fn()}
+        onPlanningOverlayChange={vi.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Lớp bản đồ' }));
+    expect(screen.getByText('Đang thi công')).toBeInTheDocument();
+    expect(screen.getByText(/chưa kiểm chứng thực địa/i)).toBeInTheDocument();
+  });
+
   it('shows the active planning theme legend and the "no legal validity" disclaimer', () => {
     render(
       <MapLayerPanel

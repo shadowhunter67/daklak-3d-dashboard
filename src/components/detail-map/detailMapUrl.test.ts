@@ -108,6 +108,11 @@ describe('parseDetailMapLayers', () => {
     expect(parseDetailMapLayers('?planning=land-use').planningOverlay).toBe('land-use');
     expect(parseDetailMapLayers('?planning=not-a-theme').planningOverlay).toBe('none');
   });
+
+  it('key-projects overlay defaults off and toggles via `projects`', () => {
+    expect(parseDetailMapLayers('').keyProjectsVisible).toBe(false);
+    expect(parseDetailMapLayers('?projects=1').keyProjectsVisible).toBe(true);
+  });
 });
 
 describe('serializeDetailMapParams', () => {

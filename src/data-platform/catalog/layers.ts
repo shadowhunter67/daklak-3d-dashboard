@@ -116,6 +116,19 @@ export const LAYER_REGISTRY: readonly MapLayerDescriptor[] = [
     availability: 'available',
   },
   {
+    id: 'keyProjectsVisible',
+    title: 'Dự án trọng điểm (tham khảo)',
+    group: 'Bản đồ chi tiết',
+    datasetId: 'administrative-units',
+    renderer: 'maplibre',
+    geometryType: 'point',
+    defaultVisible: false,
+    accessPolicyId: 'public-standard',
+    // Dự án có thật (cao tốc, đường sắt, thủy lợi, cảng, KCN, đô thị…), tổng hợp từ nguồn báo chí
+    // / cơ quan, mỗi mục kèm URL nguồn; hình học là vị trí/tuyến gần đúng. Xem keyProjects.ts.
+    availability: 'available',
+  },
+  {
     id: 'buildingsVisible',
     title: 'Công trình xây dựng',
     group: 'Bản đồ chi tiết',

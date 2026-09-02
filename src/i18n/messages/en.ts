@@ -662,6 +662,9 @@ export const en: Partial<Record<MessageKey, string>> = {
   'layerPanel.planningLegendLabel': 'Legend',
   'layerPanel.planningDisclaimer':
     'Illustrative schematic, generalised by administrative unit — it does not reflect any official plan and has no legal validity.',
+  'layerPanel.keyProjectsLegendLabel': 'Project status',
+  'layerPanel.keyProjectsNote':
+    'Real projects compiled from news / government sources; locations and alignments are approximate and not field-verified. Tap a marker on the map for its source.',
 
   // DetailMapViewport
   'detailMapViewport.webglUnsupportedReason':

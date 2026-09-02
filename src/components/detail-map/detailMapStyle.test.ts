@@ -23,7 +23,15 @@ import {
   WARD_SELECTED_LABEL_LAYER_ID,
 } from './wardLabelLayers';
 import { PLANNING_FILL_LAYER_ID } from './planningLayers';
+import {
+  KEY_PROJECTS_LABEL_LAYER_ID,
+  KEY_PROJECTS_LINE_LAYER_ID,
+  KEY_PROJECTS_POINT_LAYER_ID,
+  KEY_PROJECTS_SOURCE_ID,
+} from './keyProjectLayers';
 import type { DetailMapSourceAvailability } from './detailMapTypes';
+
+const KEY_PROJECT_POINT_LINE = [KEY_PROJECTS_LINE_LAYER_ID, KEY_PROJECTS_POINT_LAYER_ID];
 
 const noSources: DetailMapSourceAvailability = {
   roads: false,
@@ -44,7 +52,7 @@ describe('buildDetailMapStyle', () => {
     expect(style.sources[WARD_BOUNDARY_SOURCE_ID].type).toBe('geojson');
   });
 
-  it('includes background + the inert planning wash + all 4 ward-boundary layers, in order', () => {
+  it('includes background + planning wash + 4 ward-boundary layers + the hidden key-projects layers, in order', () => {
     const style = buildDetailMapStyle(noSources);
     const ids = style.layers.map((layer) => layer.id);
     expect(ids).toEqual([
@@ -54,9 +62,20 @@ describe('buildDetailMapStyle', () => {
       WARD_BOUNDARY_LINE_LAYER_ID,
       WARD_SELECTED_FILL_LAYER_ID,
       WARD_SELECTED_LINE_LAYER_ID,
+      // no glyphs => no key-projects label layer, only line + point
+      KEY_PROJECTS_LINE_LAYER_ID,
+      KEY_PROJECTS_POINT_LAYER_ID,
     ]);
     const planning = style.layers.find((l) => l.id === PLANNING_FILL_LAYER_ID);
     expect(planning?.type === 'fill' && planning.paint?.['fill-opacity']).toBe(0);
+    for (const id of KEY_PROJECT_POINT_LINE) {
+      const layer = style.layers.find((l) => l.id === id)!;
+      expect(layer.layout && 'visibility' in layer.layout && layer.layout.visibility).toBe('none');
+    }
+  });
+
+  it('always includes the key-projects source (bundled, no env dependency)', () => {
+    expect(buildDetailMapStyle(noSources).sources[KEY_PROJECTS_SOURCE_ID]).toBeDefined();
   });
 
   it('the two "selected" layers start inert: zero opacity and a filter matching no code', () => {
@@ -75,9 +94,14 @@ describe('buildDetailMapStyle', () => {
     }
   });
 
-  it('every ward-boundary layer references the ward-boundaries source', () => {
+  it('every ward-boundary/planning layer references the ward-boundaries source', () => {
     const style = buildDetailMapStyle(noSources);
-    const wardLayers = style.layers.filter((layer) => layer.id !== 'background');
+    const wardLayers = style.layers.filter(
+      (layer) =>
+        layer.id !== 'background' &&
+        !layer.id.startsWith('key-projects') &&
+        !layer.id.startsWith('ward-labels'),
+    );
     for (const layer of wardLayers) {
       expect('source' in layer && layer.source).toBe(WARD_BOUNDARY_SOURCE_ID);
     }
@@ -118,6 +142,9 @@ describe('buildDetailMapStyle', () => {
       ROAD_LABELS_LAYER_ID,
       PLACE_LABELS_LAYER_ID,
       HAMLET_LABELS_LAYER_ID,
+      KEY_PROJECTS_LINE_LAYER_ID,
+      KEY_PROJECTS_POINT_LAYER_ID,
+      KEY_PROJECTS_LABEL_LAYER_ID,
     ]);
     expect(style.glyphs).toBe(GLYPHS_URL);
   });
@@ -131,6 +158,8 @@ describe('buildDetailMapStyle', () => {
     expect(ids).not.toContain(PLACE_LABELS_LAYER_ID);
     expect(ids).not.toContain(HAMLET_LABELS_LAYER_ID);
     expect(ids).not.toContain(WARD_LABEL_LAYER_ID);
+    expect(ids).not.toContain(KEY_PROJECTS_LABEL_LAYER_ID);
+    expect(ids).toContain(KEY_PROJECTS_POINT_LAYER_ID);
     expect(style.sources[WARD_LABEL_SOURCE_ID]).toBeUndefined();
     expect(style.glyphs).toBeUndefined();
   });
@@ -140,7 +169,7 @@ describe('buildDetailMapStyle', () => {
     expect(style.sources[WARD_LABEL_SOURCE_ID]).toBeDefined();
     expect(style.sources[OSM_VECTOR_SOURCE_ID]).toBeUndefined();
     const ids = style.layers.map((layer) => layer.id);
-    // ward-name labels are the last two layers, drawn on top of the boundary/highlight layers
+    // ward-name labels sit above the boundary/highlight layers; the key-projects overlay is on top
     expect(ids).toEqual([
       'background',
       WARD_BOUNDARY_FILL_LAYER_ID,
@@ -150,6 +179,9 @@ describe('buildDetailMapStyle', () => {
       WARD_SELECTED_LINE_LAYER_ID,
       WARD_LABEL_LAYER_ID,
       WARD_SELECTED_LABEL_LAYER_ID,
+      KEY_PROJECTS_LINE_LAYER_ID,
+      KEY_PROJECTS_POINT_LAYER_ID,
+      KEY_PROJECTS_LABEL_LAYER_ID,
     ]);
     expect(ids).not.toContain(ROAD_LABELS_LAYER_ID);
     expect(style.glyphs).toBe(GLYPHS_URL);
