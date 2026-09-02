@@ -21,6 +21,7 @@ describe('DetailMapViewport', () => {
       detailMapCamera: DEFAULT_DETAIL_MAP_CAMERA,
       selectedCode: null,
       viewMode: 'map',
+      reducedMotion: false,
     });
   });
   afterEach(() => {
@@ -112,5 +113,56 @@ describe('DetailMapViewport', () => {
     await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
     instance.simulateWardClick('24133');
     await waitFor(() => expect(useMapStore.getState().selectedCode).toBe('24133'));
+  });
+
+  it('flies to and highlights the selected ward (animated by default)', async () => {
+    const initializeSpy = vi.spyOn(FakeMapProvider.prototype, 'initialize');
+    render(<DetailMapViewport />);
+    await waitFor(() => expect(initializeSpy).toHaveBeenCalled());
+    const instance = initializeSpy.mock.instances[0] as InstanceType<typeof FakeMapProvider>;
+    await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
+
+    useMapStore.getState().select('24133');
+
+    await waitFor(() => {
+      const debug = instance.getDebugState();
+      expect(debug.selectedWard).toBe('24133');
+      expect(debug.selectedWardAnimated).toBe(true);
+      expect(debug.lastFitBounds).toBeTruthy();
+      expect(debug.lastFitBoundsAnimated).toBe(true);
+    });
+  });
+
+  it('with reducedMotion, snaps the selected ward without animating', async () => {
+    useMapStore.setState({ reducedMotion: true });
+    const initializeSpy = vi.spyOn(FakeMapProvider.prototype, 'initialize');
+    render(<DetailMapViewport />);
+    await waitFor(() => expect(initializeSpy).toHaveBeenCalled());
+    const instance = initializeSpy.mock.instances[0] as InstanceType<typeof FakeMapProvider>;
+    await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
+
+    useMapStore.getState().select('24133');
+
+    await waitFor(() => {
+      const debug = instance.getDebugState();
+      expect(debug.selectedWard).toBe('24133');
+      expect(debug.selectedWardAnimated).toBe(false);
+      expect(debug.lastFitBoundsAnimated).toBe(false);
+    });
+  });
+
+  it('frames and highlights a preselected ward (from the URL) once the map is ready', async () => {
+    useMapStore.setState({ selectedCode: '24133' });
+    const initializeSpy = vi.spyOn(FakeMapProvider.prototype, 'initialize');
+    render(<DetailMapViewport />);
+    await waitFor(() => expect(initializeSpy).toHaveBeenCalled());
+    const instance = initializeSpy.mock.instances[0] as InstanceType<typeof FakeMapProvider>;
+    await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
+
+    await waitFor(() => {
+      const debug = instance.getDebugState();
+      expect(debug.selectedWard).toBe('24133');
+      expect(debug.lastFitBounds).toBeTruthy();
+    });
   });
 });

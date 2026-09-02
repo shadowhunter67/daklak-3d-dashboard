@@ -18,6 +18,8 @@ export class FakeMapProvider implements DetailedMapProvider {
   private camera: DetailMapCameraState | null = null;
   private layers: DetailMapLayerState | null = null;
   private selectedWard: string | null = null;
+  private selectedWardAnimated = true;
+  private lastFitBoundsAnimated = true;
   private readonly wardClickHandlers = new Set<(code: string | null) => void>();
   private readonly mapClickHandlers = new Set<
     (point: { latitude: number; longitude: number }) => void
@@ -55,6 +57,8 @@ export class FakeMapProvider implements DetailedMapProvider {
     this.placeholder.dataset.heatmapVisible = String(this.layers.heatmapVisible);
     this.placeholder.dataset.zoom = this.camera.zoom.toFixed(2);
     this.placeholder.dataset.selectedWard = this.selectedWard ?? '';
+    this.placeholder.dataset.selectedWardAnimated = String(this.selectedWardAnimated);
+    this.placeholder.dataset.lastFitBoundsAnimated = String(this.lastFitBoundsAnimated);
   }
 
   setBaseMap(type: DetailBaseMap): void {
@@ -68,10 +72,12 @@ export class FakeMapProvider implements DetailedMapProvider {
     this.updatePlaceholderDataset();
   }
 
-  fitBounds(bounds: DetailBounds): void {
+  fitBounds(bounds: DetailBounds, options?: { animate?: boolean; durationMs?: number }): void {
     if (!this.placeholder) return;
+    this.lastFitBoundsAnimated = options?.animate !== false;
     // Assertable via the dataset in tests, e.g. "12.1,108.2,13.7,109.5" (south,west,north,east).
     this.placeholder.dataset.lastFitBounds = `${bounds.south},${bounds.west},${bounds.north},${bounds.east}`;
+    this.updatePlaceholderDataset();
   }
 
   setLayers(layers: DetailMapLayerState): void {
@@ -114,8 +120,9 @@ export class FakeMapProvider implements DetailedMapProvider {
     this.updatePlaceholderDataset();
   }
 
-  setSelectedWard(code: string | null): void {
+  setSelectedWard(code: string | null, options?: { animate?: boolean }): void {
     this.selectedWard = code;
+    this.selectedWardAnimated = options?.animate !== false;
     this.updatePlaceholderDataset();
   }
 
@@ -164,6 +171,9 @@ export class FakeMapProvider implements DetailedMapProvider {
       camera: this.camera,
       layers: this.layers,
       selectedWard: this.selectedWard,
+      selectedWardAnimated: this.selectedWardAnimated,
+      lastFitBounds: this.placeholder?.dataset.lastFitBounds ?? null,
+      lastFitBoundsAnimated: this.lastFitBoundsAnimated,
     };
   }
 }

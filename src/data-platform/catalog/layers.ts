@@ -85,7 +85,9 @@ export const LAYER_REGISTRY: readonly MapLayerDescriptor[] = [
     geometryType: 'polygon',
     defaultVisible: true,
     accessPolicyId: 'public-standard',
-    availability: detailMapAvailability(),
+    // Dữ liệu bundled cục bộ (daklak-wards-render.json), không phụ thuộc nguồn PMTiles theo env
+    // như các layer detail-map khác — xem wardBoundaryLayers.ts.
+    availability: 'available',
   },
   {
     id: 'dashboardMetricsVisible',

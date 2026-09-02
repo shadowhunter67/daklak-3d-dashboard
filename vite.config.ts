@@ -75,6 +75,20 @@ export default defineConfig(({ mode }) => {
         },
       },
     ],
+    // maplibre-gl bundles its own web worker as a separate entry point, loaded at runtime via
+    // `new Worker(new URL(...))`. Vite's dev-server dependency pre-bundler doesn't follow that
+    // dynamic worker reference, so it never emits `maplibre-gl-worker.mjs` into
+    // `node_modules/.vite/deps/` — the main chunk's rewritten import then 404s the moment
+    // MapLibre actually needs the worker (e.g. to process a GeoJSON source's features), which
+    // silently stalls the map at "loading" forever (no `load`/`error` event ever fires). This
+    // went unnoticed until PR "hiệu ứng bản đồ động" added the first real GeoJSON source/layers
+    // to the detail map — with zero sources, MapLibre never spun up a worker at all. Excluding
+    // maplibre-gl from pre-bundling makes Vite serve it as the real ESM package instead, whose
+    // own worker `new URL(...)` resolves correctly. Production builds are unaffected (Rollup, not
+    // this dev-only optimizer, bundles the worker there).
+    optimizeDeps: {
+      exclude: ['maplibre-gl'],
+    },
     build: {
       target: 'es2022',
       rollupOptions: {

@@ -1,4 +1,8 @@
-import type { ErrorEvent as MapLibreErrorEvent, Map as MapLibreMap } from 'maplibre-gl';
+import type {
+  ErrorEvent as MapLibreErrorEvent,
+  FilterSpecification,
+  Map as MapLibreMap,
+} from 'maplibre-gl';
 import { buildDetailMapStyle } from './detailMapStyle';
 import type {
   DetailBaseMap,
@@ -9,6 +13,20 @@ import type {
   DetailedMapProvider,
 } from './detailMapTypes';
 import { loadMapLibreModules } from './MapLibreLoader';
+import {
+  WARD_BOUNDARY_FILL_LAYER_ID,
+  WARD_BOUNDARY_LINE_LAYER_ID,
+  WARD_SELECTED_FILL_LAYER_ID,
+  WARD_SELECTED_LINE_LAYER_ID,
+} from './wardBoundaryLayers';
+import {
+  WARD_FLY_DURATION_MS,
+  WARD_HIGHLIGHT_DURATION_MS,
+  WARD_HIGHLIGHT_HIDDEN,
+  WARD_HIGHLIGHT_SETTLED,
+  wardHighlightFrameAt,
+  type WardHighlightFrame,
+} from './wardHighlightAnimation';
 
 // MapLibre's protocol registry is a module-global side effect, not per-Map-instance — registering
 // twice would be harmless but wasteful and, per the task's explicit requirement, must not happen.
@@ -37,6 +55,10 @@ export class MapLibreProvider implements DetailedMapProvider {
   // Without this, that promise would hang forever: MapLibre's Map.remove() doesn't fire `load`
   // or `error`, so nothing would ever settle it on its own.
   private settlePendingLoad: (() => void) | null = null;
+  // Tracks the in-flight ward-highlight rAF loop (setSelectedWard) so destroy() can cancel it —
+  // the first tracked rAF handle in this class. Without cancelling, a pending frame would call
+  // map.setPaintProperty() on a map that's already been removed and throw.
+  private highlightRaf: number | null = null;
 
   async initialize(container: HTMLElement, options: DetailMapInitOptions): Promise<void> {
     const { maplibregl, pmtiles } = await loadMapLibreModules();
@@ -115,9 +137,9 @@ export class MapLibreProvider implements DetailedMapProvider {
   }
 
   private resolveWardCodeAt(point: { x: number; y: number }): string | null {
-    if (!this.map || !this.sourceAvailability?.administrativeBoundaries) return null;
+    if (!this.map?.getLayer(WARD_BOUNDARY_FILL_LAYER_ID)) return null;
     const features = this.map.queryRenderedFeatures([point.x, point.y], {
-      layers: ['administrative-boundaries-fill'],
+      layers: [WARD_BOUNDARY_FILL_LAYER_ID],
     });
     const code = features[0]?.properties?.code;
     return typeof code === 'string' ? code : null;
@@ -144,14 +166,31 @@ export class MapLibreProvider implements DetailedMapProvider {
     });
   }
 
-  fitBounds(bounds: DetailBounds): void {
-    this.map?.fitBounds(
+  fitBounds(bounds: DetailBounds, options?: { animate?: boolean; durationMs?: number }): void {
+    if (!this.map) return;
+    const camera = this.map.cameraForBounds(
       [
         [bounds.west, bounds.south],
         [bounds.east, bounds.north],
       ],
-      { padding: 48, animate: true },
+      { padding: 48, maxZoom: 13 },
     );
+    if (!camera) return;
+    if (options?.animate === false) {
+      this.map.jumpTo(camera);
+      return;
+    }
+    // flyTo (arced zoom-out-then-in), not the linear pan easeTo/fitBounds({animate:true}) would
+    // give — a constant-zoom pan across the whole province reads as "dragging the map", not the
+    // mapeffect.app-style "flying into a place" this feature is going for. essential:true keeps
+    // the browser's own reduced-motion setting from silently degrading this to a jump — our own
+    // state.reducedMotion gate (via options.animate) is what decides that here, deliberately.
+    this.map.flyTo({
+      ...camera,
+      duration: options?.durationMs ?? WARD_FLY_DURATION_MS,
+      curve: 1.42,
+      essential: true,
+    });
   }
 
   private setLayerVisibility(layerId: string, visible: boolean) {
@@ -186,24 +225,68 @@ export class MapLibreProvider implements DetailedMapProvider {
   }
 
   setAdministrativeBoundariesVisible(visible: boolean): void {
-    if (!this.sourceAvailability?.administrativeBoundaries) return;
-    this.setLayerVisibility('administrative-boundaries-line', visible);
-    this.setLayerVisibility('administrative-boundaries-fill', visible);
+    // Boundaries are bundled/always-available now (see wardBoundaryLayers.ts) — no availability
+    // guard. Hiding them also hides the highlight, so the selected layers toggle too.
+    this.setLayerVisibility(WARD_BOUNDARY_LINE_LAYER_ID, visible);
+    this.setLayerVisibility(WARD_BOUNDARY_FILL_LAYER_ID, visible);
+    this.setLayerVisibility(WARD_SELECTED_FILL_LAYER_ID, visible);
+    this.setLayerVisibility(WARD_SELECTED_LINE_LAYER_ID, visible);
   }
 
   setDashboardMetricsVisible(visible: boolean): void {
-    if (!this.sourceAvailability?.administrativeBoundaries) return;
+    if (!this.sourceAvailability?.dashboardOverlays) return;
     this.setLayerVisibility('dashboard-metrics-fill', visible);
   }
 
   setHeatmapVisible(visible: boolean): void {
-    if (!this.sourceAvailability?.administrativeBoundaries) return;
+    if (!this.sourceAvailability?.dashboardOverlays) return;
     this.setLayerVisibility('dashboard-heatmap', visible);
   }
 
-  setSelectedWard(code: string | null): void {
-    if (!this.map?.getLayer('administrative-boundaries-selected')) return;
-    this.map.setFilter('administrative-boundaries-selected', ['==', ['get', 'code'], code ?? '']);
+  private applyHighlightFrame(frame: WardHighlightFrame): void {
+    if (this.map?.getLayer(WARD_SELECTED_FILL_LAYER_ID)) {
+      this.map.setPaintProperty(WARD_SELECTED_FILL_LAYER_ID, 'fill-opacity', frame.fillOpacity);
+    }
+    if (this.map?.getLayer(WARD_SELECTED_LINE_LAYER_ID)) {
+      this.map.setPaintProperty(WARD_SELECTED_LINE_LAYER_ID, 'line-opacity', frame.lineOpacity);
+      this.map.setPaintProperty(WARD_SELECTED_LINE_LAYER_ID, 'line-width', frame.lineWidth);
+      this.map.setPaintProperty(WARD_SELECTED_LINE_LAYER_ID, 'line-blur', frame.lineBlur);
+    }
+  }
+
+  private cancelHighlightAnimation(): void {
+    if (this.highlightRaf !== null) {
+      cancelAnimationFrame(this.highlightRaf);
+      this.highlightRaf = null;
+    }
+  }
+
+  setSelectedWard(code: string | null, options?: { animate?: boolean }): void {
+    this.cancelHighlightAnimation();
+    const codeFilter: FilterSpecification = ['==', ['get', 'code'], code ?? ''];
+    if (this.map?.getLayer(WARD_SELECTED_FILL_LAYER_ID)) {
+      this.map.setFilter(WARD_SELECTED_FILL_LAYER_ID, codeFilter);
+    }
+    if (this.map?.getLayer(WARD_SELECTED_LINE_LAYER_ID)) {
+      this.map.setFilter(WARD_SELECTED_LINE_LAYER_ID, codeFilter);
+    }
+
+    if (!code) {
+      this.applyHighlightFrame(WARD_HIGHLIGHT_HIDDEN);
+      return;
+    }
+    if (options?.animate === false) {
+      this.applyHighlightFrame(WARD_HIGHLIGHT_SETTLED);
+      return;
+    }
+
+    const started = performance.now();
+    const step = (now: number) => {
+      const t = (now - started) / WARD_HIGHLIGHT_DURATION_MS;
+      this.applyHighlightFrame(wardHighlightFrameAt(t));
+      this.highlightRaf = t < 1 ? requestAnimationFrame(step) : null;
+    };
+    this.highlightRaf = requestAnimationFrame(step);
   }
 
   onWardClick(handler: (code: string | null) => void): () => void {
@@ -223,6 +306,7 @@ export class MapLibreProvider implements DetailedMapProvider {
 
   destroy(): void {
     this.settlePendingLoad?.();
+    this.cancelHighlightAnimation();
     this.wardClickHandlers.clear();
     this.mapClickHandlers.clear();
     this.cameraChangeHandlers.clear();
