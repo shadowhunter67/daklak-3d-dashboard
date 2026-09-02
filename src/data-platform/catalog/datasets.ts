@@ -299,34 +299,75 @@ export const TERRAIN_IMAGERY_DATASET: DatasetDescriptor = {
 };
 
 /**
- * Documents the detail map's PMTiles road/administrative-boundary source as a real catalog entry
- * in `draft` status rather than only in prose docs — this is what lets the data-status UI report
- * "1 source not yet configured" instead of silently omitting it. No file exists at this URL; see
- * docs/detail-map-integration.md for the build pipeline this is waiting on.
+ * Documents the detail map's PMTiles roads/buildings/administrative-boundary source as a real
+ * catalog entry. Built 2026-09-02 from a Geofabrik Vietnam OSM extract (vietnam-260831.osm.pbf,
+ * see scripts/osm-pbf-source.json), clipped to Đắk Lắk via osmium, filtered/tiled via tippecanoe,
+ * packaged with go-pmtiles — full pipeline and every command in
+ * docs/detail-map-integration.md. Committed to `public/maps/daklak.pmtiles` (same-origin,
+ * VITE_DETAIL_MAP_SOURCE_URL=/maps/daklak.pmtiles in .env.production) rather than hosted
+ * externally — see check_build_budget.mjs's totalBuildBytes comment for why that was the simpler
+ * choice once the real file size (13.4MB) turned out far smaller than first estimated.
  */
 export const DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET: DatasetDescriptor = {
   id: 'road-network-detail-map-pmtiles',
-  title: 'Đường/ranh giới hành chính (PMTiles) — bản đồ chi tiết',
+  title: 'Đường, công trình xây dựng, ranh giới hành chính (PMTiles) — bản đồ chi tiết',
   description:
-    'Nguồn vector tile OSM dự kiến cho các lớp đường/ranh giới/heatmap của bản đồ chi tiết MapLibre. Chưa được xây dựng hoặc host — VITE_DETAIL_MAP_SOURCE_URL rỗng theo mặc định.',
+    'Vector tile OSM thật (đường + building footprint + địa danh) cho bản đồ chi tiết MapLibre, self-hosted cùng gốc (same-origin) từ /maps/daklak.pmtiles.',
   domain: 'infrastructure',
   classification: 'public',
   authority: 'unknown',
-  publicationStatus: 'draft',
+  publicationStatus: 'published',
   administrativeLevel: 'mixed',
   temporalResolution: 'static',
   spatialRepresentation: 'vector-tile',
-  source: { organization: 'OpenStreetMap contributors (dự kiến)', license: 'ODbL 1.0 (dự kiến)' },
-  version: 'not-built',
+  source: { organization: 'OpenStreetMap contributors', license: 'ODbL 1.0' },
+  version: 'osm-260831_pmtiles-v1',
+  checksum: '5bb48508177f4bb722eec3d33b8574ed65b53cadc8a7d5c0ebdf9ee4ba844da5',
   quality: {
-    status: 'unverified',
+    status: 'partially-verified',
     knownLimitations: [
-      'Chưa build PMTiles thật: thiếu osmium/tippecanoe/pmtiles CLI trên máy phát triển hiện tại.',
-      'Xem docs/detail-map-integration.md để biết pipeline và quyết định hosting (GitHub Releases nếu >~90MB).',
-      'Chưa có checksum vì file PMTiles chưa tồn tại.',
+      'Độ phủ building footprint không đồng đều: OSM chỉ có ~2.800 building thật cho toàn tỉnh (chủ yếu Buôn Ma Thuột và vài thị trấn) — vùng nông thôn/rẫy hầu như chưa được cộng đồng OSM vẽ chi tiết, dù nhà thực tế có tồn tại.',
+      'Snapshot tĩnh tại một thời điểm (extract 2026-08-31), không có cơ chế tự làm mới — cần chạy lại pipeline thủ công khi muốn cập nhật.',
+      'Zoom 5-15; building chỉ hiện từ zoom 13 trở lên.',
     ],
   },
   access: { delivery: 'pmtiles', requiresAuthentication: false },
+};
+
+/**
+ * Self-hosted glyph range PBFs (`public/fonts/Noto Sans Regular/*.pbf`) the detail map's
+ * `road-labels`/`place-labels` symbol layers need — MapLibre style specs require a `glyphs` URL
+ * for any symbol layer with `text-field`, and this project never points that at a live third-party
+ * glyph server (SECURITY.md's no-external-map-API rule). Registered here (not just as static
+ * assets) because `.pbf` is in `validate_public_build.mjs`'s `DATA_FILE_EXTENSIONS` and must
+ * resolve to a real catalog entry, not because glyph shapes are "data" in the geographic sense.
+ * See THIRD_PARTY_NOTICES.md for the SIL OFL 1.1 attribution.
+ */
+export const DETAIL_MAP_GLYPHS_DATASET: DatasetDescriptor = {
+  id: 'map-glyphs-noto-sans',
+  title: 'Font glyph (Noto Sans Regular) — nhãn bản đồ chi tiết',
+  description:
+    'Glyph PBF tự host cho các layer symbol (tên đường/địa danh) của bản đồ chi tiết MapLibre — không dùng glyph server ngoài.',
+  domain: 'infrastructure',
+  classification: 'public',
+  authority: 'authoritative-third-party',
+  publicationStatus: 'published',
+  administrativeLevel: 'mixed',
+  temporalResolution: 'static',
+  spatialRepresentation: 'none',
+  source: {
+    organization: 'Google (Noto Sans) qua protomaps/basemaps-assets',
+    sourceUrl: 'https://github.com/protomaps/basemaps-assets',
+    license: 'SIL Open Font License 1.1',
+  },
+  version: 'noto-sans-regular-v1',
+  quality: {
+    status: 'verified',
+    knownLimitations: [
+      'Không có 1 checksum tổng: gồm 4 file glyph range PBF riêng biệt, mỗi file đã đăng ký checksum riêng trong config/public-data-files.json.',
+    ],
+  },
+  access: { delivery: 'bundled-static', requiresAuthentication: false },
 };
 
 /**
@@ -552,6 +593,7 @@ export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   BUILDING_FOOTPRINTS_BUON_MA_THUOT_DATASET,
   TERRAIN_IMAGERY_DATASET,
   DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET,
+  DETAIL_MAP_GLYPHS_DATASET,
   PROJECT_PORTFOLIO_ILLUSTRATIVE_DATASET,
   PROJECT_PROGRESS_ILLUSTRATIVE_DATASET,
   PROJECT_ISSUES_ILLUSTRATIVE_DATASET,

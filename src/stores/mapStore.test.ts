@@ -111,6 +111,7 @@ describe('getInitialDashboardUrlState', () => {
       roadLabelsVisible: true,
       placeLabelsVisible: true,
       administrativeBoundariesVisible: true,
+      buildingsVisible: true,
       dashboardMetricsVisible: false,
       heatmapVisible: true,
       terrainVisible: true,
