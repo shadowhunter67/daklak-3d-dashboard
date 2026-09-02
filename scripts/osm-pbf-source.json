@@ -1,0 +1,13 @@
+{
+  "downloadUrl": "https://download.geofabrik.de/asia/vietnam-260831.osm.pbf",
+  "fileName": "vietnam-260831.osm.pbf",
+  "sha256": "e5b11269f6ce592ee8f867a4578368a292e8873de12723249eee2dad21998581",
+  "sizeBytes": 327566318,
+  "extractDate": "2026-08-31",
+  "snapshotDate": "2026-09-02",
+  "region": "asia/vietnam",
+  "provider": "Geofabrik GmbH",
+  "license": "Open Database License (ODbL) 1.0",
+  "attribution": "© OpenStreetMap contributors",
+  "retentionNote": "Geofabrik giữ file theo ngày khoảng 90 ngày; sau đó phải pin lại ngày mới và cập nhật sha256/sizeBytes/downloadUrl."
+}

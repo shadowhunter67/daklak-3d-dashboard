@@ -746,13 +746,21 @@ test.describe('detail map (MapLibre)', () => {
     await expect(page.getByRole('radio', { name: 'Vệ tinh' })).toBeDisabled();
   });
 
-  test('shows an honest empty-state notice instead of a blank canvas when no source is configured', async ({
+  // Production now ships a real OSM roads/buildings PMTiles source (public/maps/daklak.pmtiles,
+  // VITE_DETAIL_MAP_SOURCE_URL in the committed .env.production — see
+  // docs/detail-map-integration.md), so this prod-build E2E run should NOT see the "waiting for
+  // data" notice; it should see real data instead. The "no source configured" scenario this test
+  // used to cover here is still real for local/CI dev builds (VITE_DETAIL_MAP_SOURCE_URL empty by
+  // default) — covered by DetailMapSourceNotice.test.tsx and
+  // DetailMapViewport.test.tsx's "shows an honest empty-state notice..." unit test (env-stubbed),
+  // not duplicated here.
+  test('shows real OSM data (no empty-state notice, a working attribution link) now that a real source is configured', async ({
     page,
   }) => {
     await page.goto('./?view=map');
     await expect(page.locator('#detail-map-viewport')).toBeVisible();
-    await expect(page.getByText('Chế độ chờ dữ liệu')).toBeVisible();
-    await expect(page.getByText(/không dùng dữ liệu giả thay thế/)).toBeVisible();
+    await expect(page.getByText('Chế độ chờ dữ liệu')).not.toBeVisible();
+    await expect(page.getByRole('link', { name: 'OpenStreetMap', exact: true })).toBeVisible();
   });
 
   test('keeps layer toggles interactive but explains why they have no visible effect yet', async ({

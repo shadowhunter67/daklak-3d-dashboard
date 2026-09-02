@@ -33,10 +33,32 @@ function readSourceAvailability(): DetailMapSourceAvailability {
     // Ranh giới hành chính đến từ GeoJSON đóng gói sẵn trong repo (daklak-wards-render.json,
     // xem wardBoundaryLayers.ts), không phụ thuộc nguồn PMTiles theo env như các lớp còn lại.
     administrativeBoundaries: true,
-    dashboardOverlays: Boolean(env.VITE_DETAIL_MAP_SOURCE_URL),
+    // Layer "Chỉ số dashboard"/"Heatmap" (dashboard-metrics-fill/dashboard-heatmap) vẫn CHƯA tồn
+    // tại trong style — đây là dữ liệu minh hoạ riêng (commune-demographic-illustrative/
+    // heatmap-illustrative), không phải dữ liệu OSM roads/buildings mà VITE_DETAIL_MAP_SOURCE_URL
+    // giờ trỏ tới. Cố tình KHÔNG khoá theo cùng biến env đó nữa (khác PR trước) — nếu không, đặt
+    // VITE_DETAIL_MAP_SOURCE_URL cho OSM sẽ khiến Layer Panel nói sai là 2 layer này đã có dữ liệu.
+    dashboardOverlays: false,
     terrain: Boolean(env.VITE_TERRAIN_SOURCE_URL),
     satellite: Boolean(env.VITE_SATELLITE_TILE_URL),
   };
+}
+
+/** Real PMTiles/vector source URL, when configured — see roadLayers.ts/detailMapStyle.ts for how
+ * this becomes the style's actual vector source. `readSourceAvailability()` above only derives a
+ * boolean from the same env var; `buildDetailMapStyle` needs the URL string itself.
+ *
+ * The env var itself is a relative filename (`.env.production`: `maps/daklak.pmtiles`, no leading
+ * slash) joined with `BASE_URL` here — same convention as `src/data/loadRoads.ts`'s
+ * `${import.meta.env.BASE_URL}data/...` and `MapLibreLoader.ts`'s worker URL. This app deploys
+ * under a GitHub Pages subpath (`base: '/daklak-3d-dashboard/'` in vite.config.ts), so a
+ * root-relative `/maps/daklak.pmtiles` value would 404 there — only a `BASE_URL`-prefixed path
+ * resolves correctly in both dev and the deployed subpath. */
+function readSourceUrl(): string | undefined {
+  const url = import.meta.env.VITE_DETAIL_MAP_SOURCE_URL;
+  return typeof url === 'string' && url.length > 0
+    ? `${import.meta.env.BASE_URL}${url}`
+    : undefined;
 }
 
 function createProvider(): DetailedMapProvider {
@@ -71,6 +93,7 @@ export function DetailMapViewport() {
   const [interactionMode, setInteractionMode] = useState<MapInteractionMode>('browse');
   const [measurementPoints, setMeasurementPoints] = useState<MeasurementPoint[]>([]);
   const [sourceAvailability] = useState(() => readSourceAvailability());
+  const [sourceUrl] = useState(() => readSourceUrl());
   const containerRef = useRef<HTMLDivElement | null>(null);
   const providerRef = useRef<DetailedMapProvider | null>(null);
   const handleCameraChange = useDetailMapCameraSync();
@@ -105,7 +128,7 @@ export function DetailMapViewport() {
     if (!container) return;
 
     provider
-      .initialize(container, { camera, layers, sourceAvailability })
+      .initialize(container, { camera, layers, sourceAvailability, sourceUrl })
       .then(() => {
         if (cancelled) return;
         provider.setSelectedWard(selectedCode);

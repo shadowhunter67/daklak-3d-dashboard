@@ -1,27 +1,27 @@
 {
   "status": "passed",
-  "generatedAt": "2026-09-02T02:42:51.830Z",
+  "generatedAt": "2026-09-02T04:18:16.785Z",
   "limits": {
     "totalJavaScriptBytes": 3400000,
     "totalJavaScriptGzipBytes": 950000,
     "largestJavaScriptGzipBytes": 300000,
     "totalTextureBytes": 3000000,
-    "largestAssetBytes": 1900000,
-    "totalBuildBytes": 7000000
+    "largestAssetBytes": 14000000,
+    "totalBuildBytes": 21000000
   },
   "actual": {
-    "totalJavaScriptBytes": 2951771,
-    "totalJavaScriptGzipBytes": 789445,
+    "totalJavaScriptBytes": 2956555,
+    "totalJavaScriptGzipBytes": 790991,
     "largestJavaScriptGzipBytes": 251770,
     "totalTextureBytes": 2813884,
-    "largestAssetBytes": 1829459,
-    "totalBuildBytes": 6455531
+    "largestAssetBytes": 13424852,
+    "totalBuildBytes": 20288606
   },
   "assets": [
     {
-      "file": "assets/AdministrativeMap-Cf0YqWMW.js",
+      "file": "assets/AdministrativeMap-D-WWHp3Z.js",
       "bytes": 19969,
-      "gzipBytes": 7301
+      "gzipBytes": 7302
     },
     {
       "file": "assets/daklak-labels-D8Nz6tfh.js",
@@ -50,29 +50,29 @@
       "bytes": 719308
     },
     {
-      "file": "assets/DataProvenancePanel-DqSLUNHI.js",
+      "file": "assets/DataProvenancePanel-CZ-XA2yb.js",
       "bytes": 10490,
-      "gzipBytes": 3412
+      "gzipBytes": 3411
     },
     {
-      "file": "assets/DataReadinessView-BPSeTZ9D.js",
+      "file": "assets/DataReadinessView-CVVJ7dp1.js",
       "bytes": 9162,
-      "gzipBytes": 2353
+      "gzipBytes": 2354
     },
     {
-      "file": "assets/datasets-BPN4JQya.js",
-      "bytes": 22234,
-      "gzipBytes": 6110
+      "file": "assets/datasets-BixDUJHS.js",
+      "bytes": 23451,
+      "gzipBytes": 6476
     },
     {
-      "file": "assets/DataSourcesPanel-3X2yoT7E.js",
+      "file": "assets/DataSourcesPanel-Ih2HsQIi.js",
       "bytes": 3830,
-      "gzipBytes": 1472
+      "gzipBytes": 1473
     },
     {
-      "file": "assets/DetailMapViewport-CaIDUuuz.js",
-      "bytes": 22547,
-      "gzipBytes": 7569
+      "file": "assets/DetailMapViewport-DlFIvDWm.js",
+      "bytes": 25118,
+      "gzipBytes": 8365
     },
     {
       "file": "assets/en-DpikBP1-.js",
@@ -85,18 +85,18 @@
       "gzipBytes": 7397
     },
     {
-      "file": "assets/graphicsQuality-DaeypxMY.js",
+      "file": "assets/graphicsQuality-B50guXZo.js",
       "bytes": 184007,
-      "gzipBytes": 57990
+      "gzipBytes": 57989
+    },
+    {
+      "file": "assets/index-ATm7BC9A.js",
+      "bytes": 832132,
+      "gzipBytes": 225067
     },
     {
       "file": "assets/index-CR101pQj.css",
       "bytes": 49510
-    },
-    {
-      "file": "assets/index-CxSoN8VF.js",
-      "bytes": 831978,
-      "gzipBytes": 225038
     },
     {
       "file": "assets/maplibre-gl-shared.mjs",
@@ -112,14 +112,14 @@
       "gzipBytes": 251770
     },
     {
-      "file": "assets/ProjectDetailView-DEdeUcaO.js",
+      "file": "assets/ProjectDetailView-ChGPdmKj.js",
       "bytes": 20646,
-      "gzipBytes": 4830
+      "gzipBytes": 4831
     },
     {
-      "file": "assets/ProjectPortfolioView-kveSNN3a.js",
+      "file": "assets/ProjectPortfolioView-DTcw4izZ.js",
       "bytes": 12061,
-      "gzipBytes": 3171
+      "gzipBytes": 3172
     },
     {
       "file": "assets/rolldown-runtime-hePW80VL.js",
@@ -127,9 +127,9 @@
       "gzipBytes": 428
     },
     {
-      "file": "assets/StatPanel-Q-fzzexf.js",
+      "file": "assets/StatPanel-CG-VQ-m-.js",
       "bytes": 3458,
-      "gzipBytes": 1156
+      "gzipBytes": 1155
     },
     {
       "file": "assets/three-vendor-DLwaNKwB.js",
@@ -137,9 +137,9 @@
       "gzipBytes": 183256
     },
     {
-      "file": "assets/WorldExplorationView-Bzj0bjuV.js",
-      "bytes": 39139,
-      "gzipBytes": 12994
+      "file": "assets/WorldExplorationView-Ptbbl3qg.js",
+      "bytes": 39981,
+      "gzipBytes": 13347
     },
     {
       "file": "build-info.json",
@@ -158,8 +158,28 @@
       "bytes": 339
     },
     {
+      "file": "fonts/Noto Sans Regular/0-255.pbf",
+      "bytes": 76044
+    },
+    {
+      "file": "fonts/Noto Sans Regular/256-511.pbf",
+      "bytes": 127726
+    },
+    {
+      "file": "fonts/Noto Sans Regular/7680-7935.pbf",
+      "bytes": 135449
+    },
+    {
+      "file": "fonts/Noto Sans Regular/8192-8447.pbf",
+      "bytes": 64220
+    },
+    {
       "file": "index.html",
       "bytes": 2356
+    },
+    {
+      "file": "maps/daklak.pmtiles",
+      "bytes": 13424852
     }
   ],
   "failures": []

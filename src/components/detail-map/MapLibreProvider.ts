@@ -19,6 +19,8 @@ import {
   WARD_SELECTED_FILL_LAYER_ID,
   WARD_SELECTED_LINE_LAYER_ID,
 } from './wardBoundaryLayers';
+import { PLACE_LABELS_LAYER_ID, ROADS_LINE_LAYER_ID, ROAD_LABELS_LAYER_ID } from './roadLayers';
+import { BUILDINGS_FILL_LAYER_ID, BUILDINGS_OUTLINE_LAYER_ID } from './buildingLayers';
 import {
   WARD_FLY_DURATION_MS,
   WARD_HIGHLIGHT_DURATION_MS,
@@ -69,9 +71,16 @@ export class MapLibreProvider implements DetailedMapProvider {
     }
     this.layers = options.layers;
     this.sourceAvailability = options.sourceAvailability;
+    // Self-hosted glyphs (never a live third-party glyph server — SECURITY.md), served from the
+    // same public/fonts/ path in both dev (Vite serves public/ verbatim at BASE_URL) and
+    // production. Always computed when a real source is configured; buildDetailMapStyle() skips
+    // the two label layers entirely if this were ever omitted (documented budget fallback).
+    const glyphsUrl = options.sourceAvailability.roads
+      ? `${import.meta.env.BASE_URL}fonts/{fontstack}/{range}.pbf`
+      : undefined;
     const map = new maplibregl.Map({
       container,
-      style: buildDetailMapStyle(options.sourceAvailability),
+      style: buildDetailMapStyle(options.sourceAvailability, options.sourceUrl, glyphsUrl),
       center: [options.camera.longitude, options.camera.latitude],
       zoom: options.camera.zoom,
       bearing: options.camera.bearing,
@@ -205,23 +214,24 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.setRoadLabelsVisible(layers.roadLabelsVisible);
     this.setPlaceLabelsVisible(layers.placeLabelsVisible);
     this.setAdministrativeBoundariesVisible(layers.administrativeBoundariesVisible);
+    this.setBuildingsVisible(layers.buildingsVisible);
     this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
     this.setHeatmapVisible(layers.heatmapVisible);
   }
 
   setRoadsVisible(visible: boolean): void {
     if (!this.sourceAvailability?.roads) return;
-    this.setLayerVisibility('roads-line', visible);
+    this.setLayerVisibility(ROADS_LINE_LAYER_ID, visible);
   }
 
   setRoadLabelsVisible(visible: boolean): void {
     if (!this.sourceAvailability?.roads) return;
-    this.setLayerVisibility('road-labels', visible);
+    this.setLayerVisibility(ROAD_LABELS_LAYER_ID, visible);
   }
 
   setPlaceLabelsVisible(visible: boolean): void {
     if (!this.sourceAvailability?.roads) return;
-    this.setLayerVisibility('place-labels', visible);
+    this.setLayerVisibility(PLACE_LABELS_LAYER_ID, visible);
   }
 
   setAdministrativeBoundariesVisible(visible: boolean): void {
@@ -231,6 +241,12 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.setLayerVisibility(WARD_BOUNDARY_FILL_LAYER_ID, visible);
     this.setLayerVisibility(WARD_SELECTED_FILL_LAYER_ID, visible);
     this.setLayerVisibility(WARD_SELECTED_LINE_LAYER_ID, visible);
+  }
+
+  setBuildingsVisible(visible: boolean): void {
+    if (!this.sourceAvailability?.roads) return;
+    this.setLayerVisibility(BUILDINGS_FILL_LAYER_ID, visible);
+    this.setLayerVisibility(BUILDINGS_OUTLINE_LAYER_ID, visible);
   }
 
   setDashboardMetricsVisible(visible: boolean): void {

@@ -53,6 +53,7 @@ export class FakeMapProvider implements DetailedMapProvider {
     this.placeholder.dataset.administrativeBoundariesVisible = String(
       this.layers.administrativeBoundariesVisible,
     );
+    this.placeholder.dataset.buildingsVisible = String(this.layers.buildingsVisible);
     this.placeholder.dataset.dashboardMetricsVisible = String(this.layers.dashboardMetricsVisible);
     this.placeholder.dataset.heatmapVisible = String(this.layers.heatmapVisible);
     this.placeholder.dataset.zoom = this.camera.zoom.toFixed(2);
@@ -86,6 +87,7 @@ export class FakeMapProvider implements DetailedMapProvider {
     this.setRoadLabelsVisible(layers.roadLabelsVisible);
     this.setPlaceLabelsVisible(layers.placeLabelsVisible);
     this.setAdministrativeBoundariesVisible(layers.administrativeBoundariesVisible);
+    this.setBuildingsVisible(layers.buildingsVisible);
     this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
     this.setHeatmapVisible(layers.heatmapVisible);
   }
@@ -104,6 +106,10 @@ export class FakeMapProvider implements DetailedMapProvider {
 
   setAdministrativeBoundariesVisible(visible: boolean): void {
     this.setLayerFlag('administrativeBoundariesVisible', visible);
+  }
+
+  setBuildingsVisible(visible: boolean): void {
+    this.setLayerFlag('buildingsVisible', visible);
   }
 
   setDashboardMetricsVisible(visible: boolean): void {

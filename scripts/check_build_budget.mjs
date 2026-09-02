@@ -23,13 +23,26 @@ const dist = join(root, 'dist');
 // map silently never finishes loading in production. Not counted in totalJavaScriptBytes/gzip
 // (extension is `.mjs`, not `.js`) since they're never part of the eagerly-executed JS the
 // gzip-over-the-wire budgets are meant to bound.
+//
+// totalBuildBytes/largestAssetBytes raised again (real OSM roads/buildings PMTiles source, 2026-09)
+// to admit `public/maps/daklak.pmtiles` (~13.4MB, real OpenStreetMap data for the whole province —
+// pipeline documented in docs/detail-map-integration.md). This was deliberately measured, not
+// guessed: an earlier draft of this feature assumed 35-90MB and planned to host it as a GitHub
+// Release asset instead (cross-origin, needs a CSP change) specifically to avoid this budget; once
+// the real pipeline ran, the actual province-wide roads+buildings archive came out to 13.4MB — real
+// OSM building-footprint coverage outside city centers in this province is sparse (~2.8k buildings
+// province-wide), so the file is far smaller than a fully-mapped-area estimate would suggest.
+// Same-origin (committed to the repo, served by GitHub Pages like every other static asset) is
+// simpler than a Release asset at this size — no CSP `connect-src` addition, no cross-origin range
+// requests. Same "only downloaded by a user who actually opens the detail map" download-cost
+// reasoning as the maplibre-gl chunk above (it's not part of the eager entry bundle).
 const limits = {
   totalJavaScriptBytes: 3_400_000,
   totalJavaScriptGzipBytes: 950_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
-  largestAssetBytes: 1_900_000,
-  totalBuildBytes: 7_000_000,
+  largestAssetBytes: 14_000_000,
+  totalBuildBytes: 21_000_000,
 };
 
 async function filesAt(directory) {

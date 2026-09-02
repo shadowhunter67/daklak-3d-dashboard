@@ -13,6 +13,7 @@ export interface DetailMapLayerState {
   roadLabelsVisible: boolean;
   placeLabelsVisible: boolean;
   administrativeBoundariesVisible: boolean;
+  buildingsVisible: boolean;
   dashboardMetricsVisible: boolean;
   heatmapVisible: boolean;
   terrainVisible: boolean;
@@ -56,6 +57,10 @@ export interface DetailMapInitOptions {
   layers: DetailMapLayerState;
   /** Which base style/source URLs are configured for this deployment; see env vars in .env.example. */
   sourceAvailability: DetailMapSourceAvailability;
+  /** The real PMTiles/vector source URL (VITE_DETAIL_MAP_SOURCE_URL), when `sourceAvailability.roads`
+   * is true — `sourceAvailability` alone is a boolean, not enough to actually build the style's
+   * vector source. Undefined when no source is configured. */
+  sourceUrl?: string;
 }
 
 export interface GeocodingResult {
@@ -107,6 +112,7 @@ export interface DetailedMapProvider {
   setRoadLabelsVisible(visible: boolean): void;
   setPlaceLabelsVisible(visible: boolean): void;
   setAdministrativeBoundariesVisible(visible: boolean): void;
+  setBuildingsVisible(visible: boolean): void;
   setDashboardMetricsVisible(visible: boolean): void;
   setHeatmapVisible(visible: boolean): void;
 
@@ -135,6 +141,7 @@ export const DEFAULT_DETAIL_MAP_LAYER_STATE: DetailMapLayerState = {
   roadLabelsVisible: true,
   placeLabelsVisible: true,
   administrativeBoundariesVisible: true,
+  buildingsVisible: true,
   dashboardMetricsVisible: false,
   heatmapVisible: false,
   terrainVisible: false,

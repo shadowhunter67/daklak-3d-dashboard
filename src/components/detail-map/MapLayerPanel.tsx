@@ -29,6 +29,7 @@ const layerToggles: Array<{
   { key: 'roadLabelsVisible', unavailableWhen: 'roads' },
   { key: 'placeLabelsVisible', unavailableWhen: 'roads' },
   { key: 'administrativeBoundariesVisible', unavailableWhen: 'administrativeBoundaries' },
+  { key: 'buildingsVisible', unavailableWhen: 'roads' },
   { key: 'dashboardMetricsVisible', unavailableWhen: 'dashboardOverlays' },
   { key: 'heatmapVisible', unavailableWhen: 'dashboardOverlays' },
 ];

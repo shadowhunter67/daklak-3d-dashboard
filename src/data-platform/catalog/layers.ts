@@ -90,6 +90,17 @@ export const LAYER_REGISTRY: readonly MapLayerDescriptor[] = [
     availability: 'available',
   },
   {
+    id: 'buildingsVisible',
+    title: 'Công trình xây dựng',
+    group: 'Bản đồ chi tiết',
+    datasetId: 'road-network-detail-map-pmtiles',
+    renderer: 'maplibre',
+    geometryType: 'polygon',
+    defaultVisible: true,
+    accessPolicyId: 'public-standard',
+    availability: detailMapAvailability(),
+  },
+  {
     id: 'dashboardMetricsVisible',
     title: 'Chỉ số dashboard',
     group: 'Bản đồ chi tiết',
@@ -98,7 +109,11 @@ export const LAYER_REGISTRY: readonly MapLayerDescriptor[] = [
     geometryType: 'polygon',
     defaultVisible: false,
     accessPolicyId: 'public-standard',
-    availability: detailMapAvailability(),
+    // Cố tình KHÔNG dùng detailMapAvailability(): biến đó giờ phản ánh nguồn OSM roads/buildings
+    // (VITE_DETAIL_MAP_SOURCE_URL) đã có thật, nhưng layer minh hoạ demographic này là dữ liệu
+    // hoàn toàn khác, chưa hề được build — dùng chung sẽ khiến catalog nói sai là đã sẵn sàng.
+    // Không có biến env riêng cho nguồn này nên literal 'not-configured' là đúng sự thật hiện tại.
+    availability: 'not-configured',
   },
   {
     id: 'heatmapVisible',
@@ -109,7 +124,8 @@ export const LAYER_REGISTRY: readonly MapLayerDescriptor[] = [
     geometryType: 'polygon',
     defaultVisible: false,
     accessPolicyId: 'public-standard',
-    availability: detailMapAvailability(),
+    // Cùng lý do với dashboardMetricsVisible ở trên — không dùng chung detailMapAvailability().
+    availability: 'not-configured',
   },
 ];
 
