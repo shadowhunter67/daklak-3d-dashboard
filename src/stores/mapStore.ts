@@ -54,9 +54,10 @@ export function getInitialDashboardUrlState(): Required<InitialMapUrlState> {
 
 // terrainVisible/satelliteVisible are derived from baseMap (see setDetailMapBaseMap) and must
 // not be toggled independently — that would desync them from the actual base-map selection.
+// planningOverlay is a radio value (not a boolean), set via setDetailMapPlanningOverlay.
 type ToggleableDetailMapLayer = Exclude<
   keyof DetailMapLayerState,
-  'baseMap' | 'terrainVisible' | 'satelliteVisible'
+  'baseMap' | 'terrainVisible' | 'satelliteVisible' | 'planningOverlay'
 >;
 
 export interface MapState {
@@ -103,6 +104,7 @@ export interface MapState {
   notifyInsetsChanged: () => void;
   setDetailMapBaseMap: (baseMap: DetailBaseMap) => void;
   toggleDetailMapLayer: (layer: ToggleableDetailMapLayer) => void;
+  setDetailMapPlanningOverlay: (overlay: DetailMapLayerState['planningOverlay']) => void;
   /** No-op (and no re-render) if the new camera is within epsilon of the current one. */
   setDetailMapCamera: (camera: DetailMapCameraState) => void;
   applyDetailMapUrlState: (state: {
@@ -173,6 +175,10 @@ export function createMapStore(
     toggleDetailMapLayer: (layer) =>
       set((state) => ({
         detailMapLayers: { ...state.detailMapLayers, [layer]: !state.detailMapLayers[layer] },
+      })),
+    setDetailMapPlanningOverlay: (planningOverlay) =>
+      set((state) => ({
+        detailMapLayers: { ...state.detailMapLayers, planningOverlay },
       })),
     setDetailMapCamera: (camera) => {
       if (camerasApproximatelyEqual(get().detailMapCamera, camera)) return;

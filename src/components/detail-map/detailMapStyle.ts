@@ -16,6 +16,7 @@ import {
   buildWardLabelSource,
   WARD_LABEL_SOURCE_ID,
 } from './wardLabelLayers';
+import { buildPlanningFillLayer } from './planningLayers';
 import type { DetailMapSourceAvailability } from './detailMapTypes';
 
 /**
@@ -71,6 +72,10 @@ export function buildDetailMapStyle(
         paint: { 'background-color': '#0d211f' },
       },
       wardFillLayer,
+      // Illustrative planning wash — starts inert (opacity 0); MapLibreProvider.setPlanningOverlay
+      // colours + reveals it. Sits directly on the ward fill, below the OSM roads/buildings
+      // spliced in later and below the ward outline/labels, so real detail stays legible on top.
+      buildPlanningFillLayer(),
       ...wardRemainingLayers,
       ...wardLabelLayers,
     ],

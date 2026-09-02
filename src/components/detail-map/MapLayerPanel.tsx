@@ -1,16 +1,18 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { getLayerDescriptor } from '../../data-platform/catalog/layers';
 import { BaseMapSelector } from './BaseMapSelector';
+import { PlanningOverlaySelector } from './PlanningOverlaySelector';
 import { useTranslation } from '../../i18n/useTranslation';
 import type {
   DetailBaseMap,
   DetailMapLayerState,
   DetailMapSourceAvailability,
+  PlanningOverlay,
 } from './detailMapTypes';
 
 type ToggleableLayer = Exclude<
   keyof DetailMapLayerState,
-  'baseMap' | 'terrainVisible' | 'satelliteVisible'
+  'baseMap' | 'terrainVisible' | 'satelliteVisible' | 'planningOverlay'
 >;
 
 /**
@@ -42,6 +44,7 @@ export function MapLayerPanel({
   sourceAvailability,
   onBaseMapChange,
   onToggleLayer,
+  onPlanningOverlayChange,
   toolsSlot,
   suppressEscapeClose = false,
 }: {
@@ -49,6 +52,7 @@ export function MapLayerPanel({
   sourceAvailability: DetailMapSourceAvailability;
   onBaseMapChange: (baseMap: DetailBaseMap) => void;
   onToggleLayer: (layer: ToggleableLayer) => void;
+  onPlanningOverlayChange: (overlay: PlanningOverlay) => void;
   toolsSlot?: ReactNode;
   /**
    * True while a child tool (distance measurement) owns Escape for its own exit. Without this,
@@ -141,6 +145,13 @@ export function MapLayerPanel({
               value={layers.baseMap}
               sourceAvailability={sourceAvailability}
               onChange={onBaseMapChange}
+            />
+          </section>
+          <section aria-labelledby="detail-map-layer-panel-planning-heading">
+            <h3 id="detail-map-layer-panel-planning-heading">{t('layerPanel.planningHeading')}</h3>
+            <PlanningOverlaySelector
+              value={layers.planningOverlay}
+              onChange={onPlanningOverlayChange}
             />
           </section>
           {toolsSlot && (

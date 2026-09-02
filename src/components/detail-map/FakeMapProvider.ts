@@ -54,6 +54,7 @@ export class FakeMapProvider implements DetailedMapProvider {
       this.layers.administrativeBoundariesVisible,
     );
     this.placeholder.dataset.wardLabelsVisible = String(this.layers.wardLabelsVisible);
+    this.placeholder.dataset.planningOverlay = this.layers.planningOverlay;
     this.placeholder.dataset.buildingsVisible = String(this.layers.buildingsVisible);
     this.placeholder.dataset.dashboardMetricsVisible = String(this.layers.dashboardMetricsVisible);
     this.placeholder.dataset.heatmapVisible = String(this.layers.heatmapVisible);
@@ -89,6 +90,7 @@ export class FakeMapProvider implements DetailedMapProvider {
     this.setPlaceLabelsVisible(layers.placeLabelsVisible);
     this.setAdministrativeBoundariesVisible(layers.administrativeBoundariesVisible);
     this.setWardLabelsVisible(layers.wardLabelsVisible);
+    this.setPlanningOverlay(layers.planningOverlay);
     this.setBuildingsVisible(layers.buildingsVisible);
     this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
     this.setHeatmapVisible(layers.heatmapVisible);
@@ -112,6 +114,12 @@ export class FakeMapProvider implements DetailedMapProvider {
 
   setWardLabelsVisible(visible: boolean): void {
     this.setLayerFlag('wardLabelsVisible', visible);
+  }
+
+  setPlanningOverlay(overlay: DetailMapLayerState['planningOverlay']): void {
+    if (!this.layers) return;
+    this.layers = { ...this.layers, planningOverlay: overlay };
+    this.updatePlaceholderDataset();
   }
 
   setBuildingsVisible(visible: boolean): void {

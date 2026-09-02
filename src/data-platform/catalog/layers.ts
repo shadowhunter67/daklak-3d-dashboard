@@ -103,6 +103,19 @@ export const LAYER_REGISTRY: readonly MapLayerDescriptor[] = [
     availability: 'available',
   },
   {
+    id: 'planningOverlay',
+    title: 'Quy hoạch (minh họa)',
+    group: 'Bản đồ chi tiết',
+    datasetId: 'administrative-units',
+    renderer: 'maplibre',
+    geometryType: 'polygon',
+    defaultVisible: false,
+    accessPolicyId: 'public-standard',
+    // Sơ đồ minh họa: tô màu theo phân loại suy diễn (planningThemes.ts) lên chính ranh giới
+    // hành chính thật. Không phải quy hoạch chính thức, không có giá trị pháp lý.
+    availability: 'available',
+  },
+  {
     id: 'buildingsVisible',
     title: 'Công trình xây dựng',
     group: 'Bản đồ chi tiết',

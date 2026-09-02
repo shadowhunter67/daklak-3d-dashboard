@@ -3,9 +3,14 @@
  * sources). See docs/detail-map-integration.md for the architecture this backs.
  */
 
+import type { PlanningThemeId } from './planningThemes';
+
 export type MapExperience = 'overview-3d' | 'detail-map';
 
 export type DetailBaseMap = 'default' | 'terrain' | 'satellite';
+
+/** Active illustrative planning overlay, or `'none'`. One at a time (radio) — see planningThemes.ts. */
+export type PlanningOverlay = PlanningThemeId | 'none';
 
 export interface DetailMapLayerState {
   baseMap: DetailBaseMap;
@@ -21,6 +26,8 @@ export interface DetailMapLayerState {
   heatmapVisible: boolean;
   terrainVisible: boolean;
   satelliteVisible: boolean;
+  /** Illustrative planning overlay (radio, not a boolean toggle) — `'none'` by default. */
+  planningOverlay: PlanningOverlay;
 }
 
 export interface DetailMapCameraState {
@@ -116,6 +123,7 @@ export interface DetailedMapProvider {
   setPlaceLabelsVisible(visible: boolean): void;
   setAdministrativeBoundariesVisible(visible: boolean): void;
   setWardLabelsVisible(visible: boolean): void;
+  setPlanningOverlay(overlay: PlanningOverlay): void;
   setBuildingsVisible(visible: boolean): void;
   setDashboardMetricsVisible(visible: boolean): void;
   setHeatmapVisible(visible: boolean): void;
@@ -151,6 +159,7 @@ export const DEFAULT_DETAIL_MAP_LAYER_STATE: DetailMapLayerState = {
   heatmapVisible: false,
   terrainVisible: false,
   satelliteVisible: false,
+  planningOverlay: 'none',
 };
 
 /** Centered roughly over Đắk Lắk province; matches the 3D overview's default framing. */

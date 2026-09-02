@@ -22,6 +22,7 @@ import {
   WARD_LABEL_SOURCE_ID,
   WARD_SELECTED_LABEL_LAYER_ID,
 } from './wardLabelLayers';
+import { PLANNING_FILL_LAYER_ID } from './planningLayers';
 import type { DetailMapSourceAvailability } from './detailMapTypes';
 
 const noSources: DetailMapSourceAvailability = {
@@ -43,16 +44,19 @@ describe('buildDetailMapStyle', () => {
     expect(style.sources[WARD_BOUNDARY_SOURCE_ID].type).toBe('geojson');
   });
 
-  it('includes background + all 4 ward-boundary layers, in order', () => {
+  it('includes background + the inert planning wash + all 4 ward-boundary layers, in order', () => {
     const style = buildDetailMapStyle(noSources);
     const ids = style.layers.map((layer) => layer.id);
     expect(ids).toEqual([
       'background',
       WARD_BOUNDARY_FILL_LAYER_ID,
+      PLANNING_FILL_LAYER_ID,
       WARD_BOUNDARY_LINE_LAYER_ID,
       WARD_SELECTED_FILL_LAYER_ID,
       WARD_SELECTED_LINE_LAYER_ID,
     ]);
+    const planning = style.layers.find((l) => l.id === PLANNING_FILL_LAYER_ID);
+    expect(planning?.type === 'fill' && planning.paint?.['fill-opacity']).toBe(0);
   });
 
   it('the two "selected" layers start inert: zero opacity and a filter matching no code', () => {
@@ -102,6 +106,7 @@ describe('buildDetailMapStyle', () => {
     expect(ids).toEqual([
       'background',
       WARD_BOUNDARY_FILL_LAYER_ID,
+      PLANNING_FILL_LAYER_ID,
       BUILDINGS_FILL_LAYER_ID,
       BUILDINGS_OUTLINE_LAYER_ID,
       ROADS_LINE_LAYER_ID,
@@ -139,6 +144,7 @@ describe('buildDetailMapStyle', () => {
     expect(ids).toEqual([
       'background',
       WARD_BOUNDARY_FILL_LAYER_ID,
+      PLANNING_FILL_LAYER_ID,
       WARD_BOUNDARY_LINE_LAYER_ID,
       WARD_SELECTED_FILL_LAYER_ID,
       WARD_SELECTED_LINE_LAYER_ID,

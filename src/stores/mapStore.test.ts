@@ -112,6 +112,7 @@ describe('getInitialDashboardUrlState', () => {
       placeLabelsVisible: true,
       administrativeBoundariesVisible: true,
       wardLabelsVisible: true,
+      planningOverlay: 'none',
       buildingsVisible: true,
       dashboardMetricsVisible: false,
       heatmapVisible: true,

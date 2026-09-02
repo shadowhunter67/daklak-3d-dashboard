@@ -101,6 +101,13 @@ describe('parseDetailMapLayers', () => {
     expect(parseDetailMapLayers('?wardlabels=0').wardLabelsVisible).toBe(false);
     expect(parseDetailMapLayers('?wardlabels=1').wardLabelsVisible).toBe(true);
   });
+
+  it('planning overlay defaults to none, accepts a known theme id, rejects an unknown one', () => {
+    expect(parseDetailMapLayers('').planningOverlay).toBe('none');
+    expect(parseDetailMapLayers('?planning=forestry').planningOverlay).toBe('forestry');
+    expect(parseDetailMapLayers('?planning=land-use').planningOverlay).toBe('land-use');
+    expect(parseDetailMapLayers('?planning=not-a-theme').planningOverlay).toBe('none');
+  });
 });
 
 describe('serializeDetailMapParams', () => {
