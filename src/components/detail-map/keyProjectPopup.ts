@@ -24,6 +24,7 @@ interface RawProps {
   sourceUrl?: unknown;
   sourceLabel?: unknown;
   sourceDate?: unknown;
+  geom?: unknown;
 }
 
 const str = (v: unknown): string => (typeof v === 'string' ? v : '');
@@ -31,7 +32,8 @@ const str = (v: unknown): string => (typeof v === 'string' ? v : '');
 /**
  * Popup markup for a clicked key-project feature. Vietnamese-only (the data is), and every text
  * field is HTML-escaped; the source link is `rel="noopener noreferrer" target="_blank"`. Ends
- * with the standing "approximate location" caveat — the geometry is hand-placed, not surveyed.
+ * with a geometry caveat — the OSM-derived corridors (`geom: 'osm'`) get an ODbL note, everything
+ * else the hand-placed "approximate, not field-verified" note.
  */
 export function keyProjectPopupHtml(props: RawProps): string {
   const name = escapeHtml(str(props.name));
@@ -44,6 +46,10 @@ export function keyProjectPopupHtml(props: RawProps): string {
   const sourceLabel = escapeHtml(str(props.sourceLabel) || 'Nguồn');
   const sourceDate = escapeHtml(str(props.sourceDate));
   const safeHref = /^https:\/\//.test(sourceUrl) ? escapeHtml(sourceUrl) : '';
+  const caveat =
+    str(props.geom) === 'osm'
+      ? 'Tuyến sơ đồ hoá từ OpenStreetMap (© OpenStreetMap contributors, ODbL).'
+      : 'Vị trí/tuyến gần đúng — chưa kiểm chứng thực địa.';
 
   return [
     `<div class="key-project-popup">`,
@@ -58,7 +64,7 @@ export function keyProjectPopupHtml(props: RawProps): string {
           sourceDate ? ` (${sourceDate})` : ''
         }</a>`
       : '',
-    `<p class="key-project-popup__caveat">Vị trí/tuyến gần đúng — chưa kiểm chứng thực địa.</p>`,
+    `<p class="key-project-popup__caveat">${escapeHtml(caveat)}</p>`,
     `</div>`,
   ].join('');
 }

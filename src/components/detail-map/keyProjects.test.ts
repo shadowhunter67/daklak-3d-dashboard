@@ -60,4 +60,33 @@ describe('KEY_PROJECTS data', () => {
     expect(lines.length).toBeGreaterThanOrEqual(3);
     expect(points.length).toBeGreaterThanOrEqual(10);
   });
+
+  it('the CT.24 and high-speed-rail corridors are OSM-derived multi-segment polylines', () => {
+    for (const id of ['ct-kh-bmt', 'dsct-bac-nam']) {
+      const f = features.find((x) => x.properties.id === id)!;
+      expect(f.properties.geom).toBe('osm');
+      expect(f.geometry.type).toBe('LineString');
+      if (f.geometry.type === 'LineString') {
+        expect(f.geometry.coordinates.length).toBeGreaterThanOrEqual(8);
+        // real corridors span a real distance, not a stub
+        const lngs = f.geometry.coordinates.map((c) => c[0]);
+        const lats = f.geometry.coordinates.map((c) => c[1]);
+        const span =
+          Math.max(...lngs) - Math.min(...lngs) + (Math.max(...lats) - Math.min(...lats));
+        expect(span).toBeGreaterThan(0.5);
+      }
+    }
+    // CT.24 specifically runs broadly west→east
+    const ct24 = features.find((x) => x.properties.id === 'ct-kh-bmt')!;
+    if (ct24.geometry.type === 'LineString') {
+      const lngs = ct24.geometry.coordinates.map((c) => c[0]);
+      expect(Math.max(...lngs) - Math.min(...lngs)).toBeGreaterThan(0.8);
+    }
+  });
+
+  it('includes the "đang đấu thầu / gọi đầu tư" real-estate category with real entries', () => {
+    const tender = features.filter((f) => f.properties.category === 'do-thi-dau-thau');
+    expect(tender.length).toBeGreaterThanOrEqual(3);
+    expect(tender.map((f) => f.properties.name).join(' ')).toMatch(/Ecopark|Eco City|ERA City/);
+  });
 });

@@ -41,6 +41,13 @@ describe('keyProjectPopupHtml', () => {
     expect(html).not.toContain('key-project-popup__source');
   });
 
+  it('shows an ODbL note instead of the approximate-location caveat for OSM-derived geometry', () => {
+    const html = keyProjectPopupHtml({ ...base, geom: 'osm' });
+    expect(html).toMatch(/OpenStreetMap/);
+    expect(html).toMatch(/ODbL/);
+    expect(html).not.toMatch(/chưa kiểm chứng thực địa/);
+  });
+
   it('tolerates missing/garbage properties without throwing', () => {
     expect(() => keyProjectPopupHtml({})).not.toThrow();
     expect(() => keyProjectPopupHtml({ name: 42 as unknown })).not.toThrow();
