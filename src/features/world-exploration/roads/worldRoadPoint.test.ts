@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { latLonToWorld } from '../coordinates/worldCoordinates';
+import { worldToMeters } from '../coordinates/worldScale';
 import type { TerrainSampler } from '../terrain/terrainHeightSampler';
 import { projectRoadPoint, ROAD_FALLBACK_HEIGHT, ROAD_GROUND_LIFT } from './worldRoadPoint';
 
@@ -37,5 +38,14 @@ describe('projectRoadPoint', () => {
     projectRoadPoint(sampler, coordinate);
     const world = latLonToWorld(coordinate[0], coordinate[1]);
     expect(sampler.getHeight).toHaveBeenCalledWith(world.x, world.z);
+  });
+
+  // PR4/9 (world-scale-lod-adr.md): ROAD_GROUND_LIFT is now expressed in real meters via
+  // metersToWorld — cross-check the real-world meaning, not just the formula that produced it.
+  it('ROAD_GROUND_LIFT means a plausible real kerb-height clearance, not the old terrain-vertical fudge', () => {
+    const meters = worldToMeters(ROAD_GROUND_LIFT);
+    expect(meters).toBeCloseTo(0.25, 3);
+    expect(meters).toBeGreaterThan(0.05);
+    expect(meters).toBeLessThan(1);
   });
 });
