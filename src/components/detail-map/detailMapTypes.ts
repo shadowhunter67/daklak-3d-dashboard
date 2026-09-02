@@ -3,7 +3,7 @@
  * sources). See docs/detail-map-integration.md for the architecture this backs.
  */
 
-export type MapExperience = 'overview-3d' | 'detail-map' | 'directory';
+export type MapExperience = 'overview-3d' | 'detail-map';
 
 export type DetailBaseMap = 'default' | 'terrain' | 'satellite';
 
@@ -157,8 +157,8 @@ export const DEFAULT_DETAIL_MAP_CAMERA: DetailMapCameraState = {
   pitch: 0,
 };
 
-export const mapExperienceFromViewMode = (viewMode: '3d' | 'table' | 'map'): MapExperience =>
-  viewMode === 'table' ? 'directory' : viewMode === 'map' ? 'detail-map' : 'overview-3d';
+export const mapExperienceFromViewMode = (viewMode: '3d' | 'map'): MapExperience =>
+  viewMode === 'map' ? 'detail-map' : 'overview-3d';
 
-export const viewModeFromMapExperience = (experience: MapExperience): '3d' | 'table' | 'map' =>
-  experience === 'directory' ? 'table' : experience === 'detail-map' ? 'map' : '3d';
+export const viewModeFromMapExperience = (experience: MapExperience): '3d' | 'map' =>
+  experience === 'detail-map' ? 'map' : '3d';

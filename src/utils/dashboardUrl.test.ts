@@ -8,9 +8,16 @@ import {
 const codes = new Set(['24133']);
 
 describe('dashboard URL state', () => {
-  it('parses a valid shareable state', () => {
+  it('aliases the legacy ?view=2d (former standalone table/directory view) to the merged map view', () => {
     expect(parseDashboardUrl('?view=2d&mode=energy&ward=24133', codes)).toEqual({
-      viewMode: 'table',
+      viewMode: 'map',
+      dataMode: 'energy',
+      selectedCode: '24133',
+    });
+  });
+  it('also aliases the legacy ?view=table value to the merged map view', () => {
+    expect(parseDashboardUrl('?view=table&mode=energy&ward=24133', codes)).toEqual({
+      viewMode: 'map',
       dataMode: 'energy',
       selectedCode: '24133',
     });
@@ -91,7 +98,7 @@ describe('decideDashboardHistoryAction', () => {
   });
 
   it('pushes history when the view mode changes', () => {
-    const action = decideDashboardHistoryAction(base, { ...base, viewMode: 'table' });
+    const action = decideDashboardHistoryAction(base, { ...base, viewMode: 'map' });
     expect(action).toBe('push');
   });
 
@@ -107,7 +114,7 @@ describe('decideDashboardHistoryAction', () => {
 
   it('pushes history when view/mode and selected ward change together', () => {
     const action = decideDashboardHistoryAction(base, {
-      viewMode: 'table',
+      viewMode: 'map',
       dataMode: 'energy',
       selectedCode: '24133',
     });

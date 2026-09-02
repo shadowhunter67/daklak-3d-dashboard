@@ -59,10 +59,16 @@ export function MapFallback({
   reason,
   actionLabel,
   onRetry = () => window.location.reload(),
+  children,
 }: {
   reason: string;
   actionLabel?: string;
   onRetry?: () => void;
+  /** Optional content rendered below the retry button — e.g. `AccessibleDirectory`, so a viewer
+   * without WebGL (or hitting a map error) still gets a working, map-free way to browse the 102
+   * ward/commune units right where the map would have been, instead of being sent to a separate
+   * view. */
+  children?: ReactNode;
 }) {
   return (
     <div className="map-fallback" role="alert">
@@ -72,6 +78,7 @@ export function MapFallback({
       <button type="button" onClick={onRetry}>
         {actionLabel ?? tStatic('errorBoundary.reload')}
       </button>
+      {children}
     </div>
   );
 }

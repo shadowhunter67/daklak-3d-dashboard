@@ -11,7 +11,6 @@ export const en: Partial<Record<MessageKey, string>> = {
   'app.invalidConfig.title': 'Invalid configuration data',
   'app.live.openedOverview': 'Executive Overview opened.',
   'app.live.opened3d': '3D map opened.',
-  'app.live.openedTable': '2D list opened.',
   'app.live.openedMap': 'Detail map opened.',
   'app.live.openedPortfolio': 'Project portfolio opened.',
   'app.live.openedProjectDetail': 'Project detail opened.',
@@ -27,8 +26,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'header.nav.overview': 'Executive Overview',
   'header.nav.overviewShort': 'Overview',
   'header.nav.3d': '3D',
-  'header.nav.table': 'List',
-  'header.nav.map': 'Detail map',
+  'header.nav.map': 'Map & directory',
   'header.nav.mapShort': 'Map',
   'header.nav.world': 'Explore Đắk Lắk 3D',
   'header.nav.worldShort': 'Explore',
@@ -516,8 +514,7 @@ export const en: Partial<Record<MessageKey, string>> = {
     'The 3D map hit an error loading data or initializing graphics.',
   'mapViewport.aria': '3D administrative map of Đắk Lắk province',
   'mapViewport.webglUnsupportedReason':
-    'This browser or device does not support WebGL. The 2D list is still available.',
-  'mapViewport.open2dList': 'Open the 2D list',
+    'This browser or device does not support WebGL. The ward/commune list below is still available.',
   'mapViewport.illustrativeAria': 'Currently showing illustrative data',
   'mapViewport.illustrativeBadge': 'ILLUSTRATIVE DATA',
   'mapViewport.coordinates': '12°39′N · 108°02′E',
@@ -619,26 +616,6 @@ export const en: Partial<Record<MessageKey, string>> = {
   'worldExploration.touch.interactButton': 'Interact',
   'worldExploration.touch.interactButtonAria': 'Interact with the nearest destination',
 
-  // TwoDimensionalView switch
-  'twoDView.switchAria': '2D map content',
-  'twoDView.mapTab': 'Map',
-  'twoDView.directoryTab': 'Directory',
-
-  // AdministrativeMap2D
-  'map2d.eyebrow': '2D ADMINISTRATIVE MAP',
-  'map2d.heading': '102 communes/wards',
-  'map2d.selected': 'Selected: {name}.',
-  'map2d.noneSelected': 'No unit selected.',
-  'map2d.svgAria':
-    '2D administrative map with {count} units. Use the directory for keyboard access.',
-  'map2d.roadLegendAria': 'Road legend',
-  'map2d.roadNational': 'National road',
-  'map2d.roadProvincial': 'Provincial road',
-  'map2d.roadDistrict': 'District road',
-  'map2d.osmAttribution': '© OpenStreetMap contributors · ODbL 1.0 · reference data',
-  'map2d.colorNote': 'The color layer uses the same illustrative indicator set as the 3D mode.',
-  'map2d.roadNetworkAria': 'OpenStreetMap road network',
-
   // BaseMapSelector (MapLibre detail map)
   'baseMap.aria': 'Map type',
   'baseMap.default': 'Default',
@@ -682,14 +659,15 @@ export const en: Partial<Record<MessageKey, string>> = {
 
   // DetailMapViewport
   'detailMapViewport.webglUnsupportedReason':
-    'This browser or device does not support WebGL, so the detail map cannot open. The 2D list is still available.',
-  'detailMapViewport.open2dList': 'Open the 2D list',
+    'This browser or device does not support WebGL, so the detail map cannot open. The ward/commune list below is still available.',
   'detailMapViewport.errorHeading': 'Could not load the detail map',
   'detailMapViewport.errorBody':
     'An error occurred initializing the detail map. You can retry or choose a different mode.',
   'detailMapViewport.retry': 'Retry',
   'detailMapViewport.backTo3d': 'Back to the 3D overview',
   'detailMapViewport.aria': 'Detail map',
+  'detailMapViewport.hideDirectory': 'Hide directory',
+  'detailMapViewport.showDirectory': 'Show directory',
 
   // DatasetFooter
   'datasetFooter.provincialIndicators': 'Provincial indicators:',

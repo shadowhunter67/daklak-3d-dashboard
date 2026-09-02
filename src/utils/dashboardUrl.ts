@@ -1,16 +1,16 @@
-// 'map' is the detail-map experience (MapLibre); see src/components/detail-map/detailMapTypes.ts
-// for the richer MapExperience model and the mapExperienceFromViewMode/viewModeFromMapExperience
-// mapping functions this three-value union backs. Existing '3d'/'table' URLs and consumers are
-// unaffected — 'map' is purely additive.
+// 'map' is the detail-map experience (MapLibre) — see src/components/detail-map/detailMapTypes.ts.
+// It now also carries the ward directory/list (formerly a separate 'table' view, folded into 'map'
+// as a sidebar next to the MapLibre canvas — see DetailMapViewport.tsx). Old `?view=2d`/`?view=table`
+// URLs (the standalone SVG+list view they used to point at) alias to 'map' in parseViewMode below —
+// they still resolve to a working view, just the merged one, not a separate SVG surface anymore.
 //
 // 'overview' (Executive Overview, Phase 2A) is the new default landing experience — see
-// parseViewMode below. It is additive too: every previously-working `?view=3d`/`?view=2d`/
-// `?view=map` URL still resolves to exactly the same view it always did. Only the absence of a
-// `view` param (or an unrecognized one) now resolves to 'overview' instead of '3d'.
+// parseViewMode below. Only the absence of a `view` param (or an unrecognized one) resolves to
+// 'overview'.
 // 'world' (Phase T1, Tourism Digital Twin foundation — reports/tourism-digital-twin/) is a
 // separate, additive, lazy-loaded illustrative exploration route. It does not replace or read
-// from any of the other four views' state; see src/features/world-exploration/.
-export type DashboardView = 'overview' | '3d' | 'table' | 'map' | 'world';
+// from any of the other three views' state; see src/features/world-exploration/.
+export type DashboardView = 'overview' | '3d' | 'map' | 'world';
 export type DashboardMode = 'overview' | 'energy' | 'heatmap';
 
 export interface DashboardUrlState {
@@ -23,7 +23,8 @@ const modes = new Set<DashboardMode>(['overview', 'energy', 'heatmap']);
 
 function parseViewMode(raw: string | null): DashboardView {
   if (raw === '3d') return '3d';
-  if (raw === '2d') return 'table';
+  // '2d'/'table': legacy values for the standalone SVG+list view, now folded into 'map'.
+  if (raw === '2d' || raw === 'table') return 'map';
   if (raw === 'map') return 'map';
   if (raw === 'world') return 'world';
   // No param, or an unrecognized value (including the explicit canonical 'overview'): land on
@@ -32,7 +33,6 @@ function parseViewMode(raw: string | null): DashboardView {
 }
 
 function serializeViewMode(viewMode: DashboardView): string {
-  if (viewMode === 'table') return '2d';
   if (viewMode === 'map') return 'map';
   if (viewMode === '3d') return '3d';
   if (viewMode === 'world') return 'world';

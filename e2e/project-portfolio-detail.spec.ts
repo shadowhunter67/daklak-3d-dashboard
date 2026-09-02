@@ -194,14 +194,26 @@ test.describe('Project Detail (Phase 2B1)', () => {
 });
 
 test.describe('Routing regression (ADR 0002)', () => {
-  test('legacy ?view= URLs still work byte-for-byte identically alongside hash routes', async ({
+  test('?view= URLs still resolve correctly alongside hash routes (?view=2d now aliases to the merged map view)', async ({
     page,
   }) => {
+    // This file doesn't otherwise dismiss the first-run onboarding dialog (unlike
+    // dashboard.spec.ts/i18n.spec.ts) — it never previously needed to click through anything in
+    // the map view. Opening the directory toggle below now does, so suppress it here rather than
+    // adding a file-wide beforeEach that every other unrelated test in this file doesn't need.
+    await page.addInitScript(() =>
+      window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true'),
+    );
     await page.goto('./?view=3d');
     await expect(page.locator('canvas')).toBeVisible();
 
     await page.goto('./?view=2d');
-    await expect(page.getByRole('heading', { name: '102 xã, phường', exact: true })).toBeVisible();
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    // On a narrow/mobile viewport the directory sidebar starts collapsed (see
+    // DetailMapViewport.tsx) — open it via its toggle when present; on desktop it's already open.
+    const showToggle = page.getByRole('button', { name: 'Hiện danh sách', exact: true });
+    if (await showToggle.isVisible()) await showToggle.click();
+    await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeVisible();
 
     await page.goto('./?view=map');
     await expect(page.locator('#detail-map-viewport')).toBeVisible();

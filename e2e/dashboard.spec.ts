@@ -2,14 +2,15 @@
 import { expect, test, type Locator } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
-async function openMobileDirectory(page: import('@playwright/test').Page) {
-  // Scoped to the 2D map's own pane switcher (labelled "Nội dung bản đồ 2D") — `.primary-nav`
-  // now also has a "Danh sách" button (see the header-declutter fix), so an unscoped query would
-  // be ambiguous between the two.
-  const toggle = page.getByLabel('Nội dung bản đồ 2D').getByRole('button', {
-    name: 'Danh sách',
-    exact: true,
-  });
+// The ward/commune directory now lives inside the merged map view (DetailMapViewport.tsx) as a
+// sidebar, collapsed by default on narrow/mobile viewports (see its `directoryOpen` initial
+// matchMedia check) — open it via its own toggle when present; on desktop it's already open.
+// DetailMapViewport is a lazy chunk (see App.tsx), so wait for its container before checking the
+// toggle — calling this right after a client-side nav click (not a full page.goto) can otherwise
+// race the chunk fetch/Suspense fallback and find no toggle at all.
+async function openMapDirectory(page: import('@playwright/test').Page) {
+  await page.locator('#detail-map-viewport').waitFor({ state: 'visible' });
+  const toggle = page.getByRole('button', { name: 'Hiện danh sách', exact: true });
   if (await toggle.isVisible()) await toggle.click();
 }
 
@@ -66,16 +67,19 @@ test.describe('dashboard smoke tests', () => {
     }
   });
 
-  test('supports search, keyboard navigation, and shared selection in 2D mode', async ({
+  test('supports search, keyboard navigation, and shared selection in the merged map/directory view', async ({
     page,
   }) => {
     await page.goto('./?view=3d');
-    await primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }).click();
-    await openMobileDirectory(page);
+    await primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }).click();
+    await openMapDirectory(page);
 
     const search = page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' });
     await search.fill('buon ma thuot');
-    await expect(page.getByRole('status')).toContainText('Tìm thấy 1 đơn vị');
+    // Scoped to the directory's own status text (`.directory-status`) — a plain `role=status`
+    // query is ambiguous here now, since the MapLibre canvas's own loading spinner
+    // (`.map-loading`) is also `role="status"` and can still be present alongside the directory.
+    await expect(page.locator('.directory-status')).toContainText('Tìm thấy 1 đơn vị');
     const row = page.getByRole('row', { name: /Buôn Ma Thuột/ });
     await row.click();
     await expect(row).toHaveAttribute('aria-selected', 'true');
@@ -97,7 +101,10 @@ test.describe('dashboard smoke tests', () => {
   test('preserves native arrow-key behavior on interactive controls', async ({ page }) => {
     await page.goto('./?view=3d');
     await expect(page.locator('canvas')).toBeVisible();
-    const switchView = primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true });
+    const switchView = primaryNav(page).getByRole('button', {
+      name: 'Bản đồ & danh sách',
+      exact: true,
+    });
     const controlEventWasNotCancelled = await switchView.evaluate((element) =>
       element.dispatchEvent(
         new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true }),
@@ -132,7 +139,9 @@ test.describe('dashboard smoke tests', () => {
     });
   });
 
-  test('has no serious automated accessibility violations in 3D and 2D views', async ({ page }) => {
+  test('has no serious automated accessibility violations in 3D and the merged map view', async ({
+    page,
+  }) => {
     await page.goto('./?view=3d');
     const threeDimensionalResults = await new AxeBuilder({ page }).analyze();
     expect(
@@ -141,10 +150,10 @@ test.describe('dashboard smoke tests', () => {
       ),
     ).toEqual([]);
 
-    await primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }).click();
-    const tableResults = await new AxeBuilder({ page }).analyze();
+    await primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }).click();
+    const mapResults = await new AxeBuilder({ page }).analyze();
     expect(
-      tableResults.violations.filter(({ impact }) => impact === 'critical' || impact === 'serious'),
+      mapResults.violations.filter(({ impact }) => impact === 'critical' || impact === 'serious'),
     ).toEqual([]);
   });
 
@@ -180,19 +189,6 @@ test.describe('dashboard smoke tests', () => {
     expect(buildInfo.datasetSnapshot).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });
 
-  test('does not load 3D or chart chunks when starting in accessible 2D mode', async ({ page }) => {
-    test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
-    const responses: string[] = [];
-    page.on('response', (response) => responses.push(response.url()));
-    await page.goto('./?view=2d');
-    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
-    expect(
-      responses.some((url) =>
-        /\/assets\/(AdministrativeMap|StatPanel|three-vendor|maplibre-gl)-.*\.js/.test(url),
-      ),
-    ).toBe(false);
-  });
-
   test('does not load the MapLibre chunk when starting in the 3D overview', async ({ page }) => {
     test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
     const responses: string[] = [];
@@ -222,26 +218,37 @@ test.describe('dashboard smoke tests', () => {
 
   test('restores shareable URL state and browser history', async ({ page }) => {
     await page.goto('./?view=2d&mode=energy&ward=22015');
-    await openMobileDirectory(page);
+    await openMapDirectory(page);
     await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Năng lượng' })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
+    // The dataMode ('Năng lượng'/'Heatmap') tabs no longer render in the merged map view (see
+    // DashboardHeader.tsx's `viewMode === '3d'` gate) — `mode=energy` is still restored into
+    // state/URL from the shared link, just without a visible tab here; verify via the URL and via
+    // the tabs actually appearing once switched to 3D below, instead.
+    await expect(page).toHaveURL(/mode=energy/);
     const selectedRow = page.locator('[role="row"][aria-selected="true"]');
     await expect(selectedRow).toContainText(/Tuy Ho/);
 
     await primaryNav(page).getByRole('button', { name: '3D', exact: true }).click();
     await expect(page).toHaveURL(/view=3d&mode=energy&ward=22015/);
+    await expect(page.getByRole('button', { name: 'Năng lượng' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
     await expect(page.locator('#map-viewport')).toBeFocused();
     await page.goBack();
-    await expect(page).toHaveURL(/view=2d&mode=energy&ward=22015/);
-    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeFocused();
+    // ?view=2d is a legacy alias — the app canonicalizes the URL to ?view=map on load (see
+    // dashboardUrl.ts's serializeViewMode), so Back restores the canonical value, not the
+    // original literal '2d' the address bar showed before navigating away.
+    await expect(page).toHaveURL(/view=map&mode=energy&ward=22015/);
+    // Focus lands on the detail-map section itself (its own mount effect), not the directory
+    // heading inside it — see DetailMapViewport.tsx and App.tsx's viewMode-change effect, which
+    // deliberately leaves 'map' focus management to DetailMapViewport.
+    await expect(page.locator('#detail-map-viewport')).toBeFocused();
   });
 
   test('selecting multiple wards in a row does not grow browser history', async ({ page }) => {
     await page.goto('./?view=2d');
-    await openMobileDirectory(page);
+    await openMapDirectory(page);
     const search = page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' });
     const historyLength = () => page.evaluate(() => window.history.length);
 
@@ -257,43 +264,21 @@ test.describe('dashboard smoke tests', () => {
     await expect(page).toHaveURL(/ward=24305/);
     expect(await historyLength()).toBe(lengthBeforeSelection);
 
-    // A view/mode change is still push-worthy and creates a real, single Back step.
-    await page.getByRole('button', { name: 'Năng lượng' }).click();
+    // A view change is still push-worthy and creates a real, single Back step. (The dataMode
+    // tabs — 'Năng lượng'/'Heatmap' — no longer render in the merged map view, since
+    // DetailMapViewport has its own independent layer toggles; see DashboardHeader.tsx's
+    // `viewMode === '3d'` gate. Use a primary-nav view switch instead to exercise the same
+    // push-vs-replace history rule this test is actually about.)
+    await primaryNav(page).getByRole('button', { name: '3D', exact: true }).click();
     expect(await historyLength()).toBe(lengthBeforeSelection + 1);
     await page.goBack();
-    await expect(page).toHaveURL(/view=2d&mode=overview&ward=24305/);
+    // ?view=2d canonicalizes to ?view=map on load — see the comment in the test above.
+    await expect(page).toHaveURL(/view=map&mode=overview&ward=24305/);
   });
 
-  test('loads the offline road artifact only when enabled in 2D', async ({ page }) => {
-    const roadRequest = page.waitForResponse((response) =>
-      response.url().endsWith('/data/daklak-roads.json.gz'),
-    );
-    await page.goto('./?view=2d');
-    await page.getByRole('button', { name: 'Hiện lớp đường giao thông' }).click();
-    expect((await roadRequest).ok()).toBe(true);
-    await expect(page.locator('.map-road')).toHaveCount(1201);
-    await expect(
-      page.getByText('© OpenStreetMap contributors · ODbL 1.0 · dữ liệu tham khảo'),
-    ).toBeVisible();
-  });
-
-  test('adaptive administrative and road label visual coverage', async ({ page }, testInfo) => {
-    test.skip(!testInfo.project.name.includes('chromium'), 'Chromium visual coverage');
-    const mobile = testInfo.project.name.includes('mobile');
-    await page.setViewportSize(mobile ? { width: 390, height: 844 } : { width: 1440, height: 900 });
-    await page.goto('./?view=2d');
-    await expect(page.locator('[data-label-code]')).not.toHaveCount(0);
-    expect(await page.locator('[data-label-code]').count()).toBeGreaterThan(mobile ? 20 : 40);
-    await page.getByRole('button', { name: 'Hiện lớp đường giao thông' }).click();
-    await expect(page.locator('.map-road')).toHaveCount(1201);
-    expect(await page.locator('.map-road-labels text').count()).toBeGreaterThan(0);
-    await expect(page.locator('.administrative-map-2d')).toHaveScreenshot(
-      'adaptive-map-labels.png',
-      { animations: 'disabled', maxDiffPixelRatio: 0.03 },
-    );
-  });
-
-  test('moves focus to the 2D fallback when WebGL is unavailable', async ({ page }) => {
+  test('shows the accessible ward/commune directory inline when WebGL is unavailable, without navigating away', async ({
+    page,
+  }) => {
     await page.addInitScript(() => {
       const original = HTMLCanvasElement.prototype.getContext;
       HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, type, options) {
@@ -303,8 +288,9 @@ test.describe('dashboard smoke tests', () => {
     });
     await page.goto('./?view=3d');
     await expect(page.getByRole('heading', { name: 'Không thể hiển thị bản đồ 3D' })).toBeVisible();
-    await page.locator('.map-fallback').getByRole('button', { name: 'Mở danh sách 2D' }).click();
-    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeFocused();
+    await expect(
+      page.locator('.map-fallback').getByRole('heading', { name: 'Danh sách xã, phường' }),
+    ).toBeVisible();
   });
 });
 
@@ -318,7 +304,7 @@ test.describe('mobile dashboard composition', () => {
     await page.goto('./?view=3d&mode=overview');
     await expect(page.locator('canvas')).toBeVisible();
     await expect(
-      primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }),
+      primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }),
     ).toBeVisible();
     await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'closed');
     const layout = await page.evaluate(() => {
@@ -354,14 +340,16 @@ test.describe('mobile dashboard composition', () => {
     await expect(sheet).toHaveAttribute('data-state', 'peek');
   });
 
-  test('keeps heatmap and 2D directory usable without horizontal overflow', async ({ page }) => {
+  test('keeps heatmap and the merged map/directory view usable without horizontal overflow', async ({
+    page,
+  }) => {
     await page.goto('./?view=3d&mode=heatmap');
     await expect(page.getByRole('button', { name: 'Heatmap' })).toHaveAttribute(
       'aria-pressed',
       'true',
     );
-    await primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }).click();
-    await openMobileDirectory(page);
+    await primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }).click();
+    await openMapDirectory(page);
     await expect(page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' })).toBeVisible();
     expect(
       await page.evaluate(
@@ -466,8 +454,8 @@ test.describe('mobile dashboard composition', () => {
       animations: 'disabled',
       maxDiffPixelRatio: 0.03,
     });
-    await primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }).click();
-    await openMobileDirectory(page);
+    await primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }).click();
+    await openMapDirectory(page);
     await expect(page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' })).toBeVisible();
     await expect(page).toHaveScreenshot('dashboard-mobile-directory.png', {
       animations: 'disabled',
@@ -527,7 +515,7 @@ test.describe('directory ordering and safe bottom', () => {
     }) => {
       await page.setViewportSize(viewport);
       await page.goto('./?view=2d');
-      await openMobileDirectory(page);
+      await openMapDirectory(page);
       const rows = page.locator('button.directory-row');
       await expect(rows).toHaveCount(102);
       expect((await rows.locator('strong').allTextContents()).slice(0, 10)).toEqual(
@@ -565,7 +553,7 @@ test.describe('directory ordering and safe bottom', () => {
   }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('./?view=2d');
-    await openMobileDirectory(page);
+    await openMapDirectory(page);
     const rows = page.locator('button.directory-row');
     const stickyHeader = page.locator('.directory-header');
     const expectBelowStickyHeader = async (row: Locator) => {
@@ -704,7 +692,7 @@ test.describe('Vietnamese detail name visual coverage', () => {
 test.describe('detail map (MapLibre)', () => {
   test('opens from the header, updates the URL, and restores on Back/Forward', async ({ page }) => {
     await page.goto('./?view=3d');
-    await primaryNav(page).getByRole('button', { name: 'Bản đồ chi tiết', exact: true }).click();
+    await primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }).click();
     await expect(page.locator('#detail-map-viewport')).toBeVisible();
     await expect(page).toHaveURL(/view=map/);
 
@@ -814,7 +802,7 @@ test.describe('detail map (MapLibre)', () => {
     await expect(page).toHaveURL(/ward=24133/);
   });
 
-  test('falls back to the WebGL-unavailable message and can open the directory instead', async ({
+  test('shows the accessible ward/commune directory inline when WebGL is unavailable, without navigating away', async ({
     page,
   }) => {
     await page.addInitScript(() => {
@@ -828,8 +816,7 @@ test.describe('detail map (MapLibre)', () => {
     await expect(
       page.getByText('không hỗ trợ WebGL nên không thể mở bản đồ chi tiết'),
     ).toBeVisible();
-    await primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true }).click();
-    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeVisible();
   });
 
   test('has no serious automated accessibility violations in the layer panel', async ({ page }) => {
@@ -875,7 +862,9 @@ test.describe('Executive Overview (Phase 2A)', () => {
     await expect(page.locator('#detail-map-viewport')).toHaveCount(0);
   });
 
-  test('keeps every pre-Phase-2A URL working exactly as before', async ({ page }) => {
+  test('keeps every pre-Phase-2A URL resolving to a working view (?view=2d now aliases to the merged map view)', async ({
+    page,
+  }) => {
     await page.goto('./?view=3d');
     await expect(page.locator('canvas')).toBeVisible();
     await expect(
@@ -883,7 +872,8 @@ test.describe('Executive Overview (Phase 2A)', () => {
     ).toHaveCount(0);
 
     await page.goto('./?view=2d');
-    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
+    await openMapDirectory(page);
+    await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeVisible();
 
     await page.goto('./?view=map');
     await expect(page.locator('#detail-map-viewport')).toBeVisible();
@@ -910,10 +900,19 @@ test.describe('Executive Overview (Phase 2A)', () => {
       page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
     ).toBeVisible();
 
-    const table = primaryNav(page).getByRole('button', { name: 'Danh sách', exact: true });
-    await table.focus();
-    await table.press('Enter');
-    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
+    const mapAndDirectory = primaryNav(page).getByRole('button', {
+      name: 'Bản đồ & danh sách',
+      exact: true,
+    });
+    await mapAndDirectory.focus();
+    await mapAndDirectory.press('Enter');
+    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    // Directory visibility itself isn't part of the keyboard-reachability claim above (already
+    // proven by the Enter press landing on #detail-map-viewport) — opening it here (mouse is fine)
+    // just confirms the sidebar contents still exist once reached, including on a narrow viewport
+    // where it starts collapsed.
+    await openMapDirectory(page);
+    await expect(page.getByRole('heading', { name: 'Danh sách xã, phường' })).toBeVisible();
   });
 
   test('opens a project summary dialog and closes it with Escape, restoring focus', async ({
@@ -974,16 +973,10 @@ test.describe('Executive Overview (Phase 2A)', () => {
     }
   });
 
-  test('never fetches any heavy renderer landing directly on the accessible directory (?view=2d)', async ({
-    page,
-  }) => {
-    test.skip(!process.env.E2E_PRODUCTION, 'Chunk assertions require the production build');
-    const responses: string[] = [];
-    page.on('response', (response) => responses.push(response.url()));
-    await page.goto('./?view=2d');
-    await expect(page.getByRole('heading', { name: '102 xã, phường' })).toBeVisible();
-    expect(responses.some((requestUrl) => HEAVY_CHUNK_PATTERN.test(requestUrl))).toBe(false);
-  });
+  // There is no longer a "heavy-renderer-free" ?view=2d landing — merging the former standalone
+  // directory view into the MapLibre-based `map` experience means ?view=2d now aliases to `map`,
+  // which deliberately does load the maplibre-gl chunk (it IS the map). Executive Overview above
+  // remains the only zero-heavy-chunk landing route.
 
   test('mobile: Executive Overview fits without horizontal overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });

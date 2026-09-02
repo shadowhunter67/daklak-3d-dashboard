@@ -12,17 +12,18 @@ const modes = [
   ['heatmap', 'header.mode.heatmap'],
 ] as const;
 
-// Primary navigation (Phase 2A): the four mutually-exclusive top-level experiences. Distinct from
-// the `modes` thematic tabs above (which only apply within the 3D/2D map experiences, gated to
-// viewMode 3d/table below — see the header-declutter fix that removed a since-redundant duplicate
-// set of view-switch buttons that used to live in header-meta alongside these).
+// Primary navigation: the four mutually-exclusive top-level experiences. Distinct from the
+// `modes` thematic tabs above (which only apply within the 3D overview, gated to viewMode 3d
+// below — see the header-declutter fix that removed a since-redundant duplicate set of
+// view-switch buttons that used to live in header-meta alongside these).
+// 'map' folds in the former standalone 'table' (SVG map + ward directory) view — see
+// DetailMapViewport.tsx, which now renders the directory as a sidebar next to the MapLibre canvas.
 // Label is "Tổng quan điều hành" (not "Tổng quan") specifically to avoid an accessible-name clash
 // with the `modes` data-mode tab of the same literal text — the two are unrelated concepts
 // (top-level view vs. 3D thematic overlay) and must resolve unambiguously by role+name in tests.
 const primaryViews = [
   ['overview', 'header.nav.overview', 'header.nav.overviewShort'],
   ['3d', 'header.nav.3d', 'header.nav.3d'],
-  ['table', 'header.nav.table', 'header.nav.table'],
   ['map', 'header.nav.map', 'header.nav.mapShort'],
   ['world', 'header.nav.world', 'header.nav.worldShort'],
 ] as const satisfies ReadonlyArray<readonly [string, MessageKey, MessageKey]>;
@@ -92,7 +93,7 @@ export function DashboardHeader() {
           </button>
         ))}
       </nav>
-      {(viewMode === '3d' || viewMode === 'table') && (
+      {viewMode === '3d' && (
         <nav className="mode-tabs" aria-label={t('header.modeTabs.ariaLabel')}>
           {modes.map(([mode, labelKey]) => (
             <button
@@ -138,7 +139,7 @@ export function DashboardHeader() {
             </span>
           </button>
         )}
-        {(viewMode === '3d' || viewMode === 'table') && (
+        {viewMode === '3d' && (
           <>
             <button
               onClick={toggleRoads}

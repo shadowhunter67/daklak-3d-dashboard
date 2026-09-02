@@ -46,9 +46,9 @@ describe('createMapStore', () => {
   });
 
   it('initializes directly from an explicit URL state, without touching window.location', () => {
-    const store = createMapStore({ viewMode: 'table', dataMode: 'energy', selectedCode: '24133' });
+    const store = createMapStore({ viewMode: 'map', dataMode: 'energy', selectedCode: '24133' });
     const state = store.getState();
-    expect(state.viewMode).toBe('table');
+    expect(state.viewMode).toBe('map');
     expect(state.dataMode).toBe('energy');
     expect(state.selectedCode).toBe('24133');
   });
@@ -83,7 +83,7 @@ describe('getInitialDashboardUrlState', () => {
   it('reads a valid state from the current URL', () => {
     window.history.replaceState(null, '', '/?view=2d&mode=energy&ward=24133');
     expect(getInitialDashboardUrlState()).toEqual({
-      viewMode: 'table',
+      viewMode: 'map',
       dataMode: 'energy',
       selectedCode: '24133',
       detailMapLayers: DEFAULT_DETAIL_MAP_LAYER_STATE,
@@ -166,10 +166,10 @@ describe('map interaction state', () => {
     expect(useMapStore.getState().selectedCode).toBe('22015');
     expect(useMapStore.getState().hoveredCode).toBeNull();
   });
-  it('stops animation when switching to the accessible table', () => {
+  it('stops animation when switching to the merged map/directory view', () => {
     useMapStore.setState({ autoRotate: true });
-    useMapStore.getState().setViewMode('table');
-    expect(useMapStore.getState().viewMode).toBe('table');
+    useMapStore.getState().setViewMode('map');
+    expect(useMapStore.getState().viewMode).toBe('map');
     expect(useMapStore.getState().autoRotate).toBe(false);
   });
   it('enforces reduced motion inside the domain action', () => {
