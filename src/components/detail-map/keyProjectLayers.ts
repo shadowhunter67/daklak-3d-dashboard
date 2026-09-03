@@ -34,7 +34,13 @@ const STATUS_COLOR_EXPRESSION: ExpressionSpecification = [
 ];
 
 export function buildKeyProjectsSource(): GeoJSONSourceSpecification {
-  return { type: 'geojson', data: KEY_PROJECTS };
+  // The national-corridor centrelines are OSM-derived (see keyProjects.ts); attribute the source.
+  return {
+    type: 'geojson',
+    data: KEY_PROJECTS,
+    attribution:
+      'Tuyến hạ tầng: &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors (ODbL)',
+  };
 }
 
 export function buildKeyProjectsLayers(withLabels: boolean): LayerSpecification[] {
