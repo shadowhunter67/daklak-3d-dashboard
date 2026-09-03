@@ -22,6 +22,11 @@ import {
   buildKeyProjectsSource,
   KEY_PROJECTS_SOURCE_ID,
 } from './keyProjectLayers';
+import {
+  buildPlanningZoneLayers,
+  buildPlanningZonesSource,
+  PLANNING_ZONES_SOURCE_ID,
+} from './planningZoneLayers';
 import type { DetailMapSourceAvailability } from './detailMapTypes';
 
 /**
@@ -70,6 +75,7 @@ export function buildDetailMapStyle(
       [WARD_BOUNDARY_SOURCE_ID]: buildWardBoundarySource(),
       ...(glyphsUrl ? { [WARD_LABEL_SOURCE_ID]: buildWardLabelSource() } : {}),
       [KEY_PROJECTS_SOURCE_ID]: buildKeyProjectsSource(),
+      [PLANNING_ZONES_SOURCE_ID]: buildPlanningZonesSource(),
     },
     layers: [
       {
@@ -104,6 +110,10 @@ export function buildDetailMapStyle(
     // is set once, unconditionally, when `glyphsUrl` is present — see above).
     if (glyphsUrl) style.layers.push(...buildLabelLayers());
   }
+
+  // Approved-planning-zone reference overlay (real, sourced — see planningZones.ts) draws just
+  // below the key-projects points/lines so a project marker inside a zone stays clickable on top.
+  style.layers.push(...buildPlanningZoneLayers());
 
   // Key-projects reference overlay draws on top of everything (labels included) — the user turns
   // it on deliberately and it must never be occluded. Starts hidden (visibility: 'none');

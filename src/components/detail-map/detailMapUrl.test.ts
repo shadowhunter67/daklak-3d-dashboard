@@ -113,6 +113,11 @@ describe('parseDetailMapLayers', () => {
     expect(parseDetailMapLayers('').keyProjectsVisible).toBe(false);
     expect(parseDetailMapLayers('?projects=1').keyProjectsVisible).toBe(true);
   });
+
+  it('planning-zones overlay defaults off and toggles via `zones`', () => {
+    expect(parseDetailMapLayers('').planningZonesVisible).toBe(false);
+    expect(parseDetailMapLayers('?zones=1').planningZonesVisible).toBe(true);
+  });
 });
 
 describe('serializeDetailMapParams', () => {

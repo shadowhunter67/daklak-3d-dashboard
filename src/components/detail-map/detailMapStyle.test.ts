@@ -29,9 +29,15 @@ import {
   KEY_PROJECTS_POINT_LAYER_ID,
   KEY_PROJECTS_SOURCE_ID,
 } from './keyProjectLayers';
+import {
+  PLANNING_ZONES_FILL_LAYER_ID,
+  PLANNING_ZONES_LINE_LAYER_ID,
+  PLANNING_ZONES_SOURCE_ID,
+} from './planningZoneLayers';
 import type { DetailMapSourceAvailability } from './detailMapTypes';
 
 const KEY_PROJECT_POINT_LINE = [KEY_PROJECTS_LINE_LAYER_ID, KEY_PROJECTS_POINT_LAYER_ID];
+const PLANNING_ZONE_IDS = [PLANNING_ZONES_FILL_LAYER_ID, PLANNING_ZONES_LINE_LAYER_ID];
 
 const noSources: DetailMapSourceAvailability = {
   roads: false,
@@ -62,20 +68,23 @@ describe('buildDetailMapStyle', () => {
       WARD_BOUNDARY_LINE_LAYER_ID,
       WARD_SELECTED_FILL_LAYER_ID,
       WARD_SELECTED_LINE_LAYER_ID,
+      ...PLANNING_ZONE_IDS,
       // no glyphs => no key-projects label layer, only line + point
       KEY_PROJECTS_LINE_LAYER_ID,
       KEY_PROJECTS_POINT_LAYER_ID,
     ]);
     const planning = style.layers.find((l) => l.id === PLANNING_FILL_LAYER_ID);
     expect(planning?.type === 'fill' && planning.paint?.['fill-opacity']).toBe(0);
-    for (const id of KEY_PROJECT_POINT_LINE) {
+    for (const id of [...PLANNING_ZONE_IDS, ...KEY_PROJECT_POINT_LINE]) {
       const layer = style.layers.find((l) => l.id === id)!;
       expect(layer.layout && 'visibility' in layer.layout && layer.layout.visibility).toBe('none');
     }
   });
 
-  it('always includes the key-projects source (bundled, no env dependency)', () => {
-    expect(buildDetailMapStyle(noSources).sources[KEY_PROJECTS_SOURCE_ID]).toBeDefined();
+  it('always includes the key-projects and planning-zones sources (bundled, no env dependency)', () => {
+    const style = buildDetailMapStyle(noSources);
+    expect(style.sources[KEY_PROJECTS_SOURCE_ID]).toBeDefined();
+    expect(style.sources[PLANNING_ZONES_SOURCE_ID]).toBeDefined();
   });
 
   it('the two "selected" layers start inert: zero opacity and a filter matching no code', () => {
@@ -100,6 +109,7 @@ describe('buildDetailMapStyle', () => {
       (layer) =>
         layer.id !== 'background' &&
         !layer.id.startsWith('key-projects') &&
+        !layer.id.startsWith('planning-zones') &&
         !layer.id.startsWith('ward-labels'),
     );
     for (const layer of wardLayers) {
@@ -142,6 +152,7 @@ describe('buildDetailMapStyle', () => {
       ROAD_LABELS_LAYER_ID,
       PLACE_LABELS_LAYER_ID,
       HAMLET_LABELS_LAYER_ID,
+      ...PLANNING_ZONE_IDS,
       KEY_PROJECTS_LINE_LAYER_ID,
       KEY_PROJECTS_POINT_LAYER_ID,
       KEY_PROJECTS_LABEL_LAYER_ID,
@@ -179,6 +190,7 @@ describe('buildDetailMapStyle', () => {
       WARD_SELECTED_LINE_LAYER_ID,
       WARD_LABEL_LAYER_ID,
       WARD_SELECTED_LABEL_LAYER_ID,
+      ...PLANNING_ZONE_IDS,
       KEY_PROJECTS_LINE_LAYER_ID,
       KEY_PROJECTS_POINT_LAYER_ID,
       KEY_PROJECTS_LABEL_LAYER_ID,
