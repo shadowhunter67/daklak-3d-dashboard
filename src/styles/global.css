@@ -118,6 +118,16 @@ h1 i {
 .header-meta::-webkit-scrollbar {
   display: none;
 }
+/* `overflow-x: auto` above only works as "scroll instead of crowd" if items keep their natural
+   single-line width — without this, a slightly-too-narrow desktop window (no media query this
+   narrow forces the compact mobile layout) lets these flex items shrink their text into a 2-line
+   wrap instead, which turns their `border-radius: 999px` pill shape into a tall, cramped stadium
+   that visually reads as overlapping its neighbors ("đè nhau lên nhau" — reported live). */
+.header-meta > span,
+.header-meta button {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
 .mode-tabs {
   display: flex;
   gap: 6px;
@@ -626,6 +636,33 @@ h1 i {
 .header-meta button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+/* The VI/EN language switch — previously had NO rules anywhere (only the JSX class names
+   existed), so it rendered as an unstyled `<div>` wrapping two default `<button>`s, no visible
+   pill shape and no active-state distinction beyond the (also unstyled) `aria-pressed` attribute.
+   Styled as a small segmented control, matching `.mode-tabs`'s active-pill pattern. */
+.header-lang-switch {
+  display: flex;
+  flex-shrink: 0;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid #d4a44655;
+  border-radius: 999px;
+  background: #d4a44612;
+}
+.header-lang-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: #acc5bc;
+  background: transparent;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+}
+.header-lang-button[aria-pressed='true'] {
+  color: #071918;
+  background: #e4bc5e;
 }
 .share-status {
   position: absolute;
