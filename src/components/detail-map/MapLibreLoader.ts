@@ -27,7 +27,20 @@ export interface MapLibreModules {
 let modulesPromise: Promise<MapLibreModules> | null = null;
 
 export function loadMapLibreModules(): Promise<MapLibreModules> {
-  modulesPromise ??= Promise.all([import('maplibre-gl'), import('pmtiles')])
+  modulesPromise ??= Promise.all([
+    import('maplibre-gl'),
+    import('pmtiles'),
+    // MapLibre's own stylesheet — never imported anywhere else in the app (lazy, matches the JS
+    // being lazy-loaded here). Without it, `.maplibregl-popup`/`.maplibregl-popup-content`/
+    // `.maplibregl-popup-tip` and the attribution control's expand toggle have NONE of their
+    // required `position`/`z-index`/box styling, so `MapLibreProvider`'s key-project Popup (and,
+    // once a source adds a second attribution string, the attribution control's own "▼" dropdown)
+    // render as unpositioned, unstyled content that floats to the bottom of the whole page instead
+    // of anchoring near the click point. Custom UI elsewhere (layer panel, search, distance tool)
+    // never needed this because those are hand-built React components with their own CSS, not
+    // MapLibre's built-in Popup/Control classes.
+    import('maplibre-gl/dist/maplibre-gl.css'),
+  ])
     .then(([maplibregl, pmtiles]) => {
       if (import.meta.env.PROD) {
         maplibregl.setWorkerUrl(`${import.meta.env.BASE_URL}assets/maplibre-gl-worker.mjs`);
