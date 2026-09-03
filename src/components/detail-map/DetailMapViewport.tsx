@@ -191,7 +191,7 @@ export function DetailMapViewport() {
   // actually applies the initial state for any future provider that doesn't do that internally.
   useEffect(() => {
     if (status !== 'ready') return;
-    providerRef.current?.setLayers(layers);
+    providerRef.current?.setLayers(layers, { reducedMotion: reducedMotionRef.current });
   }, [layers, status]);
 
   useEffect(() => {

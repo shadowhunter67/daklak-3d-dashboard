@@ -19,6 +19,11 @@ export const KEY_PROJECTS_LINE_LAYER_ID = 'key-projects-line';
 export const KEY_PROJECTS_POINT_LAYER_ID = 'key-projects-point';
 export const KEY_PROJECTS_LABEL_LAYER_ID = 'key-projects-label';
 
+/** Settled (fully revealed) opacity for each layer — the "vẽ đường"/point fade-in reveal
+ * animation in `MapLibreProvider.setKeyProjectsVisible` fades from 0 up to these. */
+export const KEY_PROJECTS_LINE_TARGET_OPACITY = 0.9;
+export const KEY_PROJECTS_POINT_TARGET_OPACITY = 1;
+
 const STATUS_COLOR_EXPRESSION: ExpressionSpecification = [
   'match',
   ['get', 'status'],
@@ -54,7 +59,7 @@ export function buildKeyProjectsLayers(withLabels: boolean): LayerSpecification[
       paint: {
         'line-color': STATUS_COLOR_EXPRESSION,
         'line-width': ['interpolate', ['linear'], ['zoom'], 7, 2, 12, 4.5],
-        'line-opacity': 0.9,
+        'line-opacity': KEY_PROJECTS_LINE_TARGET_OPACITY,
         'line-dasharray': [2, 1.4],
       },
     },
@@ -67,8 +72,10 @@ export function buildKeyProjectsLayers(withLabels: boolean): LayerSpecification[
       paint: {
         'circle-radius': ['interpolate', ['linear'], ['zoom'], 7, 4.5, 12, 8],
         'circle-color': STATUS_COLOR_EXPRESSION,
+        'circle-opacity': KEY_PROJECTS_POINT_TARGET_OPACITY,
         'circle-stroke-color': '#0b1f1c',
         'circle-stroke-width': 1.5,
+        'circle-stroke-opacity': KEY_PROJECTS_POINT_TARGET_OPACITY,
       },
     },
   ];
