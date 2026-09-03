@@ -121,6 +121,14 @@ describe('MapLayerPanel', () => {
     expect(screen.getByText(/chưa kiểm chứng thực địa/i)).toBeInTheDocument();
   });
 
+  it('offers the approved-planning-zone reference toggle', () => {
+    const { onToggleLayer } = renderPanel(availableSources);
+    const toggle = screen.getByRole('checkbox', { name: 'Ranh quy hoạch đã duyệt (tham khảo)' });
+    expect(toggle).not.toBeChecked();
+    fireEvent.click(toggle);
+    expect(onToggleLayer).toHaveBeenCalledWith('planningZonesVisible');
+  });
+
   it('shows the active planning theme legend and the "no legal validity" disclaimer', () => {
     render(
       <MapLayerPanel

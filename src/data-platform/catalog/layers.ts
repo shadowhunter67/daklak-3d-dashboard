@@ -129,6 +129,19 @@ export const LAYER_REGISTRY: readonly MapLayerDescriptor[] = [
     availability: 'available',
   },
   {
+    id: 'planningZonesVisible',
+    title: 'Ranh quy hoạch đã duyệt (tham khảo)',
+    group: 'Bản đồ chi tiết',
+    datasetId: 'administrative-units',
+    renderer: 'maplibre',
+    geometryType: 'polygon',
+    defaultVisible: false,
+    accessPolicyId: 'public-standard',
+    // Vài ranh quy hoạch/khu kinh tế/khu công nghiệp/đô thị ĐÃ DUYỆT thật, mỗi ranh kèm nguồn;
+    // hình học là vẽ tay theo mô tả công bố (không phải ranh địa chính). Xem planningZones.ts.
+    availability: 'available',
+  },
+  {
     id: 'buildingsVisible',
     title: 'Công trình xây dựng',
     group: 'Bản đồ chi tiết',

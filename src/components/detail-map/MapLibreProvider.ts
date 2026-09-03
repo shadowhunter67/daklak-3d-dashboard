@@ -33,6 +33,8 @@ import {
   KEY_PROJECT_LAYER_IDS,
 } from './keyProjectLayers';
 import { keyProjectPopupHtml } from './keyProjectPopup';
+import { PLANNING_ZONES_FILL_LAYER_ID, PLANNING_ZONE_LAYER_IDS } from './planningZoneLayers';
+import { planningZonePopupHtml } from './planningZonePopup';
 import {
   HAMLET_LABELS_LAYER_ID,
   PLACE_LABELS_LAYER_ID,
@@ -242,6 +244,7 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.setWardLabelsVisible(layers.wardLabelsVisible);
     this.setPlanningOverlay(layers.planningOverlay);
     this.setKeyProjectsVisible(layers.keyProjectsVisible);
+    this.setPlanningZonesVisible(layers.planningZonesVisible);
     this.setBuildingsVisible(layers.buildingsVisible);
     this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
     this.setHeatmapVisible(layers.heatmapVisible);
@@ -305,27 +308,62 @@ export class MapLibreProvider implements DetailedMapProvider {
     }
   }
 
+  setPlanningZonesVisible(visible: boolean): void {
+    for (const id of PLANNING_ZONE_LAYER_IDS) this.setLayerVisibility(id, visible);
+    if (!visible) {
+      this.keyProjectPopup?.remove();
+      this.keyProjectPopup = null;
+    }
+  }
+
   /** Returns true if a key-project feature was under the point and a popup was opened. */
   private openKeyProjectPopupAt(point: { x: number; y: number }): boolean {
     if (!this.map || !this.maplibregl) return false;
     const hitLayers = [KEY_PROJECTS_POINT_LAYER_ID, KEY_PROJECTS_LINE_LAYER_ID].filter((id) =>
       this.map?.getLayer(id),
     );
-    if (!hitLayers.length) return false;
-    const features = this.map.queryRenderedFeatures([point.x, point.y], { layers: hitLayers });
+    if (hitLayers.length) {
+      const features = this.map.queryRenderedFeatures([point.x, point.y], { layers: hitLayers });
+      const feature = features[0] as MapGeoJSONFeature | undefined;
+      if (feature) {
+        // Anchor at the click for a line, or the point's own coordinate for a point.
+        const anchor =
+          feature.geometry.type === 'Point'
+            ? (feature.geometry.coordinates as [number, number])
+            : this.map.unproject([point.x, point.y]);
+        this.showReferencePopup(anchor, keyProjectPopupHtml(feature.properties ?? {}));
+        return true;
+      }
+    }
+    return this.openPlanningZonePopupAt(point);
+  }
+
+  /** Returns true if a planning-zone polygon was under the point and a popup was opened. */
+  private openPlanningZonePopupAt(point: { x: number; y: number }): boolean {
+    if (!this.map?.getLayer(PLANNING_ZONES_FILL_LAYER_ID)) return false;
+    const features = this.map.queryRenderedFeatures([point.x, point.y], {
+      layers: [PLANNING_ZONES_FILL_LAYER_ID],
+    });
     const feature = features[0] as MapGeoJSONFeature | undefined;
     if (!feature) return false;
-    // Anchor at the click for a line, or the point's own coordinate for a point.
-    const anchor =
-      feature.geometry.type === 'Point'
-        ? (feature.geometry.coordinates as [number, number])
-        : this.map.unproject([point.x, point.y]);
+    this.showReferencePopup(
+      this.map.unproject([point.x, point.y]),
+      planningZonePopupHtml(feature.properties ?? {}),
+    );
+    return true;
+  }
+
+  /** One popup at a time for both reference layers (key projects + planning zones). */
+  private showReferencePopup(
+    anchor: [number, number] | { lng: number; lat: number },
+    html: string,
+  ) {
+    if (!this.map || !this.maplibregl) return;
     this.keyProjectPopup?.remove();
     this.keyProjectPopup = new this.maplibregl.Popup({ closeButton: true, maxWidth: '280px' })
       .setLngLat(anchor)
-      .setHTML(keyProjectPopupHtml(feature.properties ?? {}))
+      .setHTML(html)
       .addTo(this.map);
-    return true;
   }
 
   setBuildingsVisible(visible: boolean): void {

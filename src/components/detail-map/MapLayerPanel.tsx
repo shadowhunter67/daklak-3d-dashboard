@@ -72,6 +72,7 @@ const layerToggles: Array<{
   { key: 'heatmapVisible', unavailableWhen: 'dashboardOverlays' },
   // Bundled, externally-sourced reference layer — always available.
   { key: 'keyProjectsVisible', unavailableWhen: 'administrativeBoundaries' },
+  { key: 'planningZonesVisible', unavailableWhen: 'administrativeBoundaries' },
 ];
 
 export function MapLayerPanel({
