@@ -1696,7 +1696,9 @@ footer a {
 .detail-map-viewport__sidebar-toggle {
   position: absolute;
   z-index: 4;
-  top: 80px;
+  /* Same fix/rationale as `.detail-map-layer-panel` above — clear the header with the shared
+     `--app-header-height` variable instead of a hardcoded value that drifted out of sync. */
+  top: calc(var(--app-header-height) + 16px);
   left: 340px;
   border: 1px solid #d4a44688;
   border-radius: 0 999px 999px 0;
@@ -1801,9 +1803,11 @@ footer a {
 }
 .detail-map-layer-panel {
   position: absolute;
-  /* Clears the 64px desktop header (see .dashboard-header) so the trigger never overlaps its
-     top-right controls (help, share, reset camera). */
-  top: 80px;
+  /* Clears the header using the SAME variable `.detail-map-viewport__sidebar`'s padding-top
+     already relies on for this (see global :root and its landscape-narrow override) — a hardcoded
+     px value here drifted out of sync with the header's real height on narrower/wrapped layouts
+     and the trigger started overlapping the header's own pills (VI/EN, "Cập nhật tự động", …). */
+  top: calc(var(--app-header-height) + 16px);
   right: 16px;
   z-index: 4;
 }
@@ -2151,7 +2155,9 @@ footer a {
   .detail-map-viewport__sidebar-toggle {
     left: auto;
     right: 16px;
-    top: 80px;
+    /* Same fix as the desktop rule above — clear the header via --app-header-height instead of a
+       hardcoded value that drifted out of sync and let this button overlap the header pills. */
+    top: calc(var(--app-header-height) + 16px);
     border-radius: 999px;
   }
   .detail-map-viewport__sidebar.is-collapsed + .detail-map-viewport__sidebar-toggle {
