@@ -367,7 +367,9 @@ const RAW: RawFeature[] = [
 
   // ── Thủy lợi ──
   {
-    geometry: point([108.475, 12.885]),
+    // Real dam site (Nominatim: "Đập Krông Pách Thượng, Thôn 16, Xã Cư Yang") — the previous
+    // hand-placed guess was ~29 km off (near M'Drắk direction instead of Cư Yang/Ea Kar).
+    geometry: point([108.6633, 12.6303]),
     props: {
       id: 'ho-krong-pach-thuong',
       name: 'Hồ chứa nước Krông Pách Thượng',
@@ -381,7 +383,8 @@ const RAW: RawFeature[] = [
     },
   },
   {
-    geometry: point([108.12, 13.24]),
+    // Real reservoir (Nominatim: "Hồ Ea H'leo 1, Thôn 7, Xã Ea H'Leo") — previous guess was ~8.5 km off.
+    geometry: point([108.1674, 13.303]),
     props: {
       id: 'ho-ea-hleo-1',
       name: 'Hồ chứa nước Ea H’leo 1',
@@ -397,7 +400,9 @@ const RAW: RawFeature[] = [
 
   // ── Năng lượng ──
   {
-    geometry: point([107.795, 12.575]),
+    // Real dam/reservoir (Nominatim: "Thủy điện Sêrêpôk 3, Xã Ea Wer") — the floating solar plant
+    // sits on this same reservoir. Previous guess was ~21 km south, near Krông Ana/Lắk instead.
+    geometry: point([107.8592, 12.7667]),
     props: {
       id: 'dmt-srepok-3',
       name: 'Nhà máy điện mặt trời nổi KN Srêpốk 3',
@@ -464,6 +469,10 @@ const RAW: RawFeature[] = [
     },
   },
   {
+    // NOT xã Phú Xuân (that ward's name is coincidental) — the official source
+    // (bqlkcn.daklak.gov.vn, cited in planningZones.ts's own kcn-phu-xuan entry) places this
+    // industrial park in xã Ea Drơng, huyện Cư M'gar. This point matches that zone's polygon
+    // centroid; do not "fix" it to the Phú Xuân ward centroid, that would be the wrong place.
     geometry: point([108.17, 12.755]),
     props: {
       id: 'kcn-phu-xuan',
@@ -505,7 +514,9 @@ const RAW: RawFeature[] = [
     },
   },
   {
-    geometry: point([109.4, 12.9]),
+    // Real ward centroid (phường Phú Yên, Nominatim + daklak-labels.json agree within 1 km).
+    // Điểm cũ nằm lệch ~19 km về phía đông-nam, lấn ra khu vực vịnh Vũng Rô của dự án khác.
+    geometry: point([109.3161, 13.0461]),
     props: {
       id: 'kdt-moi-phuong-phu-yen',
       name: 'Khu đô thị mới phường Phú Yên',
