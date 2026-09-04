@@ -1716,7 +1716,13 @@ footer a {
   flex: 1 1 auto;
   min-width: 0;
 }
-.detail-map-canvas {
+/* Scoped by `.detail-map-stage` on purpose: `maplibre-gl.css` is dynamically imported at runtime
+   (MapLibreLoader.ts) so it lands in the cascade *after* this file, and its
+   `.maplibregl-map { position: relative }` — added to this same element once the map mounts — has
+   equal specificity, so it would otherwise win and collapse this absolutely-positioned fill box
+   to 0 height (the map then renders into a 0×0 container and nothing is visible). The descendant
+   selector out-specifies it. */
+.detail-map-stage .detail-map-canvas {
   position: absolute;
   inset: 0;
   background: #0d211f;
