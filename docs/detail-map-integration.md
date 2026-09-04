@@ -259,6 +259,22 @@ the tool does not invent one. Escape exits `measure`/`radius` without also closi
 panel it's nested in — see the `suppressEscapeClose` prop on `MapLayerPanel` and the code comment
 explaining why two independent document-level Escape listeners would otherwise both fire.
 
+## Reference-layer "callout" popups (mapeffect capability 4)
+
+Clicking a key project or a planning zone opens a single shared MapLibre `Popup`
+(`showReferencePopup` in `MapLibreProvider.ts`) built from `keyProjectPopupHtml`/
+`planningZonePopupHtml`. It carries `className: 'detail-map-callout'`, styled in `global.css`
+scoped to that class: a rounded card, a coloured left accent stripe (`--callout-accent`, an inline
+custom property set by the HTML builder — the project's status colour, or the fixed planning-zone
+purple), and an uppercase eyebrow/bold-name hierarchy.
+
+This is deliberately an upgrade of MapLibre's own popup rather than a bespoke React overlay with a
+hand-drawn SVG leader line to the feature: MapLibre's popup already re-positions itself on
+pan/zoom and its triangular "tip" already **is** the leader line, and a parallel React
+implementation would violate the "React/store never touches a `maplibregl` `Map` instance
+directly" rule (`detailMapTypes.ts`) for no new capability — it would just re-draw what the popup
+already does.
+
 ## Routing (future)
 
 Not implemented, and not planned for this phase. If it's ever added:

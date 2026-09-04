@@ -11,6 +11,10 @@ interface RawProps {
 
 const str = (v: unknown): string => (typeof v === 'string' ? v : '');
 
+/** Accent colour for the planning-zone callout — matches the purple fill/outline in
+ * `planningZoneLayers.ts` so the popup reads as belonging to the same layer. */
+const PLANNING_ZONE_ACCENT = '#9a6bd6';
+
 /** Popup markup for a clicked planning-zone feature — same escaping/link-safety rules as
  * `keyProjectPopup.ts`, plus the schematic-boundary caveat (these are NOT cadastral shapes). */
 export function planningZonePopupHtml(props: RawProps): string {
@@ -23,9 +27,9 @@ export function planningZonePopupHtml(props: RawProps): string {
   const safeHref = /^https:\/\//.test(sourceUrl) ? escapeHtml(sourceUrl) : '';
 
   return [
-    `<div class="key-project-popup">`,
-    `<strong class="key-project-popup__name">${name}</strong>`,
+    `<div class="key-project-popup" style="--callout-accent:${PLANNING_ZONE_ACCENT}">`,
     kind ? `<div class="key-project-popup__cat">${kind}</div>` : '',
+    `<strong class="key-project-popup__name">${name}</strong>`,
     summary ? `<p class="key-project-popup__summary">${summary}</p>` : '',
     safeHref
       ? `<a class="key-project-popup__source" href="${safeHref}" target="_blank" rel="noopener noreferrer">Nguồn: ${sourceLabel}${

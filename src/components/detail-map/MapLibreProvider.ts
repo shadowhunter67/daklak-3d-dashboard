@@ -480,7 +480,14 @@ export class MapLibreProvider implements DetailedMapProvider {
   ) {
     if (!this.map || !this.maplibregl) return;
     this.keyProjectPopup?.remove();
-    this.keyProjectPopup = new this.maplibregl.Popup({ closeButton: true, maxWidth: '280px' })
+    this.keyProjectPopup = new this.maplibregl.Popup({
+      closeButton: true,
+      maxWidth: '280px',
+      // "Callout" styling (mapeffect.app capability 4) lives in global.css scoped to this class —
+      // a coloured top accent + tighter hierarchy on top of MapLibre's own tip/positioning, rather
+      // than a separate React overlay (see docs/detail-map-integration.md for why).
+      className: 'detail-map-callout',
+    })
       .setLngLat(anchor)
       .setHTML(html)
       .addTo(this.map);

@@ -52,9 +52,9 @@ export function keyProjectPopupHtml(props: RawProps): string {
       : 'Vị trí/tuyến gần đúng — chưa kiểm chứng thực địa.';
 
   return [
-    `<div class="key-project-popup">`,
-    `<strong class="key-project-popup__name">${name}</strong>`,
+    `<div class="key-project-popup" style="--callout-accent:${statusColor}">`,
     category ? `<div class="key-project-popup__cat">${escapeHtml(category)}</div>` : '',
+    `<strong class="key-project-popup__name">${name}</strong>`,
     `<div class="key-project-popup__status"><span class="key-project-popup__dot" style="background:${statusColor}"></span>${escapeHtml(
       statusLabel,
     )}</div>`,
