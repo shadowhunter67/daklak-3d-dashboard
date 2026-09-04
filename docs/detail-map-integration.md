@@ -242,12 +242,20 @@ file would eventually become exactly the "raise a limit to paper over growth" mo
 
 ## Interaction modes
 
-`MapInteractionMode` is `'browse' | 'measure'`, held as local state in `DetailMapViewport` (not in
-the global store — it's transient UI state, not shareable/URL state). In `browse` mode, a map
-click resolves to a ward code (or `null`) via `onWardClick` and calls `select()`. In `measure`
-mode, the same click instead adds a point via `onMapClick` (a raw lat/lng callback added to
-`DetailedMapProvider` beyond the task's baseline sketch — `onWardClick` alone cannot supply the
-coordinate distance measurement needs). Escape exits measurement without also closing the layer
+`MapInteractionMode` is `'browse' | 'measure' | 'radius'`, held as local state in
+`DetailMapViewport` (not in the global store — it's transient UI state, not shareable/URL state).
+In `browse` mode, a map click resolves to a ward code (or `null`) via `onWardClick` and calls
+`select()`. In `measure` mode, the same click instead adds a point via `onMapClick` (a raw lat/lng
+callback added to `DetailedMapProvider` beyond the task's baseline sketch — `onWardClick` alone
+cannot supply the coordinate distance measurement needs). In `radius` mode, a click sets the
+centre of a radius query (`RadiusQueryTool` + `radiusQuery.ts`): given a centre and a preset
+radius (1/3/5/10 km), it lists every real, already-loaded reference feature within range — key
+projects (`keyProjects.ts`), approved planning zones (`planningZones.ts`), and ward/commune
+centres (`daklak-labels.json`) — sorted nearest-first. Distance is haversine to a feature's
+**nearest vertex** (not a true point-to-edge distance) — an approximation adequate for
+near/far ranking, called out in the tool's own caveat. This is mapeffect.app capability 3 scoped
+to the no-fabrication rule: there is no bundled OSM amenity (school/hospital/market) source, so
+the tool does not invent one. Escape exits `measure`/`radius` without also closing the layer
 panel it's nested in — see the `suppressEscapeClose` prop on `MapLayerPanel` and the code comment
 explaining why two independent document-level Escape listeners would otherwise both fire.
 

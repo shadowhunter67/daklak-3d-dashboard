@@ -25,7 +25,7 @@ Theo yêu cầu "làm 1 2 3 4":
 
 - ✅ **1. Khoanh vùng** — làm xong. `revealAnimation.ts` + wiring trong `MapLibreProvider.setPlanningZonesVisible`.
 - ✅ **2. Vẽ đường** — làm xong. `lineDrawAnimation.ts` + wiring trong `MapLibreProvider.setKeyProjectsVisible`.
-- ⏳ **3. Marker & tiện ích** — đang làm tiếp (xem ghi chú scope bên dưới: chỉ làm phần "đo bán kính", KHÔNG bịa dữ liệu tiện ích/trường-chợ-bệnh viện vì repo chưa có nguồn OSM amenity thật).
+- ✅ **3. Marker & tiện ích** — làm xong phần "đo bán kính". `radiusQuery.ts` (thuần hình học, có test) + `RadiusQueryTool.tsx` + chế độ tương tác `'radius'` trong `DetailMapViewport`. Chạm bản đồ → chọn tâm; chọn preset bán kính 1/3/5/10 km → liệt kê **dữ liệu thật đã nạp sẵn** trong bán kính (dự án trọng điểm `keyProjects.ts`, ranh quy hoạch `planningZones.ts`, tâm xã/phường `daklak-labels.json`), sắp xếp theo khoảng cách tăng dần. KHÔNG bịa dữ liệu tiện ích trường/chợ/bệnh viện vì repo chưa có nguồn OSM amenity thật. Khoảng cách là haversine tới **đỉnh gần nhất** của hình (xấp xỉ, không phải tới cạnh polygon/line) — đủ để xếp gần/xa.
 - ⏳ **4. Callout** — đang làm tiếp, dạng nâng cấp popup có sẵn (xem ghi chú bên dưới về lý do không dựng overlay React riêng).
 
 ## Kết luận & đề xuất lộ trình

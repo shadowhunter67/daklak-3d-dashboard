@@ -639,6 +639,20 @@ export const en: Partial<Record<MessageKey, string>> = {
   'distanceMeasure.undoLast': 'Undo last point',
   'distanceMeasure.clearAll': 'Clear all',
 
+  // RadiusQueryTool
+  'radiusQuery.exit': 'Exit radius query',
+  'radiusQuery.start': 'Query radius',
+  'radiusQuery.instructions': 'Tap the map to pick a centre point.',
+  'radiusQuery.instructionsChangePoint': 'Tap the map to move the centre point.',
+  'radiusQuery.radiusLabel': 'Radius',
+  'radiusQuery.noCenter': 'No centre selected — tap the map to start.',
+  'radiusQuery.noMatches': 'No key projects, planning zones, or wards within {radius}.',
+  'radiusQuery.matchCount': '{count} results within radius.',
+  'radiusQuery.clear': 'Clear centre',
+  'radiusQuery.kind.keyProject': 'Key project',
+  'radiusQuery.kind.planningZone': 'Planning zone',
+  'radiusQuery.kind.ward': 'Ward/commune',
+
   // LocalSearch (MapLibre detail map)
   'localSearch.label': 'Search for a commune, ward, or landmark',
   'localSearch.placeholder': 'Search commune, ward, landmark...',
