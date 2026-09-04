@@ -49,7 +49,7 @@ export interface DetailBounds {
   west: number;
 }
 
-export type MapInteractionMode = 'browse' | 'measure';
+export type MapInteractionMode = 'browse' | 'measure' | 'radius';
 
 /** Which detail-map sources are actually configured for this deployment (env-driven), with one
  * exception: `administrativeBoundaries` is always `true` — see `wardBoundaryLayers.ts`'s doc

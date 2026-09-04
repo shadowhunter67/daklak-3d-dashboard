@@ -8,6 +8,7 @@ import { MapLibreProvider } from './MapLibreProvider';
 import { MapLayerPanel } from './MapLayerPanel';
 import { DetailMapSourceNotice } from './DetailMapSourceNotice';
 import { DistanceMeasureTool } from './DistanceMeasureTool';
+import { RadiusQueryTool } from './RadiusQueryTool';
 import { LocalSearch } from './LocalSearch';
 import { useDetailMapCameraSync } from './useDetailMapCameraSync';
 import { getWardBounds } from './wardBounds';
@@ -17,6 +18,7 @@ import {
   undoLastMeasurementPoint,
   type MeasurementPoint,
 } from './distanceMeasurement';
+import { RADIUS_PRESETS_METERS, type RadiusQueryPoint } from './radiusQuery';
 import type {
   DetailedMapProvider,
   DetailMapSourceAvailability,
@@ -101,6 +103,8 @@ export function DetailMapViewport() {
   const [generation, setGeneration] = useState(0);
   const [interactionMode, setInteractionMode] = useState<MapInteractionMode>('browse');
   const [measurementPoints, setMeasurementPoints] = useState<MeasurementPoint[]>([]);
+  const [radiusCenter, setRadiusCenter] = useState<RadiusQueryPoint | null>(null);
+  const [radiusMeters, setRadiusMeters] = useState<number>(RADIUS_PRESETS_METERS[0]);
   const [sourceAvailability] = useState(() => readSourceAvailability());
   const [sourceUrl] = useState(() => readSourceUrl());
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -141,15 +145,18 @@ export function DetailMapViewport() {
       .then(() => {
         if (cancelled) return;
         provider.setSelectedWard(selectedCode);
-        // Interaction priority: measurement mode owns clicks (adds a point, never selects a
-        // ward); browse mode selects a ward. Read via ref so this closure (registered once)
-        // always sees the current mode without re-subscribing on every mode change.
+        // Interaction priority: measurement/radius modes own clicks (add a measurement point, or
+        // set the radius-query centre) and never select a ward; browse mode selects a ward. Read
+        // via ref so this closure (registered once) always sees the current mode without
+        // re-subscribing on every mode change.
         provider.onWardClick((code) => {
           if (interactionModeRef.current === 'browse') select(code);
         });
         provider.onMapClick((point) => {
           if (interactionModeRef.current === 'measure') {
             setMeasurementPoints((points) => addMeasurementPoint(points, point));
+          } else if (interactionModeRef.current === 'radius') {
+            setRadiusCenter(point);
           }
         });
         provider.onCameraChange(handleCameraChange);
@@ -195,7 +202,7 @@ export function DetailMapViewport() {
   }, [layers, status]);
 
   useEffect(() => {
-    if (interactionMode !== 'measure') return;
+    if (interactionMode !== 'measure' && interactionMode !== 'radius') return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setInteractionMode('browse');
     };
@@ -212,6 +219,11 @@ export function DetailMapViewport() {
   const toggleMeasureMode = useCallback(() => {
     setInteractionMode((mode) => (mode === 'measure' ? 'browse' : 'measure'));
     setMeasurementPoints([]);
+  }, []);
+
+  const toggleRadiusMode = useCallback(() => {
+    setInteractionMode((mode) => (mode === 'radius' ? 'browse' : 'radius'));
+    setRadiusCenter(null);
   }, []);
 
   const onSelectSearchResult = useCallback(
@@ -290,7 +302,7 @@ export function DetailMapViewport() {
             onBaseMapChange={setDetailMapBaseMap}
             onToggleLayer={toggleDetailMapLayer}
             onPlanningOverlayChange={setDetailMapPlanningOverlay}
-            suppressEscapeClose={interactionMode === 'measure'}
+            suppressEscapeClose={interactionMode === 'measure' || interactionMode === 'radius'}
             toolsSlot={
               <>
                 <LocalSearch onSelect={onSelectSearchResult} />
@@ -300,6 +312,14 @@ export function DetailMapViewport() {
                   onToggle={toggleMeasureMode}
                   onUndo={() => setMeasurementPoints((points) => undoLastMeasurementPoint(points))}
                   onClear={() => setMeasurementPoints([])}
+                />
+                <RadiusQueryTool
+                  active={interactionMode === 'radius'}
+                  center={radiusCenter}
+                  radiusMeters={radiusMeters}
+                  onToggle={toggleRadiusMode}
+                  onRadiusChange={setRadiusMeters}
+                  onClear={() => setRadiusCenter(null)}
                 />
               </>
             }

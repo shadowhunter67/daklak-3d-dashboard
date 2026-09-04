@@ -2019,6 +2019,72 @@ footer a {
   border-radius: 8px;
   padding: 4px 10px;
 }
+.radius-query-tool {
+  margin-top: 8px;
+}
+.radius-query-tool button {
+  border: 1px solid #d4a44688;
+  border-radius: 999px;
+  padding: 6px 12px;
+  color: #e7c471;
+  background: #d4a44612;
+  cursor: pointer;
+}
+.radius-query-tool__panel {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+}
+.radius-query-tool__presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.radius-query-tool__presets button {
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 12px;
+}
+.radius-query-tool__presets button[aria-pressed='true'] {
+  background: #d4a44644;
+  border-color: #e7c471;
+}
+.radius-query-tool__matches {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 160px;
+  overflow-y: auto;
+}
+.radius-query-tool__matches li {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #d4a44622;
+  border-radius: 6px;
+  padding: 4px 8px;
+}
+.radius-query-tool__match-name {
+  font-weight: 600;
+  color: #f4ead2;
+}
+.radius-query-tool__match-meta {
+  color: #8eaaa3;
+  font-size: 11px;
+}
+.radius-query-tool__actions {
+  display: flex;
+  gap: 8px;
+}
+.radius-query-tool__actions button {
+  border: 1px solid #d4a44644;
+  border-radius: 8px;
+  padding: 4px 10px;
+}
 @media (max-width: 767px) {
   .detail-map-layer-panel {
     top: auto;

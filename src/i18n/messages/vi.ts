@@ -648,6 +648,20 @@ export const vi = {
   'distanceMeasure.undoLast': 'Hoàn tác điểm cuối',
   'distanceMeasure.clearAll': 'Xóa toàn bộ',
 
+  // RadiusQueryTool
+  'radiusQuery.exit': 'Thoát đo bán kính',
+  'radiusQuery.start': 'Đo bán kính',
+  'radiusQuery.instructions': 'Chạm vào bản đồ để chọn tâm bán kính.',
+  'radiusQuery.instructionsChangePoint': 'Chạm vào bản đồ để đổi tâm bán kính.',
+  'radiusQuery.radiusLabel': 'Bán kính',
+  'radiusQuery.noCenter': 'Chưa chọn tâm — chạm vào bản đồ để bắt đầu.',
+  'radiusQuery.noMatches': 'Không có dự án, vùng quy hoạch hoặc xã/phường nào trong bán kính {radius}.',
+  'radiusQuery.matchCount': '{count} kết quả trong bán kính.',
+  'radiusQuery.clear': 'Bỏ chọn tâm',
+  'radiusQuery.kind.keyProject': 'Dự án trọng điểm',
+  'radiusQuery.kind.planningZone': 'Ranh quy hoạch',
+  'radiusQuery.kind.ward': 'Xã/phường',
+
   // LocalSearch (MapLibre detail map)
   'localSearch.label': 'Tìm xã, phường hoặc địa danh',
   'localSearch.placeholder': 'Tìm xã, phường, địa danh...',
