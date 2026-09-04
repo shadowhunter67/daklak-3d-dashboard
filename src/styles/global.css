@@ -1925,19 +1925,36 @@ footer a {
   line-height: 1.4;
   color: #c9a15f;
 }
+/* "Callout" card (mapeffect.app capability 4): a coloured accent stripe + tighter eyebrow/name
+   hierarchy on top of MapLibre's own popup tip/positioning, rather than a separate React overlay
+   with a hand-drawn leader line — see docs/detail-map-integration.md for the rationale. The accent
+   colour comes in via the inline `--callout-accent` custom property set on this same element by
+   keyProjectPopup.ts/planningZonePopup.ts (status colour, or the planning-zone purple). */
+.detail-map-callout .maplibregl-popup-content {
+  border-radius: 10px;
+  padding: 12px 14px 10px;
+  box-shadow: 0 10px 28px rgba(4, 18, 15, 0.4);
+}
 .key-project-popup {
   font-size: 12px;
   line-height: 1.45;
   color: #10231f;
+  border-left: 3px solid var(--callout-accent, #c9c9c9);
+  margin: -2px 0 -2px -6px;
+  padding-left: 9px;
 }
 .key-project-popup__name {
   display: block;
-  font-size: 13px;
-  margin-bottom: 2px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 1px;
 }
 .key-project-popup__cat {
   color: #4a5f59;
-  font-size: 11px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 .key-project-popup__status {
   display: flex;
