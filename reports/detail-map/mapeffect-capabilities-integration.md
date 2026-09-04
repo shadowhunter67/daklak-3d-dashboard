@@ -19,6 +19,15 @@ Web app **dựng video bản đồ** (không phải thư viện component, khôn
 | 5   | **Đa dạng bản đồ** (vệ tinh / đường / nền tối-sáng tối giản, chuyển mượt)                           | `BaseMapSelector.tsx` — radio default/terrain/**vệ tinh** nhưng terrain+vệ tinh **đang disabled** (chưa cấu hình `VITE_TERRAIN_SOURCE_URL` / `VITE_SATELLITE_TILE_URL`) | (a) Bật basemap vệ tinh: cần nguồn raster có giấy phép (Sentinel-2 EOX đã dùng ở footer là 1 lựa chọn — kiểm tra ToS cho tile). (b) Thêm style "nền tối tối giản" / "nền sáng" — chỉ là 2 biến thể `detailMapStyle.ts` (đổi màu background + ẩn buildings). (c) Transition mượt: `map.setStyle()` có `diff:true` giữ layer chung. | (a) Cao (giấy phép) · (b)(c) Thấp | (b)(c) **Cao**, (a) Thấp                             |
 | 6   | **Hiệu ứng chữ** (>50 mẫu chữ động, kèm ảnh/video/nhạc, xuất video)                                 | Không có gì                                                                                                                                                             | Component `<MapTitleOverlay>` — vài preset tiêu đề/lower-third CSS-animated. **KHÔNG làm phần xuất video** (ngoài phạm vi app dashboard; đó là điểm khác biệt cốt lõi của mapeffect).                                                                                                                                             | Thấp (nếu bỏ video)               | Thấp                                                 |
 
+## Cập nhật tiến độ (2026-09-03)
+
+Theo yêu cầu "làm 1 2 3 4":
+
+- ✅ **1. Khoanh vùng** — làm xong. `revealAnimation.ts` + wiring trong `MapLibreProvider.setPlanningZonesVisible`.
+- ✅ **2. Vẽ đường** — làm xong. `lineDrawAnimation.ts` + wiring trong `MapLibreProvider.setKeyProjectsVisible`.
+- ⏳ **3. Marker & tiện ích** — đang làm tiếp (xem ghi chú scope bên dưới: chỉ làm phần "đo bán kính", KHÔNG bịa dữ liệu tiện ích/trường-chợ-bệnh viện vì repo chưa có nguồn OSM amenity thật).
+- ⏳ **4. Callout** — đang làm tiếp, dạng nâng cấp popup có sẵn (xem ghi chú bên dưới về lý do không dựng overlay React riêng).
+
 ## Kết luận & đề xuất lộ trình
 
 **Không nên** biến dashboard thành công cụ dựng video. 3 khả năng có giá trị trực tiếp cho bản đồ tra cứu, tái dùng module sẵn có, nên gom thành **1 module `src/components/detail-map/effects/`**:

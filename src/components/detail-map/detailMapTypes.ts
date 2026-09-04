@@ -119,8 +119,10 @@ export interface DetailedMapProvider {
    * whole object (see mapStore.ts), so the provider is always given the complete state rather
    * than one changed field at a time — used both to sync live layer-panel changes and to apply
    * the initial URL-derived state once the map/style is ready (see MapLibreProvider.initialize()).
+   * `reducedMotion` gates the "khoanh vùng"/"vẽ đường" reveal animations below — `true` applies
+   * the settled end-state directly, same convention as `setSelectedWard`'s `animate` option.
    */
-  setLayers(layers: DetailMapLayerState): void;
+  setLayers(layers: DetailMapLayerState, options?: { reducedMotion?: boolean }): void;
 
   setRoadsVisible(visible: boolean): void;
   setRoadLabelsVisible(visible: boolean): void;
@@ -128,8 +130,13 @@ export interface DetailedMapProvider {
   setAdministrativeBoundariesVisible(visible: boolean): void;
   setWardLabelsVisible(visible: boolean): void;
   setPlanningOverlay(overlay: PlanningOverlay): void;
-  setKeyProjectsVisible(visible: boolean): void;
-  setPlanningZonesVisible(visible: boolean): void;
+  /** `animate` (default `false`) plays the "vẽ đường" line draw-on + point fade-in when the layer
+   * transitions off→on; `MapLibreProvider` only ever passes `true` for an actual user-driven
+   * transition (never on initial load, never under reduced motion) — see `setLayers`. */
+  setKeyProjectsVisible(visible: boolean, options?: { animate?: boolean }): void;
+  /** `animate` (default `false`) plays the "khoanh vùng" glow-reveal when the layer transitions
+   * off→on — same convention as `setKeyProjectsVisible`. */
+  setPlanningZonesVisible(visible: boolean, options?: { animate?: boolean }): void;
   setBuildingsVisible(visible: boolean): void;
   setDashboardMetricsVisible(visible: boolean): void;
   setHeatmapVisible(visible: boolean): void;

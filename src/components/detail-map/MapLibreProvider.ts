@@ -29,12 +29,28 @@ import {
 } from './planningLayers';
 import {
   KEY_PROJECTS_LINE_LAYER_ID,
+  KEY_PROJECTS_LINE_TARGET_OPACITY,
   KEY_PROJECTS_POINT_LAYER_ID,
+  KEY_PROJECTS_POINT_TARGET_OPACITY,
+  KEY_PROJECTS_SOURCE_ID,
   KEY_PROJECT_LAYER_IDS,
 } from './keyProjectLayers';
 import { keyProjectPopupHtml } from './keyProjectPopup';
-import { PLANNING_ZONES_FILL_LAYER_ID, PLANNING_ZONE_LAYER_IDS } from './planningZoneLayers';
+import { KEY_PROJECTS } from './keyProjects';
+import { LINE_DRAW_DURATION_MS, sliceFeatureCollectionLines } from './lineDrawAnimation';
+import {
+  PLANNING_ZONES_FILL_LAYER_ID,
+  PLANNING_ZONES_LINE_LAYER_ID,
+  PLANNING_ZONES_REVEAL_TARGETS,
+  PLANNING_ZONE_LAYER_IDS,
+} from './planningZoneLayers';
 import { planningZonePopupHtml } from './planningZonePopup';
+import {
+  REVEAL_DURATION_MS,
+  revealFrameAt,
+  revealSettledFrame,
+  type RevealFrame,
+} from './revealAnimation';
 import {
   HAMLET_LABELS_LAYER_ID,
   PLACE_LABELS_LAYER_ID,
@@ -82,6 +98,9 @@ export class MapLibreProvider implements DetailedMapProvider {
   // the first tracked rAF handle in this class. Without cancelling, a pending frame would call
   // map.setPaintProperty() on a map that's already been removed and throw.
   private highlightRaf: number | null = null;
+  // Same idea as highlightRaf, for the "vẽ đường"/"khoanh vùng" reveal animations.
+  private keyProjectsRaf: number | null = null;
+  private planningZonesRaf: number | null = null;
   // Kept so a key-project click can build a MapLibre Popup without re-importing the module.
   private maplibregl: Awaited<ReturnType<typeof loadMapLibreModules>>['maplibregl'] | null = null;
   private keyProjectPopup: MapLibrePopup | null = null;
@@ -234,7 +253,13 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.map.setLayoutProperty(layerId, 'visibility', visible ? 'visible' : 'none');
   }
 
-  setLayers(layers: DetailMapLayerState): void {
+  setLayers(layers: DetailMapLayerState, options?: { reducedMotion?: boolean }): void {
+    // Captured BEFORE reassigning `this.layers` below, so the two off→on checks a few lines down
+    // see the state as it was on the PREVIOUS call — on the very first call (from initialize(),
+    // which pre-assigns `this.layers = options.layers` itself before ever calling setLayers) this
+    // is reference-equal to `layers`, so both checks correctly see "no change" and never animate
+    // on initial load, however layers happen to be already-on from the URL.
+    const previous = this.layers;
     this.layers = layers;
     this.setBaseMap(layers.baseMap);
     this.setRoadsVisible(layers.roadsVisible);
@@ -243,8 +268,13 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.setAdministrativeBoundariesVisible(layers.administrativeBoundariesVisible);
     this.setWardLabelsVisible(layers.wardLabelsVisible);
     this.setPlanningOverlay(layers.planningOverlay);
-    this.setKeyProjectsVisible(layers.keyProjectsVisible);
-    this.setPlanningZonesVisible(layers.planningZonesVisible);
+    const canAnimate = !options?.reducedMotion;
+    this.setKeyProjectsVisible(layers.keyProjectsVisible, {
+      animate: canAnimate && layers.keyProjectsVisible && !previous?.keyProjectsVisible,
+    });
+    this.setPlanningZonesVisible(layers.planningZonesVisible, {
+      animate: canAnimate && layers.planningZonesVisible && !previous?.planningZonesVisible,
+    });
     this.setBuildingsVisible(layers.buildingsVisible);
     this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
     this.setHeatmapVisible(layers.heatmapVisible);
@@ -300,19 +330,109 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.map.setPaintProperty(PLANNING_FILL_LAYER_ID, 'fill-opacity', PLANNING_FILL_OPACITY);
   }
 
-  setKeyProjectsVisible(visible: boolean): void {
-    for (const id of KEY_PROJECT_LAYER_IDS) this.setLayerVisibility(id, visible);
+  setKeyProjectsVisible(visible: boolean, options?: { animate?: boolean }): void {
+    this.cancelKeyProjectsAnimation();
     if (!visible) {
+      for (const id of KEY_PROJECT_LAYER_IDS) this.setLayerVisibility(id, false);
       this.keyProjectPopup?.remove();
       this.keyProjectPopup = null;
+      return;
+    }
+    for (const id of KEY_PROJECT_LAYER_IDS) this.setLayerVisibility(id, true);
+    if (!options?.animate) {
+      this.applyKeyProjectsRevealFrame(1);
+      return;
+    }
+    // "Vẽ đường" (mapeffect.app capability 2): the corridor lines grow from their start point
+    // while the project points/labels fade in, instead of the whole layer just popping into view.
+    const started = performance.now();
+    const step = (now: number) => {
+      const t = Math.min((now - started) / LINE_DRAW_DURATION_MS, 1);
+      this.applyKeyProjectsRevealFrame(t);
+      this.keyProjectsRaf = t < 1 ? requestAnimationFrame(step) : null;
+    };
+    this.keyProjectsRaf = requestAnimationFrame(step);
+  }
+
+  private applyKeyProjectsRevealFrame(rawRatio: number): void {
+    if (!this.map) return;
+    // Clamp defensively: a rAF callback's timestamp can land a hair before the `performance.now()`
+    // captured just before `requestAnimationFrame()` was called (observed live — a ~-0.01 ratio on
+    // the very first frame), and MapLibre rejects/logs an error for any negative opacity.
+    const ratio = Math.min(Math.max(rawRatio, 0), 1);
+    const source = this.map.getSource(KEY_PROJECTS_SOURCE_ID);
+    // GeoJSONSource; typed loosely here since maplibre-gl's Source union doesn't narrow on id.
+    (source as { setData?: (data: unknown) => void } | undefined)?.setData?.(
+      ratio >= 1 ? KEY_PROJECTS : sliceFeatureCollectionLines(KEY_PROJECTS, ratio),
+    );
+    if (this.map.getLayer(KEY_PROJECTS_LINE_LAYER_ID)) {
+      this.map.setPaintProperty(
+        KEY_PROJECTS_LINE_LAYER_ID,
+        'line-opacity',
+        KEY_PROJECTS_LINE_TARGET_OPACITY * ratio,
+      );
+    }
+    if (this.map.getLayer(KEY_PROJECTS_POINT_LAYER_ID)) {
+      this.map.setPaintProperty(
+        KEY_PROJECTS_POINT_LAYER_ID,
+        'circle-opacity',
+        KEY_PROJECTS_POINT_TARGET_OPACITY * ratio,
+      );
+      this.map.setPaintProperty(
+        KEY_PROJECTS_POINT_LAYER_ID,
+        'circle-stroke-opacity',
+        KEY_PROJECTS_POINT_TARGET_OPACITY * ratio,
+      );
     }
   }
 
-  setPlanningZonesVisible(visible: boolean): void {
-    for (const id of PLANNING_ZONE_LAYER_IDS) this.setLayerVisibility(id, visible);
+  private cancelKeyProjectsAnimation(): void {
+    if (this.keyProjectsRaf !== null) {
+      cancelAnimationFrame(this.keyProjectsRaf);
+      this.keyProjectsRaf = null;
+    }
+  }
+
+  setPlanningZonesVisible(visible: boolean, options?: { animate?: boolean }): void {
+    this.cancelPlanningZonesAnimation();
     if (!visible) {
+      for (const id of PLANNING_ZONE_LAYER_IDS) this.setLayerVisibility(id, false);
       this.keyProjectPopup?.remove();
       this.keyProjectPopup = null;
+      return;
+    }
+    for (const id of PLANNING_ZONE_LAYER_IDS) this.setLayerVisibility(id, true);
+    if (!options?.animate) {
+      this.applyPlanningZoneFrame(revealSettledFrame(PLANNING_ZONES_REVEAL_TARGETS));
+      return;
+    }
+    // "Khoanh vùng" (mapeffect.app capability 1): a glow-reveal, the same idea as the ward-
+    // selection highlight (`wardHighlightAnimation.ts`) but generalized (`revealAnimation.ts`) to
+    // the approved-planning-zone polygons' own target opacity/width.
+    const started = performance.now();
+    const step = (now: number) => {
+      const t = (now - started) / REVEAL_DURATION_MS;
+      this.applyPlanningZoneFrame(revealFrameAt(t, PLANNING_ZONES_REVEAL_TARGETS));
+      this.planningZonesRaf = t < 1 ? requestAnimationFrame(step) : null;
+    };
+    this.planningZonesRaf = requestAnimationFrame(step);
+  }
+
+  private applyPlanningZoneFrame(frame: RevealFrame): void {
+    if (this.map?.getLayer(PLANNING_ZONES_FILL_LAYER_ID)) {
+      this.map.setPaintProperty(PLANNING_ZONES_FILL_LAYER_ID, 'fill-opacity', frame.fillOpacity);
+    }
+    if (this.map?.getLayer(PLANNING_ZONES_LINE_LAYER_ID)) {
+      this.map.setPaintProperty(PLANNING_ZONES_LINE_LAYER_ID, 'line-opacity', frame.lineOpacity);
+      this.map.setPaintProperty(PLANNING_ZONES_LINE_LAYER_ID, 'line-width', frame.lineWidth);
+      this.map.setPaintProperty(PLANNING_ZONES_LINE_LAYER_ID, 'line-blur', frame.lineBlur);
+    }
+  }
+
+  private cancelPlanningZonesAnimation(): void {
+    if (this.planningZonesRaf !== null) {
+      cancelAnimationFrame(this.planningZonesRaf);
+      this.planningZonesRaf = null;
     }
   }
 
@@ -451,6 +571,8 @@ export class MapLibreProvider implements DetailedMapProvider {
   destroy(): void {
     this.settlePendingLoad?.();
     this.cancelHighlightAnimation();
+    this.cancelKeyProjectsAnimation();
+    this.cancelPlanningZonesAnimation();
     this.keyProjectPopup?.remove();
     this.keyProjectPopup = null;
     this.wardClickHandlers.clear();

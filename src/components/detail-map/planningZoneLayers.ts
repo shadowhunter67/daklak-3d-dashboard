@@ -13,6 +13,10 @@ export const PLANNING_ZONES_LINE_LAYER_ID = 'planning-zones-line';
 
 const ZONE_COLOR = '#9a6bd6';
 
+/** Settled (fully revealed) targets — the "khoanh vùng" glow-reveal animation in
+ * `MapLibreProvider.setPlanningZonesVisible` (`revealAnimation.ts`) animates from 0 up to these. */
+export const PLANNING_ZONES_REVEAL_TARGETS = { fillOpacity: 0.35, lineOpacity: 1, lineWidth: 2 };
+
 export function buildPlanningZonesSource(): GeoJSONSourceSpecification {
   return { type: 'geojson', data: PLANNING_ZONES };
 }
@@ -24,14 +28,22 @@ export function buildPlanningZoneLayers(): LayerSpecification[] {
       type: 'fill',
       source: PLANNING_ZONES_SOURCE_ID,
       layout: { visibility: 'none' },
-      paint: { 'fill-color': ZONE_COLOR, 'fill-opacity': 0.35 },
+      paint: {
+        'fill-color': ZONE_COLOR,
+        'fill-opacity': PLANNING_ZONES_REVEAL_TARGETS.fillOpacity,
+      },
     },
     {
       id: PLANNING_ZONES_LINE_LAYER_ID,
       type: 'line',
       source: PLANNING_ZONES_SOURCE_ID,
       layout: { visibility: 'none' },
-      paint: { 'line-color': ZONE_COLOR, 'line-width': 2, 'line-dasharray': [3, 1.5] },
+      paint: {
+        'line-color': ZONE_COLOR,
+        'line-width': PLANNING_ZONES_REVEAL_TARGETS.lineWidth,
+        'line-opacity': PLANNING_ZONES_REVEAL_TARGETS.lineOpacity,
+        'line-dasharray': [3, 1.5],
+      },
     },
   ];
 }
