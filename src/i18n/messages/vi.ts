@@ -655,7 +655,8 @@ export const vi = {
   'radiusQuery.instructionsChangePoint': 'Chạm vào bản đồ để đổi tâm bán kính.',
   'radiusQuery.radiusLabel': 'Bán kính',
   'radiusQuery.noCenter': 'Chưa chọn tâm — chạm vào bản đồ để bắt đầu.',
-  'radiusQuery.noMatches': 'Không có dự án, vùng quy hoạch hoặc xã/phường nào trong bán kính {radius}.',
+  'radiusQuery.noMatches':
+    'Không có dự án, vùng quy hoạch hoặc xã/phường nào trong bán kính {radius}.',
   'radiusQuery.matchCount': '{count} kết quả trong bán kính.',
   'radiusQuery.clear': 'Bỏ chọn tâm',
   'radiusQuery.kind.keyProject': 'Dự án trọng điểm',
