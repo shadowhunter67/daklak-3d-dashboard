@@ -22,10 +22,11 @@ Dashboard bản đồ 3D thể hiện 102 xã/phường của tỉnh Đắk Lắ
 - **Tổng quan điều hành** — trang mặc định, tổng hợp KPI danh mục dự án, cảnh báo, dự án cần chú ý.
 - **Bản đồ 3D** — địa hình tỉnh dựng từ dữ liệu vệ tinh thật (SRTM + Sentinel-2), xoay/phóng được, click vào từng xã để xem hồ sơ nhanh.
 - **Danh sách** — phiên bản 2D dễ dùng, phù hợp máy yếu, điều hướng bàn phím và trình đọc màn hình.
-- **Bản đồ chi tiết** — bản đồ MapLibre, xem lớp đường giao thông, đo khoảng cách.
+- **Bản đồ chi tiết** — bản đồ MapLibre, xem lớp đường giao thông, đo khoảng cách. Tên cả 102 xã/phường **luôn hiển thị đầy đủ, không viết tắt**; khi nhãn chồng nhau thì được dịch ra và nối về vị trí thật bằng một đường dẫn mảnh thay vì bị ẩn đi.
 - **Khám phá** _(nền địa hình minh họa, dữ liệu điểm đến là thật)_ — đi bộ hoặc bay tự do trên địa hình tỉnh (bám địa hình thật qua CPU terrain sampler), xem 4 điểm đến du lịch đã xác minh nguồn (Hồ Lắk, Yok Đôn, Đray Nur, Buôn Đôn), teleport nhanh, và 3 tuyến tham quan có hướng dẫn. Xem [docs/world-exploration.md](docs/world-exploration.md).
 - **Danh mục dự án** và **Chi tiết dự án** — xem đầy đủ ngân sách, tiến độ, gói thầu, vướng mắc của từng dự án.
 - Giao diện có cả **tiếng Việt và tiếng Anh**, chuyển đổi ngay không cần tải lại trang.
+- **Thiết kế ưu tiên dễ đọc** — cỡ chữ lớn cho người lớn tuổi/thị lực kém, nút chỉnh cỡ chữ **A− / A / A+** ngay trên thanh tiêu đề (lựa chọn được ghi nhớ giữa các lần truy cập), trạng thái luôn kèm nhãn chữ chứ không chỉ dựa vào màu. Xem [docs/accessibility.md](docs/accessibility.md).
 
 ## Chạy thử trên máy
 
@@ -46,7 +47,7 @@ Muốn build thử bản production hoặc chạy kiểm tra chất lượng cod
 </p>
 <p align="center">
   <img src="docs/images/readme-gallery/executive-overview-mobile.png" alt="Tổng quan điều hành trên điện thoại, các thẻ KPI xếp thành lưới không tràn ngang" width="49%">
-  <img src="docs/images/readme-gallery/dashboard-2d-administrative-labels.png" alt="Bản đồ 2D hành chính với nhãn xã/phường tiếng Việt có dấu" width="49%">
+  <img src="docs/images/readme-gallery/dashboard-2d-administrative-labels.png" alt="Bản đồ chi tiết hiển thị đầy đủ tên 102 xã/phường, nhãn chồng nhau được dịch ra thay vì ẩn đi" width="49%">
 </p>
 
 ## Giấy phép
