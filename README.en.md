@@ -12,7 +12,9 @@ displacement terrain surface with Sentinel-2 imagery and polygon hit-testing for
 selection. Four experiences: **Executive Overview** (default landing — portfolio KPIs, projects
 needing attention, alerts, data health), the 3D overview, an accessible 2D list, and a detail map
 (`?view=map`) using **MapLibre GL JS + self-hosted PMTiles** — no Google Maps Platform dependency,
-no API key or billing required.
+no API key or billing required. On the detail map all 102 commune/ward names stay visible at every
+zoom — never hidden, never abbreviated; overlapping labels are displaced and tied back to their
+true point with a thin leader line instead of being dropped.
 
 Beyond those four, an **"Explore"** button (`?view=world`) opens an early preview — a fly-over of
 the province terrain, the initial foundation for a "Tourism Digital Twin" direction. This is a
@@ -36,6 +38,15 @@ operational figures.
 > in the source code), not real operational or official government figures — it is not for actual
 > management decisions, approvals, or reporting. The map is a reference visualization, not a legal
 > record for land, surveying, planning, or administrative boundary purposes.
+
+## Accessibility
+
+The design targets older and low-vision readers: enlarged base type across the header, KPI grid and
+overview copy, an **A− / A / A+** font-scale control in the header (persisted across visits via
+`localStorage`), status conveyed with text labels and not colour alone, and large VND amounts shown
+as "… tỷ ₫" with the exact figure kept in the tooltip and screen-reader label. Automated Playwright
+tests assert zero card/panel/button overlap and no horizontal overflow across six viewports
+(320–1920px). See [docs/accessibility.md](docs/accessibility.md).
 
 ## Language / Internationalization
 
