@@ -95,9 +95,11 @@ export function ExecutiveOverview({
       tabIndex={-1}
     >
       <h2 id="executive-overview-heading">{t('executiveOverview.heading')}</h2>
-      <p className="executive-overview__mock-badge" role="note">
-        {t('executiveOverview.mockBadge')}
-      </p>
+      {model.isIllustrative && (
+        <p className="executive-overview__mock-badge" role="note">
+          {t('executiveOverview.mockBadge')}
+        </p>
+      )}
       {onOpenPortfolio && (
         <button
           type="button"

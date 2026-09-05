@@ -49,6 +49,7 @@ export function useProjectPortfolio(
         const model = buildProjectPortfolioViewModel({
           bundles: result.data.bundles,
           context: { validAdministrativeCodes: result.data.validAdministrativeCodes, asOf },
+          isIllustrative: result.data.metadata.isIllustrative,
         });
         if (result.status === 'degraded')
           setState({

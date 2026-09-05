@@ -1,92 +1,184 @@
 {
   "schemaVersion": "1.0.0",
-  "bundleVersion": "phase3-fixture-1",
+  "bundleVersion": "2026-09-05-732baf10fa46",
   "metadata": {
-    "generatedAt": "2026-07-27T00:00:00.000Z",
-    "asOf": "2026-07-20T00:00:00.000Z",
-    "sourceDatasetIds": ["project-portfolio-generated-fixture-demo"],
-    "administrativeCodeVersion": "daklak-labels-v1",
-    "classification": "public",
-    "producer": "phase3-manual-fixture",
-    "description": "Phase 3 test/demo fixture for GeneratedJsonProjectPortfolioSource — hoàn toàn hư cấu, không phải output của importer thật (Phase 4 chưa triển khai) và không phải dữ liệu vận hành thật."
+    "generatedAt": "2026-09-05T00:55:47.324Z",
+    "asOf": "2026-09-05T00:00:00.000Z",
+    "sourceDatasetIds": ["project-portfolio-daklak-real-2026-09"],
+    "administrativeCodeVersion": "19ee707eb856",
+    "classification": "internal",
+    "producer": "phase4-importer@1.0.0"
   },
   "datasets": {
     "agencies": [
       {
-        "id": "agency-generated-fixture-demo",
-        "name": "Cơ quan minh hoạ (generated fixture)",
-        "type": "managing-authority"
+        "id": "agency-ubnd-daklak",
+        "name": "UBND tỉnh Đắk Lắk",
+        "type": "managing-authority",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09"
+      },
+      {
+        "id": "agency-ubnd-bmt",
+        "name": "UBND TP Buôn Ma Thuột",
+        "type": "managing-authority",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09"
+      },
+      {
+        "id": "agency-cuc-hang-khong",
+        "name": "Cục Hàng không Việt Nam",
+        "type": "managing-authority",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09"
       }
     ],
     "contractors": [],
     "projects": [
       {
-        "id": "gen-fixture-001",
-        "code": "GEN-001",
-        "name": "Dự án minh hoạ nguồn generated-json (Phase 3 test fixture)",
-        "description": "Bản ghi kiểm thử cho GeneratedJsonProjectPortfolioSource — KHÔNG phải dữ liệu vận hành thật, không đại diện cho bất kỳ dự án có thật nào.",
+        "id": "daklak-real-vanhdai-tay-bmt",
+        "code": "DL-REAL-GT-001",
+        "name": "Đường vành đai phía Tây TP Buôn Ma Thuột",
+        "description": "Tuyến vành đai dài khoảng 14km, khởi công tháng 11/2009, hoàn thành đưa vào sử dụng tháng 11/2017 (UBND tỉnh phê duyệt lưu thông chính thức 01/02/2019). Vốn trái phiếu Chính phủ. Cuối năm 2022 được phê duyệt thêm 9,5 tỷ đồng để cải tạo; một số đoạn vẫn ghi nhận mặt đường hư hỏng theo phản ánh báo chí tháng 12/2025.",
+        "sector": "transport",
+        "status": "completed",
+        "priority": "medium",
+        "managingAuthorityId": "agency-ubnd-bmt",
+        "investorId": "agency-ubnd-bmt",
+        "approvedBudget": 687000000000,
+        "disbursedAmount": 687000000000,
+        "overallProgress": 100,
+        "plannedProgress": 100,
+        "financialProgress": 100,
+        "administrativeAreaCodes": ["24133"],
+        "dataUpdatedAt": "2026-09-05T00:00:00.000Z",
+        "dataOwner": "Biên soạn thủ công từ nguồn báo chí công khai — phiên làm việc 2026-09-05",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09",
+        "confidence": "high",
+        "verificationStatus": "reviewed"
+      },
+      {
+        "id": "daklak-real-ct24-datp3",
+        "code": "DL-REAL-GT-002",
+        "name": "Cao tốc Khánh Hòa – Buôn Ma Thuột, dự án thành phần 3 (đoạn qua Đắk Lắk)",
+        "description": "Khoảng 48km do UBND tỉnh Đắk Lắk quản lý, thuộc dự án cao tốc Khánh Hòa – Buôn Ma Thuột tổng chiều dài khoảng 117,5km (tổng mức đầu tư toàn tuyến 21.935 tỷ đồng, gồm 3 dự án thành phần). Thông xe kỹ thuật 19/12/2025 (gồm 20km dự án thành phần 1 + 48km dự án thành phần 3); mục tiêu hoàn thành toàn tuyến dịp 2/9/2026.",
         "sector": "transport",
         "status": "active",
+        "priority": "critical",
+        "managingAuthorityId": "agency-ubnd-daklak",
+        "investorId": "agency-ubnd-daklak",
+        "forecastCompletionDate": "2026-09-02",
+        "approvedBudget": 6165000000000,
+        "disbursedAmount": 3975000000000,
+        "overallProgress": 92.6,
+        "plannedProgress": 92.6,
+        "financialProgress": 64.48,
+        "administrativeAreaCodes": ["24133", "24373", "24505"],
+        "dataUpdatedAt": "2026-09-05T00:00:00.000Z",
+        "dataOwner": "Biên soạn thủ công từ nguồn báo chí công khai — phiên làm việc 2026-09-05",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09",
+        "confidence": "high",
+        "verificationStatus": "reviewed"
+      },
+      {
+        "id": "daklak-real-chk-bmt-mrong",
+        "code": "DL-REAL-GT-003",
+        "name": "Đề xuất mở rộng Cảng hàng không Buôn Ma Thuột",
+        "description": "Cục Hàng không Việt Nam trình Bộ Xây dựng quy hoạch mở rộng, nâng công suất lên 5 triệu khách/năm giai đoạn 2021-2030 (khái toán khoảng 3.814 tỷ đồng), hướng tới 7 triệu khách/năm trên khoảng 518ha đến năm 2050 (khái toán toàn quy hoạch khoảng 19.973 tỷ đồng). CHƯA có quyết định đầu tư chính thức.",
+        "sector": "transport",
+        "status": "proposed",
         "priority": "medium",
-        "managingAuthorityId": "agency-generated-fixture-demo",
-        "investorId": "agency-generated-fixture-demo",
-        "startDate": "2026-01-01",
-        "plannedCompletionDate": "2027-01-01",
-        "approvedBudget": 10000000000,
-        "disbursedAmount": 2000000000,
-        "overallProgress": 20,
-        "plannedProgress": 25,
-        "financialProgress": 20,
-        "administrativeAreaCodes": ["22165"],
-        "dataUpdatedAt": "2026-07-20T00:00:00.000Z",
-        "dataOwner": "Phase 3 test fixture — không phải dữ liệu vận hành thật",
-        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
+        "managingAuthorityId": "agency-cuc-hang-khong",
+        "investorId": "agency-cuc-hang-khong",
+        "approvedBudget": 3814000000000,
+        "disbursedAmount": 0,
+        "overallProgress": 0,
+        "plannedProgress": 0,
+        "financialProgress": 0,
+        "administrativeAreaCodes": ["24133"],
+        "dataUpdatedAt": "2026-09-05T00:00:00.000Z",
+        "dataOwner": "Biên soạn thủ công từ nguồn báo chí công khai — phiên làm việc 2026-09-05",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09",
         "confidence": "medium",
-        "verificationStatus": "validated-automatically"
+        "verificationStatus": "reviewed"
       }
     ],
-    "workPackages": [
-      {
-        "id": "gen-fixture-001-wp-01",
-        "projectId": "gen-fixture-001",
-        "code": "WP-01",
-        "name": "Gói thầu minh hoạ (fixture)",
-        "plannedStart": "2026-01-01",
-        "plannedEnd": "2026-12-01",
-        "plannedProgress": 25,
-        "actualProgress": 20,
-        "budget": 8000000000,
-        "paidAmount": 1500000000,
-        "status": "active",
-        "sourceDatasetId": "project-portfolio-generated-fixture-demo"
-      }
-    ],
-    "milestones": [
-      {
-        "id": "gen-fixture-001-ms-01",
-        "projectId": "gen-fixture-001",
-        "name": "Mốc minh hoạ (fixture)",
-        "plannedDate": "2026-06-01",
-        "critical": false,
-        "status": "on-track"
-      }
-    ],
+    "workPackages": [],
+    "milestones": [],
     "projectIssues": [],
     "progressSnapshots": [
       {
-        "projectId": "gen-fixture-001",
-        "observedAt": "2026-07-01T00:00:00.000Z",
-        "plannedPhysicalProgress": 25,
-        "physicalProgress": 20,
-        "financialProgress": 20,
-        "disbursedAmount": 2000000000,
-        "sourceDatasetId": "project-portfolio-generated-fixture-demo",
-        "sourceRecordId": "gen-fixture-001-snap-01",
-        "importedAt": "2026-07-20T00:00:00.000Z",
-        "verificationStatus": "validated-automatically"
+        "projectId": "daklak-real-ct24-datp3",
+        "observedAt": "2025-12-19T00:00:00.000Z",
+        "plannedPhysicalProgress": 92.6,
+        "physicalProgress": 92.6,
+        "financialProgress": 64.48,
+        "disbursedAmount": 3975000000000,
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09",
+        "sourceRecordId": "ct24-datp3-snapshot-2025-12-19",
+        "importedAt": "2026-09-05T00:00:00.000Z",
+        "verificationStatus": "reviewed",
+        "confidence": "high",
+        "dataOwner": "Biên soạn thủ công từ nguồn báo chí công khai — phiên làm việc 2026-09-05"
       }
     ],
     "evidence": [],
-    "referenceDocuments": []
+    "referenceDocuments": [
+      {
+        "id": "refdoc-vanhdai-tay-01",
+        "title": "TP Buôn Ma Thuột phê duyệt 9,5 tỷ đồng cải tạo đường vành đai phía Tây",
+        "issuingAuthority": "Dân tộc & Phát triển (VietNamNet)",
+        "legalStatus": "unknown",
+        "sourceUrl": "https://dantocphattrien.vietnamnet.vn/thanh-pho-buon-ma-thuot-phe-duyet-9-5-ty-dong-cai-tao-duong-vanh-dai-phia-tay-37099.html",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09",
+        "verificationStatus": "reviewed"
+      },
+      {
+        "id": "refdoc-vanhdai-tay-02",
+        "title": "Đường tránh tây Buôn Ma Thuột mặt đường hư hỏng, dễ gây tai nạn",
+        "issuingAuthority": "Tuổi Trẻ",
+        "issuedDate": "2025-12-24",
+        "legalStatus": "unknown",
+        "sourceUrl": "https://tuoitre.vn/duong-tranh-tay-buon-ma-thuot-mat-duong-hu-hong-de-gay-tai-nan-20251224143535803.htm",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09",
+        "verificationStatus": "reviewed"
+      },
+      {
+        "id": "refdoc-ct24-01",
+        "title": "Tăng tốc thực hiện cao tốc Khánh Hòa – Buôn Ma Thuột, hoàn thành toàn tuyến vào dịp 2/9/2026",
+        "issuingAuthority": "Cổng Thông tin điện tử Chính phủ",
+        "issuedDate": "2026-03-19",
+        "legalStatus": "unknown",
+        "sourceUrl": "https://baochinhphu.vn/tang-toc-thuc-hien-cao-toc-khanh-hoa-buon-ma-thuot-hoan-thanh-toan-tuyen-vao-dip-2-9-2026-102260319161457348.htm",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09",
+        "verificationStatus": "reviewed"
+      },
+      {
+        "id": "refdoc-ct24-02",
+        "title": "Khánh thành đường tránh phía Đông Buôn Ma Thuột và thông xe kỹ thuật dự án thành phần 3",
+        "issuingAuthority": "Báo Đắk Lắk",
+        "legalStatus": "unknown",
+        "sourceUrl": "https://baodaklak.vn/kinh-te/202512/khanh-thanh-duong-tranh-phia-dong-buon-ma-thuot-va-thong-xe-ky-thuat-du-an-thanh-phan-3-du-an-cao-toc-khanh-hoa-buon-ma-thuot-2240843/",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09",
+        "verificationStatus": "reviewed"
+      },
+      {
+        "id": "refdoc-chk-01",
+        "title": "Cần hơn 3.800 tỷ đồng nâng cấp Cảng hàng không Buôn Ma Thuột",
+        "issuingAuthority": "Báo Đầu tư",
+        "issuedDate": "2023-11-27",
+        "legalStatus": "unknown",
+        "sourceUrl": "https://baodautu.vn/can-hon-3800-ty-dong-nang-cap-cang-hang-khong-buon-ma-thuot-d203896.html",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09",
+        "verificationStatus": "reviewed"
+      },
+      {
+        "id": "refdoc-chk-02",
+        "title": "Đề xuất đầu tư gần 20.000 tỷ đồng mở rộng sân bay Buôn Ma Thuột",
+        "issuingAuthority": "VnEconomy",
+        "issuedDate": "2026-04-28",
+        "legalStatus": "unknown",
+        "sourceUrl": "https://vneconomy.vn/de-xuat-dau-tu-gan-20000-ty-dong-mo-rong-san-bay-buon-ma-thuot.htm",
+        "sourceDatasetId": "project-portfolio-daklak-real-2026-09",
+        "verificationStatus": "reviewed"
+      }
+    ]
   }
 }

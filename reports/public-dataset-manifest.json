@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-02T04:18:29.270Z",
+  "generatedAt": "2026-09-05T12:29:37.873Z",
   "allDatasetIds": [
     "administrative-units",
     "province-overview-indicators",
@@ -14,6 +14,7 @@
     "project-portfolio-illustrative",
     "project-progress-illustrative",
     "project-issues-illustrative",
+    "project-portfolio-daklak-real-2026-09",
     "project-portfolio-generated-fixture-demo",
     "project-portfolio-generated-fixture-demo-public-projected",
     "investment-opportunities-daklak-illustrative"
@@ -32,6 +33,7 @@
     "project-portfolio-illustrative",
     "project-progress-illustrative",
     "project-issues-illustrative",
+    "project-portfolio-daklak-real-2026-09",
     "project-portfolio-generated-fixture-demo",
     "project-portfolio-generated-fixture-demo-public-projected",
     "investment-opportunities-daklak-illustrative"
@@ -50,6 +52,7 @@
     "project-portfolio-illustrative",
     "project-progress-illustrative",
     "project-issues-illustrative",
+    "project-portfolio-daklak-real-2026-09",
     "project-portfolio-generated-fixture-demo",
     "project-portfolio-generated-fixture-demo-public-projected",
     "investment-opportunities-daklak-illustrative"
@@ -129,6 +132,12 @@
     },
     {
       "id": "project-issues-illustrative",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "project-portfolio-daklak-real-2026-09",
       "classification": "public",
       "delivery": "bundled-static",
       "requiresAuthentication": false
@@ -349,12 +358,13 @@
     {
       "path": "src/assets/data/project-portfolio.generated-fixture-demo.json",
       "datasetIds": [
-        "project-portfolio-generated-fixture-demo"
+        "project-portfolio-generated-fixture-demo",
+        "project-portfolio-daklak-real-2026-09"
       ],
       "classification": "public",
       "delivery": "bundled-static",
-      "checksum": "e35c6ff04b4c490d9be79a670aec8d084ce4181b3c097e2b67e8f3c2efd7e593",
-      "note": "Phase 3 canonical-shape test/demo fixture for GeneratedJsonProjectPortfolioSource (docs/project-data-import/) — hand-written, entirely fictional, zero real project data. Not the output of a real importer (Phase 4)."
+      "checksum": "24076c24b2d274a58beee1b89eb9ad3427755a62eca3250d3dd6725ffbd1a43b",
+      "note": "Now the output of a REAL `npm run import:data` run (docs/project-data-import/) over data-templates/pilot/daklak-real-2026-09/ — 3 real, publicly-reported Đắk Lắk transport projects (source-cited in that batch's reference-documents.csv), staged via `npm run stage:internal-portfolio`. Consumed only by internal-static builds (GeneratedJsonProjectPortfolioSource), never the default demo/public-static deployment. Regenerate this checksum after re-running the import/stage pipeline with new/updated source data."
     },
     {
       "path": "src/assets/data/project-portfolio.public-projected.json",

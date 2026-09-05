@@ -211,10 +211,14 @@ export function ProjectPortfolioView({
       <h2 id="project-portfolio-heading" ref={headingRef} tabIndex={-1}>
         {t('portfolio.heading')}
       </h2>
-      <p className="project-portfolio__mock-badge" role="note">
-        {t('portfolio.illustrativeBadge')}
+      {model.isIllustrative && (
+        <p className="project-portfolio__mock-badge" role="note">
+          {t('portfolio.illustrativeBadge')}
+        </p>
+      )}
+      <p className="project-portfolio__description">
+        {t(model.isIllustrative ? 'portfolio.description' : 'portfolio.descriptionReal')}
       </p>
-      <p className="project-portfolio__description">{t('portfolio.description')}</p>
       {state.status === 'degraded' && (
         <p role="alert" className="project-portfolio__degraded-banner">
           {t('portfolio.degradedBanner', { issues: state.sourceIssues.join('; ') })}

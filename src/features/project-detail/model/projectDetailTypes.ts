@@ -30,6 +30,10 @@ export interface ProjectDetailProgressPoint {
 }
 
 export interface ProjectDetailModel {
+  /** From `ProjectPortfolioSourceMetadata.isIllustrative` — see `ExecutiveOverviewModel`'s
+   * identical field for the full rationale (a real imported project must not carry the
+   * "DỮ LIỆU MINH HỌA" badge). */
+  isIllustrative: boolean;
   generatedAt: string;
   /** Bốn+một mốc thời gian thật của snapshot dữ liệu (xem `ProjectPortfolioProvenance`) — không
    * suy ra "cập nhật hôm nay" từ `generatedAt`, vốn chỉ là thời điểm tính lại view model. */

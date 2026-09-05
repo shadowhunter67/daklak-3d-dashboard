@@ -31,6 +31,10 @@ export interface ProjectPortfolioFilterOption {
 }
 
 export interface ProjectPortfolioModel {
+  /** From `ProjectPortfolioSourceMetadata.isIllustrative` — see `ExecutiveOverviewModel`'s
+   * identical field for the full rationale (a real imported project batch must not carry the
+   * "DỮ LIỆU MINH HỌA" badge). */
+  isIllustrative: boolean;
   generatedAt: string;
   totalCount: number;
   rows: ProjectPortfolioRow[];

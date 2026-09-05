@@ -297,6 +297,7 @@ export const en: Partial<Record<MessageKey, string>> = {
     'ILLUSTRATIVE DATA — not real operational figures, not for actual management decisions.',
   'portfolio.description':
     'Search, filter, and sort every key project in the illustrative portfolio.',
+  'portfolio.descriptionReal': 'Search, filter, and sort every key project in the portfolio.',
   'portfolio.degradedBanner':
     'Some data failed to load ({issues}) — the list below only reflects the data that loaded successfully.',
   'portfolio.searchLabel': 'Search by project name or code',

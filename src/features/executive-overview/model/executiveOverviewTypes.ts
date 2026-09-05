@@ -60,6 +60,12 @@ export interface DataHealthSummary extends DataQualitySummary {
 }
 
 export interface ExecutiveOverviewModel {
+  /** From `ProjectPortfolioSourceMetadata.isIllustrative` — the mock-data badge only renders when
+   * this is true. Without it, a real (`generated-json`/`public-projected`) portfolio would still
+   * show "DỮ LIỆU MINH HỌA" (illustrative data), which stopped being true the moment a real batch
+   * went through the import pipeline — misleading in the opposite direction of the badge's own
+   * purpose. */
+  isIllustrative: boolean;
   generatedAt: string;
   /** Bốn+một mốc thời gian thật của snapshot dữ liệu (hiệu lực/nguồn công bố/hệ thống thu thập/
    * publish lên dashboard/trình duyệt nạp) — không suy ra "cập nhật hôm nay" từ `generatedAt`,
