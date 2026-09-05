@@ -14,6 +14,7 @@ downloads/
 .DS_Store
 .claude/
 generated-public-data/
+generated-data/
 reports/data-refresh/*.run-report.json
 reports/data-refresh/*.run-report.md
 reports/data-refresh/*.issue-body.md

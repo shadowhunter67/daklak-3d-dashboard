@@ -49,6 +49,7 @@ export function useExecutiveOverview(
           context: { validAdministrativeCodes: result.data.validAdministrativeCodes, asOf },
           provenance: result.data.provenance,
           sourceStatus: result.status === 'degraded' ? 'degraded' : 'ok',
+          isIllustrative: result.data.metadata.isIllustrative,
         });
         if (result.status === 'degraded')
           setState({ status: 'degraded', model, sourceIssues: result.issues });

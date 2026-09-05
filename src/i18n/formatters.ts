@@ -61,3 +61,24 @@ const compactFormatters = new Map<Locale, Intl.NumberFormat>();
 export function formatCompactVnd(value: number, locale: Locale): string {
   return `${cached(compactFormatters, locale, () => new Intl.NumberFormat(INTL_LOCALE[locale], { notation: 'compact', maximumFractionDigits: 1 })).format(value)} ₫`;
 }
+
+const billionFormatters = new Map<Locale, Intl.NumberFormat>();
+/**
+ * "2.453 tỷ ₫" / "2.5B ₫" — a plain, universally understood unit for a large VND amount that
+ * would otherwise wrap awkwardly across lines in a narrow KPI card (spec: don't render
+ * "2.453.000.000.000 ₫" in a small card). Deliberately NOT `formatCompactVnd` above: `Intl`'s
+ * `notation: 'compact'` renders Vietnamese trillions as the abbreviation "NT" ("nghìn tỷ"), which
+ * most readers — especially the older/non-technical audience this project targets — won't
+ * recognize on sight, unlike the everyday word "tỷ". Always pair this with the exact full amount
+ * (`formatVnd`) in a tooltip/accessible label; this is a display simplification, not a precision
+ * loss for anyone who needs the exact figure.
+ */
+export function formatVndInBillions(value: number, locale: Locale): string {
+  const billions = value / 1_000_000_000;
+  const formatted = cached(
+    billionFormatters,
+    locale,
+    () => new Intl.NumberFormat(INTL_LOCALE[locale], { maximumFractionDigits: 1 }),
+  ).format(billions);
+  return locale === 'vi' ? `${formatted} tỷ ₫` : `${formatted}B ₫`;
+}

@@ -3,7 +3,13 @@
 import type { KpiResult } from '../../../entities/project/kpi/types';
 import type { Locale } from '../../../i18n/locale';
 import type { MessageKey } from '../../../i18n/messages';
-import { formatDateTime, formatNumber, formatPercent, formatVnd } from '../../../i18n/formatters';
+import {
+  formatDateTime,
+  formatNumber,
+  formatPercent,
+  formatVnd,
+  formatVndInBillions,
+} from '../../../i18n/formatters';
 import type { PortfolioAlert, PortfolioAlertSeverity } from './executiveOverviewTypes';
 
 type Translate = (key: MessageKey, vars?: Record<string, string | number>) => string;
@@ -15,12 +21,20 @@ export function formatKpiValueLocalized(
   kpi: KpiResult,
   locale: Locale,
   t: Translate,
-): { text: string; isUnavailable: boolean } {
+): { text: string; isUnavailable: boolean; fullText?: string } {
   if (kpi.status === 'unavailable' || kpi.value === null)
     return { text: t('kpi.unavailable'), isUnavailable: true };
   switch (kpi.unit) {
     case 'VND':
-      return { text: formatVnd(kpi.value, locale), isUnavailable: false };
+      // A full unformatted VND amount ("2.453.000.000.000 ₫") wraps ugly and breaks the KPI
+      // grid's fixed-width cards (spec §M) — show the compact form ("2,5 nghìn tỷ ₫") and carry
+      // the exact figure in `fullText` for the caller to surface as a tooltip/accessible label,
+      // never silently dropping precision.
+      return {
+        text: formatVndInBillions(kpi.value, locale),
+        fullText: formatVnd(kpi.value, locale),
+        isUnavailable: false,
+      };
     case '%':
       return { text: formatPercent(kpi.value, locale), isUnavailable: false };
     case 'count':

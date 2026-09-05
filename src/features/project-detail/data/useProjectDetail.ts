@@ -40,6 +40,7 @@ export function useProjectDetail(
           context: { validAdministrativeCodes: result.data.validAdministrativeCodes, asOf },
           provenance: result.data.provenance,
           projectId,
+          isIllustrative: result.data.metadata.isIllustrative,
         });
         if (lookup.status === 'not-found') {
           setState({ status: 'not-found' });

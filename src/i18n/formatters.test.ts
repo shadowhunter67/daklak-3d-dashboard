@@ -6,6 +6,7 @@ import {
   formatNumber,
   formatPercent,
   formatVnd,
+  formatVndInBillions,
 } from './formatters';
 
 const SAMPLE_DATE = new Date('2026-07-23T07:00:00.000Z');
@@ -53,5 +54,29 @@ describe('formatVnd / formatCompactVnd', () => {
     const full = formatVnd(850_000_000_000, 'vi');
     const compact = formatCompactVnd(850_000_000_000, 'vi');
     expect(compact.length).toBeLessThan(full.length);
+  });
+});
+
+describe('formatVndInBillions', () => {
+  it('divides by one billion and appends "tỷ ₫" in Vietnamese', () => {
+    expect(formatVndInBillions(2_453_000_000_000, 'vi')).toBe('2.453 tỷ ₫');
+  });
+
+  it('appends "B ₫" in English', () => {
+    expect(formatVndInBillions(2_453_000_000_000, 'en')).toBe('2,453B ₫');
+  });
+
+  it('is shorter than the full unformatted amount for a large value', () => {
+    const full = formatVnd(2_453_000_000_000, 'vi');
+    const billions = formatVndInBillions(2_453_000_000_000, 'vi');
+    expect(billions.length).toBeLessThan(full.length);
+  });
+
+  it('rounds to at most one decimal place for a sub-billion remainder', () => {
+    expect(formatVndInBillions(1_250_000_000, 'vi')).toBe('1,3 tỷ ₫');
+  });
+
+  it('handles zero without throwing or producing "NaN"', () => {
+    expect(formatVndInBillions(0, 'vi')).toBe('0 tỷ ₫');
   });
 });

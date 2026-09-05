@@ -81,6 +81,12 @@ export const vi = {
   'header.lang.vi': 'VI',
   'header.lang.en': 'EN',
 
+  // FontScaleControl ("A- / A / A+")
+  'fontScale.groupAriaLabel': 'Cỡ chữ',
+  'fontScale.small': 'Chữ nhỏ hơn',
+  'fontScale.default': 'Chữ cỡ mặc định',
+  'fontScale.large': 'Chữ lớn hơn',
+
   // Executive Overview
   'executiveOverview.loading': 'Đang tải tổng quan danh mục dự án…',
   'executiveOverview.error.title': 'Không thể tải dữ liệu dự án',
@@ -296,6 +302,7 @@ export const vi = {
     'DỮ LIỆU MINH HỌA — không phải số liệu vận hành chính thức, không dùng cho quyết định quản lý thực tế.',
   'portfolio.description':
     'Tìm kiếm, lọc và sắp xếp toàn bộ dự án trọng điểm trong danh mục minh hoạ.',
+  'portfolio.descriptionReal': 'Tìm kiếm, lọc và sắp xếp toàn bộ dự án trọng điểm trong danh mục.',
   'portfolio.degradedBanner':
     'Một phần dữ liệu hiện không tải được ({issues}) — danh sách bên dưới chỉ tính trên phần dữ liệu đã tải thành công.',
   'portfolio.searchLabel': 'Tìm theo tên hoặc mã dự án',

@@ -119,9 +119,11 @@ export function ProjectDetailView({
         <h2 id="project-detail-heading" ref={headingRef} tabIndex={-1}>
           {model.header.name}
         </h2>
-        <p className="project-detail__mock-badge" role="note">
-          {t('detail.illustrativeBadge')}
-        </p>
+        {model.isIllustrative && (
+          <p className="project-detail__mock-badge" role="note">
+            {t('detail.illustrativeBadge')}
+          </p>
+        )}
         <dl className="project-detail__header-grid">
           <div>
             <dt>{t('detail.header.code')}</dt>

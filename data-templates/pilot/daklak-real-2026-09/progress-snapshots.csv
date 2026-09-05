@@ -1,0 +1,2 @@
+project_id,observed_at,planned_physical_progress_pct,physical_progress_pct,financial_progress_pct,disbursed_amount_vnd,source_dataset_id,source_record_id,imported_at,verification_status,confidence,data_owner
+daklak-real-ct24-datp3,2025-12-19T00:00:00.000Z,92.6,92.6,64.48,3975000000000,project-portfolio-daklak-real-2026-09,ct24-datp3-snapshot-2025-12-19,2026-09-05T00:00:00.000Z,reviewed,high,Biên soạn thủ công từ nguồn báo chí công khai — phiên làm việc 2026-09-05

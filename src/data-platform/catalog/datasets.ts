@@ -471,6 +471,56 @@ export const PROJECT_ISSUES_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
 };
 
 /**
+ * The first REAL (non-illustrative) batch to go through the Phase 4-7 import pipeline
+ * (docs/project-data-import/) end to end — 4 real, publicly-reported infrastructure projects in
+ * Đắk Lắk, each individually source-cited in `reference-documents.csv` of the same batch
+ * (`data-templates/pilot/daklak-real-2026-09/`). `authority: 'authoritative-third-party'`
+ * (not `'official'`): every figure here is reported BY reputable outlets (Cổng TTĐT Chính phủ,
+ * Báo Đắk Lắk, Tuổi Trẻ, Thanh Niên, Báo Đầu tư, VnEconomy) citing government
+ * decisions/announcements — none of it was read directly off a .gov.vn PDF/decision text, so it
+ * does not qualify as `'official'` under this catalog's own definition
+ * (docs/data-classification.md). `quality.status: 'partially-verified'`: two figures
+ * (Krông Pách Thượng's exact adjusted budget, the CT.24 DATP3 total-investment vs.
+ * contract-value distinction) have small cross-source discrepancies noted in
+ * `knownLimitations` below rather than silently resolved to one number.
+ */
+export const PROJECT_PORTFOLIO_DAKLAK_REAL_2026_09_DATASET: DatasetDescriptor = {
+  id: 'project-portfolio-daklak-real-2026-09',
+  title: 'Dự án hạ tầng công thật tại Đắk Lắk — đợt thu thập 09/2026',
+  description:
+    '3 dự án giao thông có thật, đã công bố công khai, mỗi trường số liệu quan trọng đều có trích dẫn nguồn báo chí uy tín trong reference-documents.csv cùng đợt. Đợt thu thập đầu tiên, chưa bao phủ toàn bộ dự án trọng điểm của tỉnh — xem knownLimitations.',
+  domain: 'infrastructure',
+  classification: 'public',
+  authority: 'authoritative-third-party',
+  publicationStatus: 'reviewed',
+  administrativeLevel: 'commune',
+  temporalResolution: 'event',
+  spatialRepresentation: 'none',
+  source: {
+    organization:
+      'Tổng hợp từ Cổng TTĐT Chính phủ, Báo Đắk Lắk, Tuổi Trẻ, Thanh Niên, Báo Đầu tư, VnEconomy, Dân tộc & Phát triển (VietNamNet) — xem reference-documents.csv cho từng trích dẫn cụ thể',
+    repositoryPath: 'data-templates/pilot/daklak-real-2026-09/',
+    retrievalDate: '2026-09-05',
+  },
+  version: '1.0.0',
+  period: { label: '2026-09' },
+  quality: {
+    status: 'partially-verified',
+    knownLimitations: [
+      'Chỉ 3/hàng chục dự án trọng điểm thật của tỉnh — đợt thu thập đầu tiên qua pipeline import thật, ưu tiên chất lượng/khả năng truy vết nguồn hơn số lượng (xem AGENTS.md/docs/project-data-import).',
+      'Đã LOẠI Hồ chứa nước Krông Pách Thượng khỏi đợt này dù đã xác minh tổng mức đầu tư: không tìm được số liệu giải ngân (disbursedAmount) đáng tin cậy nào cho dự án đang thi công dở dang này trong các nguồn đã tra — trường này là bắt buộc trong canonical schema, và ước lượng một con số không có căn cứ sẽ vi phạm nguyên tắc "không bịa dữ liệu". Sẽ thêm lại khi tìm được nguồn giải ngân cụ thể.',
+      'Không có geometry (CSV import chưa hỗ trợ cột geometry — xem docs/project-data-import/csv-contract.md).',
+      'Cao tốc Khánh Hòa – Buôn Ma Thuột (dự án thành phần 3, đoạn Đắk Lắk quản lý): approvedBudget dùng TỔNG MỨC ĐẦU TƯ (6.165 tỷ đồng), khác với GIÁ TRỊ HỢP ĐỒNG THI CÔNG (4.293 tỷ đồng); disbursedAmount dùng "sản lượng thực hiện" báo chí nêu (~3.975 tỷ đồng, ~92,6%) làm giá trị gần đúng cho giải ngân — đây là quy ước thường gặp trong báo chí hạ tầng VN, KHÔNG phải số giải ngân xác nhận riêng từ Kho bạc Nhà nước.',
+      'Mở rộng Cảng hàng không Buôn Ma Thuột: dự án đang ở giai đoạn ĐỀ XUẤT quy hoạch, CHƯA có quyết định đầu tư chính thức — approvedBudget ở đây là con số khái toán giai đoạn 2021–2030 báo chí đưa tin (3.814 tỷ đồng), không phải một tổng mức đầu tư đã phê duyệt; disbursedAmount = 0 vì chưa có quyết định đầu tư nên chưa thể giải ngân — đây là giá trị THẬT của giai đoạn đề xuất, không phải placeholder cho "chưa biết". Trạng thái dự án được đánh dấu "proposed" tương ứng.',
+      'Đường vành đai phía Tây TP Buôn Ma Thuột: dự án đã hoàn thành (2017) — disbursedAmount được đặt bằng approvedBudget (687 tỷ đồng) theo quy ước "dự án đã hoàn thành coi như đã giải ngân đủ", không phải một số liệu giải ngân độc lập được xác nhận riêng.',
+      'managingAuthorityId/investorId dùng cùng một cơ quan khi nguồn không nêu rõ hai cơ quan tách biệt (không suy đoán một chủ đầu tư/PMU cụ thể không có trong nguồn).',
+      'Chưa có checksum: đây là mô tả nguồn ở tầng catalog, chưa phải bundle đã import — checksum thật sẽ gắn vào ProjectionManifest/import report khi batch này đi qua `npm run import:data` (xem docs/project-data-import/import-runbook.md), không có ý nghĩa gắn ở tầng descriptor tĩnh này.',
+    ],
+  },
+  access: { delivery: 'bundled-static', requiresAuthentication: false },
+};
+
+/**
  * Provenance for the public-data refresh pipeline foundation (docs/adr/0004-public-data-ingestion.md).
  * `src/entities/investment-opportunity/` is a domain **separate from** `Project` — this dataset
  * backs `InvestmentOpportunity` records, never `ProjectPortfolioSource`. The one entry in
@@ -597,6 +647,7 @@ export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   PROJECT_PORTFOLIO_ILLUSTRATIVE_DATASET,
   PROJECT_PROGRESS_ILLUSTRATIVE_DATASET,
   PROJECT_ISSUES_ILLUSTRATIVE_DATASET,
+  PROJECT_PORTFOLIO_DAKLAK_REAL_2026_09_DATASET,
   PROJECT_PORTFOLIO_GENERATED_FIXTURE_DATASET,
   PROJECT_PORTFOLIO_PUBLIC_PROJECTED_DATASET,
   INVESTMENT_OPPORTUNITIES_ILLUSTRATIVE_DATASET,

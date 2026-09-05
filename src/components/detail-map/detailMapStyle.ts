@@ -13,7 +13,10 @@ import {
 } from './roadLayers';
 import {
   buildWardLabelLayers,
+  buildWardLabelLeaderLayer,
+  buildWardLabelLeaderSource,
   buildWardLabelSource,
+  WARD_LABEL_LEADER_SOURCE_ID,
   WARD_LABEL_SOURCE_ID,
 } from './wardLabelLayers';
 import { buildPlanningFillLayer } from './planningLayers';
@@ -67,13 +70,21 @@ export function buildDetailMapStyle(
   // Ward-name labels need glyphs (self-hosted) but not the PMTiles source — their points are
   // bundled (daklak-labels.json), same as the ward boundaries above.
   const wardLabelLayers = glyphsUrl ? buildWardLabelLayers() : [];
+  // Leader lines (label → true point) draw immediately before the labels themselves, so they sit
+  // visually behind the text (see wardLabelLayers.ts's docstring) but still above roads/boundaries.
+  const wardLabelLeaderLayers = glyphsUrl ? [buildWardLabelLeaderLayer()] : [];
 
   const style: StyleSpecification = {
     version: 8,
     name: 'Đắk Lắk Detail Map',
     sources: {
       [WARD_BOUNDARY_SOURCE_ID]: buildWardBoundarySource(),
-      ...(glyphsUrl ? { [WARD_LABEL_SOURCE_ID]: buildWardLabelSource() } : {}),
+      ...(glyphsUrl
+        ? {
+            [WARD_LABEL_SOURCE_ID]: buildWardLabelSource(),
+            [WARD_LABEL_LEADER_SOURCE_ID]: buildWardLabelLeaderSource(),
+          }
+        : {}),
       [KEY_PROJECTS_SOURCE_ID]: buildKeyProjectsSource(),
       [PLANNING_ZONES_SOURCE_ID]: buildPlanningZonesSource(),
     },
@@ -89,6 +100,7 @@ export function buildDetailMapStyle(
       // spliced in later and below the ward outline/labels, so real detail stays legible on top.
       buildPlanningFillLayer(),
       ...wardRemainingLayers,
+      ...wardLabelLeaderLayers,
       ...wardLabelLayers,
     ],
   };

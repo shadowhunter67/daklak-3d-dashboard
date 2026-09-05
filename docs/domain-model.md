@@ -2,8 +2,15 @@
 
 Tài liệu hoá `src/entities/project/` (Phase 1 của
 [docs/adr/0001-project-centric-domain.md](adr/0001-project-centric-domain.md)). Đây là domain
-layer **thuần dữ liệu/logic** — chưa có UI nào tiêu thụ nó (Phase 2). Không phá vỡ, không thay thế
+layer **thuần dữ liệu/logic**. Không phá vỡ, không thay thế
 `src/data-platform/` (dataset provenance) hay `src/stores/mapStore.ts` (ward/map UI state).
+
+> **Cập nhật (2026-09-05):** phần "chưa có UI nào tiêu thụ nó (Phase 2)" bên dưới đã lỗi thời — Phase
+> 2A-7 (xem `docs/adr/0006` đến `0011`) đã nối domain này vào Executive Overview/Project Portfolio/
+> Project Detail thật. Batch dữ liệu THẬT đầu tiên (không còn hư cấu 100%, khác `illustrativeProjectPortfolio.ts` bên dưới) đã đi qua importer thật —
+> xem `data-templates/pilot/daklak-real-2026-09/` và
+> `PROJECT_PORTFOLIO_DAKLAK_REAL_2026_09_DATASET` trong `src/data-platform/catalog/datasets.ts`. Tài
+> liệu Phase 1 gốc bên dưới vẫn đúng cho phần type/validation/KPI — chỉ phần "chưa có UI" là đã cũ.
 
 ```
 src/entities/project/

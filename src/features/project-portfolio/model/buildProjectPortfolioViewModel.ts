@@ -20,6 +20,10 @@ import type {
 export interface BuildProjectPortfolioInput {
   bundles: readonly ProjectBundle[];
   context: DataQualityContext;
+  /** From `ProjectPortfolioSourceMetadata.isIllustrative` — see `ProjectPortfolioModel`'s own
+   * field doc. Optional with a `true` default so existing demo-mode call sites/test fixtures that
+   * predate this field keep behaving exactly as before. */
+  isIllustrative?: boolean;
 }
 
 function countBy<T extends string>(values: readonly T[]): Map<T, number> {
@@ -31,6 +35,7 @@ function countBy<T extends string>(values: readonly T[]): Map<T, number> {
 export function buildProjectPortfolioViewModel({
   bundles,
   context,
+  isIllustrative = true,
 }: BuildProjectPortfolioInput): ProjectPortfolioModel {
   const { asOf } = context;
   const assessment = assessPortfolio(bundles, context);
@@ -76,6 +81,7 @@ export function buildProjectPortfolioViewModel({
     .sort((a, b) => a.value.localeCompare(b.value, 'vi'));
 
   return {
+    isIllustrative,
     generatedAt: asOf.toISOString(),
     totalCount: rows.length,
     rows,

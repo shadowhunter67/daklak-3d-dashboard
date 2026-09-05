@@ -4,6 +4,7 @@ import { captureProvenanceFocusTrigger } from '../provenance/provenanceFocusTrig
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import { useScrollEdgeFade } from '../../hooks/useScrollEdgeFade';
+import { FontScaleControl } from './FontScaleControl';
 import type { MessageKey } from '../../i18n/messages';
 
 const modes = [
@@ -227,6 +228,7 @@ export function DashboardHeader() {
         >
           {t('header.dataSources.label')}
         </button>
+        <FontScaleControl />
         <div className="header-lang-switch" role="group" aria-label={t('header.lang.ariaLabel')}>
           <button
             type="button"

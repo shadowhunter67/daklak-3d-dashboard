@@ -47,6 +47,10 @@ export interface BuildExecutiveOverviewInput {
    * `portfolioStatus: 'degraded'` bất kể nội dung dữ liệu, vì người dùng cần biết ngay là bức
    * tranh đang thiếu một phần, trước khi quan tâm tới việc phần còn lại tốt hay xấu. */
   sourceStatus?: 'ok' | 'degraded';
+  /** From `ProjectPortfolioSourceMetadata.isIllustrative` — see `ExecutiveOverviewModel`'s own
+   * field doc. Optional with a `true` default so existing demo-mode call sites (and every test
+   * fixture that predates this field) keep behaving exactly as before without touching them. */
+  isIllustrative?: boolean;
 }
 
 const AGENCY_ALERT_CATEGORY_LABEL = ATTENTION_REASON_LABEL;
@@ -159,6 +163,7 @@ export function buildExecutiveOverview({
   context,
   provenance,
   sourceStatus = 'ok',
+  isIllustrative = true,
 }: BuildExecutiveOverviewInput): ExecutiveOverviewModel {
   const { asOf } = context;
   const assessment = assessPortfolio(bundles, context);
@@ -181,6 +186,7 @@ export function buildExecutiveOverview({
   const alerts = buildAlerts(assessment);
 
   return {
+    isIllustrative,
     generatedAt: asOf.toISOString(),
     dataTimeline: provenance,
     portfolioStatus: derivePortfolioStatus(alerts, sourceStatus),

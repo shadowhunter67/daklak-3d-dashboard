@@ -28,6 +28,10 @@ export interface LookupProjectDetailInput {
   context: DataQualityContext;
   provenance: ProjectPortfolioProvenance;
   projectId: string;
+  /** From `ProjectPortfolioSourceMetadata.isIllustrative` — see `ProjectDetailModel`'s own field
+   * doc. Optional with a `true` default so existing demo-mode call sites/test fixtures that
+   * predate this field keep behaving exactly as before. */
+  isIllustrative?: boolean;
 }
 
 function groupIssuesBySeverity(
@@ -51,6 +55,7 @@ export function lookupProjectDetail({
   context,
   provenance,
   projectId,
+  isIllustrative = true,
 }: LookupProjectDetailInput): ProjectDetailLookupResult {
   const bundle = bundles.find((b) => b.project.id === projectId);
   if (!bundle) return { status: 'not-found' };
@@ -77,6 +82,7 @@ export function lookupProjectDetail({
   ]);
 
   const model: ProjectDetailModel = {
+    isIllustrative,
     generatedAt: asOf.toISOString(),
     dataTimeline: provenance,
     header: {

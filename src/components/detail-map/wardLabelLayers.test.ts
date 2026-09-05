@@ -1,10 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildWardLabelLayers,
+  buildWardLabelLeaderLayer,
+  buildWardLabelLeaderSource,
   buildWardLabelSource,
+  getWardLabelEntries,
   WARD_LABEL_LAYER_ID,
+  WARD_LABEL_LEADER_LAYER_ID,
+  WARD_LABEL_LEADER_SOURCE_ID,
   WARD_LABEL_SOURCE_ID,
+  WARD_LABEL_TEXT_SIZE_STOPS,
   WARD_SELECTED_LABEL_LAYER_ID,
+  wardLabelFontSizePx,
 } from './wardLabelLayers';
 
 describe('buildWardLabelSource', () => {
@@ -63,5 +70,80 @@ describe('buildWardLabelLayers', () => {
       expect(selected.layout?.['text-allow-overlap']).toBe(true);
       expect(selected.layout?.['text-ignore-placement']).toBe(true);
     }
+  });
+
+  it('the base layer never lets MapLibre collision detection drop a label (hard product requirement)', () => {
+    const [base] = buildWardLabelLayers();
+    expect(base.type).toBe('symbol');
+    if (base.type === 'symbol') {
+      expect(base.layout?.['text-allow-overlap']).toBe(true);
+      expect(base.layout?.['text-ignore-placement']).toBe(true);
+      // Reads the per-feature displacement wardLabelPlacement.ts/MapLibreProvider computes —
+      // [0, 0] (from buildWardLabelSource()) until the first placement pass runs.
+      expect(base.layout?.['text-offset']).toEqual(['get', 'textOffset']);
+    }
+  });
+});
+
+describe('buildWardLabelSource', () => {
+  it('every feature starts with a neutral [0, 0] textOffset (no visual jump before the first placement pass)', () => {
+    const source = buildWardLabelSource();
+    const data = source.data as GeoJSON.FeatureCollection<
+      GeoJSON.Point,
+      { textOffset: [number, number] }
+    >;
+    for (const feature of data.features) {
+      expect(feature.properties.textOffset).toEqual([0, 0]);
+    }
+  });
+});
+
+describe('getWardLabelEntries', () => {
+  it('exposes exactly the same 102 entries buildWardLabelSource() reads, keyed by administrative code', () => {
+    const entries = getWardLabelEntries();
+    expect(entries).toHaveLength(102);
+    const source = buildWardLabelSource();
+    const data = source.data as GeoJSON.FeatureCollection<GeoJSON.Point, { code: string }>;
+    const sourceCodes = new Set(data.features.map((f) => f.properties.code));
+    for (const [code] of entries) {
+      expect(sourceCodes.has(code)).toBe(true);
+    }
+  });
+});
+
+describe('wardLabelFontSizePx', () => {
+  it('matches WARD_LABEL_TEXT_SIZE_STOPS exactly at each stop zoom, for both priorities', () => {
+    for (const stop of WARD_LABEL_TEXT_SIZE_STOPS) {
+      expect(wardLabelFontSizePx(stop.zoom, 1)).toBe(stop.priority1);
+      expect(wardLabelFontSizePx(stop.zoom, 2)).toBe(stop.priority2);
+    }
+  });
+
+  it('interpolates linearly between two stops', () => {
+    const [a, b] = WARD_LABEL_TEXT_SIZE_STOPS;
+    const midZoom = (a.zoom + b.zoom) / 2;
+    expect(wardLabelFontSizePx(midZoom, 1)).toBeCloseTo((a.priority1 + b.priority1) / 2, 5);
+  });
+
+  it('clamps below the first stop and above the last stop instead of extrapolating', () => {
+    const first = WARD_LABEL_TEXT_SIZE_STOPS[0];
+    const last = WARD_LABEL_TEXT_SIZE_STOPS[WARD_LABEL_TEXT_SIZE_STOPS.length - 1];
+    expect(wardLabelFontSizePx(first.zoom - 5, 1)).toBe(first.priority1);
+    expect(wardLabelFontSizePx(last.zoom + 5, 1)).toBe(last.priority1);
+  });
+});
+
+describe('buildWardLabelLeaderLayer / buildWardLabelLeaderSource', () => {
+  it('the leader layer is a thin line layer reading the leader source', () => {
+    const layer = buildWardLabelLeaderLayer();
+    expect(layer.id).toBe(WARD_LABEL_LEADER_LAYER_ID);
+    expect(layer.type).toBe('line');
+    expect('source' in layer && layer.source).toBe(WARD_LABEL_LEADER_SOURCE_ID);
+  });
+
+  it('the leader source starts empty — no leader lines until a displacement pass runs', () => {
+    const source = buildWardLabelLeaderSource();
+    const data = source.data as GeoJSON.FeatureCollection;
+    expect(data.features).toEqual([]);
   });
 });

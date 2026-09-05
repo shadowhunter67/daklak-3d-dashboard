@@ -21,7 +21,20 @@ import {
   WARD_SELECTED_FILL_LAYER_ID,
   WARD_SELECTED_LINE_LAYER_ID,
 } from './wardBoundaryLayers';
-import { WARD_LABEL_LAYER_ID, WARD_SELECTED_LABEL_LAYER_ID } from './wardLabelLayers';
+import {
+  getWardLabelEntries,
+  WARD_LABEL_LAYER_ID,
+  WARD_LABEL_LEADER_SOURCE_ID,
+  WARD_LABEL_SOURCE_ID,
+  WARD_SELECTED_LABEL_LAYER_ID,
+  wardLabelFontSizePx,
+} from './wardLabelLayers';
+import {
+  estimateLabelBoxPx,
+  LEADER_LINE_MIN_DISPLACEMENT_PX,
+  resolveLabelCollisions,
+  type LabelPlacementInput,
+} from './wardLabelPlacement';
 import {
   PLANNING_FILL_LAYER_ID,
   PLANNING_FILL_OPACITY,
@@ -161,7 +174,10 @@ export class MapLibreProvider implements DetailedMapProvider {
 
     if (this.map !== map) return; // destroy() ran while we were waiting; nothing left to wire up
 
-    map.on('moveend', () => this.emitCameraChange());
+    map.on('moveend', () => {
+      this.emitCameraChange();
+      this.recomputeWardLabelPlacement();
+    });
     map.on('click', (event) => {
       // A click on a visible key-project feature opens its info popup and does NOT also select the
       // ward beneath it (which would fly the camera away from the thing the user just clicked).
@@ -176,6 +192,87 @@ export class MapLibreProvider implements DetailedMapProvider {
     // style built in buildDetailMapStyle() only reflects sourceAvailability, never the caller's
     // requested visibility (e.g. a shared URL with roads=0&heatmap=1&basemap=terrain).
     this.setLayers(options.layers);
+    // First label-placement pass — without this, all 102 labels sit at their raw anchor (still
+    // fully visible, just not yet decluttered) until the user's first pan/zoom fires `moveend`.
+    this.recomputeWardLabelPlacement();
+  }
+
+  /**
+   * The 102-label accessibility layout pass (see wardLabelPlacement.ts's docstring for the
+   * algorithm and why this exists — MapLibre's own collision detection would otherwise silently
+   * drop overlapping ward names, which is a hard product requirement violation). Recomputed on
+   * every `moveend` (pan/zoom settle) — cheap even at 102 labels (a few hundred bounding-box
+   * comparisons), and only running at settle rather than per-frame keeps it off the interaction
+   * hot path. A no-op when glyphs aren't configured (the label/leader sources don't exist in the
+   * style in that case — `wardLabelLayers.ts`/`detailMapStyle.ts`).
+   */
+  private recomputeWardLabelPlacement(): void {
+    if (!this.map) return;
+    const source = this.map.getSource(WARD_LABEL_SOURCE_ID) as
+      { setData?: (data: unknown) => void } | undefined;
+    if (!source?.setData) return;
+    const leaderSource = this.map.getSource(WARD_LABEL_LEADER_SOURCE_ID) as
+      { setData?: (data: unknown) => void } | undefined;
+
+    const zoom = this.map.getZoom();
+    const entries = getWardLabelEntries();
+    const placementInputs: LabelPlacementInput[] = entries.map(([code, entry]) => {
+      const projected = this.map!.project([entry.longitude, entry.latitude]);
+      const fontSizePx = wardLabelFontSizePx(zoom, entry.priority);
+      const box = estimateLabelBoxPx(entry.name, fontSizePx);
+      return {
+        id: code,
+        x: projected.x,
+        y: projected.y,
+        width: box.width,
+        height: box.height,
+        priority: entry.priority,
+      };
+    });
+    const resultByCode = new Map(resolveLabelCollisions(placementInputs).map((r) => [r.id, r]));
+
+    const labelFeatures: object[] = [];
+    const leaderFeatures: object[] = [];
+    for (const [code, entry] of entries) {
+      const result = resultByCode.get(code);
+      const dx = result?.dx ?? 0;
+      const dy = result?.dy ?? 0;
+      const fontSizePx = wardLabelFontSizePx(zoom, entry.priority);
+      labelFeatures.push({
+        type: 'Feature',
+        geometry: { type: 'Point', coordinates: [entry.longitude, entry.latitude] },
+        properties: {
+          code,
+          name: entry.name.normalize('NFC'),
+          priority: entry.priority,
+          // ["text-offset" is in ems of the CURRENTLY rendered font size](https://maplibre.org/maplibre-style-spec/layers/#layout-symbol-text-offset)
+          // — converting our pixel offset at this zoom's font size keeps the on-screen distance
+          // matching what the collision pass actually solved for.
+          textOffset: [dx / fontSizePx, dy / fontSizePx],
+        },
+      });
+      if (
+        result?.displaced &&
+        Math.hypot(dx, dy) >= LEADER_LINE_MIN_DISPLACEMENT_PX &&
+        leaderSource?.setData
+      ) {
+        const anchor = this.map!.project([entry.longitude, entry.latitude]);
+        const displaced = this.map!.unproject([anchor.x + dx, anchor.y + dy]);
+        leaderFeatures.push({
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: [
+              [entry.longitude, entry.latitude],
+              [displaced.lng, displaced.lat],
+            ],
+          },
+          properties: {},
+        });
+      }
+    }
+    source.setData({ type: 'FeatureCollection', features: labelFeatures });
+    leaderSource?.setData?.({ type: 'FeatureCollection', features: leaderFeatures });
   }
 
   private emitCameraChange() {
@@ -314,6 +411,7 @@ export class MapLibreProvider implements DetailedMapProvider {
     // with the toggle off — turning off "ward names" shouldn't strip the identity of the ward the
     // user explicitly selected; its own code filter gates whether it shows anything.
     this.setLayerVisibility(WARD_LABEL_LAYER_ID, visible);
+    if (visible) this.recomputeWardLabelPlacement();
   }
 
   setPlanningOverlay(overlay: DetailMapLayerState['planningOverlay']): void {
