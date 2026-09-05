@@ -7,6 +7,21 @@
      position:absolute, so full-height panels underneath it (e.g. the detail-map directory
      sidebar) must reserve this much space at the top or their content renders behind it. */
   --app-header-height: 98px;
+
+  /* Accessibility typography tokens (AccessibilityControls.tsx sets --user-font-scale on
+     <html>, persisted to localStorage). Applied to substantive reading content — Executive
+     Overview, KPI cards, the primary navigation — deliberately NOT to the compact header
+     toolbar chrome (mode tabs, meta-bar buttons), whose fixed-height rows (58–98px depending on
+     breakpoint) don't have the vertical room to safely grow without risking the exact
+     header/panel overlap this project has repeatedly had to fix live (see git history for
+     "buttons overlapping the header"). Scaling reading content already covers the "người mắt
+     kém" (low-vision) use case this exists for; extending it to every one of the ~100 other
+     small-text declarations across the map tool panels/portfolio/detail views is tracked as
+     follow-up work, not done in this pass — see docs/accessibility.md. */
+  --user-font-scale: 1;
+  --font-size-label: calc(14px * var(--user-font-scale));
+  --font-size-body: calc(16px * var(--user-font-scale));
+  --font-size-control: calc(15px * var(--user-font-scale));
 }
 * {
   box-sizing: border-box;
@@ -110,7 +125,7 @@ h1 i {
   align-items: center;
   gap: 22px;
   color: #acc5bc;
-  font-size: 12px;
+  font-size: 14px;
   min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -142,9 +157,9 @@ h1 i {
   color: #8fa9a1;
   background: transparent;
   border-radius: 999px;
-  padding: 7px 13px;
+  padding: 8px 14px;
   cursor: pointer;
-  font-size: 10px;
+  font-size: 13px;
 }
 .mode-tabs button.active {
   color: #071918;
@@ -653,14 +668,44 @@ h1 i {
 .header-lang-button {
   border: 0;
   border-radius: 999px;
-  padding: 5px 10px;
+  padding: 6px 11px;
   color: #acc5bc;
   background: transparent;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
 }
 .header-lang-button[aria-pressed='true'] {
+  color: #071918;
+  background: #e4bc5e;
+}
+/* "A- / A / A+" text-size control (FontScaleControl.tsx) — same segmented-pill pattern as the
+   language switch above, on purpose (one visual language for "small toggle group" controls in
+   this header). Deliberately NOT inside the header-meta font-scale exclusion this file's `:root`
+   comment describes: the control itself stays a fixed, legible size regardless of the
+   `--user-font-scale` it sets, the same way a volume slider's own label doesn't get louder. */
+.font-scale-control {
+  display: flex;
+  flex-shrink: 0;
+  gap: 2px;
+  padding: 3px;
+  border: 1px solid #d4a44655;
+  border-radius: 999px;
+  background: #d4a44612;
+}
+.font-scale-control__button {
+  min-width: 34px;
+  min-height: 34px;
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 8px;
+  color: #acc5bc;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+.font-scale-control__button[aria-pressed='true'] {
   color: #071918;
   background: #e4bc5e;
 }
@@ -1224,8 +1269,9 @@ footer a {
   }
   .primary-nav button {
     flex-shrink: 0;
+    min-height: 40px;
     padding: 6px 10px;
-    font-size: 10px;
+    font-size: 12px;
   }
   /* Scroll affordance: at 390px this row and .header-meta can be tight enough that most of
      their content sits off-screen with nothing to hint it's swipeable (a real user-reported
@@ -1258,7 +1304,7 @@ footer a {
     min-width: 0;
     min-height: 40px;
     padding: 5px 4px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .app-shell {
     width: 100%;
@@ -1329,7 +1375,7 @@ footer a {
     min-height: 44px;
     padding: 4px 2px;
     border-radius: 10px;
-    font-size: 10px;
+    font-size: 11px;
   }
   .header-secondary-control:not(.header-help-control) {
     display: none;
@@ -1536,8 +1582,9 @@ footer a {
   }
   .primary-nav button {
     flex-shrink: 0;
+    min-height: 40px;
     padding: 6px 10px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .header-meta {
     /* Same overflow fix as the portrait breakpoint above — see the comment there. */
@@ -2319,11 +2366,12 @@ footer a {
 .primary-nav button {
   border: 0;
   border-radius: 999px;
-  padding: 7px 12px;
+  padding: 9px 14px;
   color: #8fa9a1;
   background: transparent;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 14px;
+  font-weight: 600;
   white-space: nowrap;
 }
 .primary-nav button.active {
@@ -2353,7 +2401,7 @@ footer a {
   border-radius: 999px;
   color: #e4bc5e;
   background: #e4bc5e12;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.04em;
 }
 .executive-overview h2 {
@@ -2368,7 +2416,7 @@ footer a {
 .executive-overview__status {
   margin: 0 0 20px;
   color: #a9c3ba;
-  font-size: 13px;
+  font-size: var(--font-size-label);
 }
 .executive-overview__status strong {
   color: #e9f2ed;
@@ -2393,7 +2441,7 @@ footer a {
   border-radius: 10px;
   color: #f0cf7a;
   background: #f0cf7a12;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .executive-overview__empty,
 .executive-overview__loading {
@@ -2414,7 +2462,7 @@ footer a {
 }
 .executive-overview__error-detail {
   color: #a9c3ba;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .executive-overview__error button {
   margin-top: 8px;
@@ -2452,26 +2500,28 @@ footer a {
 .kpi-card__label {
   margin: 0 0 6px;
   color: #7fa39a;
-  font-size: 11px;
+  font-size: var(--font-size-label);
+  font-weight: 600;
   letter-spacing: 0.03em;
 }
 .kpi-card__value {
   margin: 0;
   color: #e9f2ed;
-  font-size: clamp(18px, 2.4vw, 24px);
+  font-size: calc(clamp(20px, 2.6vw, 28px) * var(--user-font-scale));
   font-weight: 700;
+  line-height: 1.3;
   overflow-wrap: anywhere;
 }
 .kpi-card[data-unavailable] .kpi-card__value {
   color: #8fa39a;
-  font-size: 15px;
+  font-size: calc(17px * var(--user-font-scale));
   font-weight: 600;
 }
 .kpi-card__explanation {
   margin: 6px 0 0;
   color: #7fa39a;
-  font-size: 11px;
-  line-height: 1.4;
+  font-size: var(--font-size-label);
+  line-height: 1.5;
 }
 
 .executive-overview__columns {

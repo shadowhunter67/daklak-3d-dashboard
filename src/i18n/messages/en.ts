@@ -76,6 +76,12 @@ export const en: Partial<Record<MessageKey, string>> = {
   'header.lang.vi': 'VI',
   'header.lang.en': 'EN',
 
+  // FontScaleControl ("A- / A / A+")
+  'fontScale.groupAriaLabel': 'Text size',
+  'fontScale.small': 'Smaller text',
+  'fontScale.default': 'Default text size',
+  'fontScale.large': 'Larger text',
+
   // Executive Overview
   'executiveOverview.loading': 'Loading the project portfolio overview…',
   'executiveOverview.error.title': 'Could not load project data',

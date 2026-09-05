@@ -81,6 +81,12 @@ export const vi = {
   'header.lang.vi': 'VI',
   'header.lang.en': 'EN',
 
+  // FontScaleControl ("A- / A / A+")
+  'fontScale.groupAriaLabel': 'Cỡ chữ',
+  'fontScale.small': 'Chữ nhỏ hơn',
+  'fontScale.default': 'Chữ cỡ mặc định',
+  'fontScale.large': 'Chữ lớn hơn',
+
   // Executive Overview
   'executiveOverview.loading': 'Đang tải tổng quan danh mục dự án…',
   'executiveOverview.error.title': 'Không thể tải dữ liệu dự án',
