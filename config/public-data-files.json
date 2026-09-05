@@ -161,7 +161,7 @@
       ],
       "classification": "public",
       "delivery": "bundled-static",
-      "checksum": "24076c24b2d274a58beee1b89eb9ad3427755a62eca3250d3dd6725ffbd1a43b",
+      "checksum": "def3015c11a1c303c8884f3b55fa58f668bdee285ebbda92a352d17982fbc7e7",
       "note": "Now the output of a REAL `npm run import:data` run (docs/project-data-import/) over data-templates/pilot/daklak-real-2026-09/ — 3 real, publicly-reported Đắk Lắk transport projects (source-cited in that batch's reference-documents.csv), staged via `npm run stage:internal-portfolio`. Consumed only by internal-static builds (GeneratedJsonProjectPortfolioSource), never the default demo/public-static deployment. Regenerate this checksum after re-running the import/stage pipeline with new/updated source data."
     },
     {
