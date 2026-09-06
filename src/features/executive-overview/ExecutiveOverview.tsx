@@ -1,23 +1,16 @@
 import { useMemo, useState } from 'react';
 import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
-import type { PortfolioStatus } from './model/executiveOverviewTypes';
 import { formatAbsoluteDateTime } from './model/executiveOverviewSelectors';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
 import { AlertList } from './AlertList';
 import { DataHealthPanel } from './DataHealthPanel';
+import { ExecutiveStatusHero } from './ExecutiveStatusHero';
 import { KpiCardGrid } from './KpiCardGrid';
 import { PortfolioStatusChart } from './PortfolioStatusChart';
 import { PriorityProjectList } from './PriorityProjectList';
 import { useExecutiveOverview } from './data/useExecutiveOverview';
-
-const PORTFOLIO_STATUS_MESSAGE_KEY: Record<PortfolioStatus, MessageKey> = {
-  healthy: 'portfolioStatus.healthy',
-  attention: 'portfolioStatus.attention',
-  critical: 'portfolioStatus.critical',
-  degraded: 'portfolioStatus.degraded',
-};
 
 const ERROR_KIND_MESSAGE_KEY: Record<string, MessageKey> = {
   unauthorized: 'executiveOverview.error.kind.unauthorized',
@@ -95,6 +88,7 @@ export function ExecutiveOverview({
       tabIndex={-1}
     >
       <h2 id="executive-overview-heading">{t('executiveOverview.heading')}</h2>
+      {!isEmpty && <ExecutiveStatusHero model={model} />}
       {(model.isIllustrative || onOpenPortfolio) && (
         <div className="executive-overview__notice">
           {model.isIllustrative && (
@@ -113,10 +107,10 @@ export function ExecutiveOverview({
           )}
         </div>
       )}
-      <p className="executive-overview__status" data-status={model.portfolioStatus}>
-        {t('executiveOverview.statusLabel')}{' '}
-        <strong>{t(PORTFOLIO_STATUS_MESSAGE_KEY[model.portfolioStatus])}</strong>
-        <span aria-hidden="true"> · </span>
+      {/* Chữ "Trạng thái danh mục: X" trước đây lặp lại đúng thông tin Executive Status Hero ở
+          trên đã nói to và rõ hơn nhiều — chỉ còn giữ lại mốc "dữ liệu có hiệu lực" (vẫn cần cho
+          minh bạch nguồn dữ liệu), tránh nói hai lần cùng một điều theo hai cách khác nhau. */}
+      <p className="executive-overview__status">
         {t('executiveOverview.dataEffectiveLabel')}{' '}
         {formatAbsoluteDateTime(model.dataTimeline.effectiveAt, locale)}
       </p>

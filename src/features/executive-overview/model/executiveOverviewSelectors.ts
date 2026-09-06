@@ -10,9 +10,22 @@ import {
   formatVnd,
   formatVndInBillions,
 } from '../../../i18n/formatters';
-import type { PortfolioAlert, PortfolioAlertSeverity } from './executiveOverviewTypes';
+import type {
+  PortfolioAlert,
+  PortfolioAlertSeverity,
+  PortfolioStatus,
+} from './executiveOverviewTypes';
 
 type Translate = (key: MessageKey, vars?: Record<string, string | number>) => string;
+
+/** Shared between the `.executive-overview__status` line and `ExecutiveStatusHero` — one
+ * canonical mapping so the two never drift to different wording for the same status. */
+export const PORTFOLIO_STATUS_MESSAGE_KEY: Record<PortfolioStatus, MessageKey> = {
+  healthy: 'portfolioStatus.healthy',
+  attention: 'portfolioStatus.attention',
+  critical: 'portfolioStatus.critical',
+  degraded: 'portfolioStatus.degraded',
+};
 
 /** Formats a KPI value for display — never a bare 0 for unavailable, an explanatory text instead
  * (spec). Every UI surface (Executive Overview, Project Portfolio, Project Detail) is translated,

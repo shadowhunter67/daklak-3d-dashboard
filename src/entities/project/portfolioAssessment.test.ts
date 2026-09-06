@@ -108,6 +108,38 @@ describe('assessPortfolio', () => {
     expect(result.qualityIssues.some((i) => i.rule === 'unmapped-administrative-code')).toBe(true);
   });
 
+  it('renders the overdue-issue due date as a plain date, not a raw ISO timestamp', () => {
+    const overdueCriticalIssue: ProjectIssue = {
+      id: 'is-1',
+      projectId: 'prj-1',
+      category: 'other',
+      severity: 'critical',
+      title: 'Vướng mắc nghiêm trọng',
+      description: 'x',
+      openedAt: '2026-01-01T00:00:00.000Z',
+      dueAt: '2026-04-15T00:00:00.000Z',
+      status: 'open',
+      evidenceIds: [],
+      sourceDatasetId: 'ds-issues',
+    };
+    const result = assessPortfolio([bundle({}, { issues: [overdueCriticalIssue] })], context);
+    const alert = result.businessAlerts.find((a) => a.category === 'overdue-critical-issue');
+    expect(alert?.message).not.toContain('T00:00:00.000Z');
+    expect(alert?.message).toContain('2026');
+  });
+
+  // Regression guard for a real UX defect: business-alert messages briefly shipped with a
+  // trailing "(status=suspended)"/"(status=delayed)"/"(status=at-risk)" technical suffix visible
+  // directly to executives on the Executive Overview alert list — see AGENTS/PR history.
+  it('never leaks a raw "status=..." enum value into a business-alert message', () => {
+    for (const status of ['suspended', 'delayed', 'at-risk'] as const) {
+      const result = assessPortfolio([bundle({ status })], context);
+      for (const alert of result.businessAlerts) {
+        expect(alert.message).not.toMatch(/status=/);
+      }
+    }
+  });
+
   it('does not alert on a critical issue that is not yet overdue', () => {
     const notYetDue: ProjectIssue = {
       id: 'is-1',

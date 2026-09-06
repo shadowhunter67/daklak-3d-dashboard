@@ -22,6 +22,7 @@ import {
   type ProjectStatus,
 } from '../../../entities/project/types';
 import { summarizeDataQuality } from '../../../entities/project/dataQualitySummary';
+import { dataQualityRuleLabelKey } from '../../../entities/project/dataQualityMessages';
 import { PROJECT_STATUS_LABELS } from '../../../entities/project/labels';
 import { tStatic } from '../../../i18n/staticTranslate';
 import type { DataQualityContext } from '../../../entities/project/validation/dataQualityRules';
@@ -56,11 +57,14 @@ export interface BuildExecutiveOverviewInput {
 
 const AGENCY_ALERT_CATEGORY_LABEL = ATTENTION_REASON_LABEL;
 
+/** `items` is capped to the top 5 for the "Dự án cần chú ý" list; `totalCount` (uncapped) is what
+ * the Executive Status Hero's "X/Y dự án cần xử lý" headline needs — a leader must see the real
+ * total, not the display cap. */
 function buildPriorityProjects(
   bundles: readonly ProjectBundle[],
   assessment: ReturnType<typeof assessPortfolio>,
   asOf: Date,
-): ProjectAttentionItem[] {
+): { items: ProjectAttentionItem[]; totalCount: number } {
   const invalidProjectIds = new Set(
     assessment.validationErrors.filter((e) => e.entityType === 'project').map((e) => e.entityId),
   );
@@ -89,19 +93,18 @@ function buildPriorityProjects(
     })
     .filter((item): item is ProjectAttentionItem => item !== null);
 
-  return items
-    .sort((a, b) => {
-      const rankDiff = REASON_RANK[a.reasonCategory] - REASON_RANK[b.reasonCategory];
-      if (rankDiff !== 0) return rankDiff;
-      // Tie-break: dự án có exposure ngân sách lớn hơn (giải ngân cao hơn) nổi lên trước ở cùng
-      // mức độ nghiêm trọng — càng nhiều tiền đang "chảy" trong một tình huống rủi ro thì càng
-      // đáng chú ý trước.
-      const aValue = a.disbursementRate.value ?? -1;
-      const bValue = b.disbursementRate.value ?? -1;
-      if (aValue !== bValue) return bValue - aValue;
-      return a.projectId.localeCompare(b.projectId);
-    })
-    .slice(0, 5);
+  const sorted = items.sort((a, b) => {
+    const rankDiff = REASON_RANK[a.reasonCategory] - REASON_RANK[b.reasonCategory];
+    if (rankDiff !== 0) return rankDiff;
+    // Tie-break: dự án có exposure ngân sách lớn hơn (giải ngân cao hơn) nổi lên trước ở cùng
+    // mức độ nghiêm trọng — càng nhiều tiền đang "chảy" trong một tình huống rủi ro thì càng
+    // đáng chú ý trước.
+    const aValue = a.disbursementRate.value ?? -1;
+    const bValue = b.disbursementRate.value ?? -1;
+    if (aValue !== bValue) return bValue - aValue;
+    return a.projectId.localeCompare(b.projectId);
+  });
+  return { items: sorted.slice(0, 5), totalCount: sorted.length };
 }
 
 function buildAlerts(assessment: ReturnType<typeof assessPortfolio>): PortfolioAlert[] {
@@ -113,12 +116,16 @@ function buildAlerts(assessment: ReturnType<typeof assessPortfolio>): PortfolioA
     message: alert.message,
     projectId: alert.projectId,
   }));
+  // Lãnh đạo đọc `message` này trực tiếp trên Executive Overview — dùng nhãn đã nhân hoá
+  // (`dataQualityRuleLabelKey`) thay vì `issue.message` gốc, vốn chứa slug/field kỹ thuật (ví dụ
+  // "managingAuthorityId không tồn tại: agency-x", "dùng selectAuthoritativeSnapshot..."). Chi
+  // tiết kỹ thuật đầy đủ vẫn còn nguyên trên Data Readiness cho người cần đào sâu hơn.
   const qualityAlerts: PortfolioAlert[] = assessment.qualityIssues.map((issue) => ({
     id: issue.id,
     kind: 'data-quality',
     severity: issue.severity === 'error' ? 'critical' : 'warning',
     category: issue.rule,
-    message: issue.message,
+    message: tStatic(dataQualityRuleLabelKey(issue.rule)),
     projectId: issue.entityType === 'project' ? issue.entityId : undefined,
   }));
   return [...businessAlerts, ...qualityAlerts];
@@ -185,12 +192,14 @@ export function buildExecutiveOverview({
   const allIssues = validBundles.flatMap((b) => b.issues);
 
   const alerts = buildAlerts(assessment);
+  const priorityProjects = buildPriorityProjects(validBundles, assessment, asOf);
 
   return {
     isIllustrative,
     generatedAt: asOf.toISOString(),
     dataTimeline: provenance,
     portfolioStatus: derivePortfolioStatus(alerts, sourceStatus),
+    attentionProjectCount: priorityProjects.totalCount,
     disbursementRateTrend: portfolioDisbursementRateTrend(validBundles, asOf),
     kpis: {
       totalProjects: availableKpi(
@@ -249,7 +258,7 @@ export function buildExecutiveOverview({
       overdueIssues: overdueIssueCount(allIssues, asOf),
     },
     statusDistribution: buildStatusDistribution(validBundles),
-    priorityProjects: buildPriorityProjects(validBundles, assessment, asOf),
+    priorityProjects: priorityProjects.items,
     alerts,
     dataHealth: buildDataHealth(bundles, context),
   };

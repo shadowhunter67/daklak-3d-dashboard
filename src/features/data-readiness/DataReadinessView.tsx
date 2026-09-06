@@ -4,6 +4,7 @@ import type { ProjectPortfolioSource } from '../../entities/project/adapters/Pro
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
 import { formatDateTime } from '../../i18n/formatters';
+import { dataQualityRuleLabelKey } from '../../entities/project/dataQualityMessages';
 import { useDataReadiness } from './data/useDataReadiness';
 import type { DataReadinessIssueWithProjectLink } from './model/dataReadinessTypes';
 
@@ -33,7 +34,12 @@ function IssueList({
         <ul className="data-readiness__issue-list">
           {issues.map((issue) => (
             <li key={issue.id}>
-              <span className="data-readiness__issue-rule">{issue.rule}</span> — {issue.message}
+              {/* Nhãn dễ hiểu thay cho slug kỹ thuật (issue.rule) — chi tiết đầy đủ (thường có
+                  entity id cụ thể) vẫn giữ nguyên ngay sau đó cho người cần đào sâu hơn. */}
+              <span className="data-readiness__issue-rule">
+                {t(dataQualityRuleLabelKey(issue.rule))}
+              </span>{' '}
+              — {issue.message}
               {/* C6: chỉ hiển thị nút điều hướng khi projectId đã resolve được thật — không tạo
                   dead link cho issue không gắn project (workPackage/milestone mồ côi, v.v.). */}
               {issue.linkedProjectId && (

@@ -79,10 +79,26 @@ function collectValidationErrors(bundle: ProjectBundle): ValidationError[] {
   return errors;
 }
 
-function isOverdueOpenIssue(issue: ProjectIssue, asOf: Date): boolean {
+function isOverdueOpenIssue(
+  issue: ProjectIssue,
+  asOf: Date,
+): issue is ProjectIssue & { dueAt: string } {
   if (!issue.dueAt) return false;
   if (issue.status === 'resolved' || issue.status === 'closed') return false;
   return new Date(issue.dueAt).getTime() < asOf.getTime();
+}
+
+/** Renders an ISO timestamp as a plain Vietnamese date ("15 thg 4, 2026") for an alert message a
+ * leader reads directly — a raw ISO string like "2026-04-15T00:00:00.000Z" is exactly the kind of
+ * backend-shaped text this UI must never surface (spec: no technical identifiers in executive
+ * text). This module has no access to the user's chosen UI locale (a pure domain function, not a
+ * component), so it always renders vi-VN — acceptable here since Vietnamese digits/month names
+ * read fine either way and the English UI still gets a real (if not localized) date rather than a
+ * raw timestamp. */
+function formatIsoDateForAlert(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return new Intl.DateTimeFormat('vi-VN', { dateStyle: 'medium' }).format(date);
 }
 
 /**
@@ -113,19 +129,21 @@ function collectBusinessAlerts(bundle: ProjectBundle, asOf: Date): ProjectAlert[
       detectedAt,
     });
 
+  // Message trực tiếp lên UI cấp lãnh đạo (AlertList/Executive Overview) — không được lộ giá trị
+  // enum kỹ thuật kiểu "(status=suspended)"; câu tiếng Việt tự nó đã đủ nghĩa cho người đọc.
   if (project.status === 'suspended')
-    push('suspended', 'critical', `Dự án đang tạm dừng (status=suspended).`, 'status');
+    push('suspended', 'critical', `Dự án đang tạm dừng.`, 'status');
   else if (project.status === 'delayed')
-    push('schedule-delay', 'critical', `Dự án đang chậm tiến độ (status=delayed).`, 'status');
+    push('schedule-delay', 'critical', `Dự án đang chậm tiến độ.`, 'status');
   else if (project.status === 'at-risk')
-    push('at-risk', 'warning', `Dự án có nguy cơ chậm tiến độ (status=at-risk).`, 'status');
+    push('at-risk', 'warning', `Dự án có nguy cơ chậm tiến độ.`, 'status');
 
   for (const issue of issues) {
     if (issue.severity === 'critical' && isOverdueOpenIssue(issue, asOf))
       push(
         'overdue-critical-issue',
         'critical',
-        `Vướng mắc mức độ nghiêm trọng đã quá hạn xử lý: "${issue.title}" (hạn ${issue.dueAt}).`,
+        `Vướng mắc mức độ nghiêm trọng đã quá hạn xử lý: "${issue.title}" (hạn ${formatIsoDateForAlert(issue.dueAt)}).`,
         issue.id,
       );
   }

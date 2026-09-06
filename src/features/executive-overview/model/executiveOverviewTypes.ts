@@ -73,6 +73,10 @@ export interface ExecutiveOverviewModel {
    * vốn chỉ là thời điểm tính toán lại view model, không phải thời điểm dữ liệu thay đổi. */
   dataTimeline: ProjectPortfolioProvenance;
   portfolioStatus: PortfolioStatus;
+  /** Tổng số dự án cần chú ý — KHÔNG bị cắt bởi giới hạn hiển thị top-5 của `priorityProjects`
+   * (dùng cho headline "X/Y dự án cần xử lý" ở Executive Status Hero; hiển thị đúng tổng thật,
+   * không phải số lượng item đang render). */
+  attentionProjectCount: number;
   kpis: ExecutiveOverviewKpis;
   /** Xu hướng tỷ lệ giải ngân so với ~30 ngày trước, dựng từ lịch sử `progressSnapshots` thật —
    * xem `entities/project/kpi/portfolioTrend.ts`. Chỉ có cho `disbursementRate` ở giai đoạn này vì

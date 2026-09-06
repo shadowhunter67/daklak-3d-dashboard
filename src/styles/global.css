@@ -2499,6 +2499,90 @@ footer a {
     'DejaVu Serif',
     serif;
 }
+/* Executive Status Hero — the page's single most important element (spec: "5-second test"). A
+   leader must be able to read overall health, the count of projects needing action, and the top
+   issue types without reading anything else on the page. Deliberately louder than every other
+   panel below it: larger border, a tinted background tied to severity, and the biggest text on
+   the page after the KPI numbers themselves. */
+.executive-status-hero {
+  margin: var(--space-4) 0 var(--space-5);
+  padding: var(--space-5) var(--space-6);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--text-muted);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+.executive-status-hero[data-status='critical'] {
+  border-left-color: #f08a68;
+  background: #f0836612;
+}
+.executive-status-hero[data-status='attention'] {
+  border-left-color: var(--gold);
+  background: #e7c47112;
+}
+.executive-status-hero[data-status='healthy'] {
+  border-left-color: var(--color-success);
+  background: #6fcf9712;
+}
+.executive-status-hero[data-status='degraded'] {
+  border-left-color: var(--text-secondary);
+}
+.executive-status-hero__eyebrow {
+  margin: 0 0 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.executive-status-hero__status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 10px;
+  color: var(--text-primary);
+  font-size: clamp(22px, 2.6vw, 30px);
+  font-weight: 700;
+}
+.executive-status-hero__status-badge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 18px;
+  font-weight: 900;
+}
+.executive-status-hero[data-status='critical'] .executive-status-hero__status-badge {
+  color: #f08a68;
+  background: #f0836626;
+}
+.executive-status-hero[data-status='attention'] .executive-status-hero__status-badge {
+  color: var(--gold);
+  background: #e7c47126;
+}
+.executive-status-hero[data-status='healthy'] .executive-status-hero__status-badge {
+  color: var(--color-success);
+  background: #6fcf9726;
+}
+.executive-status-hero[data-status='degraded'] .executive-status-hero__status-badge {
+  color: var(--text-secondary);
+  background: #ffffff1a;
+}
+.executive-status-hero__summary {
+  margin: 0 0 4px;
+  color: var(--text-primary);
+  font-size: clamp(18px, 1.8vw, 22px);
+  font-weight: 600;
+}
+.executive-status-hero__breakdown {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-body);
+}
+
 /* The illustrative-data notice — spec §6: important information that must be legible without
    dominating the page. A bordered banner (not a small pill) directly under the title, with an
    info glyph and its own CTA, so it can't be skimmed past by accident. */
