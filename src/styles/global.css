@@ -1972,6 +1972,32 @@ footer a {
   text-transform: uppercase;
   color: #8eaaa3;
 }
+/* Basic/Advanced mode switch (spec §X) — same small segmented-pill pattern as the header's mode
+   toggles, sized down slightly to fit this narrower panel. */
+.detail-map-layer-panel__mode {
+  display: flex;
+  gap: 2px;
+  margin: 0 0 10px;
+  padding: 3px;
+  border: 1px solid #86aa9d2b;
+  border-radius: 999px;
+  background: #06171599;
+}
+.detail-map-layer-panel__mode button {
+  flex: 1 1 0;
+  border: 0;
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: #8fa9a1;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+}
+.detail-map-layer-panel__mode button[aria-pressed='true'] {
+  color: #071918;
+  background: #e4bc5e;
+}
 .layer-toggle,
 .basemap-option {
   display: flex;

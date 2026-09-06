@@ -478,7 +478,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'statPanel.newBusinesses': 'Newly registered businesses',
   'statPanel.communePopulation': 'Commune-level population',
   'statPanel.chartTitle.energy': 'Indicators by point group',
-  'statPanel.chartTitle.heatmap': 'Distribution intensity',
+  'statPanel.chartTitle.heatmap': 'Distribution intensity (illustrative 0–100 scale)',
   'statPanel.chartTitle.overview': 'Service access indicator',
   'statPanel.chartAria': 'Bar chart summarizing the three displayed indicator groups: {summary}.',
   'statPanel.mockNote.overview':
@@ -698,6 +698,10 @@ export const en: Partial<Record<MessageKey, string>> = {
   'layerPanel.keyProjectsLegendLabel': 'Project status',
   'layerPanel.keyProjectsNote':
     'Real projects compiled from news / government sources; locations and alignments are approximate and not field-verified. Tap a marker on the map for its source.',
+  'layerPanel.modeGroupLabel': 'Layer display mode',
+  'layerPanel.modeBasic': 'Basic',
+  'layerPanel.modeAdvanced': 'Advanced',
+  'layerPanel.advancedLayersHeading': 'Advanced layers',
 
   // DetailMapViewport
   'detailMapViewport.webglUnsupportedReason':

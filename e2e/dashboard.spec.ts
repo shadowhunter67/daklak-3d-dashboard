@@ -718,6 +718,8 @@ test.describe('detail map (MapLibre)', () => {
     const lengthBeforeToggles = await historyLength();
 
     await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    // Heatmap is an "Advanced" layer (progressive disclosure) — hidden until switched.
+    await page.getByRole('button', { name: 'Nâng cao' }).click();
     const heatmapCheckbox = page.getByRole('checkbox', { name: 'Heatmap' });
     await heatmapCheckbox.check();
     await expect(page).toHaveURL(/heatmap=1/);
@@ -761,6 +763,7 @@ test.describe('detail map (MapLibre)', () => {
     await page.goto('./?view=map');
     await expect(page.locator('#detail-map-viewport')).toBeVisible();
     await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    await page.getByRole('button', { name: 'Nâng cao' }).click();
     const heatmap = page.getByRole('checkbox', { name: 'Heatmap' });
     await expect(heatmap).toBeEnabled();
     await expect(heatmap).toHaveAttribute('aria-describedby', /.+/);

@@ -485,7 +485,7 @@ export const vi = {
   'statPanel.newBusinesses': 'Doanh nghiệp thành lập mới',
   'statPanel.communePopulation': 'Dân số cấp xã',
   'statPanel.chartTitle.energy': 'Chỉ số theo nhóm điểm',
-  'statPanel.chartTitle.heatmap': 'Cường độ phân bố',
+  'statPanel.chartTitle.heatmap': 'Cường độ phân bố (thang minh hoạ 0–100)',
   'statPanel.chartTitle.overview': 'Chỉ số tiếp cận dịch vụ',
   'statPanel.chartAria': 'Biểu đồ cột tóm tắt ba nhóm chỉ số đang hiển thị: {summary}.',
   'statPanel.mockNote.overview':
@@ -710,6 +710,12 @@ export const vi = {
   'layerPanel.keyProjectsLegendLabel': 'Trạng thái dự án',
   'layerPanel.keyProjectsNote':
     'Dự án có thật, tổng hợp từ nguồn báo chí / cơ quan; vị trí và tuyến là gần đúng, chưa kiểm chứng thực địa. Chạm vào ký hiệu trên bản đồ để xem nguồn.',
+  // Basic/Advanced progressive disclosure (spec §X) — mặc định Cơ bản (5 lớp chính), Nâng cao mở
+  // toàn bộ (thêm tên đường, địa danh, công trình, chỉ số dashboard, heatmap).
+  'layerPanel.modeGroupLabel': 'Chế độ hiển thị lớp',
+  'layerPanel.modeBasic': 'Cơ bản',
+  'layerPanel.modeAdvanced': 'Nâng cao',
+  'layerPanel.advancedLayersHeading': 'Lớp chuyên sâu',
 
   // DetailMapViewport
   'detailMapViewport.webglUnsupportedReason':
