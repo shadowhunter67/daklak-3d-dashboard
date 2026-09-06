@@ -3530,6 +3530,33 @@ footer a {
   text-align: left;
   vertical-align: top;
 }
+/* Scanning aid next to the text value (spec §XIV) — decorative (aria-hidden), the text next to it
+   is always the real accessible value. The planned-progress marker is a thin tick, not a second
+   bar, so "behind plan" reads as the fill simply falling short of it. */
+.mini-progress-bar {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 6px;
+  margin-bottom: 4px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  overflow: visible;
+}
+.mini-progress-bar__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--gold);
+}
+.mini-progress-bar__planned-marker {
+  position: absolute;
+  top: -2px;
+  width: 2px;
+  height: 10px;
+  background: var(--text-secondary);
+  transform: translateX(-1px);
+}
 .project-portfolio-table th {
   color: #7fa39a;
   font-weight: 600;
