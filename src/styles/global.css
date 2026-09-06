@@ -3812,6 +3812,97 @@ footer a {
   color: #a9c3ba;
   font-size: 13px;
 }
+/* Health summary (spec §XVI) — same hero treatment as Executive Status Hero: leftmost thing on
+   the page after the title, biggest status word, real counts (never a synthetic score). */
+.data-readiness-summary {
+  margin: 0 0 24px;
+  padding: var(--space-5) var(--space-6);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--text-muted);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+.data-readiness-summary[data-status='critical'] {
+  border-left-color: #f08a68;
+  background: #f0836612;
+}
+.data-readiness-summary[data-status='attention'] {
+  border-left-color: var(--gold);
+  background: #e7c47112;
+}
+.data-readiness-summary[data-status='good'] {
+  border-left-color: var(--color-success);
+  background: #6fcf9712;
+}
+.data-readiness-summary h3 {
+  margin: 0 0 10px;
+  font-size: var(--font-size-label);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+.data-readiness-summary__status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 700;
+}
+.data-readiness-summary__status-badge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 15px;
+  font-weight: 900;
+}
+.data-readiness-summary[data-status='critical'] .data-readiness-summary__status-badge {
+  color: #f08a68;
+  background: #f0836626;
+}
+.data-readiness-summary[data-status='attention'] .data-readiness-summary__status-badge {
+  color: var(--gold);
+  background: #e7c47126;
+}
+.data-readiness-summary[data-status='good'] .data-readiness-summary__status-badge {
+  color: var(--color-success);
+  background: #6fcf9726;
+}
+.data-readiness-summary__line {
+  margin: 0 0 18px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-label);
+}
+.data-readiness-summary__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+.data-readiness-summary__card {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.data-readiness-summary__card h4 {
+  margin: 0 0 6px;
+  color: var(--text-muted);
+  font-size: calc(var(--font-size-label) - 1px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.data-readiness-summary__card p {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--font-size-label);
+  line-height: 1.5;
+}
 .data-readiness__degraded-banner {
   margin: 0 0 16px;
   padding: 10px 14px;

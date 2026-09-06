@@ -814,6 +814,25 @@ export const vi = {
   'dataReadiness.heading': 'Mức độ sẵn sàng dữ liệu',
   'dataReadiness.description':
     'Nguồn dữ liệu hiện tại đến từ đâu, đã được kiểm tra thế nào, và những gì còn thiếu/cũ/chưa xác minh.',
+  // Health summary (spec §XVI) — trạng thái 3 mức (Tốt/Cần chú ý/Nghiêm trọng), KHÔNG phải điểm
+  // số tổng hợp kiểu "92/100" — không có phương pháp tính điểm nào đủ căn cứ để không bị coi là
+  // bịa độ chính xác giả. 4 card dùng đúng số đã tính sẵn ở nơi khác trong pipeline.
+  'dataReadiness.summary.heading': 'Sức khỏe dữ liệu',
+  'dataReadiness.summary.status.good': 'Tốt',
+  'dataReadiness.summary.status.attention': 'Cần chú ý',
+  'dataReadiness.summary.status.critical': 'Cần xử lý',
+  'dataReadiness.summary.line':
+    '{errors} lỗi cấu trúc · {alerts} cảnh báo nghiệp vụ · {stale} dự án quá hạn cập nhật · {datasets} nguồn dữ liệu đang hoạt động',
+  'dataReadiness.summary.completeness': 'Độ đầy đủ',
+  'dataReadiness.summary.completeness.value': '{errors} lỗi cấu trúc / {total} bản ghi',
+  'dataReadiness.summary.freshness': 'Độ mới',
+  'dataReadiness.summary.freshness.value': '{stale}/{total} dự án quá hạn cập nhật',
+  'dataReadiness.summary.consistency': 'Tính nhất quán',
+  'dataReadiness.summary.consistency.value':
+    '{duplicates} bản ghi trùng · {unmapped} mã hành chính không xác định',
+  'dataReadiness.summary.provenance': 'Khả năng truy nguyên',
+  'dataReadiness.summary.provenance.value':
+    '{missing} bản ghi thiếu nguồn gốc · {lowConfidence} độ tin cậy thấp · {unverified} chưa xác minh',
   'dataReadiness.loading': 'Đang tải dữ liệu…',
   'dataReadiness.loadErrorHeading': 'Không tải được dữ liệu',
   'dataReadiness.retry': 'Thử lại',
