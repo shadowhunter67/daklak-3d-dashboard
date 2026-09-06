@@ -2,18 +2,25 @@ import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
 import type { ProjectStatus } from '../../entities/project/types';
 
-/** Chỉ những status thường gặp trong một danh mục đang vận hành mới có màu riêng trong biểu đồ —
- * trạng thái hiếm hoặc chỉ mang tính thủ tục dùng chung một màu trung tính để bảng màu không vượt
- * quá khả năng phân biệt bằng mắt. */
+/** Mỗi trạng thái có một màu riêng — trước đây 4 trạng thái tiền thi công (proposed/preparing/
+ * approved/procurement) đều rơi vào cùng `DEFAULT_COLOR`, và `suspended` dùng một xám-xanh gần như
+ * không phân biệt được với màu mặc định đó nữa — 5/10 đoạn trên biểu đồ nhìn giống hệt nhau
+ * (phản hồi thực tế: "màu gì nhìn vào ko phân biệt được luôn"). Legend luôn có tên + số + % đi kèm
+ * nên màu không phải là kênh thông tin duy nhất, nhưng vẫn phải đủ khác nhau để nhóm mắt nhanh qua
+ * thanh stacked bar mà không cần dò legend cho từng đoạn nhỏ. */
 const STATUS_COLOR: Partial<Record<ProjectStatus, string>> = {
+  proposed: '#b48ee0',
+  preparing: '#8f7fd9',
+  approved: '#6f9ad9',
+  procurement: '#d98ecb',
   active: '#3fae7d',
   'at-risk': '#e0b34c',
   delayed: '#d97757',
-  suspended: '#8b8fa3',
-  completed: '#4c8fd9',
-  cancelled: '#5b5f6e',
+  suspended: '#c1554f',
+  completed: '#4fc9c2',
+  cancelled: '#8a8fa0',
 };
-const DEFAULT_COLOR = '#6b8f84';
+const DEFAULT_COLOR = '#5b5f6e';
 
 export function PortfolioStatusChart({
   statusDistribution,
