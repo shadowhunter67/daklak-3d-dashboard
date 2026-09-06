@@ -7,6 +7,7 @@ import {
   formatDateTime,
   formatNumber,
   formatPercent,
+  formatPercentagePointsDelta,
   formatVnd,
   formatVndInBillions,
 } from '../../../i18n/formatters';
@@ -55,6 +56,14 @@ export function formatKpiValueLocalized(
     case 'days':
       return {
         text: t('kpi.daysValue', { value: formatNumber(kpi.value, locale) }),
+        isUnavailable: false,
+      };
+    case 'percentage-points':
+      // Was falling through to the bare-number `default` case below — a schedule/disbursement
+      // variance rendered as a naked "-9" on Project Detail, with no unit telling the reader it
+      // means "9 điểm phần trăm chậm hơn kế hoạch" (real defect, found via screenshot review).
+      return {
+        text: formatPercentagePointsDelta(kpi.value, locale),
         isUnavailable: false,
       };
     default:

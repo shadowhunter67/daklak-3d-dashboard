@@ -132,7 +132,7 @@ header {
   margin-right: 14px;
 }
 .eyebrow {
-  font-size: 10px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.18em;
   color: #9db6ae;
   margin: 0 0 5px;
@@ -232,7 +232,7 @@ h1 i {
   border-radius: 999px;
   padding: 4px 8px;
   color: #e4bc5e;
-  font-size: 8px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.08em;
 }
 .energy-marker {
@@ -247,6 +247,11 @@ h1 i {
     0 0 20px #288dff;
   pointer-events: none;
 }
+/* Known accessibility limitation (typography pass, 2026-09): this is a name tag pinned next to a
+   small 3D map marker, not read as page content — bumping it to a normal reading size would make
+   overlapping labels collide on the energy-mode map the same way the ward-label engine had to
+   solve separately. Left small deliberately rather than risk breaking marker legibility without a
+   real label-collision pass for this specific layer; tracked as follow-up, not silently ignored. */
 .energy-marker:after {
   content: attr(data-name);
   position: absolute;
@@ -294,7 +299,7 @@ h1 i {
   background: #061923dc;
   border: 1px solid #d4a44688;
   padding: 3px 7px;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   border-radius: 4px;
 }
 .tourism-info-panel {
@@ -322,7 +327,7 @@ h1 i {
 }
 .tourism-info-panel__category {
   margin: 0 20px 4px 0;
-  font-size: 9px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #e4bc5e;
@@ -334,19 +339,19 @@ h1 i {
 }
 .tourism-info-panel__description {
   margin: 0 0 8px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   line-height: 1.5;
   color: #cfe3db;
 }
 .tourism-info-panel__verified-note {
   margin: 0 0 8px;
-  font-size: 10px;
+  font-size: var(--font-size-label);
   font-style: italic;
   color: #9fc0b4;
 }
 .tourism-info-panel__source {
   display: inline-block;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   color: #77e9ff;
   word-break: break-all;
 }
@@ -424,7 +429,7 @@ h1 i {
   border: 0;
   border-radius: 999px;
   padding: 8px 16px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   color: #cfe3db;
   background: transparent;
   cursor: pointer;
@@ -441,7 +446,7 @@ h1 i {
   background: linear-gradient(145deg, #0b2924e8, #071b19e2);
   backdrop-filter: blur(18px);
   color: #dcebe5;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   min-width: 180px;
 }
 .world-hud__compass {
@@ -462,6 +467,8 @@ h1 i {
   background: #ffd36c;
   transform-origin: 50% 16px;
 }
+/* Same rationale as .energy-marker:after above — a compass-widget glyph (N/S/E/W), not reading
+   content; left small on purpose. */
 .world-hud__compass-label {
   position: absolute;
   left: 50%;
@@ -487,7 +494,7 @@ h1 i {
   color: #e7c471;
   background: #d4a44612;
   cursor: pointer;
-  font-size: 11px;
+  font-size: var(--font-size-label);
 }
 .world-hud__tour-controls {
   padding: 8px 16px;
@@ -496,7 +503,7 @@ h1 i {
   background: linear-gradient(145deg, #0b2924e8, #071b19e2);
   backdrop-filter: blur(18px);
   color: #dcebe5;
-  font-size: 11px;
+  font-size: var(--font-size-label);
 }
 .world-hud__tour-buttons {
   display: flex;
@@ -532,7 +539,7 @@ h1 i {
 }
 .world-hud__teleport-menu h3 {
   margin: 16px 0 8px;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #9fc0b4;
@@ -562,7 +569,7 @@ h1 i {
   color: #e7c471;
   background: #d4a44612;
   cursor: pointer;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .world-hud__poi-list-row {
   width: 100%;
@@ -582,18 +589,18 @@ h1 i {
   font-size: 13px;
 }
 .world-hud__poi-list-category {
-  font-size: 9px;
+  font-size: var(--font-size-label);
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #e4bc5e;
 }
 .world-hud__poi-list-distance {
-  font-size: 11px;
+  font-size: var(--font-size-label);
   color: #9fc0b4;
 }
 .world-hud__poi-list-detail {
   padding: 10px 12px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   color: #cfe3db;
 }
 .world-hud__poi-list-detail a {
@@ -601,7 +608,7 @@ h1 i {
   margin: 6px 0;
   color: #77e9ff;
   word-break: break-all;
-  font-size: 11px;
+  font-size: var(--font-size-label);
 }
 .world-hud__poi-list-teleport {
   border: 1px solid #d4a44688;
@@ -610,7 +617,7 @@ h1 i {
   color: #e7c471;
   background: #d4a44612;
   cursor: pointer;
-  font-size: 11px;
+  font-size: var(--font-size-label);
 }
 
 /* Touch controls — visible only on coarse-pointer (touch) devices; a mouse/trackpad user never
@@ -679,7 +686,7 @@ h1 i {
   color: #e7c471;
   pointer-events: auto;
   cursor: pointer;
-  font-size: 11px;
+  font-size: var(--font-size-label);
 }
 .world-hud__touch-ascend {
   right: 96px;
@@ -692,7 +699,7 @@ h1 i {
   }
   .world-hud__status {
     max-width: 46vw;
-    font-size: 10px;
+    font-size: var(--font-size-label);
   }
   .world-hud__bottom-left {
     bottom: calc(var(--mobile-sheet-closed-height, 52px) + 8px);
@@ -793,7 +800,7 @@ h1 i {
   border-radius: 999px;
   color: #dcebe5;
   background: #071b19ee;
-  font-size: 10px;
+  font-size: var(--font-size-label);
   pointer-events: none;
 }
 .share-status:empty {
@@ -855,7 +862,7 @@ h1 i {
 }
 .onboarding-card small {
   display: block;
-  font-size: 10px;
+  font-size: var(--font-size-label);
 }
 .map-stage {
   position: absolute;
@@ -924,7 +931,7 @@ h1 i {
 }
 .map-fallback p {
   max-width: 360px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .map-fallback button {
   border: 1px solid #d4a44688;
@@ -993,7 +1000,7 @@ h1 i {
   gap: 6px;
   width: 100%;
   color: #9db6ae;
-  font-size: 10px;
+  font-size: var(--font-size-label);
 }
 .directory-heading input {
   width: 100%;
@@ -1017,7 +1024,7 @@ a:focus-visible {
   flex: 0 0 auto;
   margin: 14px 0 8px;
   color: #8fa9a1;
-  font-size: 10px;
+  font-size: var(--font-size-label);
 }
 .directory-table {
   --directory-sticky-header-height: 32px;
@@ -1039,7 +1046,7 @@ a:focus-visible {
   color: #b9cdc6;
   background: transparent;
   text-align: left;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   scroll-margin-top: calc(var(--directory-sticky-header-height) + 8px);
 }
 .directory-row > :nth-child(n + 4) {
@@ -1061,7 +1068,7 @@ button.directory-row:hover,
   top: 0;
   color: #8fa9a1;
   background: #071b19;
-  font-size: 9px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.05em;
 }
 @keyframes map-loading-spin {
@@ -1078,7 +1085,7 @@ button.directory-row:hover,
   pointer-events: none;
 }
 .map-caption span {
-  font-size: 9px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.24em;
   color: #d9b864;
 }
@@ -1095,7 +1102,7 @@ button.directory-row:hover,
   top: 128px;
   text-align: center;
   color: #cfb263;
-  font-size: 10px;
+  font-size: var(--font-size-label);
 }
 .compass i {
   font-size: 22px;
@@ -1131,7 +1138,7 @@ button.directory-row:hover,
   color: #ecc66d;
 }
 .hero-stat span {
-  font-size: 11px;
+  font-size: var(--font-size-label);
   color: #9fb8b0;
   padding-bottom: 7px;
 }
@@ -1159,7 +1166,7 @@ button.directory-row:hover,
 .metric {
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
+  font-size: var(--font-size-label);
   color: #8fa9a1;
 }
 .metric b {
@@ -1170,12 +1177,12 @@ button.directory-row:hover,
   color: #f1c06a;
 }
 .chart-title {
-  font-size: 10px;
+  font-size: var(--font-size-label);
   margin-top: 18px;
   color: #becfc9;
 }
 .mock-note {
-  font-size: 8px;
+  font-size: var(--font-size-label);
   line-height: 1.5;
   color: #748f87;
   margin: 0;
@@ -1204,7 +1211,7 @@ button.directory-row:hover,
   display: inline-block;
 }
 .unit-type {
-  font-size: 10px;
+  font-size: var(--font-size-label);
   color: #92aaa2;
 }
 .detail-panel dl {
@@ -1218,12 +1225,12 @@ button.directory-row:hover,
   padding: 12px 0;
 }
 .detail-panel dt {
-  font-size: 9px;
+  font-size: var(--font-size-label);
   color: #8fa9a1;
 }
 .detail-panel dd {
   margin: 0;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   font-weight: 600;
 }
 .positive {
@@ -1241,7 +1248,7 @@ button.directory-row:hover,
   font-size: 21px;
 }
 .empty p {
-  font-size: 10px;
+  font-size: var(--font-size-label);
   line-height: 1.6;
   color: #8ba49c;
 }
@@ -1252,7 +1259,7 @@ button.directory-row:hover,
   border-radius: 2px;
   padding: 3px 5px;
   color: #fff2c7;
-  font-size: 6px;
+  font-size: var(--font-size-label);
   box-shadow: 0 3px 12px #0009;
   pointer-events: none;
 }
@@ -1269,7 +1276,7 @@ footer {
   justify-content: space-between;
   padding: 0 3.3vw;
   background: #061715d9;
-  font-size: 8px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.12em;
   color: #748f87;
 }
@@ -1345,7 +1352,7 @@ footer a {
     flex-shrink: 0;
     min-height: 40px;
     padding: 6px 10px;
-    font-size: 12px;
+    font-size: var(--font-size-label);
   }
   /* Scroll affordance: at 390px this row and .header-meta can be tight enough that most of
      their content sits off-screen with nothing to hint it's swipeable (a real user-reported
@@ -1378,7 +1385,7 @@ footer a {
     min-width: 0;
     min-height: 40px;
     padding: 5px 4px;
-    font-size: 12px;
+    font-size: var(--font-size-label);
   }
   .app-shell {
     width: 100%;
@@ -1396,7 +1403,7 @@ footer a {
     height: 34px;
     flex: 0 0 34px;
     margin-right: 7px;
-    font-size: 11px;
+    font-size: var(--font-size-label);
   }
   .dashboard-brand {
     /* flex-shrink:0 (not the previous `flex: 1 1 auto`, which allowed shrinking) — this was fine
@@ -1449,7 +1456,7 @@ footer a {
     min-height: 44px;
     padding: 4px 2px;
     border-radius: 10px;
-    font-size: 11px;
+    font-size: var(--font-size-label);
   }
   .header-secondary-control:not(.header-help-control) {
     display: none;
@@ -1515,7 +1522,7 @@ footer a {
     color: #e8d18b;
     background: transparent;
     text-align: left;
-    font-size: 12px;
+    font-size: var(--font-size-label);
     font-weight: 600;
   }
   .mobile-sheet__handle {
@@ -1658,7 +1665,7 @@ footer a {
     flex-shrink: 0;
     min-height: 40px;
     padding: 6px 10px;
-    font-size: 12px;
+    font-size: var(--font-size-label);
   }
   .header-meta {
     /* Same overflow fix as the portrait breakpoint above — see the comment there. */
@@ -1870,7 +1877,7 @@ footer a {
 }
 .detail-map-source-notice p:not(.eyebrow) {
   margin-top: 6px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   line-height: 1.55;
 }
 .detail-map-source-notice strong {
@@ -1906,7 +1913,7 @@ footer a {
 .detail-map-error p {
   margin: 0;
   max-width: 360px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .detail-map-error__actions {
   display: flex;
@@ -1960,10 +1967,36 @@ footer a {
 }
 .detail-map-layer-panel__content h3 {
   margin: 0 0 6px;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: #8eaaa3;
+}
+/* Basic/Advanced mode switch (spec §X) — same small segmented-pill pattern as the header's mode
+   toggles, sized down slightly to fit this narrower panel. */
+.detail-map-layer-panel__mode {
+  display: flex;
+  gap: 2px;
+  margin: 0 0 10px;
+  padding: 3px;
+  border: 1px solid #86aa9d2b;
+  border-radius: 999px;
+  background: #06171599;
+}
+.detail-map-layer-panel__mode button {
+  flex: 1 1 0;
+  border: 0;
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: #8fa9a1;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+}
+.detail-map-layer-panel__mode button[aria-pressed='true'] {
+  color: #071918;
+  background: #e4bc5e;
 }
 .layer-toggle,
 .basemap-option {
@@ -1980,7 +2013,7 @@ footer a {
   opacity: 0.7;
 }
 .layer-toggle__note {
-  font-size: 11px;
+  font-size: var(--font-size-label);
   color: #8eaaa3;
 }
 .planning-option {
@@ -2002,7 +2035,7 @@ footer a {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   color: #d7e4dd;
 }
 .planning-legend__swatch {
@@ -2014,7 +2047,7 @@ footer a {
 }
 .planning-disclaimer {
   margin: 0;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   line-height: 1.4;
   color: #c9a15f;
 }
@@ -2034,7 +2067,7 @@ footer a {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   color: #d7e4dd;
 }
 .key-projects-legend__dot {
@@ -2046,7 +2079,7 @@ footer a {
 }
 .key-projects-legend__note {
   margin: 6px 0 0;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   line-height: 1.4;
   color: #c9a15f;
 }
@@ -2061,7 +2094,7 @@ footer a {
   box-shadow: 0 10px 28px rgba(4, 18, 15, 0.4);
 }
 .key-project-popup {
-  font-size: 12px;
+  font-size: var(--font-size-label);
   line-height: 1.45;
   color: #10231f;
   border-left: 3px solid var(--callout-accent, #c9c9c9);
@@ -2076,7 +2109,7 @@ footer a {
 }
 .key-project-popup__cat {
   color: #4a5f59;
-  font-size: 10px;
+  font-size: var(--font-size-label);
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -2105,7 +2138,7 @@ footer a {
 }
 .key-project-popup__caveat {
   margin: 6px 0 0;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   color: #7a5a2c;
 }
 .local-search {
@@ -2140,7 +2173,7 @@ footer a {
 }
 .local-search__empty {
   margin: 4px 0 0;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   color: #8eaaa3;
 }
 .distance-measure-tool button {
@@ -2156,7 +2189,7 @@ footer a {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .distance-measure-tool__actions {
   display: flex;
@@ -2183,7 +2216,7 @@ footer a {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .radius-query-tool__presets {
   display: flex;
@@ -2193,7 +2226,7 @@ footer a {
 .radius-query-tool__presets button {
   border-radius: 8px;
   padding: 4px 10px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .radius-query-tool__presets button[aria-pressed='true'] {
   background: #d4a44644;
@@ -2222,7 +2255,7 @@ footer a {
 }
 .radius-query-tool__match-meta {
   color: #8eaaa3;
-  font-size: 11px;
+  font-size: var(--font-size-label);
 }
 .radius-query-tool__actions {
   display: flex;
@@ -2329,7 +2362,7 @@ footer a {
   margin: 0 0 16px;
   padding: 0;
   list-style: none;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   color: #a9c3ba;
 }
 .data-status-summary strong {
@@ -2371,7 +2404,7 @@ footer a {
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 6px 12px;
   margin: 0;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .provenance-dataset-card dt {
   color: #7fa39a;
@@ -2385,7 +2418,7 @@ footer a {
 }
 .provenance-dataset-card details {
   margin-top: 8px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .provenance-dataset-card summary {
   cursor: pointer;
@@ -2424,7 +2457,7 @@ footer a {
   border-radius: 999px;
   color: #e4bc5e;
   background: #e4bc5e12;
-  font-size: 9px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.06em;
   white-space: nowrap;
 }
@@ -2871,7 +2904,7 @@ footer a {
 }
 .data-sources-panel__item dt {
   color: #7fa39a;
-  font-size: 11px;
+  font-size: var(--font-size-label);
 }
 .data-sources-panel__item dd {
   margin: 2px 0 8px;
@@ -2881,17 +2914,17 @@ footer a {
 .data-sources-panel__stale-warning {
   margin: 4px 0;
   color: #e0b34c;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .data-sources-panel__attribution {
   margin: 8px 0 0;
   color: #7fa39a;
-  font-size: 11px;
+  font-size: var(--font-size-label);
 }
 .data-sources-panel__footer-note {
   margin: 12px 0 0;
   color: #7fa39a;
-  font-size: 11px;
+  font-size: var(--font-size-label);
 }
 .priority-project-list ol {
   display: grid;
@@ -3261,7 +3294,7 @@ footer a {
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 8px 14px;
   margin: 0 0 14px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .project-summary-card dt {
   color: #7fa39a;
@@ -3277,16 +3310,16 @@ footer a {
   color: #e7c471;
   background: #d4a44612;
   cursor: pointer;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .project-summary-card__no-geometry {
   color: #7fa39a;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .project-summary-card__mock-notice {
   margin: 14px 0 0;
   color: #7fa39a;
-  font-size: 11px;
+  font-size: var(--font-size-label);
 }
 
 @media (max-width: 900px) {
@@ -3351,7 +3384,7 @@ footer a {
   border-radius: 999px;
   color: #a9c3ba;
   background: transparent;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   cursor: pointer;
 }
 .project-portfolio h2,
@@ -3373,7 +3406,7 @@ footer a {
   border-radius: 999px;
   color: #e4bc5e;
   background: #e4bc5e12;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.04em;
 }
 .project-portfolio__description {
@@ -3389,7 +3422,7 @@ footer a {
   border-radius: 10px;
   color: #f0cf7a;
   background: #f0cf7a12;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .project-portfolio__error,
 .project-detail__error,
@@ -3434,7 +3467,7 @@ footer a {
 }
 .project-portfolio__filter-field label {
   color: #7fa39a;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.03em;
 }
 .project-portfolio__filter-field input,
@@ -3470,13 +3503,13 @@ footer a {
 .project-portfolio__hash-hint {
   margin: 20px 0 0;
   color: #4c655e;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   overflow-wrap: anywhere;
 }
 .project-portfolio__code,
 .project-detail .project-portfolio__code {
   color: #7fa39a;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 
 /* Desktop: accessible table. Mobile: accessible card list. Both are always in the DOM (spec D7 —
@@ -3497,10 +3530,37 @@ footer a {
   text-align: left;
   vertical-align: top;
 }
+/* Scanning aid next to the text value (spec §XIV) — decorative (aria-hidden), the text next to it
+   is always the real accessible value. The planned-progress marker is a thin tick, not a second
+   bar, so "behind plan" reads as the fill simply falling short of it. */
+.mini-progress-bar {
+  position: relative;
+  display: block;
+  width: 64px;
+  height: 6px;
+  margin-bottom: 4px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  overflow: visible;
+}
+.mini-progress-bar__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--gold);
+}
+.mini-progress-bar__planned-marker {
+  position: absolute;
+  top: -2px;
+  width: 2px;
+  height: 10px;
+  background: var(--text-secondary);
+  transform: translateX(-1px);
+}
 .project-portfolio-table th {
   color: #7fa39a;
   font-weight: 600;
-  font-size: 11px;
+  font-size: var(--font-size-label);
   letter-spacing: 0.03em;
   white-space: nowrap;
 }
@@ -3554,7 +3614,7 @@ footer a {
 }
 .project-portfolio-card__grid dt {
   color: #7fa39a;
-  font-size: 10px;
+  font-size: var(--font-size-label);
 }
 .project-portfolio-card__grid dd {
   margin: 0;
@@ -3573,7 +3633,7 @@ footer a {
 .project-detail__header-grid dt,
 .project-detail__summary-grid dt {
   color: #7fa39a;
-  font-size: 11px;
+  font-size: var(--font-size-label);
 }
 .project-detail__header-grid dd,
 .project-detail__summary-grid dd {
@@ -3643,7 +3703,7 @@ footer a {
 .project-detail__issue-group h4 {
   margin: 0 0 8px;
   color: #a9c3ba;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .project-detail__geography button {
   margin-top: 8px;
@@ -3682,7 +3742,7 @@ footer a {
   display: flex;
   gap: 16px;
   margin: 8px 0 0;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .progress-history__legend-item::before {
   content: '';
@@ -3757,7 +3817,7 @@ footer a {
   border-radius: 999px;
   color: #a9c3ba;
   background: transparent;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   cursor: pointer;
 }
 .data-readiness h2 {
@@ -3779,6 +3839,97 @@ footer a {
   color: #a9c3ba;
   font-size: 13px;
 }
+/* Health summary (spec §XVI) — same hero treatment as Executive Status Hero: leftmost thing on
+   the page after the title, biggest status word, real counts (never a synthetic score). */
+.data-readiness-summary {
+  margin: 0 0 24px;
+  padding: var(--space-5) var(--space-6);
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--text-muted);
+  border-radius: var(--radius-lg);
+  background: var(--surface-2);
+}
+.data-readiness-summary[data-status='critical'] {
+  border-left-color: #f08a68;
+  background: #f0836612;
+}
+.data-readiness-summary[data-status='attention'] {
+  border-left-color: var(--gold);
+  background: #e7c47112;
+}
+.data-readiness-summary[data-status='good'] {
+  border-left-color: var(--color-success);
+  background: #6fcf9712;
+}
+.data-readiness-summary h3 {
+  margin: 0 0 10px;
+  font-size: var(--font-size-label);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+}
+.data-readiness-summary__status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+  color: var(--text-primary);
+  font-size: clamp(20px, 2.2vw, 26px);
+  font-weight: 700;
+}
+.data-readiness-summary__status-badge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 15px;
+  font-weight: 900;
+}
+.data-readiness-summary[data-status='critical'] .data-readiness-summary__status-badge {
+  color: #f08a68;
+  background: #f0836626;
+}
+.data-readiness-summary[data-status='attention'] .data-readiness-summary__status-badge {
+  color: var(--gold);
+  background: #e7c47126;
+}
+.data-readiness-summary[data-status='good'] .data-readiness-summary__status-badge {
+  color: var(--color-success);
+  background: #6fcf9726;
+}
+.data-readiness-summary__line {
+  margin: 0 0 18px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-label);
+}
+.data-readiness-summary__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+.data-readiness-summary__card {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+.data-readiness-summary__card h4 {
+  margin: 0 0 6px;
+  color: var(--text-muted);
+  font-size: calc(var(--font-size-label) - 1px);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.data-readiness-summary__card p {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: var(--font-size-label);
+  line-height: 1.5;
+}
 .data-readiness__degraded-banner {
   margin: 0 0 16px;
   padding: 10px 14px;
@@ -3786,7 +3937,7 @@ footer a {
   border-radius: 10px;
   color: #f0cf7a;
   background: #f0cf7a12;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .data-readiness__error {
   max-width: 520px;
@@ -3810,7 +3961,7 @@ footer a {
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 8px 14px;
   margin: 0 0 12px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .data-readiness__grid dt {
   color: #7fa39a;
@@ -3823,7 +3974,7 @@ footer a {
 .data-readiness__note {
   margin: 8px 0 16px;
   color: #9db6ae;
-  font-size: 12px;
+  font-size: var(--font-size-label);
 }
 .data-readiness__issue-group {
   margin: 0 0 20px;
@@ -3831,7 +3982,7 @@ footer a {
 .data-readiness__issue-list {
   margin: 0;
   padding-left: 20px;
-  font-size: 12px;
+  font-size: var(--font-size-label);
   color: #dcebe5;
 }
 .data-readiness__issue-rule {
