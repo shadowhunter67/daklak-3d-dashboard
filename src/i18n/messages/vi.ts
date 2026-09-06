@@ -137,6 +137,11 @@ export const vi = {
     "Số dự án status='active' (không ở trạng thái rủi ro/chậm/tạm dừng).",
   'kpi.atRiskProjects.explanation': "Số dự án status='at-risk'.",
   'kpi.delayedProjects.explanation': "Số dự án status='delayed'.",
+  'kpi.trend.increase': 'Tăng {value} so với 30 ngày trước',
+  'kpi.trend.decrease': 'Giảm {value} so với 30 ngày trước',
+  'kpi.trend.flat': 'Không đổi so với 30 ngày trước',
+  'kpi.trend.tooltip':
+    'So sánh trên {comparable}/{total} dự án có dữ liệu tiến độ từ trước đó — không đủ dự án thì không hiển thị xu hướng.',
 
   // Alerts
   'alerts.heading': 'Danh sách cảnh báo',

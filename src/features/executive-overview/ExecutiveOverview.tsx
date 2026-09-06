@@ -125,7 +125,7 @@ export function ExecutiveOverview({
         <p className="executive-overview__empty">{t('executiveOverview.empty')}</p>
       ) : (
         <>
-          <KpiCardGrid kpis={model.kpis} />
+          <KpiCardGrid kpis={model.kpis} disbursementRateTrend={model.disbursementRateTrend} />
           <div className="executive-overview__columns">
             <PriorityProjectList items={model.priorityProjects} asOf={asOf} />
             <div className="executive-overview__side-column">

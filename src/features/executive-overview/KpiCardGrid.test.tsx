@@ -2,6 +2,7 @@ import { cleanup, screen } from '@testing-library/react';
 import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 import { afterEach, describe, expect, it } from 'vitest';
 import type { KpiResult } from '../../entities/project/kpi/types';
+import type { PortfolioTrendResult } from '../../entities/project/kpi/portfolioTrend';
 import { KpiCardGrid } from './KpiCardGrid';
 import type { ExecutiveOverviewKpis } from './model/executiveOverviewTypes';
 
@@ -61,5 +62,70 @@ describe('KpiCardGrid', () => {
     const card = screen.getByText('Đúng tiến độ').closest('li')!;
     expect(card.textContent).toContain('4');
     expect(card.getAttribute('data-unavailable')).toBeNull();
+  });
+});
+
+describe('KpiCardGrid — disbursement-rate trend', () => {
+  afterEach(cleanup);
+
+  const kpisWithRate: ExecutiveOverviewKpis = { ...kpis, disbursementRate: ok(46.7, '%') };
+
+  it('shows an increase with the up arrow and the delta text', () => {
+    const trend: PortfolioTrendResult = {
+      status: 'ok',
+      deltaPercentagePoints: 3.2,
+      previousAsOf: '2026-06-23T00:00:00.000Z',
+      comparableProjectCount: 6,
+      totalProjectCount: 9,
+      explanation: 'x',
+    };
+    renderWithI18n(<KpiCardGrid kpis={kpisWithRate} disbursementRateTrend={trend} />);
+    const card = screen.getByText('Tỷ lệ giải ngân').closest('li')!;
+    expect(card.textContent).toContain('▲');
+    expect(card.textContent).toContain('Tăng');
+    expect(card.textContent).toContain('3,2 điểm %');
+  });
+
+  it('shows a decrease with the down arrow', () => {
+    const trend: PortfolioTrendResult = {
+      status: 'ok',
+      deltaPercentagePoints: -8.5,
+      previousAsOf: '2026-06-23T00:00:00.000Z',
+      comparableProjectCount: 6,
+      totalProjectCount: 9,
+      explanation: 'x',
+    };
+    renderWithI18n(<KpiCardGrid kpis={kpisWithRate} disbursementRateTrend={trend} />);
+    const card = screen.getByText('Tỷ lệ giải ngân').closest('li')!;
+    expect(card.textContent).toContain('▼');
+    expect(card.textContent).toContain('Giảm');
+  });
+
+  it('renders nothing extra when the trend is unavailable — no fabricated arrow', () => {
+    const trend: PortfolioTrendResult = {
+      status: 'unavailable',
+      deltaPercentagePoints: null,
+      previousAsOf: '2026-06-23T00:00:00.000Z',
+      comparableProjectCount: 0,
+      totalProjectCount: 9,
+      explanation: 'x',
+    };
+    renderWithI18n(<KpiCardGrid kpis={kpisWithRate} disbursementRateTrend={trend} />);
+    const card = screen.getByText('Tỷ lệ giải ngân').closest('li')!;
+    expect(card.querySelector('.kpi-card__trend')).toBeNull();
+  });
+
+  it('does not attach a trend indicator to other KPI cards', () => {
+    const trend: PortfolioTrendResult = {
+      status: 'ok',
+      deltaPercentagePoints: 3.2,
+      previousAsOf: '2026-06-23T00:00:00.000Z',
+      comparableProjectCount: 6,
+      totalProjectCount: 9,
+      explanation: 'x',
+    };
+    renderWithI18n(<KpiCardGrid kpis={kpisWithRate} disbursementRateTrend={trend} />);
+    const card = screen.getByText('Đúng tiến độ').closest('li')!;
+    expect(card.querySelector('.kpi-card__trend')).toBeNull();
   });
 });

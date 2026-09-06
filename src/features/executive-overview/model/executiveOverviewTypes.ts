@@ -5,6 +5,7 @@ import type {
   ProjectStatus,
 } from '../../../entities/project/types';
 import type { KpiResult } from '../../../entities/project/kpi/types';
+import type { PortfolioTrendResult } from '../../../entities/project/kpi/portfolioTrend';
 import type { DataQualitySummary } from '../../../entities/project/dataQualitySummary';
 import type { ProjectPortfolioProvenance } from '../../../entities/project/adapters/ProjectPortfolioSource';
 
@@ -73,6 +74,11 @@ export interface ExecutiveOverviewModel {
   dataTimeline: ProjectPortfolioProvenance;
   portfolioStatus: PortfolioStatus;
   kpis: ExecutiveOverviewKpis;
+  /** Xu hướng tỷ lệ giải ngân so với ~30 ngày trước, dựng từ lịch sử `progressSnapshots` thật —
+   * xem `entities/project/kpi/portfolioTrend.ts`. Chỉ có cho `disbursementRate` ở giai đoạn này vì
+   * đây là KPI duy nhất domain có đủ lịch sử theo thời gian để tính trung thực (các KPI đếm dự án
+   * theo trạng thái không có lịch sử trạng thái theo mốc thời gian). */
+  disbursementRateTrend: PortfolioTrendResult;
   /** Số dự án hợp lệ theo từng `ProjectStatus` — nguồn cho biểu đồ phân bố trạng thái (spec §E).
    * Luôn có đủ mọi status key (giá trị 0 nếu không có dự án nào), để UI không phải tự suy luận
    * key nào tồn tại. */
