@@ -82,3 +82,22 @@ export function formatVndInBillions(value: number, locale: Locale): string {
   ).format(billions);
   return locale === 'vi' ? `${formatted} tỷ ₫` : `${formatted}B ₫`;
 }
+
+const trendPointFormatters = new Map<Locale, Intl.NumberFormat>();
+/**
+ * A signed "percentage points" delta for a KPI trend indicator — `signDisplay: 'exceptZero'` gets
+ * the "+"/"−" prefix from `Intl` itself rather than string-concatenation, so it can't drift from
+ * the locale's actual minus-sign glyph.
+ */
+export function formatPercentagePointsDelta(value: number, locale: Locale): string {
+  const formatted = cached(
+    trendPointFormatters,
+    locale,
+    () =>
+      new Intl.NumberFormat(INTL_LOCALE[locale], {
+        maximumFractionDigits: 1,
+        signDisplay: 'exceptZero',
+      }),
+  ).format(value);
+  return locale === 'vi' ? `${formatted} điểm %` : `${formatted}pp`;
+}

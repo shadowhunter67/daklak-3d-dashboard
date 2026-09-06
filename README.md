@@ -19,7 +19,7 @@ Dashboard bản đồ 3D thể hiện 102 xã/phường của tỉnh Đắk Lắ
 
 ## App có gì
 
-- **Tổng quan điều hành** — trang mặc định, tổng hợp KPI danh mục dự án, cảnh báo, dự án cần chú ý.
+- **Tổng quan điều hành** — trang mặc định, tổng hợp KPI danh mục dự án, cảnh báo, dự án cần chú ý. Tỷ lệ giải ngân có thêm mũi tên xu hướng so với 30 ngày trước, dựng từ lịch sử tiến độ thật của từng dự án — không hiển thị nếu chưa đủ dự án có dữ liệu lịch sử để so sánh đáng tin cậy.
 - **Bản đồ 3D** — địa hình tỉnh dựng từ dữ liệu vệ tinh thật (SRTM + Sentinel-2), xoay/phóng được, click vào từng xã để xem hồ sơ nhanh.
 - **Danh sách** — phiên bản 2D dễ dùng, phù hợp máy yếu, điều hướng bàn phím và trình đọc màn hình.
 - **Bản đồ chi tiết** — bản đồ MapLibre, xem lớp đường giao thông, đo khoảng cách. Tên cả 102 xã/phường **luôn hiển thị đầy đủ, không viết tắt**; khi nhãn chồng nhau thì được dịch ra và nối về vị trí thật bằng một đường dẫn mảnh thay vì bị ẩn đi.

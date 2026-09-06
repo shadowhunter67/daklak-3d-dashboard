@@ -173,6 +173,20 @@ thực hợp lệ của cùng một lần quan sát (severity `warning`, rule `m
 `approved > reviewed > submitted > validated-automatically > raw`; `superseded`/`rejected` không bao
 giờ được chọn — trả `null` nếu cả nhóm không có bản ghi dùng được, không tự suy ra giá trị thay thế.
 
+### Xu hướng KPI theo thời gian — `kpi/portfolioTrend.ts`
+
+`portfolioDisbursementRateTrend(bundles, asOf)` (thêm 2026-09-06) dựng lại tỷ lệ giải ngân toàn
+danh mục tại `asOf − 30 ngày` bằng cách lấy, với mỗi dự án, snapshot tiến độ mới nhất có
+`observedAt <= asOf − 30 ngày`; sau đó so với tỷ lệ hiện tại **chỉ trên tập con dự án có snapshot
+đủ cũ** (không nội suy, không suy đoán cho dự án thiếu lịch sử). Nếu tập con đó đại diện dưới 50%
+tổng ngân sách hiệu lực, trả `status: 'unavailable'` — Executive Overview khi đó không vẽ mũi tên
+xu hướng, thay vì hiển thị một con số trông hợp lý nhưng không đại diện.
+
+Giới hạn đã biết: đây là cửa sổ rolling 30 ngày, **không phải "so với cùng kỳ năm trước"** như các
+dashboard vĩ mô cấp tỉnh thường dùng (domain chưa có đủ lịch sử nhiều năm). Chỉ `disbursementRate`
+có xu hướng ở giai đoạn này — các KPI đếm dự án theo trạng thái (`onTrackProjects`,
+`atRiskProjects`...) không có lịch sử trạng thái theo mốc thời gian nên chưa tính được trung thực.
+
 ### Scenario coverage của fixture
 
 9 dự án mock (không tăng số lượng) được điều chỉnh để phủ đủ: on-track (prj-009, overallProgress =

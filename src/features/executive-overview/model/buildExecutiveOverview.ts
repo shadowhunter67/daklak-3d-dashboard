@@ -8,6 +8,7 @@ import {
   disbursementRate as disbursementRateKpi,
   overdueIssueCount,
 } from '../../../entities/project/kpi';
+import { portfolioDisbursementRateTrend } from '../../../entities/project/kpi/portfolioTrend';
 import { availableKpi } from '../../../entities/project/kpi/types';
 import { assessPortfolio } from '../../../entities/project/portfolioAssessment';
 import {
@@ -190,6 +191,7 @@ export function buildExecutiveOverview({
     generatedAt: asOf.toISOString(),
     dataTimeline: provenance,
     portfolioStatus: derivePortfolioStatus(alerts, sourceStatus),
+    disbursementRateTrend: portfolioDisbursementRateTrend(validBundles, asOf),
     kpis: {
       totalProjects: availableKpi(
         bundles.length,

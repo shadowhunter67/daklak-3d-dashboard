@@ -132,6 +132,11 @@ export const en: Partial<Record<MessageKey, string>> = {
     "Number of projects with status='active' (not at-risk/delayed/on-hold).",
   'kpi.atRiskProjects.explanation': "Number of projects with status='at-risk'.",
   'kpi.delayedProjects.explanation': "Number of projects with status='delayed'.",
+  'kpi.trend.increase': 'Up {value} from 30 days ago',
+  'kpi.trend.decrease': 'Down {value} from 30 days ago',
+  'kpi.trend.flat': 'Unchanged from 30 days ago',
+  'kpi.trend.tooltip':
+    'Based on {comparable}/{total} projects with progress data from before that date — shown only when enough projects qualify.',
 
   // Alerts
   'alerts.heading': 'Alert list',

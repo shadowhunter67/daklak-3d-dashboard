@@ -5,6 +5,7 @@ import {
   formatDateTime,
   formatNumber,
   formatPercent,
+  formatPercentagePointsDelta,
   formatVnd,
   formatVndInBillions,
 } from './formatters';
@@ -78,5 +79,21 @@ describe('formatVndInBillions', () => {
 
   it('handles zero without throwing or producing "NaN"', () => {
     expect(formatVndInBillions(0, 'vi')).toBe('0 tỷ ₫');
+  });
+});
+
+describe('formatPercentagePointsDelta', () => {
+  it('prefixes a positive value with "+" in both locales', () => {
+    expect(formatPercentagePointsDelta(3.2, 'vi')).toBe('+3,2 điểm %');
+    expect(formatPercentagePointsDelta(3.2, 'en')).toBe('+3.2pp');
+  });
+
+  it('renders a negative value with the locale minus sign, not a fabricated "-"', () => {
+    expect(formatPercentagePointsDelta(-8.5, 'vi')).toBe('-8,5 điểm %');
+    expect(formatPercentagePointsDelta(-8.5, 'en')).toBe('-8.5pp');
+  });
+
+  it('does not add a sign for exactly zero', () => {
+    expect(formatPercentagePointsDelta(0, 'vi')).toBe('0 điểm %');
   });
 });
