@@ -95,19 +95,23 @@ export function ExecutiveOverview({
       tabIndex={-1}
     >
       <h2 id="executive-overview-heading">{t('executiveOverview.heading')}</h2>
-      {model.isIllustrative && (
-        <p className="executive-overview__mock-badge" role="note">
-          {t('executiveOverview.mockBadge')}
-        </p>
-      )}
-      {onOpenPortfolio && (
-        <button
-          type="button"
-          className="executive-overview__portfolio-link"
-          onClick={onOpenPortfolio}
-        >
-          {t('executiveOverview.openPortfolio')}
-        </button>
+      {(model.isIllustrative || onOpenPortfolio) && (
+        <div className="executive-overview__notice">
+          {model.isIllustrative && (
+            <p className="executive-overview__mock-badge" role="note">
+              {t('executiveOverview.mockBadge')}
+            </p>
+          )}
+          {onOpenPortfolio && (
+            <button
+              type="button"
+              className="executive-overview__portfolio-link"
+              onClick={onOpenPortfolio}
+            >
+              {t('executiveOverview.openPortfolio')}
+            </button>
+          )}
+        </div>
       )}
       <p className="executive-overview__status" data-status={model.portfolioStatus}>
         {t('executiveOverview.statusLabel')}{' '}
@@ -127,10 +131,16 @@ export function ExecutiveOverview({
         <>
           <KpiCardGrid kpis={model.kpis} disbursementRateTrend={model.disbursementRateTrend} />
           <div className="executive-overview__columns">
-            <PriorityProjectList items={model.priorityProjects} asOf={asOf} />
+            {/* Main column (~65%): the two things a leader acts on — which projects need
+                attention, and how the whole portfolio is distributed across the pipeline. */}
+            <div className="executive-overview__main-column">
+              <PriorityProjectList items={model.priorityProjects} asOf={asOf} />
+              <PortfolioStatusChart statusDistribution={model.statusDistribution} />
+            </div>
+            {/* Sidebar (~35%): supporting context — active alerts and whether the underlying data
+                can be trusted. */}
             <div className="executive-overview__side-column">
               <AlertList alerts={model.alerts} />
-              <PortfolioStatusChart statusDistribution={model.statusDistribution} />
               <DataHealthPanel dataHealth={model.dataHealth} dataTimeline={model.dataTimeline} />
             </div>
           </div>

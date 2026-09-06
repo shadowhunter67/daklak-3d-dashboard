@@ -78,6 +78,47 @@ lists all 102 units as plain text regardless, so no information is
 inaccessible — the limitation is a 3D-view readability/polish gap, not a
 data-access gap.
 
+## Executive Overview visual-hierarchy pass (2026-09-06)
+
+Redesigned the "Tổng quan điều hành" page's layout and typography without
+changing any business logic, route, filter, or data contract:
+
+- **Main/sidebar rebalance**: the two-column layout previously put only
+  "Dự án cần chú ý" in the main column against three stacked widgets
+  (alerts/status/data-health) in the sidebar — on a tall list the sidebar
+  ran much longer than the main column, leaving a large uneven blank area.
+  `PortfolioStatusChart` moved into the main column next to
+  `PriorityProjectList` (both are "what should I do" content); the sidebar
+  now holds `AlertList` + `DataHealthPanel` (supporting context). See
+  `ExecutiveOverview.tsx`'s `__main-column`/`__side-column` wrappers.
+- **Typography/tokens**: consolidated repeated colour/spacing literals in
+  this section into named custom properties (`--surface-*`, `--border-*`,
+  `--text-*`, `--color-success/warning/danger/info`, `--space-*`,
+  `--radius-*`) at `:root`, and bumped several 11–12px "dense" text sizes
+  (alert items, priority-project meta/reason, status legend, data-health
+  grid) to the shared `--font-size-label` (14px) token so they scale with
+  the same A-/A/A+ control as everything else already migrated.
+- **Header overflow at laptop widths (1280–1500px)**: the edge-fade "more
+  content" affordance for `.header-meta`/`.primary-nav` was previously
+  CSS-gated to the ≤767px mobile breakpoint only, even though
+  `useScrollEdgeFade` already tracked scroll position at every width. Once
+  the A-/A/A+ and VI/EN control groups were added to the header (an
+  earlier pass), a 1280–1366px laptop window could silently scroll 2–3
+  controls off-screen with **no visual hint that more existed**. The fade
+  is now active at all widths; a laptop window still needs to scroll the
+  header's right-hand controls, but it now visibly says so, rather than
+  looking like a shorter header. A full redesign of the header's control
+  density (e.g. an overflow menu) is tracked as follow-up, not done here.
+- **KPI grid column width**: `minmax(180px, …)` meant the 7th KPI card
+  wrapped alone onto a second row at ~1300–1500px, leaving a large empty
+  gap beside it; lowered to `minmax(160px, …)` so all 7 fit one row down
+  to ~1280px.
+
+Verified via Playwright screenshots at 1920×1080/1600×900/1440×900/
+1366×768/1280×720/390×844 (zero console errors, zero horizontal overflow)
+and the full `layout-regression.spec.ts` suite (32/32 pass, including the
+font-scale-at-largest-step overlap check against the new markup).
+
 ## Automated overlap/overflow regression tests
 
 `e2e/layoutAssertions.ts` (`expectNoOverlap`/`expectNoHorizontalOverflow`)

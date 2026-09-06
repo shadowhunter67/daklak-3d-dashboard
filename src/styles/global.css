@@ -22,6 +22,36 @@
   --font-size-label: calc(14px * var(--user-font-scale));
   --font-size-body: calc(16px * var(--user-font-scale));
   --font-size-control: calc(15px * var(--user-font-scale));
+
+  /* Design tokens — Executive Overview + shared dashboard surfaces (2026-09 UI polish pass).
+     Consolidates literal colour/spacing values that were previously repeated across the
+     Executive Overview components (`.priority-project-list`, `.alert-list`,
+     `.portfolio-status-chart`, `.data-health-panel`, `.kpi-card`) into named tokens, without
+     touching the values themselves — same emerald/gold "provincial command center" palette. */
+  --surface-1: #ffffff08;
+  --surface-2: #ffffff0f;
+  --surface-3: #ffffff17;
+  --border-subtle: #ffffff1a;
+  --border-strong: #d4a44655;
+  --text-primary: #e9f2ed;
+  --text-secondary: #a9c3ba;
+  --text-muted: #7fa39a;
+  --gold: #e7c471;
+  --gold-strong: #e4bc5e;
+  --color-success: #6fcf97;
+  --color-warning: #e0b34c;
+  --color-danger: #e57373;
+  --color-info: #7fa8d9;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
 }
 * {
   box-sizing: border-box;
@@ -143,6 +173,31 @@ h1 i {
   white-space: nowrap;
   flex-shrink: 0;
 }
+/* Edge-fade scroll affordance for `.header-meta` (and `.primary-nav`, styled further below) — was
+   previously only enabled inside the <=767px media query, so on a real laptop window (1280–1366px)
+   where this row now holds seven items (Chia sẻ/?/Nguồn dữ liệu/Cập nhật tự động + the A-/A/A+ and
+   VI/EN pill groups added later) it could silently scroll several controls off-screen with zero
+   visual hint that more exists — a real "Header phải xử lý overflow" regression at laptop widths.
+   `useScrollEdgeFade` (src/hooks/useScrollEdgeFade.ts) already toggles `data-scroll-end`
+   unconditionally at every width; this just makes the CSS side of it active everywhere, not only
+   on narrow phones. Inert (0 width added) whenever the row already fits, since `data-scroll-end`
+   is then already true and hides it. */
+.header-meta::after,
+.primary-nav::after {
+  content: '';
+  position: sticky;
+  top: 0;
+  right: 0;
+  flex: 0 0 18px;
+  margin-left: -18px;
+  height: 100%;
+  background: linear-gradient(to right, transparent, #071918);
+  pointer-events: none;
+}
+.header-meta[data-scroll-end]::after,
+.primary-nav[data-scroll-end]::after {
+  opacity: 0;
+}
 .mode-tabs {
   display: flex;
   gap: 6px;
@@ -160,6 +215,10 @@ h1 i {
   padding: 8px 14px;
   cursor: pointer;
   font-size: 13px;
+  transition: background 150ms ease;
+}
+.mode-tabs button:hover:not(.active) {
+  background: #ffffff14;
 }
 .mode-tabs button.active {
   color: #071918;
@@ -647,6 +706,13 @@ h1 i {
   border-radius: 999px;
   padding: 8px 14px;
   cursor: pointer;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease;
+}
+.header-meta button:hover:not(:disabled) {
+  border-color: #d4a446;
+  background: #d4a4461f;
 }
 .header-meta button:disabled {
   opacity: 0.55;
@@ -674,6 +740,10 @@ h1 i {
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
+  transition: background 150ms ease;
+}
+.header-lang-button:hover:not([aria-pressed='true']) {
+  background: #ffffff14;
 }
 .header-lang-button[aria-pressed='true'] {
   color: #071918;
@@ -704,6 +774,10 @@ h1 i {
   cursor: pointer;
   font-size: 13px;
   font-weight: 700;
+  transition: background 150ms ease;
+}
+.font-scale-control__button:hover:not([aria-pressed='true']) {
+  background: #ffffff14;
 }
 .font-scale-control__button[aria-pressed='true'] {
   color: #071918;
@@ -2373,6 +2447,10 @@ footer a {
   font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
+  transition: background 150ms ease;
+}
+.primary-nav button:hover:not(.active) {
+  background: #ffffff14;
 }
 .primary-nav button.active {
   color: #071918;
@@ -2384,6 +2462,17 @@ footer a {
     display: none;
   }
 }
+/* Tightens the header's right-hand control row at common laptop widths (1280–1500px) so fewer of
+   its seven items need the scroll-fade affordance above — cosmetic only, box widths are already
+   handled by `overflow-x: auto` + the fade regardless of gap size. */
+@media (max-width: 1500px) {
+  .header-meta {
+    gap: 12px;
+  }
+  .mode-tabs {
+    margin-left: clamp(12px, 3vw, 40px);
+  }
+}
 .executive-overview {
   position: absolute;
   z-index: 4;
@@ -2393,60 +2482,102 @@ footer a {
   color: #dcebe5;
   background: #071918;
 }
-.executive-overview__mock-badge {
-  display: inline-flex;
-  margin: 18px 0 6px;
-  padding: 5px 10px;
-  border: 1px solid #e4bc5e55;
-  border-radius: 999px;
-  color: #e4bc5e;
-  background: #e4bc5e12;
-  font-size: var(--font-size-label);
-  letter-spacing: 0.04em;
+/* Page content is capped so it stays legible/scannable on very wide operations-room monitors
+   (spec §13: "max-width hợp lý trên màn hình rất rộng") instead of stretching KPI cards and text
+   lines edge-to-edge at 2560px+. */
+.executive-overview > * {
+  max-width: 1600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 .executive-overview h2 {
-  margin: 4px 0 6px;
+  margin: var(--space-1) 0 var(--space-2);
   color: #f0cf7a;
   font:
-    700 clamp(20px, 3.2vw, 28px)/1.2 Cambria,
+    700 clamp(22px, 3vw, 30px)/1.25 Cambria,
     'Noto Serif',
     'DejaVu Serif',
     serif;
 }
+/* The illustrative-data notice — spec §6: important information that must be legible without
+   dominating the page. A bordered banner (not a small pill) directly under the title, with an
+   info glyph and its own CTA, so it can't be skimmed past by accident. */
+.executive-overview__notice {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+  margin: var(--space-3) 0 var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: #e4bc5e0d;
+}
+.executive-overview__mock-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--gold-strong);
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  line-height: 1.5;
+}
+.executive-overview__mock-badge::before {
+  content: 'ⓘ';
+  flex: 0 0 auto;
+  font-size: 16px;
+}
 .executive-overview__status {
-  margin: 0 0 20px;
-  color: #a9c3ba;
-  font-size: var(--font-size-label);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-5);
+  color: var(--text-secondary);
+  font-size: var(--font-size-body);
 }
 .executive-overview__status strong {
-  color: #e9f2ed;
+  color: var(--text-primary);
 }
-/* Status is never color-only: the text label above always ships with the visual accent below. */
+/* Status is never color-only: the text label above always ships with the visual accent below,
+   plus a small dot so the status also has a shape/position signal, not only text colour. */
+.executive-overview__status strong::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
 .executive-overview__status[data-status='critical'] strong {
   color: #f08a68;
 }
 .executive-overview__status[data-status='attention'] strong {
-  color: #e7c471;
+  color: var(--gold);
 }
 .executive-overview__status[data-status='healthy'] strong {
-  color: #6fcf9e;
+  color: var(--color-success);
 }
 .executive-overview__status[data-status='degraded'] strong {
-  color: #a9c3ba;
+  color: var(--text-secondary);
 }
 .executive-overview__degraded-banner {
-  margin: 0 0 16px;
-  padding: 10px 14px;
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
   border: 1px solid #f0cf7a55;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   color: #f0cf7a;
   background: #f0cf7a12;
-  font-size: var(--font-size-label);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
 }
 .executive-overview__empty,
 .executive-overview__loading {
   padding: 40px 0;
-  color: #a9c3ba;
+  color: var(--text-secondary);
   text-align: center;
 }
 .executive-overview__error {
@@ -2476,9 +2607,12 @@ footer a {
 
 .kpi-card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 12px;
-  margin: 0 0 24px;
+  /* 160px (not 180px) so all 7 KPI cards fit on one row down to ~1280px-wide laptops — at 180px
+     six fit and the 7th ("Vướng mắc quá hạn") wrapped alone onto its own row, leaving a large,
+     lopsided empty gap beside it (spec §7: "cùng height... grid cân đối"). */
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-3);
+  margin: 0 0 var(--space-6);
   padding: 0;
   list-style: none;
 }
@@ -2562,33 +2696,48 @@ footer a {
   color: #8fa39a;
 }
 
+/* Main (~65%) / sidebar (~35%) split — main carries the two things a leader acts on (attention
+   list + status distribution), sidebar carries supporting context (alerts + data trust). Fixes
+   the earlier layout where the sidebar stacked three widgets against a single short list on the
+   left, leaving a large uneven blank area under the attention list on tall viewports. */
 .executive-overview__columns {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr);
-  gap: 20px;
+  grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr);
+  gap: var(--space-6);
   align-items: start;
 }
+.executive-overview__main-column,
 .executive-overview__side-column {
   display: grid;
-  gap: 20px;
+  gap: var(--space-6);
+  align-content: start;
 }
 
 .priority-project-list,
 .alert-list,
 .portfolio-status-chart,
 .data-health-panel {
-  padding: 16px 18px;
-  border: 1px solid #ffffff1a;
-  border-radius: 12px;
-  background: #ffffff08;
+  padding: var(--space-5);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
 }
 .priority-project-list h3,
 .alert-list h3,
 .portfolio-status-chart h3,
 .data-health-panel h3 {
-  margin: 0 0 12px;
-  color: #e9f2ed;
-  font-size: 15px;
+  margin: 0 0 var(--space-4);
+  color: var(--text-primary);
+  font-size: clamp(16px, 1.3vw, 18px);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+/* "Dự án cần chú ý" is the hero work-area of the page (spec §9) — a gold top accent + slightly
+   more generous padding gives it clearly the highest visual weight of the four panels below the
+   KPI row, ahead of alerts/status/data-health which are supporting context. */
+.priority-project-list {
+  padding: var(--space-6);
+  border-top: 2px solid var(--gold-strong);
 }
 
 .data-sources-panel {
@@ -2662,7 +2811,7 @@ footer a {
 }
 .priority-project-list ol {
   display: grid;
-  gap: 12px;
+  gap: var(--space-3);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -2671,154 +2820,323 @@ footer a {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
-  padding: 12px;
-  border: 1px solid #ffffff14;
-  border-radius: 10px;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  transition:
+    background 150ms ease,
+    border-color 150ms ease;
+}
+.priority-project-item:hover {
+  border-color: #ffffff33;
+  background: var(--surface-2);
+}
+.priority-project-item__main {
+  min-width: 0;
 }
 .priority-project-item__name {
-  margin: 0 0 4px;
-  color: #e9f2ed;
-  font-weight: 600;
+  margin: 0 0 6px;
+  color: var(--text-primary);
+  font-size: var(--font-size-body);
+  font-weight: 700;
+  line-height: 1.4;
 }
 .priority-project-item__code {
-  color: #7fa39a;
+  color: var(--text-muted);
   font-weight: 400;
 }
 .priority-project-item__meta {
-  margin: 0 0 4px;
-  color: #9db6ae;
-  font-size: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 6px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-label);
+  line-height: 1.5;
+}
+/* A small status dot before the status word — the same "text + shape" pairing used elsewhere,
+   never colour alone. Neutral by default; specific statuses get a semantic colour below. */
+.priority-project-item__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.priority-project-item__status::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+.priority-project-item__status[data-status='at-risk']::before {
+  background: var(--color-warning);
+}
+.priority-project-item__status[data-status='delayed']::before {
+  background: #d97757;
+}
+.priority-project-item__status[data-status='suspended']::before {
+  background: var(--color-danger);
+}
+.priority-project-item__status[data-status='active']::before {
+  background: var(--color-success);
 }
 .priority-project-item__reason {
   margin: 0;
-  color: #e7c471;
-  font-size: 12px;
+  color: var(--gold);
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  line-height: 1.5;
 }
 .priority-project-item__action {
   flex: 0 0 auto;
-  border: 1px solid #d4a44688;
+  min-height: 38px;
+  border: 1px solid var(--border-strong);
   border-radius: 999px;
-  padding: 7px 14px;
-  color: #e7c471;
+  padding: 8px 16px;
+  color: var(--gold);
   background: #d4a44612;
   cursor: pointer;
-  font-size: 12px;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease;
+}
+.priority-project-item__action:hover {
+  border-color: var(--gold);
+  background: #d4a4461f;
 }
 
 .alert-group {
-  margin-bottom: 14px;
+  margin-bottom: var(--space-4);
 }
 .alert-group:last-child {
   margin-bottom: 0;
 }
 .alert-group h4 {
-  margin: 0 0 6px;
-  font-size: 12px;
+  margin: 0 0 var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--font-size-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 .alert-group__count {
-  color: #7fa39a;
+  color: var(--text-muted);
   font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
 }
 .alert-group ul {
   display: grid;
-  gap: 6px;
+  gap: var(--space-2);
   margin: 0;
   padding: 0;
   list-style: none;
 }
+/* A coloured left border is the primary severity signal (scans faster than text colour alone at
+   a glance down the list); the `__severity` pill still spells it out in words right beside it —
+   never colour-only. "Nghiêm trọng" gets the strongest treatment (tinted background), "Cảnh báo"
+   a plain border, "Chất lượng dữ liệu" a calmer informational tone. */
 .alert-item {
   display: flex;
-  gap: 8px;
-  padding: 8px 10px;
-  border-radius: 8px;
-  font-size: 12px;
-  background: #ffffff08;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-left: 3px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-label);
+  line-height: 1.5;
+  background: var(--surface-1);
 }
 .alert-item__severity {
   flex: 0 0 auto;
+  padding: 1px 7px;
+  border-radius: 999px;
+  font-size: calc(var(--font-size-label) - 1px);
   font-weight: 700;
+}
+.alert-group[data-severity='critical'] .alert-item {
+  border-left-color: #f08a68;
+  background: #f0836612;
 }
 .alert-group[data-severity='critical'] .alert-item__severity {
   color: #f08a68;
+  background: #f0836622;
+}
+.alert-group[data-severity='warning'] .alert-item {
+  border-left-color: var(--gold);
 }
 .alert-group[data-severity='warning'] .alert-item__severity {
-  color: #e7c471;
+  color: var(--gold);
+  background: #e7c47122;
+}
+.alert-group[data-severity='data-quality'] .alert-item {
+  border-left-color: var(--color-info);
 }
 .alert-group[data-severity='data-quality'] .alert-item__severity {
-  color: #8fb4d9;
+  color: var(--color-info);
+  background: #7fa8d922;
 }
 .alert-item__message {
-  color: #dcebe5;
+  color: var(--text-primary);
 }
 .alert-list__empty {
   margin: 0;
-  color: #9db6ae;
-  font-size: 12px;
+  color: var(--text-secondary);
+  font-size: var(--font-size-label);
 }
 
 .status-stacked-bar {
   display: flex;
-  height: 14px;
+  height: 20px;
   overflow: hidden;
   border-radius: 999px;
-  background: #ffffff10;
+  background: var(--surface-2);
 }
 .status-stacked-bar__segment {
   height: 100%;
 }
+.status-stacked-bar__segment + .status-stacked-bar__segment {
+  border-left: 2px solid #071918;
+}
+/* Two-up grid at desktop width so the distribution can be scanned as a compact table (name,
+   count, %) instead of one long scrolling list — collapses to a single column on narrow panels
+   via the existing 900px breakpoint below. */
 .status-legend {
   display: grid;
-  gap: 6px;
-  margin: 10px 0 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-1) var(--space-4);
+  margin: var(--space-4) 0 0;
   padding: 0;
   list-style: none;
-  font-size: 12px;
-  color: #dcebe5;
+  font-size: var(--font-size-label);
+  color: var(--text-primary);
 }
 .status-legend li {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
+  padding: 5px 0;
 }
 .status-legend__swatch {
-  width: 10px;
-  height: 10px;
+  width: 11px;
+  height: 11px;
   flex: 0 0 auto;
   border-radius: 3px;
 }
+.status-legend li span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
+/* "Bản ghi hợp lệ" is the single number a leader checks first to decide whether to trust the rest
+   of the dashboard — pulled out of the grid into its own headline (spec §12: "phải nhìn giống một
+   system health summary"), coloured positive when every record is valid. */
+.data-health-panel__headline {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+}
+.data-health-panel__headline-value {
+  color: var(--text-secondary);
+  font-size: clamp(22px, 2vw, 26px);
+  font-weight: 700;
+}
+.data-health-panel__headline[data-positive] .data-health-panel__headline-value {
+  color: var(--color-success);
+}
+.data-health-panel__headline-label {
+  color: var(--text-muted);
+  font-size: var(--font-size-label);
+}
 .data-health-panel__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 8px 14px;
-  margin: 0 0 12px;
-  font-size: 12px;
+  gap: var(--space-2) var(--space-4);
+  margin: 0;
+  font-size: var(--font-size-label);
 }
 .data-health-panel__grid dt {
-  color: #7fa39a;
+  margin: 0 0 2px;
+  color: var(--text-muted);
 }
 .data-health-panel__grid dd {
   margin: 0;
-  color: #dcebe5;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.data-health-panel__grid dd[data-positive] {
+  color: var(--color-success);
+}
+.data-health-panel__divider {
+  margin: var(--space-4) 0;
+  border-top: 1px solid var(--border-subtle);
+}
+.data-health-panel h4 {
+  margin: var(--space-5) 0 var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--font-size-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 .confidence-breakdown {
-  margin: 0 0 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
   padding: 0;
   list-style: none;
-  font-size: 12px;
-  color: #9db6ae;
+  font-size: var(--font-size-label);
+  color: var(--text-secondary);
+}
+.confidence-breakdown li {
+  padding: 3px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+}
+.confidence-breakdown li[data-confidence='verified'],
+.confidence-breakdown li[data-confidence='high'] {
+  border-color: #6fcf9755;
+  color: var(--color-success);
+}
+.confidence-breakdown li[data-confidence='low'],
+.confidence-breakdown li[data-confidence='unknown'] {
+  border-color: #e5737355;
+  color: var(--color-danger);
+}
+.data-health-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
 }
 .data-health-panel__provenance-link,
 .data-health-panel__data-readiness-link {
-  border: 1px solid #d4a44688;
+  border: 1px solid var(--border-strong);
   border-radius: 999px;
-  padding: 7px 14px;
-  margin-right: 8px;
-  color: #e7c471;
+  padding: 8px 16px;
+  margin: 0;
+  color: var(--gold);
   background: #d4a44612;
   cursor: pointer;
-  font-size: 12px;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease;
+}
+.data-health-panel__provenance-link:hover,
+.data-health-panel__data-readiness-link:hover {
+  border-color: var(--gold);
+  background: #d4a4461f;
 }
 
 .project-summary-backdrop {
@@ -2891,6 +3209,12 @@ footer a {
   .executive-overview__columns {
     grid-template-columns: 1fr;
   }
+  .status-legend {
+    grid-template-columns: 1fr;
+  }
+  .priority-project-list {
+    padding: var(--space-4);
+  }
 }
 @media (max-width: 767px) and (orientation: portrait) {
   .executive-overview {
@@ -2899,6 +3223,10 @@ footer a {
   }
   .executive-overview h2 {
     font-size: 19px;
+  }
+  .executive-overview__notice {
+    flex-direction: column;
+    align-items: stretch;
   }
   .kpi-card-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3289,14 +3617,26 @@ footer a {
 
 .executive-overview__portfolio-link {
   display: inline-flex;
-  margin: 4px 0 12px;
-  padding: 8px 16px;
-  border: 1px solid #e7c47155;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 9px 18px;
+  border: 1px solid var(--border-strong);
   border-radius: 999px;
-  color: #e7c471;
+  color: var(--gold);
   background: #e7c47112;
-  font-size: 13px;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  white-space: nowrap;
   cursor: pointer;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease;
+}
+.executive-overview__portfolio-link:hover {
+  border-color: var(--gold);
+  background: #e7c4711f;
 }
 
 @media (max-width: 767px) and (orientation: portrait) {

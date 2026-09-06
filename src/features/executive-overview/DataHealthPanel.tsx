@@ -22,13 +22,18 @@ export function DataHealthPanel({
   return (
     <section aria-labelledby="data-health-heading" className="data-health-panel">
       <h3 id="data-health-heading">{t('dataHealth.heading')}</h3>
+      {/* "15/15 hợp lệ" đứng riêng, nổi bật — đây là con số một lãnh đạo cần thấy trước tiên để
+          biết có thể tin dữ liệu hay không (spec §12), trước khi đọc các chỉ số phụ khác. */}
+      <div
+        className="data-health-panel__headline"
+        data-positive={dataHealth.invalidProjects === 0 || undefined}
+      >
+        <span className="data-health-panel__headline-value">
+          {dataHealth.validProjects} / {dataHealth.totalProjects}
+        </span>
+        <span className="data-health-panel__headline-label">{t('dataHealth.validRecords')}</span>
+      </div>
       <dl className="data-health-panel__grid">
-        <div>
-          <dt>{t('dataHealth.validRecords')}</dt>
-          <dd>
-            {dataHealth.validProjects} / {dataHealth.totalProjects}
-          </dd>
-        </div>
         <div>
           <dt>{t('dataHealth.invalidRecords')}</dt>
           <dd>{dataHealth.invalidProjects}</dd>
@@ -45,9 +50,12 @@ export function DataHealthPanel({
           <dt>{t('dataHealth.unmappedCodes')}</dt>
           <dd>{dataHealth.unmappedAdministrativeCodeCount}</dd>
         </div>
+      </dl>
+      <div className="data-health-panel__divider" role="presentation" />
+      <dl className="data-health-panel__grid data-health-panel__grid--timeline">
         <div>
           <dt>{t('dataHealth.sourceStatus')}</dt>
-          <dd>
+          <dd data-positive={dataHealth.sourceAvailable || undefined}>
             {dataHealth.sourceAvailable
               ? t('dataHealth.sourceReady')
               : t('dataHealth.sourceNotReady')}
@@ -66,12 +74,12 @@ export function DataHealthPanel({
           <dd>{formatAbsoluteDateTime(dataTimeline.retrievedAt, locale)}</dd>
         </div>
       </dl>
-      <h3>{t('dataHealth.confidenceHeading')}</h3>
+      <h4>{t('dataHealth.confidenceHeading')}</h4>
       <ul className="confidence-breakdown">
         {Object.entries(dataHealth.confidenceBreakdown)
           .filter(([, count]) => count > 0)
           .map(([confidence, count]) => (
-            <li key={confidence}>
+            <li key={confidence} data-confidence={confidence}>
               {t('dataHealth.confidenceItem', {
                 label: t(`confidence.${confidence}` as MessageKey),
                 count,
@@ -79,23 +87,25 @@ export function DataHealthPanel({
             </li>
           ))}
       </ul>
-      <button
-        type="button"
-        onClick={(event) => {
-          captureProvenanceFocusTrigger(event.currentTarget);
-          openProvenancePanel();
-        }}
-        className="data-health-panel__provenance-link"
-      >
-        {t('dataHealth.viewProvenance')}
-      </button>
-      <button
-        type="button"
-        onClick={() => navigate(serializeDataReadinessHash())}
-        className="data-health-panel__data-readiness-link"
-      >
-        {t('dataHealth.viewDataReadiness')}
-      </button>
+      <div className="data-health-panel__actions">
+        <button
+          type="button"
+          onClick={(event) => {
+            captureProvenanceFocusTrigger(event.currentTarget);
+            openProvenancePanel();
+          }}
+          className="data-health-panel__provenance-link"
+        >
+          {t('dataHealth.viewProvenance')}
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate(serializeDataReadinessHash())}
+          className="data-health-panel__data-readiness-link"
+        >
+          {t('dataHealth.viewDataReadiness')}
+        </button>
+      </div>
     </section>
   );
 }

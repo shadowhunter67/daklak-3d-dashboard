@@ -34,9 +34,11 @@ export function PriorityProjectList({
                 </p>
                 <p className="priority-project-item__meta">
                   <span>{t(`sector.${item.sector}` as MessageKey)}</span>
-                  <span aria-hidden="true"> · </span>
-                  <span>{t(`status.${item.status}` as MessageKey)}</span>
-                  <span aria-hidden="true"> · </span>
+                  <span aria-hidden="true">·</span>
+                  <span className="priority-project-item__status" data-status={item.status}>
+                    {t(`status.${item.status}` as MessageKey)}
+                  </span>
+                  <span aria-hidden="true">·</span>
                   <span>{t('priorityProjects.progress', { value: item.overallProgress })}</span>
                 </p>
                 <p className="priority-project-item__reason">
