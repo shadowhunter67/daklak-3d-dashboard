@@ -115,6 +115,15 @@ export const vi = {
   'portfolioStatus.critical': 'Nghiêm trọng',
   'portfolioStatus.degraded': 'Dữ liệu chưa đầy đủ',
 
+  // Executive Status Hero — panel lớn đầu trang, trả lời trong 5 giây: tình hình chung, có bao
+  // nhiêu vấn đề, loại vấn đề chính là gì (spec "5-second test").
+  'executiveStatusHero.eyebrow': 'Tình hình dự án trọng điểm',
+  'executiveStatusHero.summary': '{count}/{total} dự án cần xử lý',
+  'executiveStatusHero.summaryClean': 'Toàn bộ {total} dự án đang trong tầm kiểm soát',
+  'executiveStatusHero.breakdown.delayed': '{count} chậm tiến độ',
+  'executiveStatusHero.breakdown.atRisk': '{count} có nguy cơ',
+  'executiveStatusHero.breakdown.overdueIssues': '{count} vướng mắc quá hạn',
+
   // KPI grid
   'kpi.heading': 'Chỉ số tổng quan',
   'kpi.totalProjects': 'Tổng số dự án',
@@ -144,7 +153,7 @@ export const vi = {
     'So sánh trên {comparable}/{total} dự án có dữ liệu tiến độ từ trước đó — không đủ dự án thì không hiển thị xu hướng.',
 
   // Alerts
-  'alerts.heading': 'Danh sách cảnh báo',
+  'alerts.heading': 'Cần xử lý',
   'alerts.empty': 'Không có cảnh báo nào — danh mục dự án đang ổn định.',
   'alerts.group.critical': 'Nghiêm trọng',
   'alerts.group.warning': 'Cảnh báo',
@@ -840,4 +849,19 @@ export const vi = {
   'dataReadiness.businessHeading': 'Cảnh báo nghiệp vụ (business alert, không phải lỗi)',
   'dataReadiness.businessEmpty': 'Không có cảnh báo nghiệp vụ nào.',
   'dataReadiness.issue.openProject': 'Xem dự án liên quan',
+
+  // Nhãn tiếng Việt dễ hiểu cho từng `DataQualityIssue.rule` — dùng thay cho slug kỹ thuật
+  // ("multiple-verification-stage-records", "unknown-managing-authority"...) ở mọi nơi hiển thị
+  // cho người dùng không phải lập trình viên (Executive Overview, Data Readiness). Xem
+  // `entities/project/dataQualityMessages.ts`.
+  'dataQuality.rule.duplicatePrimaryKey': 'Có bản ghi bị trùng lặp',
+  'dataQuality.rule.unmappedAdministrativeCode': 'Một dự án gắn mã hành chính không xác định được',
+  'dataQuality.rule.unknownManagingAuthority': 'Một dự án chưa xác định rõ cơ quan quản lý',
+  'dataQuality.rule.unknownInvestor': 'Một dự án chưa xác định rõ chủ đầu tư',
+  'dataQuality.rule.unknownContractor': 'Một hạng mục chưa xác định rõ nhà thầu',
+  'dataQuality.rule.unknownReference': 'Có liên kết dữ liệu bị thiếu hoặc sai lệch',
+  'dataQuality.rule.staleData': 'Dữ liệu dự án đã lâu chưa được cập nhật',
+  'dataQuality.rule.multipleVerificationStageRecords':
+    'Một dự án có nhiều bản ghi tiến độ đang chờ xác thực — hệ thống đã tự chọn bản ghi đáng tin cậy nhất để tính chỉ số',
+  'dataQuality.rule.generic': 'Cần kiểm tra chất lượng dữ liệu cho bản ghi này',
 } as const satisfies Record<string, string>;

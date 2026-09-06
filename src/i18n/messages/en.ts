@@ -110,6 +110,13 @@ export const en: Partial<Record<MessageKey, string>> = {
   'portfolioStatus.critical': 'Critical',
   'portfolioStatus.degraded': 'Data incomplete',
 
+  'executiveStatusHero.eyebrow': 'Key project status',
+  'executiveStatusHero.summary': '{count}/{total} projects need action',
+  'executiveStatusHero.summaryClean': 'All {total} projects are under control',
+  'executiveStatusHero.breakdown.delayed': '{count} delayed',
+  'executiveStatusHero.breakdown.atRisk': '{count} at risk',
+  'executiveStatusHero.breakdown.overdueIssues': '{count} overdue issues',
+
   // KPI grid
   'kpi.heading': 'Overview indicators',
   'kpi.totalProjects': 'Total projects',
@@ -139,7 +146,7 @@ export const en: Partial<Record<MessageKey, string>> = {
     'Based on {comparable}/{total} projects with progress data from before that date — shown only when enough projects qualify.',
 
   // Alerts
-  'alerts.heading': 'Alert list',
+  'alerts.heading': 'Needs attention',
   'alerts.empty': 'No alerts — the project portfolio is stable.',
   'alerts.group.critical': 'Critical',
   'alerts.group.warning': 'Warning',
@@ -830,4 +837,15 @@ export const en: Partial<Record<MessageKey, string>> = {
   'dataReadiness.businessHeading': 'Business alerts (not errors)',
   'dataReadiness.businessEmpty': 'No business alerts.',
   'dataReadiness.issue.openProject': 'View related project',
+
+  'dataQuality.rule.duplicatePrimaryKey': 'A record is duplicated',
+  'dataQuality.rule.unmappedAdministrativeCode': 'A project has an unresolved administrative code',
+  'dataQuality.rule.unknownManagingAuthority': 'A project has no confirmed managing authority',
+  'dataQuality.rule.unknownInvestor': 'A project has no confirmed investor',
+  'dataQuality.rule.unknownContractor': 'A work item has no confirmed contractor',
+  'dataQuality.rule.unknownReference': 'A data link is missing or inconsistent',
+  'dataQuality.rule.staleData': "A project's data hasn't been updated in a while",
+  'dataQuality.rule.multipleVerificationStageRecords':
+    'A project has several progress records pending verification — the system already picked the most reliable one for its indicators',
+  'dataQuality.rule.generic': 'This record needs a data-quality review',
 };

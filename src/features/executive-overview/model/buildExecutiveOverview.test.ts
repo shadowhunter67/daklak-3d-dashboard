@@ -35,6 +35,19 @@ describe('buildExecutiveOverview', () => {
     expect(model.kpis.totalProjects.value).toBe(MOCK_PROJECT_BUNDLES.length);
   });
 
+  // Regression guard: data-quality alert messages on this executive-facing screen must read as
+  // plain Vietnamese, never as internal rule slugs/field names/raw identity strings (a real defect
+  // — "Nhiều bản ghi cho cùng identity (prj-013::...::project-progress-illustrative)... dùng
+  // selectAuthoritativeSnapshot..." was shown directly to a non-technical viewer).
+  it('never leaks a technical rule slug, function name, or record identity into a data-quality alert message', () => {
+    const model = buildExecutiveOverview({ bundles: MOCK_PROJECT_BUNDLES, context, provenance });
+    const qualityAlerts = model.alerts.filter((a) => a.kind === 'data-quality');
+    expect(qualityAlerts.length).toBeGreaterThan(0); // this fixture is known to trigger at least one
+    for (const alert of qualityAlerts) {
+      expect(alert.message).not.toMatch(/selectAuthoritativeSnapshot|::|status=|Id không tồn tại/);
+    }
+  });
+
   it('reports zero total projects as ok, not unavailable (an empty portfolio is a real answer)', () => {
     const model = buildExecutiveOverview({ bundles: [], context, provenance });
     expect(model.kpis.totalProjects.status).toBe('ok');
