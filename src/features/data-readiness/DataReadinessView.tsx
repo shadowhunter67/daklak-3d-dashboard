@@ -6,7 +6,78 @@ import type { MessageKey } from '../../i18n/messages';
 import { formatDateTime } from '../../i18n/formatters';
 import { dataQualityRuleLabelKey } from '../../entities/project/dataQualityMessages';
 import { useDataReadiness } from './data/useDataReadiness';
-import type { DataReadinessIssueWithProjectLink } from './model/dataReadinessTypes';
+import { buildDataReadinessSummary } from './model/dataReadinessSummary';
+import type {
+  DataReadinessIssueWithProjectLink,
+  DataReadinessModel,
+} from './model/dataReadinessTypes';
+
+function DataReadinessSummaryPanel({ model }: { model: DataReadinessModel }) {
+  const { t } = useTranslation();
+  const summary = buildDataReadinessSummary(model);
+  return (
+    <section
+      className="data-readiness-summary"
+      data-status={summary.status}
+      aria-labelledby="data-readiness-summary-heading"
+    >
+      <h3 id="data-readiness-summary-heading">{t('dataReadiness.summary.heading')}</h3>
+      <p className="data-readiness-summary__status">
+        <span className="data-readiness-summary__status-badge" aria-hidden="true">
+          {summary.status === 'good' ? '✓' : summary.status === 'attention' ? '!' : '✕'}
+        </span>
+        {t(`dataReadiness.summary.status.${summary.status}` as const)}
+      </p>
+      <p className="data-readiness-summary__line">
+        {t('dataReadiness.summary.line', {
+          errors: String(summary.structuralErrorCount),
+          alerts: String(summary.businessAlertCount),
+          stale: String(summary.staleProjectCount),
+          datasets: String(summary.activeDatasetCount),
+        })}
+      </p>
+      <div className="data-readiness-summary__cards">
+        <div className="data-readiness-summary__card">
+          <h4>{t('dataReadiness.summary.completeness')}</h4>
+          <p>
+            {t('dataReadiness.summary.completeness.value', {
+              errors: String(summary.completeness.structuralErrorCount),
+              total: String(summary.completeness.totalRecordCount),
+            })}
+          </p>
+        </div>
+        <div className="data-readiness-summary__card">
+          <h4>{t('dataReadiness.summary.freshness')}</h4>
+          <p>
+            {t('dataReadiness.summary.freshness.value', {
+              stale: String(summary.freshness.staleCount),
+              total: String(summary.freshness.totalCount),
+            })}
+          </p>
+        </div>
+        <div className="data-readiness-summary__card">
+          <h4>{t('dataReadiness.summary.consistency')}</h4>
+          <p>
+            {t('dataReadiness.summary.consistency.value', {
+              duplicates: String(summary.consistency.duplicateCount),
+              unmapped: String(summary.consistency.unmappedCount),
+            })}
+          </p>
+        </div>
+        <div className="data-readiness-summary__card">
+          <h4>{t('dataReadiness.summary.provenance')}</h4>
+          <p>
+            {t('dataReadiness.summary.provenance.value', {
+              missing: String(summary.provenance.missingCount),
+              lowConfidence: String(summary.provenance.lowConfidenceCount),
+              unverified: String(summary.provenance.unverifiedCount),
+            })}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function IssueList({
   issues,
@@ -131,6 +202,8 @@ export function DataReadinessView({
         {t('dataReadiness.heading')}
       </h2>
       <p className="data-readiness__description">{t('dataReadiness.description')}</p>
+
+      <DataReadinessSummaryPanel model={model} />
 
       {state.status === 'degraded' && (
         <p role="alert" className="data-readiness__degraded-banner">

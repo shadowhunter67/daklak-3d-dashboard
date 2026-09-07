@@ -35,6 +35,20 @@ function MiniBarChart({ bars }: { bars: { label: string; value: number }[] }) {
         return (
           <g key={bar.label}>
             <rect x={x} y={y} width={BAR_WIDTH} height={barHeight} rx={4} ry={4} fill="#d4a446" />
+            {/* Số liệu dưới thanh cột trước đây chỉ có ở aria-label (chartAriaLabel) — người dùng
+                đọc bằng mắt (kể cả người mắt kém đã bật A+) không thấy con số nào, chỉ thấy chữ
+                "Thấp/Trung bình/Cao" và chiều cao cột — spec §XII: heatmap phải thể hiện số, không
+                chỉ nhãn định tính. */}
+            <text
+              x={x + BAR_WIDTH / 2}
+              y={Math.max(y - 4, 11)}
+              textAnchor="middle"
+              fontSize="11"
+              fontWeight="700"
+              fill="#e9f2ed"
+            >
+              {bar.value}
+            </text>
             <text
               x={x + BAR_WIDTH / 2}
               y={CHART_HEIGHT - 6}

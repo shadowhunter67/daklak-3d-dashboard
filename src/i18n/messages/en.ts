@@ -478,7 +478,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'statPanel.newBusinesses': 'Newly registered businesses',
   'statPanel.communePopulation': 'Commune-level population',
   'statPanel.chartTitle.energy': 'Indicators by point group',
-  'statPanel.chartTitle.heatmap': 'Distribution intensity',
+  'statPanel.chartTitle.heatmap': 'Distribution intensity (illustrative 0–100 scale)',
   'statPanel.chartTitle.overview': 'Service access indicator',
   'statPanel.chartAria': 'Bar chart summarizing the three displayed indicator groups: {summary}.',
   'statPanel.mockNote.overview':
@@ -698,6 +698,10 @@ export const en: Partial<Record<MessageKey, string>> = {
   'layerPanel.keyProjectsLegendLabel': 'Project status',
   'layerPanel.keyProjectsNote':
     'Real projects compiled from news / government sources; locations and alignments are approximate and not field-verified. Tap a marker on the map for its source.',
+  'layerPanel.modeGroupLabel': 'Layer display mode',
+  'layerPanel.modeBasic': 'Basic',
+  'layerPanel.modeAdvanced': 'Advanced',
+  'layerPanel.advancedLayersHeading': 'Advanced layers',
 
   // DetailMapViewport
   'detailMapViewport.webglUnsupportedReason':
@@ -796,6 +800,22 @@ export const en: Partial<Record<MessageKey, string>> = {
   'dataReadiness.heading': 'Data Readiness',
   'dataReadiness.description':
     'Where the current data source comes from, how it was checked, and what is missing/stale/unverified.',
+  'dataReadiness.summary.heading': 'Data health',
+  'dataReadiness.summary.status.good': 'Good',
+  'dataReadiness.summary.status.attention': 'Needs attention',
+  'dataReadiness.summary.status.critical': 'Needs action',
+  'dataReadiness.summary.line':
+    '{errors} structural errors · {alerts} business alerts · {stale} projects overdue for an update · {datasets} active data sources',
+  'dataReadiness.summary.completeness': 'Completeness',
+  'dataReadiness.summary.completeness.value': '{errors} structural errors / {total} records',
+  'dataReadiness.summary.freshness': 'Freshness',
+  'dataReadiness.summary.freshness.value': '{stale}/{total} projects overdue for an update',
+  'dataReadiness.summary.consistency': 'Consistency',
+  'dataReadiness.summary.consistency.value':
+    '{duplicates} duplicate records · {unmapped} unresolved administrative codes',
+  'dataReadiness.summary.provenance': 'Traceability',
+  'dataReadiness.summary.provenance.value':
+    '{missing} records missing provenance · {lowConfidence} low confidence · {unverified} unverified',
   'dataReadiness.loading': 'Loading…',
   'dataReadiness.loadErrorHeading': 'Could not load data',
   'dataReadiness.retry': 'Retry',

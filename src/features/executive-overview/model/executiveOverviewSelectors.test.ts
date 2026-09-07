@@ -65,6 +65,18 @@ describe('formatKpiValue', () => {
     expect(result.isUnavailable).toBe(false);
     expect(result.text).toContain('9');
   });
+
+  // Regression guard: a schedule/disbursement variance rendered as a bare "-9" on Project Detail
+  // (fell through to the default number formatter, no unit) — real defect found via screenshot
+  // review. "-9 điểm %" is the same convention already used for the KPI trend indicator.
+  it('formats percentage-points with a unit suffix, not a bare number', () => {
+    const negative = formatKpiValue(ok(-9, 'percentage-points'));
+    expect(negative.isUnavailable).toBe(false);
+    expect(negative.text).not.toBe('-9');
+    expect(negative.text).toContain('điểm %');
+    const positive = formatKpiValue(ok(3, 'percentage-points'));
+    expect(positive.text).toContain('+3');
+  });
 });
 
 describe('groupAlerts', () => {

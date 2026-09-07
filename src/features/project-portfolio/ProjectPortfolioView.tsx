@@ -22,6 +22,25 @@ const SORT_KEYS: PortfolioSortKey[] = [
   'freshness-desc',
 ];
 
+/** Spec §XIV: "Tiến độ: mini progress bar + %. Giải ngân: mini bar + %." — purely a scanning aid
+ * next to the text that already carries the real value (`aria-hidden`, never the only signal). A
+ * thin marker at `planned` shows the plan target on the same track as `value`'s fill, so "behind
+ * plan" reads as the fill falling short of the marker at a glance, without a second bar. */
+function MiniProgressBar({ value, planned }: { value: number; planned?: number | null }) {
+  const clampedValue = Math.max(0, Math.min(100, value));
+  return (
+    <span className="mini-progress-bar" aria-hidden="true">
+      <span className="mini-progress-bar__fill" style={{ width: `${clampedValue}%` }} />
+      {planned != null && (
+        <span
+          className="mini-progress-bar__planned-marker"
+          style={{ left: `${Math.max(0, Math.min(100, planned))}%` }}
+        />
+      )}
+    </span>
+  );
+}
+
 function ProjectRow({ row, onOpen }: { row: ProjectPortfolioRow; onOpen: () => void }) {
   const { t, locale } = useTranslation();
   const disbursement = formatKpiValueLocalized(row.disbursementRate, locale, t);
@@ -36,10 +55,16 @@ function ProjectRow({ row, onOpen }: { row: ProjectPortfolioRow; onOpen: () => v
       <td>{t(`sector.${row.sector}` as MessageKey)}</td>
       <td>{t(`status.${row.status}` as MessageKey)}</td>
       <td>
+        <MiniProgressBar value={row.overallProgress} planned={row.plannedProgress} />
         {row.overallProgress}% <span aria-hidden="true">/</span>{' '}
         {t('portfolio.plannedProgress', { value: row.plannedProgress })}
       </td>
-      <td>{disbursement.text}</td>
+      <td>
+        {row.disbursementRate.value !== null && (
+          <MiniProgressBar value={row.disbursementRate.value} />
+        )}
+        {disbursement.text}
+      </td>
       <td>
         {row.plannedCompletionDate
           ? formatDate(row.plannedCompletionDate, locale)
@@ -76,13 +101,19 @@ function ProjectCard({ row, onOpen }: { row: ProjectPortfolioRow; onOpen: () => 
         <div>
           <dt>{t('portfolio.col.progress')}</dt>
           <dd>
+            <MiniProgressBar value={row.overallProgress} planned={row.plannedProgress} />
             {row.overallProgress}% ({t('portfolio.plannedProgress', { value: row.plannedProgress })}
             )
           </dd>
         </div>
         <div>
           <dt>{t('portfolio.col.disbursement')}</dt>
-          <dd>{disbursement.text}</dd>
+          <dd>
+            {row.disbursementRate.value !== null && (
+              <MiniProgressBar value={row.disbursementRate.value} />
+            )}
+            {disbursement.text}
+          </dd>
         </div>
         <div>
           <dt>{t('portfolio.col.plannedCompletion')}</dt>

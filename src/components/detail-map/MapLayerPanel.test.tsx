@@ -37,11 +37,18 @@ function renderPanel(sourceAvailability: typeof availableSources) {
   return { onToggleLayer, onBaseMapChange, onPlanningOverlayChange };
 }
 
+/** Heatmap/street-names/POI-labels/buildings/dashboard-metrics only render once "Nâng cao" is
+ * selected — the panel opens to "Cơ bản" by default (spec §X: progressive disclosure). */
+function switchToAdvanced() {
+  fireEvent.click(screen.getByRole('button', { name: 'Nâng cao' }));
+}
+
 describe('MapLayerPanel', () => {
   afterEach(cleanup);
 
   it('keeps the exact label as the accessible name even when a layer is unavailable', () => {
     renderPanel(noSources);
+    switchToAdvanced();
     // A wordy accessible name (label text + hidden explanation concatenated) would make this
     // exact-match query fail — regressions here mean the explanation leaked into the name.
     expect(screen.getByRole('checkbox', { name: 'Heatmap' })).toBeInTheDocument();
@@ -50,6 +57,7 @@ describe('MapLayerPanel', () => {
 
   it('does not disable layer toggles when no source is configured, so URL preferences still round-trip', () => {
     const { onToggleLayer } = renderPanel(noSources);
+    switchToAdvanced();
     const heatmap = screen.getByRole('checkbox', { name: 'Heatmap' });
     expect(heatmap).not.toBeDisabled();
     fireEvent.click(heatmap);
@@ -58,6 +66,7 @@ describe('MapLayerPanel', () => {
 
   it('describes why an unavailable layer has no visible effect yet', () => {
     renderPanel(noSources);
+    switchToAdvanced();
     const heatmap = screen.getByRole('checkbox', { name: 'Heatmap' });
     const describedById = heatmap.getAttribute('aria-describedby');
     expect(describedById).toBeTruthy();
@@ -68,8 +77,17 @@ describe('MapLayerPanel', () => {
 
   it('shows no unavailable explanation once sources are configured', () => {
     renderPanel(availableSources);
+    switchToAdvanced();
     const heatmap = screen.getByRole('checkbox', { name: 'Heatmap' });
     expect(heatmap).not.toHaveAttribute('aria-describedby');
+  });
+
+  it('defaults to Basic mode, hiding advanced-only layers like Heatmap until switched', () => {
+    renderPanel(availableSources);
+    expect(screen.queryByRole('checkbox', { name: 'Heatmap' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cơ bản' })).toHaveAttribute('aria-pressed', 'true');
+    switchToAdvanced();
+    expect(screen.getByRole('checkbox', { name: 'Heatmap' })).toBeInTheDocument();
   });
 
   it('exposes a standalone "Tên xã/phường" toggle wired to wardLabelsVisible', () => {

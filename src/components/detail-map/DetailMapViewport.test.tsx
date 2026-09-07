@@ -62,6 +62,8 @@ describe('DetailMapViewport', () => {
     render(<DetailMapViewport />);
     await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
     fireEvent.click(screen.getByRole('button', { name: 'Lớp bản đồ' }));
+    // Heatmap is an "Advanced" layer (progressive disclosure, spec §X) — hidden until switched.
+    fireEvent.click(screen.getByRole('button', { name: 'Nâng cao' }));
     const heatmapCheckbox = screen.getByRole('checkbox', { name: 'Heatmap' });
     expect(heatmapCheckbox).not.toBeChecked();
     fireEvent.click(heatmapCheckbox);

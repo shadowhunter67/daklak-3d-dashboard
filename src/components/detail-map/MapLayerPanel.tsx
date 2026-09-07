@@ -55,25 +55,80 @@ function KeyProjectsLegend() {
   );
 }
 
-const layerToggles: Array<{
+/** Progressive disclosure (spec §X): a non-technical viewer opens the panel to "Cơ bản" — the 5
+ * layers a leader actually reasons about (place names, roads, key projects, approved planning
+ * zones). Everything else (street names, POI labels, buildings, dashboard metric overlays,
+ * heatmap) only appears once they switch to "Nâng cao". Toggle order/availability-gating stays
+ * local (depends on this map's own `DetailMapSourceAvailability` shape) — only the display copy
+ * comes from the layer registry. */
+const basicLayerToggles: Array<{
   key: ToggleableLayer;
   /** Which sourceAvailability flag gates this layer's actual rendering (see MapLibreProvider.ts). */
   unavailableWhen: keyof DetailMapSourceAvailability;
 }> = [
-  { key: 'roadsVisible', unavailableWhen: 'roads' },
-  { key: 'roadLabelsVisible', unavailableWhen: 'roads' },
-  { key: 'placeLabelsVisible', unavailableWhen: 'roads' },
   { key: 'administrativeBoundariesVisible', unavailableWhen: 'administrativeBoundaries' },
   // Ward names ship from the same bundled data as the boundaries, so they gate on the same
   // always-true availability flag.
   { key: 'wardLabelsVisible', unavailableWhen: 'administrativeBoundaries' },
-  { key: 'buildingsVisible', unavailableWhen: 'roads' },
-  { key: 'dashboardMetricsVisible', unavailableWhen: 'dashboardOverlays' },
-  { key: 'heatmapVisible', unavailableWhen: 'dashboardOverlays' },
+  { key: 'roadsVisible', unavailableWhen: 'roads' },
   // Bundled, externally-sourced reference layer — always available.
   { key: 'keyProjectsVisible', unavailableWhen: 'administrativeBoundaries' },
   { key: 'planningZonesVisible', unavailableWhen: 'administrativeBoundaries' },
 ];
+const advancedLayerToggles: typeof basicLayerToggles = [
+  { key: 'roadLabelsVisible', unavailableWhen: 'roads' },
+  { key: 'placeLabelsVisible', unavailableWhen: 'roads' },
+  { key: 'buildingsVisible', unavailableWhen: 'roads' },
+  { key: 'dashboardMetricsVisible', unavailableWhen: 'dashboardOverlays' },
+  { key: 'heatmapVisible', unavailableWhen: 'dashboardOverlays' },
+];
+
+function LayerToggleRow({
+  toggle,
+  layers,
+  sourceAvailability,
+  onToggleLayer,
+}: {
+  toggle: { key: ToggleableLayer; unavailableWhen: keyof DetailMapSourceAvailability };
+  layers: DetailMapLayerState;
+  sourceAvailability: DetailMapSourceAvailability;
+  onToggleLayer: (layer: ToggleableLayer) => void;
+}) {
+  const { t } = useTranslation();
+  const unavailable = !sourceAvailability[toggle.unavailableWhen];
+  const reasonId = `layer-${toggle.key}-unavailable-reason`;
+  const label = getLayerDescriptor(toggle.key)?.title ?? toggle.key;
+  return (
+    // The unavailable-reason text below is a SIBLING of the label, not nested inside it — nesting
+    // it would make it part of the checkbox's accessible NAME (via the native label-wraps-control
+    // "name from content" rule), not just its description, turning "Heatmap" into a full sentence
+    // for every assistive-tech/query lookup.
+    <div>
+      <label
+        className={unavailable ? 'layer-toggle layer-toggle--unavailable' : 'layer-toggle'}
+        title={unavailable ? t('layerPanel.unavailableTitle') : undefined}
+      >
+        <input
+          type="checkbox"
+          checked={layers[toggle.key] as boolean}
+          onChange={() => onToggleLayer(toggle.key)}
+          aria-describedby={unavailable ? reasonId : undefined}
+        />
+        {label}
+        {unavailable && (
+          <span aria-hidden="true" className="layer-toggle__note">
+            {t('layerPanel.unavailableNote')}
+          </span>
+        )}
+      </label>
+      {unavailable && (
+        <span id={reasonId} className="visually-hidden">
+          {t('layerPanel.unavailableReason')}
+        </span>
+      )}
+    </div>
+  );
+}
 
 export function MapLayerPanel({
   layers,
@@ -99,6 +154,7 @@ export function MapLayerPanel({
 }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [mode, setMode] = useState<'basic' | 'advanced'>('basic');
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
 
@@ -136,45 +192,53 @@ export function MapLayerPanel({
           aria-label={t('layerPanel.contentAria')}
         >
           <section aria-labelledby="detail-map-layer-panel-layers-heading">
+            <div
+              className="detail-map-layer-panel__mode"
+              role="group"
+              aria-label={t('layerPanel.modeGroupLabel')}
+            >
+              <button
+                type="button"
+                aria-pressed={mode === 'basic'}
+                onClick={() => setMode('basic')}
+              >
+                {t('layerPanel.modeBasic')}
+              </button>
+              <button
+                type="button"
+                aria-pressed={mode === 'advanced'}
+                onClick={() => setMode('advanced')}
+              >
+                {t('layerPanel.modeAdvanced')}
+              </button>
+            </div>
             <h3 id="detail-map-layer-panel-layers-heading">{t('layerPanel.layersHeading')}</h3>
-            {layerToggles.map((toggle) => {
-              const unavailable = !sourceAvailability[toggle.unavailableWhen];
-              const reasonId = `layer-${toggle.key}-unavailable-reason`;
-              const label = getLayerDescriptor(toggle.key)?.title ?? toggle.key;
-              return (
-                // The unavailable-reason text below is a SIBLING of the label, not nested inside
-                // it — nesting it would make it part of the checkbox's accessible NAME (via the
-                // native label-wraps-control "name from content" rule), not just its description,
-                // turning "Heatmap" into a full sentence for every assistive-tech/query lookup.
-                <div key={toggle.key}>
-                  <label
-                    className={
-                      unavailable ? 'layer-toggle layer-toggle--unavailable' : 'layer-toggle'
-                    }
-                    title={unavailable ? t('layerPanel.unavailableTitle') : undefined}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={layers[toggle.key] as boolean}
-                      onChange={() => onToggleLayer(toggle.key)}
-                      aria-describedby={unavailable ? reasonId : undefined}
-                    />
-                    {label}
-                    {unavailable && (
-                      <span aria-hidden="true" className="layer-toggle__note">
-                        {t('layerPanel.unavailableNote')}
-                      </span>
-                    )}
-                  </label>
-                  {unavailable && (
-                    <span id={reasonId} className="visually-hidden">
-                      {t('layerPanel.unavailableReason')}
-                    </span>
-                  )}
-                </div>
-              );
-            })}
+            {basicLayerToggles.map((toggle) => (
+              <LayerToggleRow
+                key={toggle.key}
+                toggle={toggle}
+                layers={layers}
+                sourceAvailability={sourceAvailability}
+                onToggleLayer={onToggleLayer}
+              />
+            ))}
             {layers.keyProjectsVisible && <KeyProjectsLegend />}
+            {mode === 'advanced' && (
+              <>
+                <h3 id="detail-map-layer-panel-advanced-layers-heading">
+                  {t('layerPanel.advancedLayersHeading')}
+                </h3>
+                {advancedLayerToggles.map((toggle) => (
+                  <LayerToggleRow
+                    key={toggle.key}
+                    toggle={toggle}
+                    layers={layers}
+                    sourceAvailability={sourceAvailability}
+                    onToggleLayer={onToggleLayer}
+                  />
+                ))}
+              </>
+            )}
           </section>
           <section aria-labelledby="detail-map-layer-panel-basemap-heading">
             <h3 id="detail-map-layer-panel-basemap-heading">{t('layerPanel.baseMapHeading')}</h3>
