@@ -156,7 +156,12 @@ h1 i {
   gap: 22px;
   color: #acc5bc;
   font-size: 14px;
-  min-width: 0;
+  /* Not 0 — a real regression (see the `.header-mock-badge` comment near its media query) showed
+     this box collapsing to zero width under enough sibling pressure, which let it render fully
+     behind a neighbour instead of showing even its own scroll-fade edge. 40px is enough for the
+     18px fade plus a sliver of the first control, so there's always a visible, clickable hint
+     that more content exists here, however tight the row gets. */
+  min-width: 40px;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -383,6 +388,21 @@ h1 i {
      (e2e/world-exploration.spec.ts), not by inspection alone. */
   z-index: 2;
 }
+/* `.world-hud__bottom-left` (ambient lighting toggle: Bình minh/Trưa/Hoàng hôn/Đêm) and
+   `.world-hud__bottom-center` (mode switch, or tour controls while a tour is active) both sit at
+   `bottom: 24px`, `left`-anchored vs. `left: 50%`-centred — close enough, on the narrower end of
+   supported widths, that lighting-left's buttons (widened by the typography pass) can visually
+   creep under tour-controls. When a tour is running its controls are the one thing that actually
+   matters — Kết thúc tour/Tạm dừng tour must always win the click, even if the row beside it looks
+   crowded (real e2e failure on CI Linux, font-metric-dependent, not reproducible on Windows).
+   `.world-hud__bottom-left` deliberately keeps the lower value: ambient lighting is the layer that
+   should visually recede if anything has to. */
+.world-hud__bottom-left {
+  z-index: 2;
+}
+.world-hud__bottom-center {
+  z-index: 3;
+}
 /* `.onboarding-backdrop` (reused as-is from OnboardingOverlay.tsx for WorldPoiList.tsx/
    WorldTeleportMenu.tsx's full-screen dialogs) is normally a direct child of <body>-ish content,
    never itself inside a `pointer-events: none` ancestor — but here it's nested under `.world-hud`
@@ -490,7 +510,7 @@ h1 i {
 .world-hud__tour-buttons button {
   border: 1px solid #d4a44688;
   border-radius: 999px;
-  padding: 8px 14px;
+  padding: 8px 12px;
   color: #e7c471;
   background: #d4a44612;
   cursor: pointer;
@@ -2490,7 +2510,17 @@ footer a {
   background: #e4bc5e;
   box-shadow: 0 0 18px #d4a44655;
 }
-@media (max-width: 1100px) {
+/* Real regression found via CI on Linux (not reproducible on Windows — font metrics render this
+   ~15-25px narrower there, just enough to stay under the edge): on the 3D view, `.mode-tabs`
+   (Tổng quan/Năng lượng/Heatmap — only present here, not on other views) adds three more buttons
+   competing for the same row as `.primary-nav` + this badge. Their `white-space: nowrap` content
+   gives them an effective minimum width the flexbox shrink algorithm respects; `.header-meta`
+   opted out of that floor (`min-width: 0`, so its own `overflow-x: auto` can engage) and absorbs
+   the entire deficit — at 1280px on the 3D view specifically, that deficit exceeded its own
+   content width, collapsing it to ~0px stacked at the same point mode-tabs ends, which is what
+   made Playwright's click-to-EN interception real, not a test artifact. Widened this badge's hide
+   threshold from 1100 to 1400px so it stops competing for space well before that point. */
+@media (max-width: 1400px) {
   .header-mock-badge {
     display: none;
   }
@@ -2504,6 +2534,11 @@ footer a {
   }
   .mode-tabs {
     margin-left: clamp(12px, 3vw, 40px);
+  }
+  .mode-tabs button,
+  .primary-nav button {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 }
 .executive-overview {
