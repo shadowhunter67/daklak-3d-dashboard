@@ -513,6 +513,9 @@ test.describe('directory ordering and safe bottom', () => {
     test(`sorts 102 rows and keeps the final row safe at ${viewport.width}x${viewport.height}`, async ({
       page,
     }) => {
+      // 102-row directory + search + scroll + click is legitimately more work than the 30s
+      // default covers on a loaded CI runner — give it headroom instead of relying on retries.
+      test.setTimeout(45_000);
       await page.setViewportSize(viewport);
       await page.goto('./?view=2d');
       await openMapDirectory(page);
@@ -528,6 +531,9 @@ test.describe('directory ordering and safe bottom', () => {
       const collator = new Intl.Collator('vi', { sensitivity: 'base', numeric: true });
       expect(searchNames).toEqual([...searchNames].sort(collator.compare));
       await search.fill('');
+      // Wait for the full list to re-render before touching the last row — measuring/clicking
+      // mid-re-render is what produced the intermittent "session closed" CI failures.
+      await expect(rows).toHaveCount(102);
 
       const lastRow = rows.last();
       // Plain DOM scroll, not Playwright's scrollIntoViewIfNeeded(): the latter waits for the
@@ -695,9 +701,12 @@ test.describe('Vietnamese detail name visual coverage', () => {
 
 test.describe('detail map (MapLibre)', () => {
   test('opens from the header, updates the URL, and restores on Back/Forward', async ({ page }) => {
+    // Starts on the WebGL 3D globe, then tears it down while mounting MapLibre — that handoff
+    // is slow on loaded CI runners and occasionally missed the default 30s test timeout.
+    test.setTimeout(60_000);
     await page.goto('./?view=3d');
     await primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }).click();
-    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    await expect(page.locator('#detail-map-viewport')).toBeVisible({ timeout: 20_000 });
     await expect(page).toHaveURL(/view=map/);
 
     await primaryNav(page).getByRole('button', { name: '3D', exact: true }).click();
@@ -706,7 +715,7 @@ test.describe('detail map (MapLibre)', () => {
 
     await page.goBack();
     await expect(page).toHaveURL(/view=map/);
-    await expect(page.locator('#detail-map-viewport')).toBeVisible();
+    await expect(page.locator('#detail-map-viewport')).toBeVisible({ timeout: 20_000 });
   });
 
   test('opens the layer panel and toggles layers without pushing new history entries', async ({
