@@ -513,6 +513,9 @@ test.describe('directory ordering and safe bottom', () => {
     test(`sorts 102 rows and keeps the final row safe at ${viewport.width}x${viewport.height}`, async ({
       page,
     }) => {
+      // 102-row directory + search + scroll + click is legitimately more work than the 30s
+      // default covers on a loaded CI runner — give it headroom instead of relying on retries.
+      test.setTimeout(45_000);
       await page.setViewportSize(viewport);
       await page.goto('./?view=2d');
       await openMapDirectory(page);
