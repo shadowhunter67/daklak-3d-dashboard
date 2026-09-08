@@ -1,5 +1,21 @@
 :root {
-  font-family: 'Segoe UI', 'Be Vietnam Pro', Arial, sans-serif;
+  /* Typography families. Faces are self-hosted in `fonts.css` (the CSP forbids a Google Fonts
+     <link> — see src/styles/fonts/LICENSE.md). Declared as tokens rather than repeated literals
+     so a family swap is one edit, not the ten scattered `Segoe UI`/`Cambria`/`Georgia` literals
+     this replaced.
+
+     --font-sans     reading and UI text — Be Vietnam Pro is drawn for Vietnamese, so stacked
+                     diacritics (ế ộ ữ) keep their spacing instead of colliding the way a
+                     Latin-first face's fallback glyphs do.
+     --font-mono     figures, identifiers and timestamps ONLY. Tabular by construction, so a
+                     column of numbers stops shifting sideways as digits change (quick-reference
+                     §6 `number-tabular`), and a project code reads as a code.
+     --font-display  the brand wordmark only. Never body copy. */
+  --font-sans: 'Be Vietnam Pro', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --font-display: 'Space Grotesk', 'Be Vietnam Pro', 'Segoe UI', system-ui, sans-serif;
+
+  font-family: var(--font-sans);
   color: #e9f2ed;
   background: #071918;
   font-synthesis: none;
@@ -139,13 +155,15 @@ header {
   font-weight: 600;
 }
 h1 {
+  /* The brand wordmark is the one place --font-display is allowed. */
+  font-family: var(--font-display);
   font-size: 26px;
   letter-spacing: 0.08em;
   margin: 0;
 }
 h1 i {
-  font-family: Georgia, 'Times New Roman', serif;
   font-weight: 700;
+  font-style: normal;
   color: #e7b855;
   margin-left: 3px;
 }
@@ -156,8 +174,8 @@ h1 i {
   gap: 22px;
   color: #acc5bc;
   font-size: 14px;
-  /* Not 0 — a real regression (see the `.header-mock-badge` comment near its media query) showed
-     this box collapsing to zero width under enough sibling pressure, which let it render fully
+  /* Not 0 — a real regression showed this box collapsing to zero width under enough sibling
+     pressure, which let it render fully
      behind a neighbour instead of showing even its own scroll-fade edge. 40px is enough for the
      18px fade plus a sliver of the first control, so there's always a visible, clickable hint
      that more content exists here, however tight the row gets. */
@@ -848,11 +866,10 @@ h1 i {
 .onboarding-card h2 {
   margin: 8px 0 12px;
   color: #f0cf7a;
-  font:
-    700 clamp(25px, 5vw, 38px)/1.08 Cambria,
-    'Noto Serif',
-    'DejaVu Serif',
-    serif;
+  font-family: var(--font-sans);
+  font-size: clamp(25px, 5vw, 38px);
+  font-weight: 700;
+  line-height: 1.08;
 }
 .onboarding-card > p:not(.eyebrow),
 .onboarding-card li,
@@ -1012,7 +1029,7 @@ h1 i {
 }
 .directory-heading h2 {
   margin: 0;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-sans);
   color: #f0cf7a;
 }
 .directory-heading label {
@@ -1111,7 +1128,7 @@ button.directory-row:hover,
 }
 .map-caption p {
   margin: 7px;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-sans);
   font-style: italic;
   color: #c8dbd4;
   font-size: 14px;
@@ -1151,8 +1168,8 @@ button.directory-row:hover,
   gap: 9px;
 }
 .hero-stat strong {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-style: italic;
+  font-family: var(--font-mono);
+  font-style: normal;
   font-size: 54px;
   line-height: 1;
   color: #ecc66d;
@@ -1214,7 +1231,7 @@ button.directory-row:hover,
   padding: 22px;
 }
 .detail-panel h2 {
-  font-family: Cambria, 'Noto Serif', 'DejaVu Serif', 'Times New Roman', serif;
+  font-family: var(--font-sans);
   font-style: normal;
   font-size: 26px;
   line-height: 1.18;
@@ -2369,11 +2386,10 @@ footer a {
 .provenance-panel-header h2 {
   margin: 0;
   color: #f0cf7a;
-  font:
-    700 clamp(20px, 4vw, 26px)/1.15 Cambria,
-    'Noto Serif',
-    'DejaVu Serif',
-    serif;
+  font-family: var(--font-sans);
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 700;
+  line-height: 1.15;
 }
 .data-status-summary {
   display: flex;
@@ -2470,17 +2486,6 @@ footer a {
 .skip-link:focus {
   top: 12px;
 }
-.header-mock-badge {
-  margin-left: 16px;
-  padding: 3px 9px;
-  border: 1px solid #e4bc5e55;
-  border-radius: 999px;
-  color: #e4bc5e;
-  background: #e4bc5e12;
-  font-size: var(--font-size-label);
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-}
 .primary-nav {
   display: flex;
   gap: 4px;
@@ -2510,21 +2515,15 @@ footer a {
   background: #e4bc5e;
   box-shadow: 0 0 18px #d4a44655;
 }
-/* Real regression found via CI on Linux (not reproducible on Windows — font metrics render this
-   ~15-25px narrower there, just enough to stay under the edge): on the 3D view, `.mode-tabs`
-   (Tổng quan/Năng lượng/Heatmap — only present here, not on other views) adds three more buttons
-   competing for the same row as `.primary-nav` + this badge. Their `white-space: nowrap` content
-   gives them an effective minimum width the flexbox shrink algorithm respects; `.header-meta`
-   opted out of that floor (`min-width: 0`, so its own `overflow-x: auto` can engage) and absorbs
-   the entire deficit — at 1280px on the 3D view specifically, that deficit exceeded its own
-   content width, collapsing it to ~0px stacked at the same point mode-tabs ends, which is what
-   made Playwright's click-to-EN interception real, not a test artifact. Widened this badge's hide
-   threshold from 1100 to 1400px so it stops competing for space well before that point. */
-@media (max-width: 1400px) {
-  .header-mock-badge {
-    display: none;
-  }
-}
+/* The `.header-mock-badge` element and its hide-below-1400px media query lived here. Both are
+   gone: the badge was removed from DashboardHeader.tsx (see the comment there). It had been a
+   real source of header crowding — on the 3D view it competed with `.mode-tabs` and
+   `.primary-nav` for the same row, and on Linux CI (where font metrics run ~15-25px wider
+   than Windows) that deficit collapsed `.header-meta` to ~0px at 1280px, which is what made
+   a Playwright click-to-EN interception fail for real rather than as a test artifact.
+   `.header-meta`'s `min-width: 40px` floor above is the surviving guard against that class of
+   collapse and must stay. */
+
 /* Tightens the header's right-hand control row at common laptop widths (1280–1500px) so fewer of
    its seven items need the scroll-fade affordance above — cosmetic only, box widths are already
    handled by `overflow-x: auto` + the fade regardless of gap size. */
@@ -2561,11 +2560,10 @@ footer a {
 .executive-overview h2 {
   margin: var(--space-1) 0 var(--space-2);
   color: #f0cf7a;
-  font:
-    700 clamp(22px, 3vw, 30px)/1.25 Cambria,
-    'Noto Serif',
-    'DejaVu Serif',
-    serif;
+  font-family: var(--font-sans);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  line-height: 1.25;
 }
 /* Executive Status Hero — the page's single most important element (spec: "5-second test"). A
    leader must be able to read overall health, the count of projects needing action, and the top
@@ -2790,6 +2788,15 @@ footer a {
   font-weight: 600;
   letter-spacing: 0.03em;
 }
+/* Deliberately NOT --font-mono, unlike every other figure in the app. This value is not a bare
+   number: `formatKpiValue` returns a number fused to a unit word ("2.453 tỷ ₫"), and mono's fixed
+   advance width makes that string ~15% wider — measured 168px against the 148px the card gives it
+   at 1440px, where the proportional face fits in 146px. It wrapped onto two lines in every
+   viewport tested. Shrinking the type to ~23px would fit, but that shrinks all seven KPI figures —
+   the page's "5-second test" headline numbers — to rescue one card, and a larger real figure
+   (this is illustrative data) would wrap again anyway. Tabular figures buy the most where numbers
+   stack into a column and misalignment is visible: the data-health grid, the portfolio table,
+   project codes. Seven separate cards are not such a column. */
 .kpi-card__value {
   margin: 0;
   color: #e9f2ed;
@@ -2996,6 +3003,7 @@ footer a {
   line-height: 1.4;
 }
 .priority-project-item__code {
+  font-family: var(--font-mono);
   color: var(--text-muted);
   font-weight: 400;
 }
@@ -3078,6 +3086,7 @@ footer a {
   letter-spacing: 0.05em;
 }
 .alert-group__count {
+  font-family: var(--font-mono);
   color: var(--text-muted);
   font-weight: 400;
   text-transform: none;
@@ -3198,6 +3207,7 @@ footer a {
   margin: 0 0 var(--space-4);
 }
 .data-health-panel__headline-value {
+  font-family: var(--font-mono);
   color: var(--text-secondary);
   font-size: clamp(22px, 2vw, 26px);
   font-weight: 700;
@@ -3221,6 +3231,7 @@ footer a {
   color: var(--text-muted);
 }
 .data-health-panel__grid dd {
+  font-family: var(--font-mono);
   margin: 0;
   color: var(--text-primary);
   font-weight: 600;
@@ -3426,11 +3437,10 @@ footer a {
 .project-detail h2 {
   margin: 8px 0 6px;
   color: #f0cf7a;
-  font:
-    700 clamp(20px, 3.2vw, 28px)/1.2 Cambria,
-    'Noto Serif',
-    'DejaVu Serif',
-    serif;
+  font-family: var(--font-sans);
+  font-size: clamp(20px, 3.2vw, 28px);
+  font-weight: 700;
+  line-height: 1.2;
 }
 .project-portfolio__mock-badge,
 .project-detail__mock-badge {
@@ -3543,6 +3553,7 @@ footer a {
 }
 .project-portfolio__code,
 .project-detail .project-portfolio__code {
+  font-family: var(--font-mono);
   color: #7fa39a;
   font-size: var(--font-size-label);
 }
@@ -3858,11 +3869,10 @@ footer a {
 .data-readiness h2 {
   margin: 8px 0 6px;
   color: #f0cf7a;
-  font:
-    700 clamp(20px, 3.2vw, 28px)/1.2 Cambria,
-    'Noto Serif',
-    'DejaVu Serif',
-    serif;
+  font-family: var(--font-sans);
+  font-size: clamp(20px, 3.2vw, 28px);
+  font-weight: 700;
+  line-height: 1.2;
 }
 .data-readiness h3 {
   margin: 20px 0 8px;

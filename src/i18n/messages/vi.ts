@@ -26,7 +26,6 @@ export const vi = {
 
   // Header
   'header.eyebrow': 'BẢN ĐỒ HÀNH CHÍNH TƯƠNG TÁC',
-  'header.mockBadge': 'DỮ LIỆU MINH HỌA',
   'header.nav.ariaLabel': 'Điều hướng chính',
   'header.nav.overview': 'Tổng quan điều hành',
   'header.nav.overviewShort': 'Tổng quan',
@@ -39,7 +38,6 @@ export const vi = {
   'header.mode.overview': 'Tổng quan',
   'header.mode.energy': 'Năng lượng',
   'header.mode.heatmap': 'Heatmap',
-  'header.unitsCount': '{count} xã/phường',
   'header.autoRotate.ariaLabelReducedMotion': 'Đã giảm chuyển động',
   'header.autoRotate.ariaLabelStop': 'Dừng xoay',
   'header.autoRotate.ariaLabelStart': 'Xoay bản đồ',

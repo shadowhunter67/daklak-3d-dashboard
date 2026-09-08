@@ -21,7 +21,6 @@ export const en: Partial<Record<MessageKey, string>> = {
 
   // Header
   'header.eyebrow': 'INTERACTIVE ADMINISTRATIVE MAP',
-  'header.mockBadge': 'ILLUSTRATIVE DATA',
   'header.nav.ariaLabel': 'Primary navigation',
   'header.nav.overview': 'Executive Overview',
   'header.nav.overviewShort': 'Overview',
@@ -34,7 +33,6 @@ export const en: Partial<Record<MessageKey, string>> = {
   'header.mode.overview': 'Overview',
   'header.mode.energy': 'Energy',
   'header.mode.heatmap': 'Heatmap',
-  'header.unitsCount': '{count} communes/wards',
   'header.autoRotate.ariaLabelReducedMotion': 'Reduced motion enabled',
   'header.autoRotate.ariaLabelStop': 'Stop rotation',
   'header.autoRotate.ariaLabelStart': 'Rotate map',

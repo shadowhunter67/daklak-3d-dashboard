@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import { datasetManifest } from '../../data/datasetManifest';
 import { captureProvenanceFocusTrigger } from '../provenance/provenanceFocusTrigger';
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -78,9 +77,13 @@ export function DashboardHeader() {
           </h1>
         </div>
       </div>
-      <span className="header-mock-badge" role="note">
-        {t('header.mockBadge')}
-      </span>
+      {/* Header declutter: the "DỮ LIỆU MINH HỌA" badge and the "{n} xã/phường" count both used
+          to sit here. Neither was a control, and both crowded out ones that are — at 1440px this
+          row was scrolling ~354px of real controls (A-/A/A+, VI/EN) out of sight behind the edge
+          fade. The illustrative-data warning is not lost: every view that renders illustrative
+          figures already states it far more prominently in-page (`.executive-overview__notice`,
+          `.project-portfolio__mock-badge`). The unit count is dataset metadata and belongs with
+          the rest of it, in the Data Sources panel, not in the global control bar. */}
       <nav className="primary-nav" aria-label={t('header.nav.ariaLabel')} ref={primaryNavRef}>
         {primaryViews.map(([mode, labelKey, shortLabelKey]) => (
           <button
@@ -112,7 +115,6 @@ export function DashboardHeader() {
         </nav>
       )}
       <div className="header-meta" ref={headerMetaRef}>
-        <span>{t('header.unitsCount', { count: datasetManifest.administrativeUnitCount })}</span>
         {viewMode === '3d' && (
           <button
             onClick={toggleAutoRotate}
