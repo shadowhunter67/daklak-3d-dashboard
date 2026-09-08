@@ -52,6 +52,31 @@
   --panel: #102b28;
   --panel-rule: #265b53;
   --lift: 0 1px 2px rgb(0 0 0 / 0.24), 0 4px 12px -4px rgb(0 0 0 / 0.34);
+  /* The slab — the reference app's signature "bìa sổ" surface, adapted to this palette. Exactly
+     one element on the page gets it (the Executive Status Hero): a brand gradient running bright
+     at the top-left corner to deep at the bottom, lit by a severity-tinted glow in the empty
+     top-right, on a long soft shadow. Depth and hue carry the emphasis here, which is what let
+     the 4px accent bar down its left edge go away. --slab-foot is the colour the linear ramp has
+     already reached by 62%, so the notice fused underneath continues the same surface. */
+  --slab: #0a2723;
+  --slab-2: #17564b;
+  --slab-ink: #ffffff;
+  --slab-ink-2: #c8e6dc;
+  --slab-rule: #ffffff2e;
+  --slab-foot: #0e2f2a;
+  --lift-slab: 0 2px 8px rgb(0 0 0 / 0.3), 0 22px 46px -20px rgb(4 40 34 / 0.7);
+  /* The ground the full-page views are painted on — layered ambient light rather than one flat
+     fill, so the cards sit in a room instead of on a slab of paint. Both washes are centred ABOVE
+     the viewport and every stop stays darker than --panel (#102b28): panels have to remain the
+     lightest thing on the page or they stop reading as lifted, which is the exact failure the
+     card system was rebuilt to fix. Measured panel/ground step: 1.20:1 up at the top of the
+     scroll (where the washes are strongest, and where the slab supplies its own depth anyway),
+     rising to 1.30:1 further down where the flat panels actually need it — against the uniform
+     1.20:1 the old flat #071918 gave. */
+  --view-ground:
+    radial-gradient(1180px 700px at 14% -22%, #0c322c 0%, transparent 60%),
+    radial-gradient(940px 560px at 92% -8%, #0a2b2a 0%, transparent 58%),
+    linear-gradient(168deg, #061715 0%, #051312 52%, #040f0e 100%);
   --surface-1: #ffffff08;
   --surface-2: #ffffff0f;
   --surface-3: #ffffff17;
@@ -2601,7 +2626,7 @@ footer a {
   overflow-y: auto;
   padding: 0 3.3vw 64px;
   color: #dcebe5;
-  background: #071918;
+  background: var(--view-ground);
 }
 /* Page content is capped so it stays legible/scannable on very wide operations-room monitors
    (spec §13: "max-width hợp lý trên màn hình rất rộng") instead of stretching KPI cards and text
@@ -2633,13 +2658,22 @@ footer a {
    panel below it: larger border, a tinted background tied to severity, and the biggest text on
    the page after the KPI numbers themselves. */
 .executive-status-hero {
+  /* Severity rides the glow, not a painted edge — and the glow is what gives the right half of
+     a very wide card something to be. Its radii are percentages of the hero's own box, so the
+     geometry is identical at 412px and at 2560px instead of swallowing a narrow card whole. It is
+     centred above the top-right corner and reaches no further left than 55% of the width, which
+     is what keeps it off the text: modelled against the measured line boxes at seven widths and
+     all four states, the worst contrast --slab-ink-2 ever sees is 6.68:1 (floor 4.5). */
+  --slab-glow: #ffffff26;
   margin-block: var(--space-4) var(--space-5);
   padding: var(--space-5) var(--space-6);
-  border: 1px solid var(--panel-rule);
-  border-left: 4px solid var(--text-muted);
+  border: 1px solid var(--slab-rule);
   border-radius: var(--radius-lg);
-  background: var(--panel);
-  box-shadow: var(--lift);
+  color: var(--slab-ink);
+  background:
+    radial-gradient(46% 180% at 86% -18%, var(--slab-glow) 0%, transparent 68%),
+    linear-gradient(152deg, var(--slab-2) 0%, var(--slab) 62%, var(--slab) 100%);
+  box-shadow: var(--lift-slab);
 }
 /* When the notice follows the hero the two fuse into one card: the hero loses its bottom edge and
    radius, the notice picks them up and becomes its foot band. `:has()` keeps this conditional —
@@ -2649,25 +2683,25 @@ footer a {
   border-bottom: 0;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
+  /* The foot carries the pair's shadow. A second one here would be cast down across the seam and
+     draw a dark line through the middle of what has to read as a single card. */
+  box-shadow: none;
 }
 .executive-status-hero[data-status='critical'] {
-  border-left-color: #f08a68;
-  background: #f083661f;
+  --slab-glow: #f0836647;
 }
 .executive-status-hero[data-status='attention'] {
-  border-left-color: var(--gold);
-  background: #e7c47112;
+  --slab-glow: #e7c47147;
 }
 .executive-status-hero[data-status='healthy'] {
-  border-left-color: var(--color-success);
-  background: #6fcf9712;
+  --slab-glow: #6fcf9747;
 }
 .executive-status-hero[data-status='degraded'] {
-  border-left-color: var(--text-secondary);
+  --slab-glow: #ffffff24;
 }
 .executive-status-hero__eyebrow {
   margin: 0 0 6px;
-  color: var(--text-secondary);
+  color: var(--slab-ink-2);
   font-size: var(--font-size-label);
   font-weight: 700;
   text-transform: uppercase;
@@ -2678,7 +2712,7 @@ footer a {
   align-items: center;
   gap: 12px;
   margin: 0 0 10px;
-  color: var(--text-primary);
+  color: var(--slab-ink);
   font-size: clamp(22px, 2.6vw, 30px);
   font-weight: 700;
 }
@@ -2690,34 +2724,35 @@ footer a {
   width: 34px;
   height: 34px;
   border-radius: 50%;
+  background: #ffffff29;
   font-size: 18px;
   font-weight: 900;
 }
+/* One glass chip for every state, the way the reference tints its chips on the slab — a tinted
+   disc as well would put a third fill inside the same 34px, and the severity is already stated in
+   30px type right beside it. The glyph keeps the severity hue, brightened for the lighter ground
+   the slab puts under it (3.5–4.2:1 at 18px/900). */
 .executive-status-hero[data-status='critical'] .executive-status-hero__status-badge {
-  color: #f08a68;
-  background: #f0836626;
+  color: #ffb59b;
 }
 .executive-status-hero[data-status='attention'] .executive-status-hero__status-badge {
-  color: var(--gold);
-  background: #e7c47126;
+  color: #f2d489;
 }
 .executive-status-hero[data-status='healthy'] .executive-status-hero__status-badge {
-  color: var(--color-success);
-  background: #6fcf9726;
+  color: #8fe0b3;
 }
 .executive-status-hero[data-status='degraded'] .executive-status-hero__status-badge {
-  color: var(--text-secondary);
-  background: #ffffff1a;
+  color: var(--slab-ink);
 }
 .executive-status-hero__summary {
   margin: 0 0 4px;
-  color: var(--text-primary);
+  color: var(--slab-ink);
   font-size: clamp(18px, 1.8vw, 22px);
   font-weight: 600;
 }
 .executive-status-hero__breakdown {
   margin: 0;
-  color: var(--text-secondary);
+  color: var(--slab-ink-2);
   font-size: var(--font-size-body);
 }
 
@@ -2739,14 +2774,14 @@ footer a {
 }
 .executive-status-hero + .executive-overview__notice {
   margin-top: 0;
-  border-top: 0;
+  border-color: var(--slab-rule);
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-  /* Matches the hero's status edge so the fused card reads as one object, and keeps the foot
-     distinguishable from the body above it the way the reference's panel foot does. */
-  border-left: 4px solid var(--text-muted);
-  box-shadow: var(--lift);
-  background: #ffffff06;
+  /* Opaque, and set to the colour the slab's linear ramp has already reached by its 62% stop, so
+     the foot continues the same surface instead of sitting under it as a second box. The single
+     hairline between the two is this element's own top border. */
+  background: var(--slab-foot);
+  box-shadow: var(--lift-slab);
 }
 .executive-overview__mock-badge {
   display: flex;
@@ -2866,7 +2901,9 @@ footer a {
   min-width: 0;
   overflow: hidden;
   padding: 16px 18px;
-  background: var(--panel);
+  /* Same top-lit ramp as the panels, per cell. Identical in every cell, so the seven of them still
+     read as one continuous band rather than a row of separately shaded tiles. */
+  background: linear-gradient(180deg, var(--panel) 0%, #0d2523 100%);
 }
 .kpi-card[data-unavailable] {
   color: #8fa39a;
@@ -2993,7 +3030,11 @@ footer a {
   padding: 0 var(--space-5) var(--space-5);
   border: 1px solid var(--panel-rule);
   border-radius: var(--radius-lg);
-  background: var(--panel);
+  /* The top stop is exactly --panel and every stop below it only darkens, so the panel keeps the
+     lift it was measured at while gaining the depth a flat fill has none of. Nothing sitting on it
+     can lose contrast: the light text, the pills and the rules all improve as the surface falls
+     away beneath them. */
+  background: linear-gradient(180deg, var(--panel) 0%, #0e2724 52%, #0c2320 100%);
   box-shadow: var(--lift);
   overflow: hidden;
 }
@@ -3006,6 +3047,7 @@ footer a {
   margin: 0 calc(var(--space-5) * -1) var(--space-5);
   padding: 14px var(--space-5);
   border-bottom: 1px solid var(--panel-rule);
+  background: linear-gradient(180deg, #ffffff0f 0%, #ffffff03 100%);
   color: var(--text-primary);
   font-size: clamp(15px, 1.2vw, 17px);
   font-weight: 700;
@@ -3219,6 +3261,9 @@ footer a {
 .alert-group:last-child {
   margin-bottom: 0;
 }
+/* The group heading is where the severity is named, in words, once — with its count and now in
+   its own colour, so colour and label sit together instead of the label being reprinted on every
+   row underneath. */
 .alert-group h4 {
   margin: 0 0 var(--space-2);
   color: var(--text-secondary);
@@ -3226,6 +3271,15 @@ footer a {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+.alert-group[data-severity='critical'] h4 {
+  color: #f08a68;
+}
+.alert-group[data-severity='warning'] h4 {
+  color: var(--gold);
+}
+.alert-group[data-severity='data-quality'] h4 {
+  color: var(--color-info);
 }
 .alert-group__count {
   font-family: var(--font-mono);
@@ -3241,51 +3295,62 @@ footer a {
   padding: 0;
   list-style: none;
 }
-/* A coloured left border is the primary severity signal (scans faster than text colour alone at
-   a glance down the list); the `__severity` pill still spells it out in words right beside it —
-   never colour-only. "Nghiêm trọng" gets the strongest treatment (tinted background), "Cảnh báo"
-   a plain border, "Chất lượng dữ liệu" a calmer informational tone. */
+/* Severity is a wash that starts under the label and dissolves into the panel across the row —
+   the same left-to-right emphasis the 3px painted bar carried, without the bar. One gradient per
+   row instead of a bar plus a flat fill plus a filled pill, which was three separate tints
+   competing inside 40px of height.
+
+   Nothing here is colour-only: the level is named in words by the group heading immediately
+   above the row, which now carries the same colour (6.1:1 / 9.0:1 / 6.1:1 on the panel). Printing
+   it again on each row put "Nghiêm trọng" on screen four times inside 200px and read as filler
+   rather than as information. The row keeps a dot, which doubles as the hanging indent a wrapped
+   message needs; the message itself is never below 9.4:1 on any of the washes. */
 .alert-item {
   display: flex;
   align-items: baseline;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border-left: 3px solid var(--border-subtle);
+  padding: 9px var(--space-3);
   border-radius: var(--radius-sm);
   font-size: var(--font-size-label);
   line-height: 1.5;
-  background: #ffffff0a;
+  background: linear-gradient(96deg, #ffffff12 0%, #ffffff0a 38%, #ffffff06 100%);
 }
-.alert-item__severity {
+.alert-item::before {
+  content: '';
   flex: 0 0 auto;
-  padding: 1px 7px;
-  border-radius: 999px;
-  font-size: calc(var(--font-size-label) - 1px);
-  font-weight: 700;
+  /* baseline alignment would hang a 6px square off the line's bottom edge; this centres it on the
+     first line instead — half of a 1.5 line box, less half the dot. */
+  align-self: flex-start;
+  width: 6px;
+  height: 6px;
+  margin-top: calc(0.75em - 3px);
+  border-radius: 50%;
+  background: currentcolor;
+}
+/* Kept in the DOM and read out: a screen reader moving row by row can be out of reach of the
+   group heading, and AlertList.test.tsx pins the text. It is the on-screen duplicate that goes. */
+.alert-item__severity {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 .alert-group[data-severity='critical'] .alert-item {
-  border-left-color: #f08a68;
-  background: #f0836612;
-}
-.alert-group[data-severity='critical'] .alert-item__severity {
   color: #f08a68;
-  background: #f0836622;
+  background: linear-gradient(96deg, #f0836626 0%, #f0836610 38%, #ffffff06 100%);
 }
 .alert-group[data-severity='warning'] .alert-item {
-  border-left-color: var(--gold);
-  background: #e7c4711f;
-}
-.alert-group[data-severity='warning'] .alert-item__severity {
   color: var(--gold);
-  background: #e7c47122;
+  background: linear-gradient(96deg, #e7c47126 0%, #e7c47110 38%, #ffffff06 100%);
 }
 .alert-group[data-severity='data-quality'] .alert-item {
-  border-left-color: var(--color-info);
-  background: #7fa8d91f;
-}
-.alert-group[data-severity='data-quality'] .alert-item__severity {
   color: var(--color-info);
-  background: #7fa8d922;
+  background: linear-gradient(96deg, #7fa8d926 0%, #7fa8d910 38%, #ffffff06 100%);
 }
 .alert-item__message {
   color: var(--text-primary);
@@ -3564,7 +3629,7 @@ footer a {
   overflow-y: auto;
   padding: 0 3.3vw 64px;
   color: #dcebe5;
-  background: #071918;
+  background: var(--view-ground);
 }
 .project-portfolio__back,
 .project-detail__back {
@@ -3998,7 +4063,7 @@ footer a {
   overflow-y: auto;
   padding: 0 3.3vw 64px;
   color: #dcebe5;
-  background: #071918;
+  background: var(--view-ground);
 }
 .data-readiness__back {
   margin: 16px 0 4px;

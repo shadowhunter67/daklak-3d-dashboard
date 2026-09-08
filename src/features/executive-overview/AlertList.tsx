@@ -25,8 +25,10 @@ function AlertGroup({
       <ul>
         {alerts.map((alert) => (
           <li key={alert.id} className="alert-item">
-            {/* Status is never color-only: a text label always accompanies the visual severity
-                marker (spec a11y requirement). */}
+            {/* Status is never colour-only: the level is named in words by this group's heading,
+                which sits directly above the row and carries the same colour. This label repeats
+                it for a screen reader reading row by row, out of reach of that heading — it is
+                visually hidden (see .alert-item__severity), not removed. */}
             <span className="alert-item__severity">
               {alert.kind === 'data-quality'
                 ? t('alerts.group.dataQuality')
