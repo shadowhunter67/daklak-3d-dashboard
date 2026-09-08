@@ -28,19 +28,34 @@ export function PriorityProjectList({
           {items.map((item) => (
             <li key={item.projectId} className="priority-project-item">
               <div className="priority-project-item__main">
-                <p className="priority-project-item__name">
-                  {item.projectName}{' '}
-                  <span className="priority-project-item__code">({item.projectCode})</span>
+                <p className="priority-project-item__name">{item.projectName}</p>
+                {/* Identifier and owning sector on their own line, the way the portfolio table and
+                    the reference dashboard both present a record's provenance. Previously the code
+                    trailed the name inline, where a long name pushed it to the line end and the
+                    browser broke it at its own hyphens ("DL-2026-NL-" / "001"). */}
+                <p className="priority-project-item__code">
+                  {item.projectCode} <span aria-hidden="true">·</span>{' '}
+                  {t(`sector.${item.sector}` as MessageKey)}
                 </p>
                 <p className="priority-project-item__meta">
-                  <span>{t(`sector.${item.sector}` as MessageKey)}</span>
-                  <span aria-hidden="true">·</span>
                   <span className="priority-project-item__status" data-status={item.status}>
                     {t(`status.${item.status}` as MessageKey)}
                   </span>
-                  <span aria-hidden="true">·</span>
                   <span>{t('priorityProjects.progress', { value: item.overallProgress })}</span>
                 </p>
+                {/* Decorative scanning aid only — the percentage is stated as text on the line
+                    above, so the bar carries no information of its own and stays out of the
+                    accessibility tree. Same component the portfolio table uses, so a progress
+                    figure looks the same wherever it appears. */}
+                <span
+                  className="mini-progress-bar priority-project-item__progress"
+                  aria-hidden="true"
+                >
+                  <span
+                    className="mini-progress-bar__fill"
+                    style={{ width: `${Math.max(0, Math.min(100, item.overallProgress))}%` }}
+                  />
+                </span>
                 <p className="priority-project-item__reason">
                   <strong>{t('priorityProjects.reasonLabel')}</strong>{' '}
                   {t(`reason.${item.reasonCategory}` as MessageKey)}

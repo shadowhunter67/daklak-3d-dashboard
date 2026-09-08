@@ -2763,16 +2763,24 @@ footer a {
   cursor: pointer;
 }
 
+/* One divided panel, not seven floating cards. Seven separate bordered boxes read as seven
+   unrelated facts; a single ruled strip reads as one row of related indicators, which is what they
+   are. `gap: 1px` over a container painted in the rule colour draws the dividers — cheaper and
+   more robust than per-cell borders, which would need `:nth-child` arithmetic that changes with
+   the column count. A fixed 7-column track (not `auto-fill`) is what makes that safe: there is
+   never a trailing empty track left showing the rule colour as a stray block. */
 .kpi-card-grid {
   display: grid;
-  /* 160px (not 180px) so all 7 KPI cards fit on one row down to ~1280px-wide laptops — at 180px
-     six fit and the 7th ("Vướng mắc quá hạn") wrapped alone onto its own row, leaving a large,
-     lopsided empty gap beside it (spec §7: "cùng height... grid cân đối"). */
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: var(--space-3);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 1px;
   margin: 0 0 var(--space-6);
   padding: 0;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--border-subtle);
   list-style: none;
+  /* Clips the corner cells to the container's radius. */
+  overflow: hidden;
 }
 .kpi-card {
   /* min-width: 0 overrides the grid-item default (min-width: auto), which otherwise lets a long
@@ -2780,14 +2788,33 @@ footer a {
      track and visually spill into the next card instead of wrapping. */
   min-width: 0;
   overflow: hidden;
-  padding: 14px 16px;
-  border: 1px solid #ffffff1a;
-  border-radius: 12px;
-  background: #ffffff08;
+  padding: 16px 18px;
+  background: #0a201e;
 }
 .kpi-card[data-unavailable] {
-  border-style: dashed;
   color: #8fa39a;
+}
+/* Below this the seven cells get too narrow to hold a label and a figure, so the strip breaks back
+   into the independent wrapping cards it replaced. `auto-fill` may leave a trailing empty track
+   here, which is why the divider colour goes back to per-cell borders in this mode. */
+@media (max-width: 1199px) {
+  .kpi-card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--space-3);
+    border: 0;
+    border-radius: 0;
+    background: none;
+    overflow: visible;
+  }
+  .kpi-card {
+    padding: 14px 16px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: #ffffff08;
+  }
+  .kpi-card[data-unavailable] {
+    border-style: dashed;
+  }
 }
 .kpi-card__label {
   margin: 0 0 6px;
@@ -2796,22 +2823,23 @@ footer a {
   font-weight: 600;
   letter-spacing: 0.03em;
 }
-/* Deliberately NOT --font-mono, unlike every other figure in the app. This value is not a bare
-   number: `formatKpiValue` returns a number fused to a unit word ("2.453 tỷ ₫"), and mono's fixed
-   advance width makes that string ~15% wider — measured 168px against the 148px the card gives it
-   at 1440px, where the proportional face fits in 146px. It wrapped onto two lines in every
-   viewport tested. Shrinking the type to ~23px would fit, but that shrinks all seven KPI figures —
-   the page's "5-second test" headline numbers — to rescue one card, and a larger real figure
-   (this is illustrative data) would wrap again anyway. Tabular figures buy the most where numbers
-   stack into a column and misalignment is visible: the data-health grid, the portfolio table,
-   project codes. Seven separate cards are not such a column. */
 .kpi-card__value {
   margin: 0;
   color: #e9f2ed;
-  font-size: calc(clamp(20px, 2.6vw, 28px) * var(--user-font-scale));
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: calc(clamp(19px, 1.9vw, 25px) * var(--user-font-scale));
+  font-weight: 600;
+  /* Mono at display sizes sets loose; the reference dashboard pulls it back by the same ~0.03em. */
+  letter-spacing: -0.03em;
   line-height: 1.3;
   overflow-wrap: anywhere;
+}
+/* The money KPI is the one value that is not a bare number — `formatKpiValue` fuses a figure to a
+   unit word ("2.453 tỷ ₫"), roughly doubling the character count of its neighbours. At the shared
+   size mono wrapped it onto two lines in every viewport measured, so it gets its own smaller step
+   rather than dragging the other six figures down to fit it. */
+.kpi-card[data-kpi-group='money'] .kpi-card__value {
+  font-size: calc(clamp(16px, 1.45vw, 20px) * var(--user-font-scale));
 }
 .kpi-card[data-unavailable] .kpi-card__value {
   color: #8fa39a;
@@ -2978,7 +3006,9 @@ footer a {
 }
 .priority-project-list ol {
   display: grid;
-  gap: var(--space-3);
+  /* Rules, not gaps: rows read as one continuous list of comparable records rather than a stack of
+     separate cards, matching how the portfolio table already presents the same kind of data. */
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -2988,17 +3018,20 @@ footer a {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-4);
-  padding: var(--space-4);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--surface-1);
-  transition:
-    background 150ms ease,
-    border-color 150ms ease;
+  /* Negative inline margin lets the rule and the hover fill span the panel's full inner width
+     while the content keeps a comfortable inset from it. */
+  padding: var(--space-4) var(--space-3);
+  margin-inline: calc(var(--space-3) * -1);
+  border: 0;
+  border-top: 1px solid var(--border-subtle);
+  background: none;
+  transition: background 150ms ease;
+}
+.priority-project-item:first-child {
+  border-top: 0;
 }
 .priority-project-item:hover {
-  border-color: #ffffff33;
-  background: var(--surface-2);
+  background: var(--surface-1);
 }
 .priority-project-item__main {
   min-width: 0;
@@ -3011,15 +3044,21 @@ footer a {
   line-height: 1.4;
 }
 .priority-project-item__code {
+  margin: 0 0 8px;
   font-family: var(--font-mono);
   color: var(--text-muted);
+  font-size: var(--font-size-label);
   font-weight: 400;
+  line-height: 1.5;
+  /* An identifier is one token: let the line wrap around it, never through its hyphens. */
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
 .priority-project-item__meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-2);
   margin: 0 0 6px;
   color: var(--text-secondary);
   font-size: var(--font-size-label);
@@ -3027,29 +3066,47 @@ footer a {
 }
 /* A small status dot before the status word — the same "text + shape" pairing used elsewhere,
    never colour alone. Neutral by default; specific statuses get a semantic colour below. */
+/* Status reads as a tinted pill carrying its own dot — the shape and the word both survive when
+   colour does not, so this never depends on hue alone. Tints are the accent at 12% over the panel;
+   at 15% the "delayed" pair drops under 4.5:1, so 12% is the ceiling, not a taste call. */
 .priority-project-item__status {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #1c302e;
+  color: var(--text-muted);
+  font-weight: 600;
 }
 .priority-project-item__status::before {
   content: '';
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--text-muted);
+  background: currentcolor;
 }
-.priority-project-item__status[data-status='at-risk']::before {
-  background: var(--color-warning);
+.priority-project-item__status[data-status='at-risk'] {
+  background: #283224;
+  color: var(--color-warning);
 }
-.priority-project-item__status[data-status='delayed']::before {
-  background: #d97757;
+.priority-project-item__status[data-status='delayed'] {
+  background: #272a26;
+  color: #d97757;
 }
-.priority-project-item__status[data-status='suspended']::before {
-  background: var(--color-danger);
+.priority-project-item__status[data-status='suspended'] {
+  background: #292a29;
+  color: var(--color-danger);
 }
-.priority-project-item__status[data-status='active']::before {
-  background: var(--color-success);
+.priority-project-item__status[data-status='active'] {
+  background: #1b352d;
+  color: var(--color-success);
+}
+/* Wider than the 64px the portfolio table uses: this list has one row per project rather than a
+   dense grid, so the bar has room to be readable rather than merely indicative. */
+.priority-project-item__progress {
+  width: 120px;
+  margin: 2px 0 8px;
 }
 .priority-project-item__reason {
   margin: 0;
