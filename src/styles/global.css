@@ -44,6 +44,14 @@
      Executive Overview components (`.priority-project-list`, `.alert-list`,
      `.portfolio-status-chart`, `.data-health-panel`, `.kpi-card`) into named tokens, without
      touching the values themselves — same emerald/gold "provincial command center" palette. */
+  /* Panels are a real, lifted surface rather than a 3%-white wash of the page. Measured against
+     the reference app this was modelled on, whose dark ground-to-panel step is 1.48:1; this is
+     1.20:1, the most lift the existing status colours and the scrollbar thumb tolerate before
+     they fall under their contrast floors on top of it. Depth now comes from surface and shadow,
+     which is what lets the loud accent borders go away. */
+  --panel: #102b28;
+  --panel-rule: #265b53;
+  --lift: 0 1px 2px rgb(0 0 0 / 0.24), 0 4px 12px -4px rgb(0 0 0 / 0.34);
   --surface-1: #ffffff08;
   --surface-2: #ffffff0f;
   --surface-3: #ffffff17;
@@ -2627,14 +2635,24 @@ footer a {
 .executive-status-hero {
   margin-block: var(--space-4) var(--space-5);
   padding: var(--space-5) var(--space-6);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--panel-rule);
   border-left: 4px solid var(--text-muted);
   border-radius: var(--radius-lg);
-  background: var(--surface-2);
+  background: var(--panel);
+  box-shadow: var(--lift);
+}
+/* When the notice follows the hero the two fuse into one card: the hero loses its bottom edge and
+   radius, the notice picks them up and becomes its foot band. `:has()` keeps this conditional —
+   the notice is not always rendered, and a lone hero must stay a closed card. */
+.executive-status-hero:has(+ .executive-overview__notice) {
+  margin-bottom: 0;
+  border-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 .executive-status-hero[data-status='critical'] {
   border-left-color: #f08a68;
-  background: #f0836612;
+  background: #f083661f;
 }
 .executive-status-hero[data-status='attention'] {
   border-left-color: var(--gold);
@@ -2713,10 +2731,22 @@ footer a {
   justify-content: space-between;
   gap: var(--space-3) var(--space-4);
   margin-block: var(--space-3) var(--space-5);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-md);
-  background: #e4bc5e0d;
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--panel-rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  box-shadow: var(--lift);
+}
+.executive-status-hero + .executive-overview__notice {
+  margin-top: 0;
+  border-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  /* Matches the hero's status edge so the fused card reads as one object, and keeps the foot
+     distinguishable from the body above it the way the reference's panel foot does. */
+  border-left: 4px solid var(--text-muted);
+  box-shadow: var(--lift);
+  background: #ffffff06;
 }
 .executive-overview__mock-badge {
   display: flex;
@@ -2821,9 +2851,10 @@ footer a {
   gap: 1px;
   margin: 0 0 var(--space-6);
   padding: 0;
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--panel-rule);
   border-radius: var(--radius-lg);
-  background: var(--border-subtle);
+  background: var(--panel-rule);
+  box-shadow: var(--lift);
   list-style: none;
   /* Clips the corner cells to the container's radius. */
   overflow: hidden;
@@ -2835,7 +2866,7 @@ footer a {
   min-width: 0;
   overflow: hidden;
   padding: 16px 18px;
-  background: #0a201e;
+  background: var(--panel);
 }
 .kpi-card[data-unavailable] {
   color: #8fa39a;
@@ -2958,27 +2989,27 @@ footer a {
 .alert-list,
 .portfolio-status-chart,
 .data-health-panel {
-  padding: var(--space-5);
-  border: 1px solid var(--border-subtle);
+  /* No top padding: the heading below is a full-bleed head band and supplies its own. */
+  padding: 0 var(--space-5) var(--space-5);
+  border: 1px solid var(--panel-rule);
   border-radius: var(--radius-lg);
-  background: var(--surface-1);
+  background: var(--panel);
+  box-shadow: var(--lift);
+  overflow: hidden;
 }
+/* A titled band closed by a rule, not a heading floating in the panel's top padding. The negative
+   inline margin bleeds the rule to the panel edge while the text keeps the panel's own inset. */
 .priority-project-list h3,
 .alert-list h3,
 .portfolio-status-chart h3,
 .data-health-panel h3 {
-  margin: 0 0 var(--space-4);
+  margin: 0 calc(var(--space-5) * -1) var(--space-5);
+  padding: 14px var(--space-5);
+  border-bottom: 1px solid var(--panel-rule);
   color: var(--text-primary);
-  font-size: clamp(16px, 1.3vw, 18px);
+  font-size: clamp(15px, 1.2vw, 17px);
   font-weight: 700;
   letter-spacing: 0.01em;
-}
-/* "Dự án cần chú ý" is the hero work-area of the page (spec §9) — a gold top accent + slightly
-   more generous padding gives it clearly the highest visual weight of the four panels below the
-   KPI row, ahead of alerts/status/data-health which are supporting context. */
-.priority-project-list {
-  padding: var(--space-6);
-  border-top: 2px solid var(--gold-strong);
 }
 
 .data-sources-panel {
@@ -3066,8 +3097,8 @@ footer a {
   gap: var(--space-4);
   /* Negative inline margin lets the rule and the hover fill span the panel's full inner width
      while the content keeps a comfortable inset from it. */
-  padding: var(--space-4) var(--space-3);
-  margin-inline: calc(var(--space-3) * -1);
+  padding: var(--space-4) var(--space-5);
+  margin-inline: calc(var(--space-5) * -1);
   border: 0;
   border-top: 1px solid var(--border-subtle);
   background: none;
@@ -3121,8 +3152,8 @@ footer a {
   gap: 6px;
   padding: 3px 10px;
   border-radius: 999px;
-  background: #1c302e;
-  color: var(--text-muted);
+  background: #1f3a37;
+  color: var(--text-secondary);
   font-weight: 600;
 }
 .priority-project-item__status::before {
@@ -3133,19 +3164,19 @@ footer a {
   background: currentcolor;
 }
 .priority-project-item__status[data-status='at-risk'] {
-  background: #283224;
+  background: #25392c;
   color: var(--color-warning);
 }
 .priority-project-item__status[data-status='delayed'] {
-  background: #272a26;
-  color: #d97757;
+  background: #263732;
+  color: #efa287;
 }
 .priority-project-item__status[data-status='suspended'] {
-  background: #292a29;
-  color: var(--color-danger);
+  background: #273734;
+  color: #f4a3a0;
 }
 .priority-project-item__status[data-status='active'] {
-  background: #1b352d;
+  background: #1a3b33;
   color: var(--color-success);
 }
 /* Wider than the 64px the portfolio table uses: this list has one row per project rather than a
@@ -3223,7 +3254,7 @@ footer a {
   border-radius: var(--radius-sm);
   font-size: var(--font-size-label);
   line-height: 1.5;
-  background: var(--surface-1);
+  background: #ffffff0a;
 }
 .alert-item__severity {
   flex: 0 0 auto;
@@ -3242,6 +3273,7 @@ footer a {
 }
 .alert-group[data-severity='warning'] .alert-item {
   border-left-color: var(--gold);
+  background: #e7c4711f;
 }
 .alert-group[data-severity='warning'] .alert-item__severity {
   color: var(--gold);
@@ -3249,6 +3281,7 @@ footer a {
 }
 .alert-group[data-severity='data-quality'] .alert-item {
   border-left-color: var(--color-info);
+  background: #7fa8d91f;
 }
 .alert-group[data-severity='data-quality'] .alert-item__severity {
   color: var(--color-info);
