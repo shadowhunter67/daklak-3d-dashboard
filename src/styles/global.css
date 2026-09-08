@@ -2551,14 +2551,22 @@ footer a {
 }
 /* Page content is capped so it stays legible/scannable on very wide operations-room monitors
    (spec §13: "max-width hợp lý trên màn hình rất rộng") instead of stretching KPI cards and text
-   lines edge-to-edge at 2560px+. */
+   lines edge-to-edge at 2560px+.
+
+   Children of this rule MUST set their vertical margins with `margin-block`, never the `margin`
+   shorthand: the shorthand resets `margin-left`/`margin-right` to 0, which drops that child out
+   of the centred column while its siblings stay in it. That split is invisible until the
+   viewport exceeds ~1724px (1600px cap + 2 x 3.3vw padding), below which the cap never binds and
+   every child lands on the same edge — which is why it survived: the one existing check above that
+   width asserts overlap and overflow, neither of which notices two tidy columns on different
+   edges. `layout-regression.spec.ts` now pins the shared edge at 1920px and 2560px. */
 .executive-overview > * {
   max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
 }
 .executive-overview h2 {
-  margin: var(--space-1) 0 var(--space-2);
+  margin-block: var(--space-1) var(--space-2);
   color: #f0cf7a;
   font-family: var(--font-sans);
   font-size: clamp(22px, 3vw, 30px);
@@ -2571,7 +2579,7 @@ footer a {
    panel below it: larger border, a tinted background tied to severity, and the biggest text on
    the page after the KPI numbers themselves. */
 .executive-status-hero {
-  margin: var(--space-4) 0 var(--space-5);
+  margin-block: var(--space-4) var(--space-5);
   padding: var(--space-5) var(--space-6);
   border: 1px solid var(--border-subtle);
   border-left: 4px solid var(--text-muted);
@@ -2658,7 +2666,7 @@ footer a {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3) var(--space-4);
-  margin: var(--space-3) 0 var(--space-5);
+  margin-block: var(--space-3) var(--space-5);
   padding: var(--space-3) var(--space-4);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-md);
@@ -2684,7 +2692,7 @@ footer a {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
-  margin: 0 0 var(--space-5);
+  margin-block: 0 var(--space-5);
   color: var(--text-secondary);
   font-size: var(--font-size-body);
 }
