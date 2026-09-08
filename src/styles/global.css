@@ -92,6 +92,52 @@ body {
 button {
   font: inherit;
 }
+
+/* Scrollbars -----------------------------------------------------------------------------------
+   Left to the platform, Windows renders a ~17px light-grey slab with square arrow buttons at both
+   ends. On this dark UI it reads as a bright white column bolted to the side of every panel — the
+   ward directory, the mobile sheet, the layer panel, the provenance dialog. This makes them thin
+   and tints them into the palette instead.
+
+   `#4e7c72` is not a taste pick: a scrollbar thumb is a user-interface component, so WCAG 1.4.11
+   wants 3:1 against what surrounds it. This clears it against BOTH backgrounds a scrollbar can
+   appear over here — 3.83:1 on the page ground, 3.57:1 on a panel — which the darker, prettier
+   candidates did not. The track stays transparent so it works over either without a second colour.
+
+   Two blocks, not two layers: Chromium 121+ and Firefox honour the standard properties and IGNORE
+   the -webkit- pseudo-elements entirely, so the second block only ever runs on Safari and older
+   Chromium. They are kept visually equivalent on purpose.
+
+   `.header-meta` and `.primary-nav` deliberately hide their scrollbars and show an edge-fade
+   affordance instead; those class-level rules outrank these, which is why this is safe to apply
+   universally. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4e7c72 transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  /* The transparent border plus `background-clip` insets the thumb inside the 10px gutter, so it
+     reads as a floating pill rather than a bar welded to the panel edge. */
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: #4e7c72;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #68a094;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 .app-shell {
   height: 100vh;
   height: 100dvh;
