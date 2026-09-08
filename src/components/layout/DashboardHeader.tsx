@@ -48,16 +48,8 @@ export function DashboardHeader() {
   };
   const dataMode = useMapStore((state) => state.dataMode);
   const viewMode = useMapStore((state) => state.viewMode);
-  const labelsVisible = useMapStore((state) => state.labelsVisible);
-  const roadsVisible = useMapStore((state) => state.roadsVisible);
-  const autoRotate = useMapStore((state) => state.autoRotate);
-  const reducedMotion = useMapStore((state) => state.reducedMotion);
   const changeDataMode = useMapStore((state) => state.changeDataMode);
   const setViewMode = useMapStore((state) => state.setViewMode);
-  const toggleLabels = useMapStore((state) => state.toggleLabels);
-  const toggleRoads = useMapStore((state) => state.toggleRoads);
-  const toggleAutoRotate = useMapStore((state) => state.toggleAutoRotate);
-  const requestCameraReset = useMapStore((state) => state.requestCameraReset);
   const requestHelp = useMapStore((state) => state.requestHelp);
   const openProvenancePanel = useMapStore((state) => state.openProvenancePanel);
   const openDataSourcesPanel = useMapStore((state) => state.openDataSourcesPanel);
@@ -114,83 +106,12 @@ export function DashboardHeader() {
           ))}
         </nav>
       )}
+      {/* The four scene controls that used to open this row — auto-rotate, roads, centre labels
+          and camera reset — now render in `SceneToolsPanel`, beside the scene they act on. In the
+          3D view they made this an eleven-control row and pushed the app-level controls at the end
+          of it (font scale, language) off the right edge behind the scroll fade. What is left here
+          is only what every view needs. */}
       <div className="header-meta" ref={headerMetaRef}>
-        {viewMode === '3d' && (
-          <button
-            onClick={toggleAutoRotate}
-            aria-pressed={autoRotate}
-            disabled={reducedMotion}
-            aria-label={
-              reducedMotion
-                ? t('header.autoRotate.ariaLabelReducedMotion')
-                : autoRotate
-                  ? t('header.autoRotate.ariaLabelStop')
-                  : t('header.autoRotate.ariaLabelStart')
-            }
-            title={
-              reducedMotion
-                ? t('header.autoRotate.titleReducedMotion')
-                : t('header.autoRotate.title')
-            }
-          >
-            <span className="control-label control-label--desktop">
-              {reducedMotion
-                ? t('header.autoRotate.labelReducedMotion')
-                : autoRotate
-                  ? t('header.autoRotate.labelStop')
-                  : t('header.autoRotate.labelStart')}
-            </span>
-            <span className="control-label control-label--mobile" aria-hidden="true">
-              {t('header.autoRotate.shortLabel')}
-            </span>
-          </button>
-        )}
-        {viewMode === '3d' && (
-          <>
-            <button
-              onClick={toggleRoads}
-              aria-pressed={roadsVisible}
-              aria-label={
-                roadsVisible ? t('header.roads.ariaLabelHide') : t('header.roads.ariaLabelShow')
-              }
-            >
-              <span className="control-label control-label--desktop">
-                {roadsVisible ? t('header.roads.labelHide') : t('header.roads.labelShow')}
-              </span>
-              <span className="control-label control-label--mobile" aria-hidden="true">
-                {t('header.roads.shortLabel')}
-              </span>
-            </button>
-            <button
-              onClick={toggleLabels}
-              aria-pressed={labelsVisible}
-              aria-label={
-                labelsVisible
-                  ? t('header.centerLabels.ariaLabelHide')
-                  : t('header.centerLabels.ariaLabelShow')
-              }
-            >
-              <span className="control-label control-label--desktop">
-                {labelsVisible
-                  ? t('header.centerLabels.labelHide')
-                  : t('header.centerLabels.labelShow')}
-              </span>
-              <span className="control-label control-label--mobile" aria-hidden="true">
-                {t('header.centerLabels.shortLabel')}
-              </span>
-            </button>
-          </>
-        )}
-        {viewMode === '3d' && (
-          <button
-            className="header-secondary-control"
-            onClick={requestCameraReset}
-            aria-label={t('header.resetCamera.ariaLabel')}
-            title={t('header.resetCamera.title')}
-          >
-            {t('header.resetCamera.label')}
-          </button>
-        )}
         <button
           className="header-secondary-control"
           onClick={shareDashboard}

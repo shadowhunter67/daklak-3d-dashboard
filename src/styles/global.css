@@ -302,6 +302,7 @@ h1 i {
 }
 .mode-tabs {
   display: flex;
+  flex: 0 0 auto;
   gap: 6px;
   margin-left: clamp(24px, 6vw, 100px);
   padding: 4px;
@@ -311,6 +312,7 @@ h1 i {
 }
 .mode-tabs button {
   border: 0;
+  white-space: nowrap;
   color: #8fa9a1;
   background: transparent;
   border-radius: 999px;
@@ -1309,6 +1311,100 @@ button.directory-row:hover,
   width: 240px;
   padding: 22px;
 }
+/* One column holding the detail card and the scene tools, rather than two panels each pinning
+   themselves to the viewport. The card is pinned to the top and the tools to the bottom, so the
+   tools hold one position instead of sliding as the card grows and shrinks with the hovered
+   ward — a control that moves under the cursor is a control you misclick. */
+.scene-right-rail {
+  position: absolute;
+  z-index: 4;
+  right: 3.3vw;
+  top: 190px;
+  bottom: 96px;
+  display: flex;
+  width: 240px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  /* Most of this column is empty space over the globe. Without this it would swallow every drag
+     that starts between the two panels, and the 3D view is dragged more than it is clicked. */
+  pointer-events: none;
+}
+.scene-right-rail > * {
+  pointer-events: auto;
+}
+.scene-right-rail > .detail-panel,
+.scene-right-rail > .scene-tools {
+  position: static;
+  right: auto;
+  top: auto;
+  width: auto;
+}
+/* The card can lose height to the tools when the viewport is short; the tools are a fixed set of
+   controls and have nothing to give. */
+.scene-right-rail > .detail-panel {
+  min-height: 0;
+  flex: 0 1 auto;
+  overflow-y: auto;
+}
+.scene-right-rail > .scene-tools {
+  flex: 0 0 auto;
+}
+.scene-tools {
+  padding: 14px 16px 16px;
+}
+.scene-tools__heading {
+  margin: 0 0 10px;
+  color: var(--text-muted);
+  font-size: var(--font-size-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.scene-tools__group {
+  display: grid;
+  gap: 6px;
+}
+.scene-tools__toggle,
+.scene-tools__action {
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: #ffffff0a;
+  cursor: pointer;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  text-align: left;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+.scene-tools__toggle:hover:not(:disabled),
+.scene-tools__action:hover {
+  border-color: #ffffff3d;
+  color: var(--text-primary);
+  background: #ffffff14;
+}
+/* On, in the same gold the header's active tab uses — a toggle that is doing something has to
+   look different from one that is merely available, and the label says which way it goes. */
+.scene-tools__toggle[aria-pressed='true'] {
+  border-color: var(--border-strong);
+  color: var(--gold);
+  background: #d4a44612;
+}
+.scene-tools__toggle:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+/* An action, not a state: set apart by a rule above it rather than by a louder fill, so it does
+   not read as a fourth toggle that happens to be off. */
+.scene-tools__action {
+  width: 100%;
+  margin-top: 10px;
+}
 .detail-panel h2 {
   font-family: var(--font-sans);
   font-style: normal;
@@ -1677,6 +1773,15 @@ footer a {
     background: transparent;
     box-shadow: none;
     backdrop-filter: none;
+  }
+  .mobile-sheet--peek .scene-tools {
+    display: none;
+  }
+  .mobile-sheet .scene-tools__heading {
+    margin-top: 6px;
+  }
+  .mobile-sheet .scene-tools__group {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .mobile-sheet--peek .detail-panel {
     padding-top: 0;
@@ -2434,6 +2539,41 @@ footer a {
     left: auto;
   }
 }
+/* Every modal in this app closes with a worded button in its header, and all three of them
+   shipped as a classless <button> — i.e. the browser's light-grey 3D default, dropped into a dark
+   dialog, where it was the single loudest control on a card whose actual action ("Xem trên bản
+   đồ") is a quiet gold pill. This is that button, once, for all three.
+
+   Same geometry as the app's existing control pill (--border-strong / #d4a44612 / 999px, see
+   .header-meta button) so it belongs to the same family, in neutral instead of gold so it never
+   outranks the dialog's real action. The label is what identifies it — 7.1:1 at rest and 11.7:1
+   on hover against the lightest of the three dialog surfaces — with the edge at 2.5:1, matching
+   the weight the app's own gold controls carry (1.9:1) rather than overshooting them. */
+.dialog-close {
+  flex: 0 0 auto;
+  align-self: center;
+  min-height: 34px;
+  padding: 6px 15px;
+  border: 1px solid #ffffff47;
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: #ffffff0d;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+.dialog-close:hover {
+  border-color: #ffffff66;
+  color: var(--text-primary);
+  background: #ffffff1a;
+}
+
 .provenance-panel-backdrop {
   position: fixed;
   z-index: 30;
@@ -2603,10 +2743,21 @@ footer a {
    `.header-meta`'s `min-width: 40px` floor above is the surviving guard against that class of
    collapse and must stay. */
 
-/* Tightens the header's right-hand control row at common laptop widths (1280–1500px) so fewer of
-   its seven items need the scroll-fade affordance above — cosmetic only, box widths are already
-   handled by `overflow-x: auto` + the fade regardless of gap size. */
-@media (max-width: 1500px) {
+/* Tightens the header's control row wherever it does not fit at full size. The threshold is not
+   a device class, it is arithmetic: at full-fat values the 3D view's row needs
+   brand 369 + nav 409 + tab margin 100 + tabs 304 + controls 772 = 1954px plus 6.6vw of page
+   padding, which needs a ~2100px window. It was capped at 1500px, so every window between there
+   and 2100px — which is most desktop monitors — ran the loose values in a row that could not
+   hold them and pushed the last controls (font scale, language) off the right edge behind the
+   fade. Cosmetic only: the widths are still handled by `overflow-x: auto` + the fade whatever
+   the gap. */
+@media (max-width: 2100px) {
+  /* The wordmark eyebrow carries 0.18em of decorative tracking, which is ~25px of pure air on a
+     27-character line — the cheapest width in the row to give back, and the only one that costs
+     no control any of its own space. */
+  .dashboard-brand .eyebrow {
+    letter-spacing: 0.1em;
+  }
   .header-meta {
     gap: 12px;
   }

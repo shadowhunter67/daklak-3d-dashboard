@@ -320,6 +320,7 @@ export function DataProvenancePanel() {
           <h2 id="provenance-panel-title">{t('provenance.panelHeading')}</h2>
           <button
             type="button"
+            className="dialog-close"
             autoFocus
             onClick={closeProvenancePanel}
             aria-label={t('provenance.closeAria')}
