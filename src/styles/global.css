@@ -1405,6 +1405,44 @@ button.directory-row:hover,
   width: 100%;
   margin-top: 10px;
 }
+/* Compact form — one scrolling row of pills instead of a stacked panel. Two situations need it,
+   and they are the same problem: there is no room for a 226px panel.
+     - Portrait, where the panel floats above the sheet and the map cannot spare ~130px of its
+       height to chrome.
+     - Any viewport short enough that the rail cannot hold a ~200px detail card and the panel
+       both: that needs 442px of rail, so 442 + 190 top + 96 bottom = 728px of window. Keyed on
+       height rather than orientation, because a short desktop window has the identical problem
+       to a landscape phone and there is no reason to solve it twice. */
+@media (max-height: 740px), (max-width: 767px) and (orientation: portrait) {
+  .scene-tools {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .scene-tools::-webkit-scrollbar {
+    display: none;
+  }
+  /* The pills name themselves; a heading over a single row is a line of chrome the map cannot
+     spare here. */
+  .scene-tools__heading {
+    display: none;
+  }
+  .scene-tools__group {
+    display: contents;
+  }
+  .scene-tools__toggle,
+  .scene-tools__action {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .scene-tools__action {
+    width: auto;
+    margin-top: 0;
+  }
+}
 .detail-panel h2 {
   font-family: var(--font-sans);
   font-style: normal;
@@ -1774,14 +1812,14 @@ footer a {
     box-shadow: none;
     backdrop-filter: none;
   }
-  .mobile-sheet--peek .scene-tools {
-    display: none;
-  }
-  .mobile-sheet .scene-tools__heading {
-    margin-top: 6px;
-  }
-  .mobile-sheet .scene-tools__group {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Portrait has no rail: the row floats just above the sheet, always on screen rather than
+     behind a sheet that starts closed. Layout comes from the compact-form rule above. */
+  .scene-tools {
+    right: 8px;
+    bottom: calc(var(--mobile-sheet-closed-height, 52px) + 8px);
+    left: 8px;
+    width: auto;
+    border-radius: 12px;
   }
   .mobile-sheet--peek .detail-panel {
     padding-top: 0;
@@ -1934,6 +1972,14 @@ footer a {
     right: 12px;
     bottom: 52px;
     top: auto;
+  }
+  /* The rail follows the 64px header and the shorter viewport; the tools inside it are already
+     the compact row here (max-height: 740px covers every landscape phone). */
+  .scene-right-rail {
+    right: 12px;
+    top: 76px;
+    bottom: 12px;
+    width: 205px;
   }
 }
 @media (prefers-reduced-motion: reduce) {

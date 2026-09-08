@@ -28,7 +28,18 @@ export function DashboardPanels() {
   // stat/detail panels below are specific to the `3d` analytical view and read admin-unit
   // selection state the world scene deliberately does not touch (see WorldTerrainMesh.tsx).
   if (viewMode === 'world') return null;
-  if (mobilePortrait) return <MobileDashboardSheet />;
+  // The scene tools sit beside the sheet, not inside it. Closed — which is how the sheet starts
+  // — its content is `display: none`, so anything in there leaves the accessibility tree as well
+  // as the screen: a reduced-motion user could no longer find the auto-rotate control at all
+  // (caught by e2e/dashboard.spec.ts's reduced-motion check on mobile-chromium). These controls
+  // were always reachable in the header row before; they stay always reachable here.
+  if (mobilePortrait)
+    return (
+      <>
+        <SceneToolsPanel />
+        <MobileDashboardSheet />
+      </>
+    );
   return (
     <div className="desktop-panels">
       <Suspense fallback={null}>
