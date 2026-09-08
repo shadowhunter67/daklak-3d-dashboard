@@ -1,5 +1,21 @@
 :root {
-  font-family: 'Segoe UI', 'Be Vietnam Pro', Arial, sans-serif;
+  /* Typography families. Faces are self-hosted in `fonts.css` (the CSP forbids a Google Fonts
+     <link> — see src/styles/fonts/LICENSE.md). Declared as tokens rather than repeated literals
+     so a family swap is one edit, not the ten scattered `Segoe UI`/`Cambria`/`Georgia` literals
+     this replaced.
+
+     --font-sans     reading and UI text — Be Vietnam Pro is drawn for Vietnamese, so stacked
+                     diacritics (ế ộ ữ) keep their spacing instead of colliding the way a
+                     Latin-first face's fallback glyphs do.
+     --font-mono     figures, identifiers and timestamps ONLY. Tabular by construction, so a
+                     column of numbers stops shifting sideways as digits change (quick-reference
+                     §6 `number-tabular`), and a project code reads as a code.
+     --font-display  the brand wordmark only. Never body copy. */
+  --font-sans: 'Be Vietnam Pro', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  --font-display: 'Space Grotesk', 'Be Vietnam Pro', 'Segoe UI', system-ui, sans-serif;
+
+  font-family: var(--font-sans);
   color: #e9f2ed;
   background: #071918;
   font-synthesis: none;
@@ -28,6 +44,39 @@
      Executive Overview components (`.priority-project-list`, `.alert-list`,
      `.portfolio-status-chart`, `.data-health-panel`, `.kpi-card`) into named tokens, without
      touching the values themselves — same emerald/gold "provincial command center" palette. */
+  /* Panels are a real, lifted surface rather than a 3%-white wash of the page. Measured against
+     the reference app this was modelled on, whose dark ground-to-panel step is 1.48:1; this is
+     1.20:1, the most lift the existing status colours and the scrollbar thumb tolerate before
+     they fall under their contrast floors on top of it. Depth now comes from surface and shadow,
+     which is what lets the loud accent borders go away. */
+  --panel: #102b28;
+  --panel-rule: #265b53;
+  --lift: 0 1px 2px rgb(0 0 0 / 0.24), 0 4px 12px -4px rgb(0 0 0 / 0.34);
+  /* The slab — the reference app's signature "bìa sổ" surface, adapted to this palette. Exactly
+     one element on the page gets it (the Executive Status Hero): a brand gradient running bright
+     at the top-left corner to deep at the bottom, lit by a severity-tinted glow in the empty
+     top-right, on a long soft shadow. Depth and hue carry the emphasis here, which is what let
+     the 4px accent bar down its left edge go away. --slab-foot is the colour the linear ramp has
+     already reached by 62%, so the notice fused underneath continues the same surface. */
+  --slab: #0a2723;
+  --slab-2: #17564b;
+  --slab-ink: #ffffff;
+  --slab-ink-2: #c8e6dc;
+  --slab-rule: #ffffff2e;
+  --slab-foot: #0e2f2a;
+  --lift-slab: 0 2px 8px rgb(0 0 0 / 0.3), 0 22px 46px -20px rgb(4 40 34 / 0.7);
+  /* The ground the full-page views are painted on — layered ambient light rather than one flat
+     fill, so the cards sit in a room instead of on a slab of paint. Both washes are centred ABOVE
+     the viewport and every stop stays darker than --panel (#102b28): panels have to remain the
+     lightest thing on the page or they stop reading as lifted, which is the exact failure the
+     card system was rebuilt to fix. Measured panel/ground step: 1.20:1 up at the top of the
+     scroll (where the washes are strongest, and where the slab supplies its own depth anyway),
+     rising to 1.30:1 further down where the flat panels actually need it — against the uniform
+     1.20:1 the old flat #071918 gave. */
+  --view-ground:
+    radial-gradient(1180px 700px at 14% -22%, #0c322c 0%, transparent 60%),
+    radial-gradient(940px 560px at 92% -8%, #0a2b2a 0%, transparent 58%),
+    linear-gradient(168deg, #061715 0%, #051312 52%, #040f0e 100%);
   --surface-1: #ffffff08;
   --surface-2: #ffffff0f;
   --surface-3: #ffffff17;
@@ -76,6 +125,52 @@ body {
 button {
   font: inherit;
 }
+
+/* Scrollbars -----------------------------------------------------------------------------------
+   Left to the platform, Windows renders a ~17px light-grey slab with square arrow buttons at both
+   ends. On this dark UI it reads as a bright white column bolted to the side of every panel — the
+   ward directory, the mobile sheet, the layer panel, the provenance dialog. This makes them thin
+   and tints them into the palette instead.
+
+   `#4e7c72` is not a taste pick: a scrollbar thumb is a user-interface component, so WCAG 1.4.11
+   wants 3:1 against what surrounds it. This clears it against BOTH backgrounds a scrollbar can
+   appear over here — 3.83:1 on the page ground, 3.57:1 on a panel — which the darker, prettier
+   candidates did not. The track stays transparent so it works over either without a second colour.
+
+   Two blocks, not two layers: Chromium 121+ and Firefox honour the standard properties and IGNORE
+   the -webkit- pseudo-elements entirely, so the second block only ever runs on Safari and older
+   Chromium. They are kept visually equivalent on purpose.
+
+   `.header-meta` and `.primary-nav` deliberately hide their scrollbars and show an edge-fade
+   affordance instead; those class-level rules outrank these, which is why this is safe to apply
+   universally. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4e7c72 transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  /* The transparent border plus `background-clip` insets the thumb inside the 10px gutter, so it
+     reads as a floating pill rather than a bar welded to the panel edge. */
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: #4e7c72;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #68a094;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 .app-shell {
   height: 100vh;
   height: 100dvh;
@@ -139,13 +234,15 @@ header {
   font-weight: 600;
 }
 h1 {
+  /* The brand wordmark is the one place --font-display is allowed. */
+  font-family: var(--font-display);
   font-size: 26px;
   letter-spacing: 0.08em;
   margin: 0;
 }
 h1 i {
-  font-family: Georgia, 'Times New Roman', serif;
   font-weight: 700;
+  font-style: normal;
   color: #e7b855;
   margin-left: 3px;
 }
@@ -156,8 +253,8 @@ h1 i {
   gap: 22px;
   color: #acc5bc;
   font-size: 14px;
-  /* Not 0 — a real regression (see the `.header-mock-badge` comment near its media query) showed
-     this box collapsing to zero width under enough sibling pressure, which let it render fully
+  /* Not 0 — a real regression showed this box collapsing to zero width under enough sibling
+     pressure, which let it render fully
      behind a neighbour instead of showing even its own scroll-fade edge. 40px is enough for the
      18px fade plus a sliver of the first control, so there's always a visible, clickable hint
      that more content exists here, however tight the row gets. */
@@ -205,6 +302,7 @@ h1 i {
 }
 .mode-tabs {
   display: flex;
+  flex: 0 0 auto;
   gap: 6px;
   margin-left: clamp(24px, 6vw, 100px);
   padding: 4px;
@@ -214,6 +312,7 @@ h1 i {
 }
 .mode-tabs button {
   border: 0;
+  white-space: nowrap;
   color: #8fa9a1;
   background: transparent;
   border-radius: 999px;
@@ -848,11 +947,10 @@ h1 i {
 .onboarding-card h2 {
   margin: 8px 0 12px;
   color: #f0cf7a;
-  font:
-    700 clamp(25px, 5vw, 38px)/1.08 Cambria,
-    'Noto Serif',
-    'DejaVu Serif',
-    serif;
+  font-family: var(--font-sans);
+  font-size: clamp(25px, 5vw, 38px);
+  font-weight: 700;
+  line-height: 1.08;
 }
 .onboarding-card > p:not(.eyebrow),
 .onboarding-card li,
@@ -1012,7 +1110,7 @@ h1 i {
 }
 .directory-heading h2 {
   margin: 0;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-sans);
   color: #f0cf7a;
 }
 .directory-heading label {
@@ -1111,7 +1209,7 @@ button.directory-row:hover,
 }
 .map-caption p {
   margin: 7px;
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: var(--font-sans);
   font-style: italic;
   color: #c8dbd4;
   font-size: 14px;
@@ -1151,8 +1249,8 @@ button.directory-row:hover,
   gap: 9px;
 }
 .hero-stat strong {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-style: italic;
+  font-family: var(--font-mono);
+  font-style: normal;
   font-size: 54px;
   line-height: 1;
   color: #ecc66d;
@@ -1213,8 +1311,102 @@ button.directory-row:hover,
   width: 240px;
   padding: 22px;
 }
+/* One column holding the detail card and the scene tools, rather than two panels each pinning
+   themselves to the viewport. The card is pinned to the top and the tools to the bottom, so the
+   tools hold one position instead of sliding as the card grows and shrinks with the hovered
+   ward — a control that moves under the cursor is a control you misclick. */
+.scene-right-rail {
+  position: absolute;
+  z-index: 4;
+  right: 3.3vw;
+  top: 190px;
+  bottom: 96px;
+  display: flex;
+  width: 240px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  /* Most of this column is empty space over the globe. Without this it would swallow every drag
+     that starts between the two panels, and the 3D view is dragged more than it is clicked. */
+  pointer-events: none;
+}
+.scene-right-rail > * {
+  pointer-events: auto;
+}
+.scene-right-rail > .detail-panel,
+.scene-right-rail > .scene-tools {
+  position: static;
+  right: auto;
+  top: auto;
+  width: auto;
+}
+/* The card can lose height to the tools when the viewport is short; the tools are a fixed set of
+   controls and have nothing to give. */
+.scene-right-rail > .detail-panel {
+  min-height: 0;
+  flex: 0 1 auto;
+  overflow-y: auto;
+}
+.scene-right-rail > .scene-tools {
+  flex: 0 0 auto;
+}
+.scene-tools {
+  padding: 14px 16px 16px;
+}
+.scene-tools__heading {
+  margin: 0 0 10px;
+  color: var(--text-muted);
+  font-size: var(--font-size-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.scene-tools__group {
+  display: grid;
+  gap: 6px;
+}
+.scene-tools__toggle,
+.scene-tools__action {
+  min-height: 36px;
+  padding: 8px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: #ffffff0a;
+  cursor: pointer;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  text-align: left;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+.scene-tools__toggle:hover:not(:disabled),
+.scene-tools__action:hover {
+  border-color: #ffffff3d;
+  color: var(--text-primary);
+  background: #ffffff14;
+}
+/* On, in the same gold the header's active tab uses — a toggle that is doing something has to
+   look different from one that is merely available, and the label says which way it goes. */
+.scene-tools__toggle[aria-pressed='true'] {
+  border-color: var(--border-strong);
+  color: var(--gold);
+  background: #d4a44612;
+}
+.scene-tools__toggle:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+/* An action, not a state: set apart by a rule above it rather than by a louder fill, so it does
+   not read as a fourth toggle that happens to be off. */
+.scene-tools__action {
+  width: 100%;
+  margin-top: 10px;
+}
 .detail-panel h2 {
-  font-family: Cambria, 'Noto Serif', 'DejaVu Serif', 'Times New Roman', serif;
+  font-family: var(--font-sans);
   font-style: normal;
   font-size: 26px;
   line-height: 1.18;
@@ -1581,6 +1773,15 @@ footer a {
     background: transparent;
     box-shadow: none;
     backdrop-filter: none;
+  }
+  .mobile-sheet--peek .scene-tools {
+    display: none;
+  }
+  .mobile-sheet .scene-tools__heading {
+    margin-top: 6px;
+  }
+  .mobile-sheet .scene-tools__group {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .mobile-sheet--peek .detail-panel {
     padding-top: 0;
@@ -2338,6 +2539,41 @@ footer a {
     left: auto;
   }
 }
+/* Every modal in this app closes with a worded button in its header, and all three of them
+   shipped as a classless <button> — i.e. the browser's light-grey 3D default, dropped into a dark
+   dialog, where it was the single loudest control on a card whose actual action ("Xem trên bản
+   đồ") is a quiet gold pill. This is that button, once, for all three.
+
+   Same geometry as the app's existing control pill (--border-strong / #d4a44612 / 999px, see
+   .header-meta button) so it belongs to the same family, in neutral instead of gold so it never
+   outranks the dialog's real action. The label is what identifies it — 7.1:1 at rest and 11.7:1
+   on hover against the lightest of the three dialog surfaces — with the edge at 2.5:1, matching
+   the weight the app's own gold controls carry (1.9:1) rather than overshooting them. */
+.dialog-close {
+  flex: 0 0 auto;
+  align-self: center;
+  min-height: 34px;
+  padding: 6px 15px;
+  border: 1px solid #ffffff47;
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: #ffffff0d;
+  font-size: var(--font-size-label);
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease;
+}
+.dialog-close:hover {
+  border-color: #ffffff66;
+  color: var(--text-primary);
+  background: #ffffff1a;
+}
+
 .provenance-panel-backdrop {
   position: fixed;
   z-index: 30;
@@ -2369,11 +2605,10 @@ footer a {
 .provenance-panel-header h2 {
   margin: 0;
   color: #f0cf7a;
-  font:
-    700 clamp(20px, 4vw, 26px)/1.15 Cambria,
-    'Noto Serif',
-    'DejaVu Serif',
-    serif;
+  font-family: var(--font-sans);
+  font-size: clamp(20px, 4vw, 26px);
+  font-weight: 700;
+  line-height: 1.15;
 }
 .data-status-summary {
   display: flex;
@@ -2470,17 +2705,6 @@ footer a {
 .skip-link:focus {
   top: 12px;
 }
-.header-mock-badge {
-  margin-left: 16px;
-  padding: 3px 9px;
-  border: 1px solid #e4bc5e55;
-  border-radius: 999px;
-  color: #e4bc5e;
-  background: #e4bc5e12;
-  font-size: var(--font-size-label);
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-}
 .primary-nav {
   display: flex;
   gap: 4px;
@@ -2510,25 +2734,30 @@ footer a {
   background: #e4bc5e;
   box-shadow: 0 0 18px #d4a44655;
 }
-/* Real regression found via CI on Linux (not reproducible on Windows — font metrics render this
-   ~15-25px narrower there, just enough to stay under the edge): on the 3D view, `.mode-tabs`
-   (Tổng quan/Năng lượng/Heatmap — only present here, not on other views) adds three more buttons
-   competing for the same row as `.primary-nav` + this badge. Their `white-space: nowrap` content
-   gives them an effective minimum width the flexbox shrink algorithm respects; `.header-meta`
-   opted out of that floor (`min-width: 0`, so its own `overflow-x: auto` can engage) and absorbs
-   the entire deficit — at 1280px on the 3D view specifically, that deficit exceeded its own
-   content width, collapsing it to ~0px stacked at the same point mode-tabs ends, which is what
-   made Playwright's click-to-EN interception real, not a test artifact. Widened this badge's hide
-   threshold from 1100 to 1400px so it stops competing for space well before that point. */
-@media (max-width: 1400px) {
-  .header-mock-badge {
-    display: none;
+/* The `.header-mock-badge` element and its hide-below-1400px media query lived here. Both are
+   gone: the badge was removed from DashboardHeader.tsx (see the comment there). It had been a
+   real source of header crowding — on the 3D view it competed with `.mode-tabs` and
+   `.primary-nav` for the same row, and on Linux CI (where font metrics run ~15-25px wider
+   than Windows) that deficit collapsed `.header-meta` to ~0px at 1280px, which is what made
+   a Playwright click-to-EN interception fail for real rather than as a test artifact.
+   `.header-meta`'s `min-width: 40px` floor above is the surviving guard against that class of
+   collapse and must stay. */
+
+/* Tightens the header's control row wherever it does not fit at full size. The threshold is not
+   a device class, it is arithmetic: at full-fat values the 3D view's row needs
+   brand 369 + nav 409 + tab margin 100 + tabs 304 + controls 772 = 1954px plus 6.6vw of page
+   padding, which needs a ~2100px window. It was capped at 1500px, so every window between there
+   and 2100px — which is most desktop monitors — ran the loose values in a row that could not
+   hold them and pushed the last controls (font scale, language) off the right edge behind the
+   fade. Cosmetic only: the widths are still handled by `overflow-x: auto` + the fade whatever
+   the gap. */
+@media (max-width: 2100px) {
+  /* The wordmark eyebrow carries 0.18em of decorative tracking, which is ~25px of pure air on a
+     27-character line — the cheapest width in the row to give back, and the only one that costs
+     no control any of its own space. */
+  .dashboard-brand .eyebrow {
+    letter-spacing: 0.1em;
   }
-}
-/* Tightens the header's right-hand control row at common laptop widths (1280–1500px) so fewer of
-   its seven items need the scroll-fade affordance above — cosmetic only, box widths are already
-   handled by `overflow-x: auto` + the fade regardless of gap size. */
-@media (max-width: 1500px) {
   .header-meta {
     gap: 12px;
   }
@@ -2548,24 +2777,31 @@ footer a {
   overflow-y: auto;
   padding: 0 3.3vw 64px;
   color: #dcebe5;
-  background: #071918;
+  background: var(--view-ground);
 }
 /* Page content is capped so it stays legible/scannable on very wide operations-room monitors
    (spec §13: "max-width hợp lý trên màn hình rất rộng") instead of stretching KPI cards and text
-   lines edge-to-edge at 2560px+. */
+   lines edge-to-edge at 2560px+.
+
+   Children of this rule MUST set their vertical margins with `margin-block`, never the `margin`
+   shorthand: the shorthand resets `margin-left`/`margin-right` to 0, which drops that child out
+   of the centred column while its siblings stay in it. That split is invisible until the
+   viewport exceeds ~1724px (1600px cap + 2 x 3.3vw padding), below which the cap never binds and
+   every child lands on the same edge — which is why it survived: the one existing check above that
+   width asserts overlap and overflow, neither of which notices two tidy columns on different
+   edges. `layout-regression.spec.ts` now pins the shared edge at 1920px and 2560px. */
 .executive-overview > * {
   max-width: 1600px;
   margin-left: auto;
   margin-right: auto;
 }
 .executive-overview h2 {
-  margin: var(--space-1) 0 var(--space-2);
+  margin-block: var(--space-1) var(--space-2);
   color: #f0cf7a;
-  font:
-    700 clamp(22px, 3vw, 30px)/1.25 Cambria,
-    'Noto Serif',
-    'DejaVu Serif',
-    serif;
+  font-family: var(--font-sans);
+  font-size: clamp(22px, 3vw, 30px);
+  font-weight: 700;
+  line-height: 1.25;
 }
 /* Executive Status Hero — the page's single most important element (spec: "5-second test"). A
    leader must be able to read overall health, the count of projects needing action, and the top
@@ -2573,31 +2809,50 @@ footer a {
    panel below it: larger border, a tinted background tied to severity, and the biggest text on
    the page after the KPI numbers themselves. */
 .executive-status-hero {
-  margin: var(--space-4) 0 var(--space-5);
+  /* Severity rides the glow, not a painted edge — and the glow is what gives the right half of
+     a very wide card something to be. Its radii are percentages of the hero's own box, so the
+     geometry is identical at 412px and at 2560px instead of swallowing a narrow card whole. It is
+     centred above the top-right corner and reaches no further left than 55% of the width, which
+     is what keeps it off the text: modelled against the measured line boxes at seven widths and
+     all four states, the worst contrast --slab-ink-2 ever sees is 6.68:1 (floor 4.5). */
+  --slab-glow: #ffffff26;
+  margin-block: var(--space-4) var(--space-5);
   padding: var(--space-5) var(--space-6);
-  border: 1px solid var(--border-subtle);
-  border-left: 4px solid var(--text-muted);
+  border: 1px solid var(--slab-rule);
   border-radius: var(--radius-lg);
-  background: var(--surface-2);
+  color: var(--slab-ink);
+  background:
+    radial-gradient(46% 180% at 86% -18%, var(--slab-glow) 0%, transparent 68%),
+    linear-gradient(152deg, var(--slab-2) 0%, var(--slab) 62%, var(--slab) 100%);
+  box-shadow: var(--lift-slab);
+}
+/* When the notice follows the hero the two fuse into one card: the hero loses its bottom edge and
+   radius, the notice picks them up and becomes its foot band. `:has()` keeps this conditional —
+   the notice is not always rendered, and a lone hero must stay a closed card. */
+.executive-status-hero:has(+ .executive-overview__notice) {
+  margin-bottom: 0;
+  border-bottom: 0;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  /* The foot carries the pair's shadow. A second one here would be cast down across the seam and
+     draw a dark line through the middle of what has to read as a single card. */
+  box-shadow: none;
 }
 .executive-status-hero[data-status='critical'] {
-  border-left-color: #f08a68;
-  background: #f0836612;
+  --slab-glow: #f0836647;
 }
 .executive-status-hero[data-status='attention'] {
-  border-left-color: var(--gold);
-  background: #e7c47112;
+  --slab-glow: #e7c47147;
 }
 .executive-status-hero[data-status='healthy'] {
-  border-left-color: var(--color-success);
-  background: #6fcf9712;
+  --slab-glow: #6fcf9747;
 }
 .executive-status-hero[data-status='degraded'] {
-  border-left-color: var(--text-secondary);
+  --slab-glow: #ffffff24;
 }
 .executive-status-hero__eyebrow {
   margin: 0 0 6px;
-  color: var(--text-secondary);
+  color: var(--slab-ink-2);
   font-size: var(--font-size-label);
   font-weight: 700;
   text-transform: uppercase;
@@ -2608,7 +2863,7 @@ footer a {
   align-items: center;
   gap: 12px;
   margin: 0 0 10px;
-  color: var(--text-primary);
+  color: var(--slab-ink);
   font-size: clamp(22px, 2.6vw, 30px);
   font-weight: 700;
 }
@@ -2620,34 +2875,35 @@ footer a {
   width: 34px;
   height: 34px;
   border-radius: 50%;
+  background: #ffffff29;
   font-size: 18px;
   font-weight: 900;
 }
+/* One glass chip for every state, the way the reference tints its chips on the slab — a tinted
+   disc as well would put a third fill inside the same 34px, and the severity is already stated in
+   30px type right beside it. The glyph keeps the severity hue, brightened for the lighter ground
+   the slab puts under it (3.5–4.2:1 at 18px/900). */
 .executive-status-hero[data-status='critical'] .executive-status-hero__status-badge {
-  color: #f08a68;
-  background: #f0836626;
+  color: #ffb59b;
 }
 .executive-status-hero[data-status='attention'] .executive-status-hero__status-badge {
-  color: var(--gold);
-  background: #e7c47126;
+  color: #f2d489;
 }
 .executive-status-hero[data-status='healthy'] .executive-status-hero__status-badge {
-  color: var(--color-success);
-  background: #6fcf9726;
+  color: #8fe0b3;
 }
 .executive-status-hero[data-status='degraded'] .executive-status-hero__status-badge {
-  color: var(--text-secondary);
-  background: #ffffff1a;
+  color: var(--slab-ink);
 }
 .executive-status-hero__summary {
   margin: 0 0 4px;
-  color: var(--text-primary);
+  color: var(--slab-ink);
   font-size: clamp(18px, 1.8vw, 22px);
   font-weight: 600;
 }
 .executive-status-hero__breakdown {
   margin: 0;
-  color: var(--text-secondary);
+  color: var(--slab-ink-2);
   font-size: var(--font-size-body);
 }
 
@@ -2660,11 +2916,23 @@ footer a {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3) var(--space-4);
-  margin: var(--space-3) 0 var(--space-5);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-md);
-  background: #e4bc5e0d;
+  margin-block: var(--space-3) var(--space-5);
+  padding: var(--space-3) var(--space-5);
+  border: 1px solid var(--panel-rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel);
+  box-shadow: var(--lift);
+}
+.executive-status-hero + .executive-overview__notice {
+  margin-top: 0;
+  border-color: var(--slab-rule);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  /* Opaque, and set to the colour the slab's linear ramp has already reached by its 62% stop, so
+     the foot continues the same surface instead of sitting under it as a second box. The single
+     hairline between the two is this element's own top border. */
+  background: var(--slab-foot);
+  box-shadow: var(--lift-slab);
 }
 .executive-overview__mock-badge {
   display: flex;
@@ -2686,7 +2954,7 @@ footer a {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
-  margin: 0 0 var(--space-5);
+  margin-block: 0 var(--space-5);
   color: var(--text-secondary);
   font-size: var(--font-size-body);
 }
@@ -2757,16 +3025,25 @@ footer a {
   cursor: pointer;
 }
 
+/* One divided panel, not seven floating cards. Seven separate bordered boxes read as seven
+   unrelated facts; a single ruled strip reads as one row of related indicators, which is what they
+   are. `gap: 1px` over a container painted in the rule colour draws the dividers — cheaper and
+   more robust than per-cell borders, which would need `:nth-child` arithmetic that changes with
+   the column count. A fixed 7-column track (not `auto-fill`) is what makes that safe: there is
+   never a trailing empty track left showing the rule colour as a stray block. */
 .kpi-card-grid {
   display: grid;
-  /* 160px (not 180px) so all 7 KPI cards fit on one row down to ~1280px-wide laptops — at 180px
-     six fit and the 7th ("Vướng mắc quá hạn") wrapped alone onto its own row, leaving a large,
-     lopsided empty gap beside it (spec §7: "cùng height... grid cân đối"). */
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: var(--space-3);
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 1px;
   margin: 0 0 var(--space-6);
   padding: 0;
+  border: 1px solid var(--panel-rule);
+  border-radius: var(--radius-lg);
+  background: var(--panel-rule);
+  box-shadow: var(--lift);
   list-style: none;
+  /* Clips the corner cells to the container's radius. */
+  overflow: hidden;
 }
 .kpi-card {
   /* min-width: 0 overrides the grid-item default (min-width: auto), which otherwise lets a long
@@ -2774,14 +3051,35 @@ footer a {
      track and visually spill into the next card instead of wrapping. */
   min-width: 0;
   overflow: hidden;
-  padding: 14px 16px;
-  border: 1px solid #ffffff1a;
-  border-radius: 12px;
-  background: #ffffff08;
+  padding: 16px 18px;
+  /* Same top-lit ramp as the panels, per cell. Identical in every cell, so the seven of them still
+     read as one continuous band rather than a row of separately shaded tiles. */
+  background: linear-gradient(180deg, var(--panel) 0%, #0d2523 100%);
 }
 .kpi-card[data-unavailable] {
-  border-style: dashed;
   color: #8fa39a;
+}
+/* Below this the seven cells get too narrow to hold a label and a figure, so the strip breaks back
+   into the independent wrapping cards it replaced. `auto-fill` may leave a trailing empty track
+   here, which is why the divider colour goes back to per-cell borders in this mode. */
+@media (max-width: 1199px) {
+  .kpi-card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--space-3);
+    border: 0;
+    border-radius: 0;
+    background: none;
+    overflow: visible;
+  }
+  .kpi-card {
+    padding: 14px 16px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    background: #ffffff08;
+  }
+  .kpi-card[data-unavailable] {
+    border-style: dashed;
+  }
 }
 .kpi-card__label {
   margin: 0 0 6px;
@@ -2793,10 +3091,20 @@ footer a {
 .kpi-card__value {
   margin: 0;
   color: #e9f2ed;
-  font-size: calc(clamp(20px, 2.6vw, 28px) * var(--user-font-scale));
-  font-weight: 700;
+  font-family: var(--font-mono);
+  font-size: calc(clamp(19px, 1.9vw, 25px) * var(--user-font-scale));
+  font-weight: 600;
+  /* Mono at display sizes sets loose; the reference dashboard pulls it back by the same ~0.03em. */
+  letter-spacing: -0.03em;
   line-height: 1.3;
   overflow-wrap: anywhere;
+}
+/* The money KPI is the one value that is not a bare number — `formatKpiValue` fuses a figure to a
+   unit word ("2.453 tỷ ₫"), roughly doubling the character count of its neighbours. At the shared
+   size mono wrapped it onto two lines in every viewport measured, so it gets its own smaller step
+   rather than dragging the other six figures down to fit it. */
+.kpi-card[data-kpi-group='money'] .kpi-card__value {
+  font-size: calc(clamp(16px, 1.45vw, 20px) * var(--user-font-scale));
 }
 .kpi-card[data-unavailable] .kpi-card__value {
   color: #8fa39a;
@@ -2869,27 +3177,32 @@ footer a {
 .alert-list,
 .portfolio-status-chart,
 .data-health-panel {
-  padding: var(--space-5);
-  border: 1px solid var(--border-subtle);
+  /* No top padding: the heading below is a full-bleed head band and supplies its own. */
+  padding: 0 var(--space-5) var(--space-5);
+  border: 1px solid var(--panel-rule);
   border-radius: var(--radius-lg);
-  background: var(--surface-1);
+  /* The top stop is exactly --panel and every stop below it only darkens, so the panel keeps the
+     lift it was measured at while gaining the depth a flat fill has none of. Nothing sitting on it
+     can lose contrast: the light text, the pills and the rules all improve as the surface falls
+     away beneath them. */
+  background: linear-gradient(180deg, var(--panel) 0%, #0e2724 52%, #0c2320 100%);
+  box-shadow: var(--lift);
+  overflow: hidden;
 }
+/* A titled band closed by a rule, not a heading floating in the panel's top padding. The negative
+   inline margin bleeds the rule to the panel edge while the text keeps the panel's own inset. */
 .priority-project-list h3,
 .alert-list h3,
 .portfolio-status-chart h3,
 .data-health-panel h3 {
-  margin: 0 0 var(--space-4);
+  margin: 0 calc(var(--space-5) * -1) var(--space-5);
+  padding: 14px var(--space-5);
+  border-bottom: 1px solid var(--panel-rule);
+  background: linear-gradient(180deg, #ffffff0f 0%, #ffffff03 100%);
   color: var(--text-primary);
-  font-size: clamp(16px, 1.3vw, 18px);
+  font-size: clamp(15px, 1.2vw, 17px);
   font-weight: 700;
   letter-spacing: 0.01em;
-}
-/* "Dự án cần chú ý" is the hero work-area of the page (spec §9) — a gold top accent + slightly
-   more generous padding gives it clearly the highest visual weight of the four panels below the
-   KPI row, ahead of alerts/status/data-health which are supporting context. */
-.priority-project-list {
-  padding: var(--space-6);
-  border-top: 2px solid var(--gold-strong);
 }
 
 .data-sources-panel {
@@ -2963,7 +3276,9 @@ footer a {
 }
 .priority-project-list ol {
   display: grid;
-  gap: var(--space-3);
+  /* Rules, not gaps: rows read as one continuous list of comparable records rather than a stack of
+     separate cards, matching how the portfolio table already presents the same kind of data. */
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -2973,17 +3288,20 @@ footer a {
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-4);
-  padding: var(--space-4);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--surface-1);
-  transition:
-    background 150ms ease,
-    border-color 150ms ease;
+  /* Negative inline margin lets the rule and the hover fill span the panel's full inner width
+     while the content keeps a comfortable inset from it. */
+  padding: var(--space-4) var(--space-5);
+  margin-inline: calc(var(--space-5) * -1);
+  border: 0;
+  border-top: 1px solid var(--border-subtle);
+  background: none;
+  transition: background 150ms ease;
+}
+.priority-project-item:first-child {
+  border-top: 0;
 }
 .priority-project-item:hover {
-  border-color: #ffffff33;
-  background: var(--surface-2);
+  background: var(--surface-1);
 }
 .priority-project-item__main {
   min-width: 0;
@@ -2996,14 +3314,21 @@ footer a {
   line-height: 1.4;
 }
 .priority-project-item__code {
+  margin: 0 0 8px;
+  font-family: var(--font-mono);
   color: var(--text-muted);
+  font-size: var(--font-size-label);
   font-weight: 400;
+  line-height: 1.5;
+  /* An identifier is one token: let the line wrap around it, never through its hyphens. */
+  overflow-wrap: normal;
+  word-break: keep-all;
 }
 .priority-project-item__meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-2);
   margin: 0 0 6px;
   color: var(--text-secondary);
   font-size: var(--font-size-label);
@@ -3011,29 +3336,47 @@ footer a {
 }
 /* A small status dot before the status word — the same "text + shape" pairing used elsewhere,
    never colour alone. Neutral by default; specific statuses get a semantic colour below. */
+/* Status reads as a tinted pill carrying its own dot — the shape and the word both survive when
+   colour does not, so this never depends on hue alone. Tints are the accent at 12% over the panel;
+   at 15% the "delayed" pair drops under 4.5:1, so 12% is the ceiling, not a taste call. */
 .priority-project-item__status {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: #1f3a37;
+  color: var(--text-secondary);
+  font-weight: 600;
 }
 .priority-project-item__status::before {
   content: '';
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: var(--text-muted);
+  background: currentcolor;
 }
-.priority-project-item__status[data-status='at-risk']::before {
-  background: var(--color-warning);
+.priority-project-item__status[data-status='at-risk'] {
+  background: #25392c;
+  color: var(--color-warning);
 }
-.priority-project-item__status[data-status='delayed']::before {
-  background: #d97757;
+.priority-project-item__status[data-status='delayed'] {
+  background: #263732;
+  color: #efa287;
 }
-.priority-project-item__status[data-status='suspended']::before {
-  background: var(--color-danger);
+.priority-project-item__status[data-status='suspended'] {
+  background: #273734;
+  color: #f4a3a0;
 }
-.priority-project-item__status[data-status='active']::before {
-  background: var(--color-success);
+.priority-project-item__status[data-status='active'] {
+  background: #1a3b33;
+  color: var(--color-success);
+}
+/* Wider than the 64px the portfolio table uses: this list has one row per project rather than a
+   dense grid, so the bar has room to be readable rather than merely indicative. */
+.priority-project-item__progress {
+  width: 120px;
+  margin: 2px 0 8px;
 }
 .priority-project-item__reason {
   margin: 0;
@@ -3069,6 +3412,9 @@ footer a {
 .alert-group:last-child {
   margin-bottom: 0;
 }
+/* The group heading is where the severity is named, in words, once — with its count and now in
+   its own colour, so colour and label sit together instead of the label being reprinted on every
+   row underneath. */
 .alert-group h4 {
   margin: 0 0 var(--space-2);
   color: var(--text-secondary);
@@ -3077,7 +3423,17 @@ footer a {
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+.alert-group[data-severity='critical'] h4 {
+  color: #f08a68;
+}
+.alert-group[data-severity='warning'] h4 {
+  color: var(--gold);
+}
+.alert-group[data-severity='data-quality'] h4 {
+  color: var(--color-info);
+}
 .alert-group__count {
+  font-family: var(--font-mono);
   color: var(--text-muted);
   font-weight: 400;
   text-transform: none;
@@ -3090,49 +3446,62 @@ footer a {
   padding: 0;
   list-style: none;
 }
-/* A coloured left border is the primary severity signal (scans faster than text colour alone at
-   a glance down the list); the `__severity` pill still spells it out in words right beside it —
-   never colour-only. "Nghiêm trọng" gets the strongest treatment (tinted background), "Cảnh báo"
-   a plain border, "Chất lượng dữ liệu" a calmer informational tone. */
+/* Severity is a wash that starts under the label and dissolves into the panel across the row —
+   the same left-to-right emphasis the 3px painted bar carried, without the bar. One gradient per
+   row instead of a bar plus a flat fill plus a filled pill, which was three separate tints
+   competing inside 40px of height.
+
+   Nothing here is colour-only: the level is named in words by the group heading immediately
+   above the row, which now carries the same colour (6.1:1 / 9.0:1 / 6.1:1 on the panel). Printing
+   it again on each row put "Nghiêm trọng" on screen four times inside 200px and read as filler
+   rather than as information. The row keeps a dot, which doubles as the hanging indent a wrapped
+   message needs; the message itself is never below 9.4:1 on any of the washes. */
 .alert-item {
   display: flex;
   align-items: baseline;
   gap: var(--space-2);
-  padding: var(--space-2) var(--space-3);
-  border-left: 3px solid var(--border-subtle);
+  padding: 9px var(--space-3);
   border-radius: var(--radius-sm);
   font-size: var(--font-size-label);
   line-height: 1.5;
-  background: var(--surface-1);
+  background: linear-gradient(96deg, #ffffff12 0%, #ffffff0a 38%, #ffffff06 100%);
 }
-.alert-item__severity {
+.alert-item::before {
+  content: '';
   flex: 0 0 auto;
-  padding: 1px 7px;
-  border-radius: 999px;
-  font-size: calc(var(--font-size-label) - 1px);
-  font-weight: 700;
+  /* baseline alignment would hang a 6px square off the line's bottom edge; this centres it on the
+     first line instead — half of a 1.5 line box, less half the dot. */
+  align-self: flex-start;
+  width: 6px;
+  height: 6px;
+  margin-top: calc(0.75em - 3px);
+  border-radius: 50%;
+  background: currentcolor;
+}
+/* Kept in the DOM and read out: a screen reader moving row by row can be out of reach of the
+   group heading, and AlertList.test.tsx pins the text. It is the on-screen duplicate that goes. */
+.alert-item__severity {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 .alert-group[data-severity='critical'] .alert-item {
-  border-left-color: #f08a68;
-  background: #f0836612;
-}
-.alert-group[data-severity='critical'] .alert-item__severity {
   color: #f08a68;
-  background: #f0836622;
+  background: linear-gradient(96deg, #f0836626 0%, #f0836610 38%, #ffffff06 100%);
 }
 .alert-group[data-severity='warning'] .alert-item {
-  border-left-color: var(--gold);
-}
-.alert-group[data-severity='warning'] .alert-item__severity {
   color: var(--gold);
-  background: #e7c47122;
+  background: linear-gradient(96deg, #e7c47126 0%, #e7c47110 38%, #ffffff06 100%);
 }
 .alert-group[data-severity='data-quality'] .alert-item {
-  border-left-color: var(--color-info);
-}
-.alert-group[data-severity='data-quality'] .alert-item__severity {
   color: var(--color-info);
-  background: #7fa8d922;
+  background: linear-gradient(96deg, #7fa8d926 0%, #7fa8d910 38%, #ffffff06 100%);
 }
 .alert-item__message {
   color: var(--text-primary);
@@ -3198,6 +3567,7 @@ footer a {
   margin: 0 0 var(--space-4);
 }
 .data-health-panel__headline-value {
+  font-family: var(--font-mono);
   color: var(--text-secondary);
   font-size: clamp(22px, 2vw, 26px);
   font-weight: 700;
@@ -3221,6 +3591,7 @@ footer a {
   color: var(--text-muted);
 }
 .data-health-panel__grid dd {
+  font-family: var(--font-mono);
   margin: 0;
   color: var(--text-primary);
   font-weight: 600;
@@ -3409,7 +3780,7 @@ footer a {
   overflow-y: auto;
   padding: 0 3.3vw 64px;
   color: #dcebe5;
-  background: #071918;
+  background: var(--view-ground);
 }
 .project-portfolio__back,
 .project-detail__back {
@@ -3426,11 +3797,10 @@ footer a {
 .project-detail h2 {
   margin: 8px 0 6px;
   color: #f0cf7a;
-  font:
-    700 clamp(20px, 3.2vw, 28px)/1.2 Cambria,
-    'Noto Serif',
-    'DejaVu Serif',
-    serif;
+  font-family: var(--font-sans);
+  font-size: clamp(20px, 3.2vw, 28px);
+  font-weight: 700;
+  line-height: 1.2;
 }
 .project-portfolio__mock-badge,
 .project-detail__mock-badge {
@@ -3543,6 +3913,7 @@ footer a {
 }
 .project-portfolio__code,
 .project-detail .project-portfolio__code {
+  font-family: var(--font-mono);
   color: #7fa39a;
   font-size: var(--font-size-label);
 }
@@ -3843,7 +4214,7 @@ footer a {
   overflow-y: auto;
   padding: 0 3.3vw 64px;
   color: #dcebe5;
-  background: #071918;
+  background: var(--view-ground);
 }
 .data-readiness__back {
   margin: 16px 0 4px;
@@ -3858,11 +4229,10 @@ footer a {
 .data-readiness h2 {
   margin: 8px 0 6px;
   color: #f0cf7a;
-  font:
-    700 clamp(20px, 3.2vw, 28px)/1.2 Cambria,
-    'Noto Serif',
-    'DejaVu Serif',
-    serif;
+  font-family: var(--font-sans);
+  font-size: clamp(20px, 3.2vw, 28px);
+  font-weight: 700;
+  line-height: 1.2;
 }
 .data-readiness h3 {
   margin: 20px 0 8px;

@@ -155,3 +155,50 @@ test.describe('Font-scale control at its largest step — no new overlap on Exec
     });
   }
 });
+
+/**
+ * `.executive-overview > *` caps the page at 1600px and centres it with auto side margins. A child
+ * rule that sets its vertical margins with the `margin` SHORTHAND silently resets those side
+ * margins to 0, dropping that child out of the centred column while its siblings stay in it — the
+ * page then renders as two misaligned groups. It shipped that way: the heading, hero, illustrative
+ * notice and effective-date line sat 80px left of the KPI row and every panel below it.
+ *
+ * Only reproducible above ~1724px (the 1600px cap plus 2 x 3.3vw padding). Below that the cap
+ * never binds and every child lands on the same edge, which is why the 1280px coverage — and even
+ * the 1920px overlap/overflow check above, which asserts neither alignment nor edges — stayed
+ * green the whole time.
+ */
+test.describe('Executive Overview — the capped content column stays on one left edge', () => {
+  for (const viewport of [
+    { width: 1920, height: 1080 },
+    { width: 2560, height: 1440 },
+  ]) {
+    test(`at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await page.goto('./');
+      await expect(
+        page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
+      ).toBeVisible();
+
+      const edges = await page.locator('.executive-overview').evaluate((root) =>
+        [...root.children]
+          .filter((el) => el.getBoundingClientRect().height > 0)
+          .map((el) => ({
+            name: el.tagName.toLowerCase() + (el.className ? `.${el.className}` : ''),
+            left: Math.round(el.getBoundingClientRect().left),
+          })),
+      );
+
+      // Guards against the assertion passing vacuously if the section ever stops rendering.
+      expect(edges.length).toBeGreaterThan(3);
+
+      const distinct = [...new Set(edges.map((edge) => edge.left))];
+      expect(
+        distinct,
+        `expected one shared left edge, found ${distinct.length}: ${edges
+          .map((edge) => `${edge.name}@${edge.left}`)
+          .join(' | ')}`,
+      ).toHaveLength(1);
+    });
+  }
+});

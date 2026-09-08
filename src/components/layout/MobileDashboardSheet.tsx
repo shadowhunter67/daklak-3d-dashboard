@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useReducer, useRef } from 'react';
 import { useMapStore } from '../../stores/mapStore';
 import { DetailPanel } from '../dashboard/DetailPanel';
+import { SceneToolsPanel } from '../dashboard/SceneToolsPanel';
 import { initialMobileSheet, reduceMobileSheet } from './mobileSheet';
 
 const StatPanel = lazy(() =>
@@ -64,6 +65,11 @@ export function MobileDashboardSheet() {
       </div>
       <div id="mobile-sheet-content" className="mobile-sheet__content">
         <Suspense fallback={null}>{selection ? <DetailPanel /> : <StatPanel />}</Suspense>
+        {/* Portrait has no room for the desktop rail, and these are the scene's controls — they
+            follow the scene's panel into the sheet rather than staying behind in the header row
+            they were crowding. Hidden at peek, which exists to show one selected ward and
+            nothing else. */}
+        <SceneToolsPanel />
       </div>
     </aside>
   );

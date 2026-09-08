@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react';
 import { useMapStore } from '../../stores/mapStore';
 import { DetailPanel } from '../dashboard/DetailPanel';
+import { SceneToolsPanel } from '../dashboard/SceneToolsPanel';
 import { MobileDashboardSheet } from './MobileDashboardSheet';
 
 const StatPanel = lazy(() =>
@@ -33,7 +34,13 @@ export function DashboardPanels() {
       <Suspense fallback={null}>
         <StatPanel />
       </Suspense>
-      <DetailPanel />
+      {/* One column, not two free-floating panels: the detail card is pinned to the top of the
+          rail and the tools to the bottom, so the tools keep one position instead of sliding up
+          and down as the card grows and shrinks with the hovered ward. */}
+      <div className="scene-right-rail">
+        <DetailPanel />
+        <SceneToolsPanel />
+      </div>
     </div>
   );
 }

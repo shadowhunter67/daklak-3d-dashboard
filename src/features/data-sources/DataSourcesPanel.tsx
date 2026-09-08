@@ -42,7 +42,12 @@ export function DataSourcesPanel({ onClose }: { onClose: () => void }) {
     >
       <div className="data-sources-panel__header">
         <h2 id="data-sources-panel-heading">{t('dataSources.heading')}</h2>
-        <button type="button" onClick={onClose} aria-label={t('dataSources.closeAria')}>
+        <button
+          type="button"
+          className="dialog-close"
+          onClick={onClose}
+          aria-label={t('dataSources.closeAria')}
+        >
           {t('dataSources.close')}
         </button>
       </div>

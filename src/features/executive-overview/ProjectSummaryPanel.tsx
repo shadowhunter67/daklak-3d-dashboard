@@ -99,7 +99,13 @@ export function ProjectSummaryPanel({
       >
         <div className="project-summary-card__header">
           <h2 id="project-summary-title">{item.projectName}</h2>
-          <button type="button" autoFocus onClick={onClose} aria-label={t('summary.closeAria')}>
+          <button
+            type="button"
+            className="dialog-close"
+            autoFocus
+            onClick={onClose}
+            aria-label={t('summary.closeAria')}
+          >
             {t('summary.close')}
           </button>
         </div>

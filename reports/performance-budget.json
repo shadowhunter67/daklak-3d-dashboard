@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-09-05T12:41:19.066Z",
+  "generatedAt": "2026-09-08T05:07:36.979Z",
   "limits": {
     "totalJavaScriptBytes": 3400000,
     "totalJavaScriptGzipBytes": 950000,
@@ -10,150 +10,14 @@
     "totalBuildBytes": 21000000
   },
   "actual": {
-    "totalJavaScriptBytes": 3000408,
-    "totalJavaScriptGzipBytes": 804138,
-    "largestJavaScriptGzipBytes": 253454,
+    "totalJavaScriptBytes": 3018767,
+    "totalJavaScriptGzipBytes": 809355,
+    "largestJavaScriptGzipBytes": 254603,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 13424852,
-    "totalBuildBytes": 20423504
+    "totalBuildBytes": 20700969
   },
   "assets": [
-    {
-      "file": "assets/AdministrativeMap-gvciYIOG.js",
-      "bytes": 19963,
-      "gzipBytes": 7254
-    },
-    {
-      "file": "assets/cartesian-8dWnmt3H.js",
-      "bytes": 2414,
-      "gzipBytes": 1040
-    },
-    {
-      "file": "assets/daklak-labels-D8Nz6tfh.js",
-      "bytes": 7791,
-      "gzipBytes": 2056
-    },
-    {
-      "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
-      "bytes": 1829459
-    },
-    {
-      "file": "assets/daklak-terrain-height-C-NMfCJ0.png",
-      "bytes": 258103
-    },
-    {
-      "file": "assets/daklak-terrain-mask-DkVg9TPe.png",
-      "bytes": 7014
-    },
-    {
-      "file": "assets/daklak-terrain-metadata-Ba4DiDHX.js",
-      "bytes": 1117,
-      "gzipBytes": 660
-    },
-    {
-      "file": "assets/daklak-terrain-normal-5DjtUcCG.png",
-      "bytes": 719308
-    },
-    {
-      "file": "assets/DataProvenancePanel-MrYjXKSx.js",
-      "bytes": 10479,
-      "gzipBytes": 3412
-    },
-    {
-      "file": "assets/DataReadinessView-C3_FGoIu.js",
-      "bytes": 9149,
-      "gzipBytes": 2348
-    },
-    {
-      "file": "assets/datasets-DvsFzGUT.js",
-      "bytes": 27483,
-      "gzipBytes": 7881
-    },
-    {
-      "file": "assets/DataSourcesPanel-BsizFf5z.js",
-      "bytes": 3820,
-      "gzipBytes": 1468
-    },
-    {
-      "file": "assets/DetailMapViewport-DBtSXn_T.js",
-      "bytes": 62096,
-      "gzipBytes": 19106
-    },
-    {
-      "file": "assets/en-Cmdw29sO.js",
-      "bytes": 39384,
-      "gzipBytes": 10674
-    },
-    {
-      "file": "assets/esm-CpNd5vRp.js",
-      "bytes": 19047,
-      "gzipBytes": 7397
-    },
-    {
-      "file": "assets/graphicsQuality-DhBb4yYd.js",
-      "bytes": 199193,
-      "gzipBytes": 63842
-    },
-    {
-      "file": "assets/index-CkOdkWUZ.css",
-      "bytes": 52197
-    },
-    {
-      "file": "assets/index-CzRQ6VKL.js",
-      "bytes": 802665,
-      "gzipBytes": 214447
-    },
-    {
-      "file": "assets/jsx-runtime-B-hcVAMW.js",
-      "bytes": 8557,
-      "gzipBytes": 3264
-    },
-    {
-      "file": "assets/maplibre-gl-CKRTiAqP.css",
-      "bytes": 82869
-    },
-    {
-      "file": "assets/maplibre-gl-shared.mjs",
-      "bytes": 487530
-    },
-    {
-      "file": "assets/maplibre-gl-worker.mjs",
-      "bytes": 18592
-    },
-    {
-      "file": "assets/maplibre-gl-_kTaVTrJ.js",
-      "bytes": 986399,
-      "gzipBytes": 253454
-    },
-    {
-      "file": "assets/ProjectDetailView-DvgnEtQY.js",
-      "bytes": 20743,
-      "gzipBytes": 4856
-    },
-    {
-      "file": "assets/ProjectPortfolioView-CAiAWJlO.js",
-      "bytes": 12199,
-      "gzipBytes": 3206
-    },
-    {
-      "file": "assets/StatPanel-DaEJQ6ye.js",
-      "bytes": 3491,
-      "gzipBytes": 1182
-    },
-    {
-      "file": "assets/three-vendor-CHrJ4Iba.js",
-      "bytes": 724447,
-      "gzipBytes": 183248
-    },
-    {
-      "file": "assets/WorldExplorationView-EtCcraYU.js",
-      "bytes": 39971,
-      "gzipBytes": 13343
-    },
-    {
-      "file": "build-info.json",
-      "bytes": 350
-    },
     {
       "file": "data/daklak-buildings-buon-ma-thuot.json.gz",
       "bytes": 26662
@@ -183,12 +47,220 @@
       "bytes": 64220
     },
     {
-      "file": "index.html",
-      "bytes": 2351
-    },
-    {
       "file": "maps/daklak.pmtiles",
       "bytes": 13424852
+    },
+    {
+      "file": "assets/index-BAz6j56q.js",
+      "bytes": 810933,
+      "gzipBytes": 216985
+    },
+    {
+      "file": "assets/AdministrativeMap-DUg62M_H.js",
+      "bytes": 19963,
+      "gzipBytes": 7258
+    },
+    {
+      "file": "assets/DataProvenancePanel-DTrcbBnU.js",
+      "bytes": 10479,
+      "gzipBytes": 3411
+    },
+    {
+      "file": "assets/DataReadinessView-JaD9BZWW.js",
+      "bytes": 12237,
+      "gzipBytes": 2904
+    },
+    {
+      "file": "assets/DataSourcesPanel-D4bs0j1B.js",
+      "bytes": 3820,
+      "gzipBytes": 1468
+    },
+    {
+      "file": "assets/DetailMapViewport-CqJGNi3r.js",
+      "bytes": 62913,
+      "gzipBytes": 19254
+    },
+    {
+      "file": "assets/ProjectDetailView-DjLC8xu7.js",
+      "bytes": 20748,
+      "gzipBytes": 4862
+    },
+    {
+      "file": "assets/ProjectPortfolioView-OWQpY7nB.js",
+      "bytes": 12840,
+      "gzipBytes": 3330
+    },
+    {
+      "file": "assets/StatPanel-BYnz08rt.js",
+      "bytes": 3621,
+      "gzipBytes": 1213
+    },
+    {
+      "file": "assets/WorldExplorationView-Nb_D0MwB.js",
+      "bytes": 39971,
+      "gzipBytes": 13345
+    },
+    {
+      "file": "assets/cartesian-8dWnmt3H.js",
+      "bytes": 2414,
+      "gzipBytes": 1040
+    },
+    {
+      "file": "assets/daklak-labels-D8Nz6tfh.js",
+      "bytes": 7791,
+      "gzipBytes": 2056
+    },
+    {
+      "file": "assets/daklak-terrain-metadata-Ba4DiDHX.js",
+      "bytes": 1117,
+      "gzipBytes": 660
+    },
+    {
+      "file": "assets/datasets-BNklZxln.js",
+      "bytes": 27483,
+      "gzipBytes": 7880
+    },
+    {
+      "file": "assets/en-Cs4iIM2Y.js",
+      "bytes": 42001,
+      "gzipBytes": 11336
+    },
+    {
+      "file": "assets/esm-CpNd5vRp.js",
+      "bytes": 19047,
+      "gzipBytes": 7397
+    },
+    {
+      "file": "assets/graphicsQuality-C-4N-Ecm.js",
+      "bytes": 199194,
+      "gzipBytes": 63841
+    },
+    {
+      "file": "assets/jsx-runtime-B-hcVAMW.js",
+      "bytes": 8557,
+      "gzipBytes": 3264
+    },
+    {
+      "file": "assets/maplibre-gl-G1GNPyGF.js",
+      "bytes": 989191,
+      "gzipBytes": 254603
+    },
+    {
+      "file": "assets/three-vendor-CHrJ4Iba.js",
+      "bytes": 724447,
+      "gzipBytes": 183248
+    },
+    {
+      "file": "assets/be-vietnam-pro-400-latin-PpnXBOrz.woff2",
+      "bytes": 21168
+    },
+    {
+      "file": "assets/be-vietnam-pro-400-latin-ext-CiZNW1ec.woff2",
+      "bytes": 13056
+    },
+    {
+      "file": "assets/be-vietnam-pro-400-vietnamese-CRcqvyg1.woff2",
+      "bytes": 11532
+    },
+    {
+      "file": "assets/be-vietnam-pro-600-latin-BZDkUTrt.woff2",
+      "bytes": 22032
+    },
+    {
+      "file": "assets/be-vietnam-pro-600-latin-ext-BNd8euf0.woff2",
+      "bytes": 13608
+    },
+    {
+      "file": "assets/be-vietnam-pro-600-vietnamese-nyU-ZL2p.woff2",
+      "bytes": 12176
+    },
+    {
+      "file": "assets/be-vietnam-pro-700-latin-DlW1Zbsh.woff2",
+      "bytes": 22152
+    },
+    {
+      "file": "assets/be-vietnam-pro-700-latin-ext-C8_gqRu2.woff2",
+      "bytes": 13852
+    },
+    {
+      "file": "assets/be-vietnam-pro-700-vietnamese-Csr0PCuG.woff2",
+      "bytes": 12468
+    },
+    {
+      "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
+      "bytes": 1829459
+    },
+    {
+      "file": "assets/daklak-terrain-height-C-NMfCJ0.png",
+      "bytes": 258103
+    },
+    {
+      "file": "assets/daklak-terrain-mask-DkVg9TPe.png",
+      "bytes": 7014
+    },
+    {
+      "file": "assets/daklak-terrain-normal-5DjtUcCG.png",
+      "bytes": 719308
+    },
+    {
+      "file": "assets/index-zKNLlFqV.css",
+      "bytes": 72378
+    },
+    {
+      "file": "assets/jetbrains-mono-400-latin-V6pRDFza.woff2",
+      "bytes": 21168
+    },
+    {
+      "file": "assets/jetbrains-mono-400-latin-ext-Bc8Ftmh3.woff2",
+      "bytes": 7336
+    },
+    {
+      "file": "assets/jetbrains-mono-400-vietnamese-ByoDsISC.woff2",
+      "bytes": 3924
+    },
+    {
+      "file": "assets/jetbrains-mono-700-latin-BYuf6tUa.woff2",
+      "bytes": 21908
+    },
+    {
+      "file": "assets/jetbrains-mono-700-latin-ext-CZipNAKV.woff2",
+      "bytes": 7472
+    },
+    {
+      "file": "assets/jetbrains-mono-700-vietnamese-k5PzE07T.woff2",
+      "bytes": 3992
+    },
+    {
+      "file": "assets/maplibre-gl-CKRTiAqP.css",
+      "bytes": 82869
+    },
+    {
+      "file": "assets/space-grotesk-700-latin-RjhwGPKo.woff2",
+      "bytes": 12840
+    },
+    {
+      "file": "assets/space-grotesk-700-latin-ext-BQnZhY3m.woff2",
+      "bytes": 11992
+    },
+    {
+      "file": "assets/space-grotesk-700-vietnamese-DMty7AZE.woff2",
+      "bytes": 4204
+    },
+    {
+      "file": "assets/maplibre-gl-shared.mjs",
+      "bytes": 489575
+    },
+    {
+      "file": "assets/maplibre-gl-worker.mjs",
+      "bytes": 18592
+    },
+    {
+      "file": "build-info.json",
+      "bytes": 350
+    },
+    {
+      "file": "index.html",
+      "bytes": 2351
     }
   ],
   "failures": []
