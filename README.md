@@ -32,7 +32,7 @@ Dashboard bản đồ 3D thể hiện 102 xã/phường của tỉnh Đắk Lắ
 
 Phần dưới đây đang hoặc sẽ được làm tiếp, chưa xong:
 
-- **Phân cấp nhãn bản đồ** (map label hierarchy) — ưu tiên hiển thị nhãn theo tầm quan trọng khi phóng to/thu nhỏ, giảm rối mắt khi nhiều nhãn chồng nhau.
+- **Phân cấp nhãn bản đồ** (map label hierarchy) — đã có cho riêng tên xã/phường (ưu tiên + tránh chồng nhãn khi phóng to/thu nhỏ); còn thiếu là phân cấp **giữa nhiều loại nhãn cùng lúc** (tên xã, tên đường, địa danh, marker dự án) khi người dùng bật đồng thời nhiều lớp ở chế độ Nâng cao.
 - **Provenance passport đầy đủ** — hồ sơ nguồn gốc dữ liệu chi tiết hơn cho từng số liệu hiển thị (đang có ở mức cơ bản, xem [docs/data-provenance.md](docs/data-provenance.md)).
 - **Thu thập thêm dữ liệu công khai thật** — mở rộng danh mục dự án/số liệu vượt ra ngoài dữ liệu minh họa hiện tại.
 - **Làm lại sâu hơn Danh mục dự án / Chi tiết dự án** — cùng đợt audit UI/UX đã áp dụng cho Tổng quan điều hành.
