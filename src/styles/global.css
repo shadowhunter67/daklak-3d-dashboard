@@ -1405,6 +1405,59 @@ button.directory-row:hover,
   width: 100%;
   margin-top: 10px;
 }
+/* Short window: the rail cannot hold a ~200px detail card and a 226px panel — that needs 442px
+   of rail, i.e. 442 + 190 top + 96 bottom = a 728px window. The panel stays a stack here, because
+   the rail is only 205–240px wide and four Vietnamese labels do not fit across that; what gives
+   way is the heading (the pills name themselves) and the spacing. Keyed on height rather than
+   orientation, since a short desktop window has the identical problem to a landscape phone. */
+@media (max-height: 740px) {
+  .scene-tools {
+    padding: 10px 12px 12px;
+  }
+  .scene-tools__heading {
+    display: none;
+  }
+  .scene-tools__group {
+    gap: 5px;
+  }
+  .scene-tools__toggle,
+  .scene-tools__action {
+    min-height: 32px;
+    padding: 6px 12px;
+  }
+  .scene-tools__action {
+    margin-top: 6px;
+  }
+}
+/* Where the tools leave the rail for a strip along the bottom edge, they become a row. Both cases
+   have the page's full width to work with, which the rail never does: portrait wraps to two rows
+   of two, landscape fits all four across. Nothing is scrolled out of reach in either — the whole
+   point of moving these controls in the first place. */
+@media (max-width: 767px) and (orientation: portrait),
+  (max-width: 932px) and (orientation: landscape) {
+  .scene-tools {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px;
+  }
+  .scene-tools__heading {
+    display: none;
+  }
+  .scene-tools__group {
+    display: contents;
+  }
+  .scene-tools__toggle,
+  .scene-tools__action {
+    min-height: 36px;
+    flex: 1 1 auto;
+    width: auto;
+    margin-top: 0;
+    padding: 8px 14px;
+    white-space: nowrap;
+  }
+}
 .detail-panel h2 {
   font-family: var(--font-sans);
   font-style: normal;
@@ -1774,14 +1827,23 @@ footer a {
     box-shadow: none;
     backdrop-filter: none;
   }
-  .mobile-sheet--peek .scene-tools {
-    display: none;
+  /* Portrait has no rail: the strip floats just above the sheet, always on screen rather than
+     behind a sheet that starts closed. */
+  .scene-tools {
+    right: 8px;
+    bottom: calc(var(--mobile-sheet-closed-height, 52px) + 8px);
+    left: 8px;
+    width: auto;
+    border-radius: 12px;
   }
-  .mobile-sheet .scene-tools__heading {
-    margin-top: 6px;
+  /* …and it rides the sheet up, rather than staying at the closed height and being covered by it.
+     The sheet's fill is 96–98% opaque, not 100%, so a covered row does not disappear — it ghosts
+     through as unreadable text under the panel's own content. */
+  .app-shell:has(#mobile-dashboard-sheet[data-state='peek']) .scene-tools {
+    bottom: calc(var(--mobile-sheet-peek-height, 110px) + 8px);
   }
-  .mobile-sheet .scene-tools__group {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .app-shell:has(#mobile-dashboard-sheet[data-state='expanded']) .scene-tools {
+    bottom: calc(var(--mobile-sheet-expanded-height, 500px) + 8px);
   }
   .mobile-sheet--peek .detail-panel {
     padding-top: 0;
@@ -1934,6 +1996,28 @@ footer a {
     right: 12px;
     bottom: 52px;
     top: auto;
+  }
+  /* The rail follows the 64px header and the shorter viewport. */
+  .scene-right-rail {
+    right: 12px;
+    top: 76px;
+    bottom: 12px;
+    width: 205px;
+  }
+  /* The tools leave the rail here. At 205px there is no layout that fits four Vietnamese labels
+     without scrolling three of them off the edge — and landscape is short of height, not of width.
+     'fixed' takes it out of the rail's containing block and lays it along the bottom, clear of the
+     rail's own column, where one row of four fits with room to spare. */
+  .scene-right-rail > .scene-tools {
+    position: fixed;
+    right: 229px;
+    bottom: 12px;
+    left: 12px;
+    width: auto;
+    border-radius: 12px;
+  }
+  .scene-right-rail {
+    justify-content: flex-start;
   }
 }
 @media (prefers-reduced-motion: reduce) {
