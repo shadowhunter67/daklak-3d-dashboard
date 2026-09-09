@@ -29,9 +29,11 @@ with no real destinations/tour routes yet — see
 current status and limitations. **Currently paused:** the nav tab is hidden (only reachable via a
 direct `?view=world` link) while the team focuses elsewhere.
 
-**In progress / planned next:** map label hierarchy (priority-based decluttering when zooming), a
-fuller data-provenance passport per figure, collecting more real public data beyond the current
-illustrative set, and a deeper redesign pass on Project Portfolio / Project Detail (the same audit
+**In progress / planned next:** cross-category map label hierarchy — priority-based decluttering
+already exists within commune/ward names alone, but not yet _between_ label types (ward names vs.
+road names vs. landmarks vs. project markers) when several Advanced layers are on at once; a fuller
+data-provenance passport per figure; collecting more real public data beyond the current
+illustrative set; and a deeper redesign pass on Project Portfolio / Project Detail (the same audit
 already applied to Executive Overview).
 
 The project is transitioning from a "3D map dashboard" toward a "provincial key-project executive
