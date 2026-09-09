@@ -142,7 +142,7 @@ describe('ProjectPortfolioView', () => {
     // it to observe "a download was triggered", not to actually decode the Blob contents (that's
     // exportProjectPortfolioCsv.test.ts's job, on the pure string-builder directly).
     function stubDownloadApis() {
-      const createObjectURL = vi.fn((_obj: Blob | MediaSource) => 'blob:mock-url');
+      const createObjectURL = vi.fn<(obj: Blob | MediaSource) => string>(() => 'blob:mock-url');
       const revokeObjectURL = vi.fn();
       const originalCreateObjectURL = URL.createObjectURL;
       const originalRevokeObjectURL = URL.revokeObjectURL;
