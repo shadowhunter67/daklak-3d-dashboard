@@ -9,19 +9,30 @@
 A WebGL dashboard for the 102 communes/wards of Đắk Lắk province after the 2025 administrative
 merger, from the former Đắk Lắk highlands to the former Phú Yên coast. The map uses an SRTM
 displacement terrain surface with Sentinel-2 imagery and polygon hit-testing for hover/click/
-selection. Four experiences: **Executive Overview** (default landing — portfolio KPIs, projects
-needing attention, alerts, data health), the 3D overview, an accessible 2D list, and a detail map
-(`?view=map`) using **MapLibre GL JS + self-hosted PMTiles** — no Google Maps Platform dependency,
-no API key or billing required. On the detail map all 102 commune/ward names stay visible at every
-zoom — never hidden, never abbreviated; overlapping labels are displaced and tied back to their
-true point with a thin leader line instead of being dropped.
+selection. Four experiences: **Executive Overview** (default landing — an "Executive Status Hero"
+panel gives the overall situation and how many projects need attention in a 5-second read, plain-
+language alerts with no leaked technical jargon, portfolio KPIs, a colour-distinct project-status
+chart, and data health), the 3D overview, an accessible 2D list, and a detail map (`?view=map`)
+using **MapLibre GL JS + self-hosted PMTiles** — no Google Maps Platform dependency, no API key or
+billing required. On the detail map all 102 commune/ward names stay visible at every zoom — never
+hidden, never abbreviated; overlapping labels are displaced and tied back to their true point with
+a thin leader line instead of being dropped. Its layer panel has a **Basic** tier (boundaries,
+commune/ward names, roads, projects, planning) and an **Advanced** tier (road/landmark/building
+names, dashboard metrics, and a **heatmap layer** with real 0–100 values shown on the chart, not
+just in hidden data).
 
 Beyond those four, an **"Explore"** button (`?view=world`) opens an early preview — a fly-over of
 the province terrain, the initial foundation for a "Tourism Digital Twin" direction. This is a
 **clearly-labeled illustrative scenario** (an "ILLUSTRATIVE" badge is shown directly on the scene),
 with no real destinations/tour routes yet — see
 [reports/tourism-digital-twin/phase-status.md](reports/tourism-digital-twin/phase-status.md) for
-current status and limitations.
+current status and limitations. **Currently paused:** the nav tab is hidden (only reachable via a
+direct `?view=world` link) while the team focuses elsewhere.
+
+**In progress / planned next:** map label hierarchy (priority-based decluttering when zooming), a
+fuller data-provenance passport per figure, collecting more real public data beyond the current
+illustrative set, and a deeper redesign pass on Project Portfolio / Project Detail (the same audit
+already applied to Executive Overview).
 
 The project is transitioning from a "3D map dashboard" toward a "provincial key-project executive
 platform that uses the map as a contextual layer" — see [ADR 0001](docs/adr/0001-project-centric-domain.md)

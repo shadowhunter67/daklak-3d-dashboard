@@ -13,20 +13,29 @@ Dashboard bản đồ 3D thể hiện 102 xã/phường của tỉnh Đắk Lắ
 [![Tổng quan điều hành — Đắk Lắk 3D Dashboard](docs/images/readme-gallery/executive-overview-desktop.png)](https://shadowhunter67.github.io/daklak-3d-dashboard/)
 
 **Bản demo trực tuyến:** https://shadowhunter67.github.io/daklak-3d-dashboard/
-**Khám phá Đắk Lắk 3D (bản xem trước):** https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world
+**Khám phá Đắk Lắk 3D (bản xem trước, tạm ẩn khỏi menu chính — vào thẳng qua link):** https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world
 
 > **Lưu ý:** toàn bộ số liệu dự án/ngân sách/tiến độ hiển thị trong bản demo đều là **dữ liệu minh họa**, không phải số liệu vận hành hay số liệu chính thức của cơ quan nhà nước — chỉ để trình diễn giao diện. Ranh giới hành chính là dữ liệu mở tham khảo, không dùng cho mục đích pháp lý/quy hoạch.
 
 ## App có gì
 
-- **Tổng quan điều hành** — trang mặc định, tổng hợp KPI danh mục dự án, cảnh báo, dự án cần chú ý. Tỷ lệ giải ngân có thêm mũi tên xu hướng so với 30 ngày trước, dựng từ lịch sử tiến độ thật của từng dự án — không hiển thị nếu chưa đủ dự án có dữ liệu lịch sử để so sánh đáng tin cậy.
+- **Tổng quan điều hành** — trang mặc định. Panel **Executive Status Hero** ngay đầu trang cho biết tình hình tổng thể (Ổn định/Cần chú ý/Nghiêm trọng) và số dự án cần xử lý chỉ trong vài giây, không cần đọc bảng số liệu. Bên dưới là KPI danh mục dự án, cảnh báo ("Cần xử lý", đã diễn giải sang tiếng Việt/Anh dễ hiểu thay vì mã lỗi kỹ thuật), dự án cần chú ý, và biểu đồ phân bố trạng thái dự án (mỗi trạng thái một màu riêng biệt). Tỷ lệ giải ngân có thêm mũi tên xu hướng so với 30 ngày trước, dựng từ lịch sử tiến độ thật của từng dự án — không hiển thị nếu chưa đủ dự án có dữ liệu lịch sử để so sánh đáng tin cậy.
 - **Bản đồ 3D** — địa hình tỉnh dựng từ dữ liệu vệ tinh thật (SRTM + Sentinel-2), xoay/phóng được, click vào từng xã để xem hồ sơ nhanh.
 - **Danh sách** — phiên bản 2D dễ dùng, phù hợp máy yếu, điều hướng bàn phím và trình đọc màn hình.
-- **Bản đồ chi tiết** — bản đồ MapLibre, xem lớp đường giao thông, đo khoảng cách. Tên cả 102 xã/phường **luôn hiển thị đầy đủ, không viết tắt**; khi nhãn chồng nhau thì được dịch ra và nối về vị trí thật bằng một đường dẫn mảnh thay vì bị ẩn đi.
-- **Khám phá** _(nền địa hình minh họa, dữ liệu điểm đến là thật)_ — đi bộ hoặc bay tự do trên địa hình tỉnh (bám địa hình thật qua CPU terrain sampler), xem 4 điểm đến du lịch đã xác minh nguồn (Hồ Lắk, Yok Đôn, Đray Nur, Buôn Đôn), teleport nhanh, và 3 tuyến tham quan có hướng dẫn. Xem [docs/world-exploration.md](docs/world-exploration.md).
+- **Bản đồ chi tiết** — bản đồ MapLibre, xem lớp đường giao thông, đo khoảng cách. Tên cả 102 xã/phường **luôn hiển thị đầy đủ, không viết tắt**; khi nhãn chồng nhau thì được dịch ra và nối về vị trí thật bằng một đường dẫn mảnh thay vì bị ẩn đi. Bảng điều khiển lớp bản đồ chia hai mức **Cơ bản** (5 lớp chính: ranh giới, tên xã/phường, đường, dự án, quy hoạch) và **Nâng cao** (thêm tên đường/địa danh/công trình, chỉ số dashboard, và lớp **Heatmap** hiển thị số liệu thật 0–100 ngay trên biểu đồ thay vì chỉ có trong dữ liệu ẩn).
+- **Khám phá** _(nền địa hình minh họa, dữ liệu điểm đến là thật, tạm dừng phát triển — chỉ vào được qua link trực tiếp, không còn trên menu chính)_ — đi bộ hoặc bay tự do trên địa hình tỉnh (bám địa hình thật qua CPU terrain sampler), xem 4 điểm đến du lịch đã xác minh nguồn (Hồ Lắk, Yok Đôn, Đray Nur, Buôn Đôn), teleport nhanh, và 3 tuyến tham quan có hướng dẫn. Xem [docs/world-exploration.md](docs/world-exploration.md).
 - **Danh mục dự án** và **Chi tiết dự án** — xem đầy đủ ngân sách, tiến độ, gói thầu, vướng mắc của từng dự án.
 - Giao diện có cả **tiếng Việt và tiếng Anh**, chuyển đổi ngay không cần tải lại trang.
-- **Thiết kế ưu tiên dễ đọc** — cỡ chữ lớn cho người lớn tuổi/thị lực kém, nút chỉnh cỡ chữ **A− / A / A+** ngay trên thanh tiêu đề (lựa chọn được ghi nhớ giữa các lần truy cập), trạng thái luôn kèm nhãn chữ chứ không chỉ dựa vào màu. Xem [docs/accessibility.md](docs/accessibility.md).
+- **Thiết kế ưu tiên dễ đọc** — cỡ chữ lớn cho người lớn tuổi/thị lực kém, nút chỉnh cỡ chữ **A− / A / A+** ngay trên thanh tiêu đề (lựa chọn được ghi nhớ giữa các lần truy cập, áp dụng đồng bộ cho toàn bộ giao diện kể cả các nhãn nhỏ trước đây bị bỏ sót), trạng thái luôn kèm nhãn chữ chứ không chỉ dựa vào màu. Xem [docs/accessibility.md](docs/accessibility.md).
+
+### Đang tiếp tục hoàn thiện
+
+Phần dưới đây đang hoặc sẽ được làm tiếp, chưa xong:
+
+- **Phân cấp nhãn bản đồ** (map label hierarchy) — ưu tiên hiển thị nhãn theo tầm quan trọng khi phóng to/thu nhỏ, giảm rối mắt khi nhiều nhãn chồng nhau.
+- **Provenance passport đầy đủ** — hồ sơ nguồn gốc dữ liệu chi tiết hơn cho từng số liệu hiển thị (đang có ở mức cơ bản, xem [docs/data-provenance.md](docs/data-provenance.md)).
+- **Thu thập thêm dữ liệu công khai thật** — mở rộng danh mục dự án/số liệu vượt ra ngoài dữ liệu minh họa hiện tại.
+- **Làm lại sâu hơn Danh mục dự án / Chi tiết dự án** — cùng đợt audit UI/UX đã áp dụng cho Tổng quan điều hành.
 
 ## Chạy thử trên máy
 
