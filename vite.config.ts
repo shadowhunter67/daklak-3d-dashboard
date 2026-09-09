@@ -124,6 +124,15 @@ export default defineConfig(({ mode }) => {
     },
     build: {
       target: 'es2022',
+      // Never inline font files. Vite's default 4096-byte threshold happened to catch exactly two
+      // of the eighteen faces (`jetbrains-mono-{400,700}-vietnamese`, 3924 and 3992 bytes),
+      // base64-ing them into the render-blocking stylesheet while their sixteen siblings stayed
+      // separate files. That defeats the whole point of shipping per-subset faces: `unicode-range`
+      // lets a browser skip the Vietnamese file until it actually needs those glyphs, but an
+      // inlined face is always downloaded, and base64 adds ~33% on top. Returning false keeps
+      // every face a cacheable request, and keeps the set from silently re-splitting whenever a
+      // subset's compressed size drifts across 4KB.
+      assetsInlineLimit: (filePath: string) => (filePath.endsWith('.woff2') ? false : undefined),
       rollupOptions: {
         output: {
           manualChunks(id) {

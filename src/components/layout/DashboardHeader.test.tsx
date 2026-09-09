@@ -30,12 +30,10 @@ describe('DashboardHeader', () => {
     expect(useMapStore.getState().dataMode).toBe('energy');
   });
 
-  it('offers camera reset and contextual help without changing selection', () => {
-    useMapStore.setState({ selectedCode: '24580', resetCameraSignal: 0, helpSignal: 0 });
+  it('offers contextual help without changing selection', () => {
+    useMapStore.setState({ selectedCode: '24580', helpSignal: 0 });
     renderHeader();
-    fireEvent.click(screen.getByRole('button', { name: 'Đưa camera về toàn tỉnh' }));
     fireEvent.click(screen.getByRole('button', { name: 'Mở hướng dẫn sử dụng' }));
-    expect(useMapStore.getState().resetCameraSignal).toBe(1);
     expect(useMapStore.getState().helpSignal).toBe(1);
     expect(useMapStore.getState().selectedCode).toBe('24580');
   });
@@ -64,27 +62,17 @@ describe('DashboardHeader', () => {
     expect(screen.getByRole('button', { name: '3D' })).not.toHaveAttribute('aria-current');
   });
 
-  describe('view-scoped controls (mode tabs, 3D/2D toggles)', () => {
-    it('shows the mode tabs and map-layer toggles in the 3D view', () => {
+  describe('view-scoped controls', () => {
+    it('shows the thematic mode tabs in the 3D view', () => {
       useMapStore.setState({ viewMode: '3d' });
       renderHeader();
       expect(screen.getByRole('navigation', { name: 'Chế độ dữ liệu' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Hiện lớp đường giao thông' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Ẩn nhãn trung tâm' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Xoay bản đồ' })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: 'Đưa camera về toàn tỉnh' })).toBeInTheDocument();
     });
 
-    it('hides the mode tabs and all map-layer/camera toggles in Executive Overview and the merged map view', () => {
+    it('hides the mode tabs in Executive Overview and the merged map view', () => {
       useMapStore.setState({ viewMode: 'overview' });
       const { rerender } = renderHeader();
       expect(screen.queryByRole('navigation', { name: 'Chế độ dữ liệu' })).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole('button', { name: 'Hiện lớp đường giao thông' }),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole('button', { name: 'Đưa camera về toàn tỉnh' }),
-      ).not.toBeInTheDocument();
 
       useMapStore.setState({ viewMode: 'map' });
       rerender(
@@ -93,9 +81,22 @@ describe('DashboardHeader', () => {
         </I18nProvider>,
       );
       expect(screen.queryByRole('navigation', { name: 'Chế độ dữ liệu' })).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole('button', { name: 'Hiện lớp đường giao thông' }),
-      ).not.toBeInTheDocument();
+    });
+
+    // The scene's own controls (auto-rotate, roads, centre labels, camera reset) left this row for
+    // SceneToolsPanel — see SceneToolsPanel.test.tsx, which now owns their behaviour. Asserting
+    // their absence here is what pins them as gone: a re-added copy in the header would put two
+    // controls with one accessible name on the page again.
+    it('no longer carries the scene controls that moved to the tools panel', () => {
+      useMapStore.setState({ viewMode: '3d' });
+      renderHeader();
+      for (const name of [
+        'Hiện lớp đường giao thông',
+        'Ẩn nhãn trung tâm',
+        'Xoay bản đồ',
+        'Đưa camera về toàn tỉnh',
+      ])
+        expect(screen.queryByRole('button', { name })).not.toBeInTheDocument();
     });
   });
 
