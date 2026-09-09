@@ -136,4 +136,53 @@ describe('ProjectPortfolioView', () => {
     expect(screen.getByText('Không thể kết nối tới nguồn dữ liệu.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Thử lại' })).toBeInTheDocument();
   });
+
+  describe('CSV export', () => {
+    // jsdom doesn't implement the Blob/File URL machinery real browsers do — stub just enough of
+    // it to observe "a download was triggered", not to actually decode the Blob contents (that's
+    // exportProjectPortfolioCsv.test.ts's job, on the pure string-builder directly).
+    function stubDownloadApis() {
+      const createObjectURL = vi.fn((_obj: Blob | MediaSource) => 'blob:mock-url');
+      const revokeObjectURL = vi.fn();
+      const originalCreateObjectURL = URL.createObjectURL;
+      const originalRevokeObjectURL = URL.revokeObjectURL;
+      URL.createObjectURL = createObjectURL;
+      URL.revokeObjectURL = revokeObjectURL;
+      const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => {});
+      return {
+        createObjectURL,
+        revokeObjectURL,
+        clickSpy,
+        restore: () => {
+          URL.createObjectURL = originalCreateObjectURL;
+          URL.revokeObjectURL = originalRevokeObjectURL;
+          clickSpy.mockRestore();
+        },
+      };
+    }
+
+    it('is enabled once loaded and triggers a CSV Blob download when clicked', async () => {
+      const stub = stubDownloadApis();
+      try {
+        renderPortfolio();
+        await screen.findByRole('heading', { name: 'Danh mục dự án trọng điểm' });
+        const button = screen.getByRole('button', { name: 'Xuất CSV' });
+        expect(button).toBeEnabled();
+        fireEvent.click(button);
+        expect(stub.createObjectURL).toHaveBeenCalledTimes(1);
+        const blob = stub.createObjectURL.mock.calls[0][0] as Blob;
+        expect(blob.type).toContain('text/csv');
+        expect(stub.clickSpy).toHaveBeenCalledTimes(1);
+        expect(stub.revokeObjectURL).toHaveBeenCalledWith('blob:mock-url');
+      } finally {
+        stub.restore();
+      }
+    });
+
+    it('is disabled when the current filter matches no project (nothing to export)', async () => {
+      renderPortfolio({ filters: { query: 'zzzzz-no-such-project-zzzzz' } });
+      await screen.findByRole('heading', { name: 'Danh mục dự án trọng điểm' });
+      expect(screen.getByRole('button', { name: 'Xuất CSV' })).toBeDisabled();
+    });
+  });
 });

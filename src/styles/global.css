@@ -3984,10 +3984,33 @@ footer a {
   opacity: 0.5;
   cursor: not-allowed;
 }
-.project-portfolio__result-count {
+.project-portfolio__result-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
   margin: 0 0 12px;
+}
+.project-portfolio__result-count {
+  margin: 0;
   color: #a9c3ba;
   font-size: 13px;
+}
+.project-portfolio__export-csv {
+  min-height: 36px;
+  padding: 6px 14px;
+  border: 1px solid #ffffff2a;
+  border-radius: 999px;
+  color: #a9c3ba;
+  background: transparent;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.project-portfolio__export-csv:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .project-portfolio__hash-hint {
   margin: 20px 0 0;

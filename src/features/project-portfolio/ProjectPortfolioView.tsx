@@ -6,6 +6,7 @@ import type { MessageKey } from '../../i18n/messages';
 import { formatDate } from '../../i18n/formatters';
 import { formatKpiValueLocalized } from '../executive-overview/model/executiveOverviewSelectors';
 import { useProjectPortfolio } from './data/useProjectPortfolio';
+import { buildProjectPortfolioCsv } from './model/exportProjectPortfolioCsv';
 import {
   filterProjectPortfolioRows,
   sortProjectPortfolioRows,
@@ -191,6 +192,27 @@ export function ProjectPortfolioView({
     return sortProjectPortfolioRows(filtered, filters.sort ?? 'attention-first');
   }, [state, filters]);
 
+  // Exports exactly what's on screen (post filter/sort), matching every other "download this
+  // list" convention (spreadsheet export, browser print) — not the full unfiltered dataset a user
+  // never asked to see. Blob + object URL + a throwaway <a download> (never rendered), the standard
+  // vanilla pattern — no new dependency for something this small (see AGENTS.md's "no new
+  // abstraction without profiling" spirit; a save-file library would be overkill for one CSV
+  // string). `URL.revokeObjectURL` runs synchronously right after the click dispatch — the browser
+  // has already queued the download by then, revoking early doesn't cancel it, and forgetting to
+  // revoke would leak the blob for the page's lifetime.
+  const handleExportCsv = () => {
+    const csv = buildProjectPortfolioCsv(sorted, t);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `danh-muc-du-an-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   if (state.status === 'loading') {
     return (
       <section
@@ -345,9 +367,20 @@ export function ProjectPortfolioView({
         </button>
       </form>
 
-      <p aria-live="polite" aria-atomic="true" className="project-portfolio__result-count">
-        {t('portfolio.resultCount', { shown: sorted.length, total: model.totalCount })}
-      </p>
+      <div className="project-portfolio__result-bar">
+        <p aria-live="polite" aria-atomic="true" className="project-portfolio__result-count">
+          {t('portfolio.resultCount', { shown: sorted.length, total: model.totalCount })}
+        </p>
+        <button
+          type="button"
+          className="project-portfolio__export-csv"
+          onClick={handleExportCsv}
+          disabled={sorted.length === 0}
+          title={t('portfolio.exportCsvHint', { count: sorted.length })}
+        >
+          {t('portfolio.exportCsv')}
+        </button>
+      </div>
 
       {sorted.length === 0 ? (
         <p className="project-portfolio__empty">
