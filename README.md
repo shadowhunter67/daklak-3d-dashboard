@@ -68,6 +68,7 @@ Mã nguồn dùng giấy phép **MIT** — xem [LICENSE](LICENSE). Dữ liệu/�
 Tài liệu kỹ thuật chi tiết (kiến trúc hệ thống, pipeline dữ liệu, các quyết định thiết kế...) nằm trong thư mục [`docs/`](docs/). Vài điểm bắt đầu hữu ích:
 
 - [Kiến trúc hệ thống](docs/architecture.md)
+- [Thuyết minh "Make in Viet Nam" (tính nguyên bản, công nghệ làm chủ, tiêu chuẩn áp dụng)](docs/make-in-vietnam.md)
 - [Nguồn gốc và kiểm định dữ liệu](docs/data-provenance.md)
 - [Hiệu năng và ngân sách](docs/performance.md)
 - [Khả năng tiếp cận](docs/accessibility.md)
