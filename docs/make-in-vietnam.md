@@ -57,7 +57,10 @@ public API, không copy/adapt mã nguồn. Chi tiết ranh giới tự-viết vs
   ≥ 7:1 — vượt ngưỡng AAA); kiểm thử tự động `axe` qua Playwright trên 3D / 2D /
   Tổng quan điều hành, Chromium desktop + mobile + WebKit, fail khi có vi phạm
   serious/critical; checklist kiểm thử thủ công trước phát hành. Xem
-  [accessibility.md](accessibility.md).
+  [accessibility.md](accessibility.md). Chưa xác định được TCVN/QCVN riêng cho
+  truy cập thông tin website tại thời điểm viết tài liệu này — nếu sau này xác
+  nhận có quy chuẩn áp dụng được, nên đối chiếu và ghi rõ số hiệu ở đây thay vì
+  chỉ dựa WCAG quốc tế.
 - **Dữ liệu địa lý:** hệ toạ độ EPSG:4326 (WGS 84); định dạng GeoJSON; vector tiles
   đóng gói PMTiles (đặc tả mở). Ranh giới hành chính từ nguồn mở
   `thanglequoc/vietnamese-provinces-database` (MIT).
@@ -79,11 +82,18 @@ public API, không copy/adapt mã nguồn. Chi tiết ranh giới tự-viết vs
 - `build-info.json` ghi version, commit nguồn, thời gian build UTC, commit nguồn
   GIS đã ghim, snapshot dataset — truy vết được toàn bộ artifact, không cần backend,
   không lộ bí mật.
-- **Lưu trữ & xử lý dữ liệu tại Việt Nam:** hạ tầng triển khai nội bộ do đơn vị
-  chủ quản (VNPT) vận hành trong nước; bản đồ nền tự host, không gọi dịch vụ bản
-  đồ nước ngoài lúc chạy. Nền tảng quy hoạch tích hợp (`iocqh.vnptdaklak.vn`) là hạ
-  tầng VNPT trong nước. Xem [deployment-profiles.md](deployment-profiles.md),
-  [internal-data-integration.md](internal-data-integration.md).
+- **Lưu trữ & xử lý dữ liệu:** bản đồ nền tự host, không gọi dịch vụ bản đồ
+  nước ngoài lúc chạy — điều này đúng ở mọi profile build. Nền tảng quy hoạch
+  tích hợp (`iocqh.vnptdaklak.vn`) là hạ tầng VNPT trong nước.
+  **Bản public đang chạy thật hiện tại được lưu trên GitHub Pages** (static
+  hosting nước ngoài, không có backend/credential) — xem badge "Deploy GitHub
+  Pages" ở README. Hạ tầng nội bộ do VNPT vận hành trong nước là **profile
+  `secure`**: interface đã có trong code nhưng build/CI/hosting riêng cho
+  profile này **chưa được dựng** — xem
+  [deployment-profiles.md](deployment-profiles.md) mục "chỉ `public` được
+  build và triển khai hôm nay". Muốn có claim "lưu trữ tại VN" đúng nghĩa cho
+  bản đang chạy thật, cần hoàn thành việc dựng profile `secure` trước.
+  Xem thêm [internal-data-integration.md](internal-data-integration.md).
 
 ## 3. Công đoạn cốt lõi do người Việt Nam nghiên cứu, phát triển, thực hiện
 
