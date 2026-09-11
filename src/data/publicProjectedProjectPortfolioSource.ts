@@ -11,7 +11,7 @@
  * validation, KHÔNG viết lại rule) — bundle public dù đã qua projection vẫn phải là canonical bundle
  * hợp lệ.
  */
-import labels from '../assets/maps/daklak/daklak-labels.json';
+import labels from '#province-assets/daklak-labels.json';
 import bundleFile from '../assets/data/project-portfolio.public-projected.json';
 import manifestFile from '../assets/data/project-portfolio.public-projection-manifest.json';
 import {

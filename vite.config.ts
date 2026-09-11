@@ -12,14 +12,23 @@ const packageMetadata = JSON.parse(
 ) as {
   version: string;
 };
+
+// Which province's asset bundle this build uses. Defaults to 'daklak' (the only one that exists
+// today). Only the DIRECTORY is parameterized — the files inside still use their historical
+// `daklak-*` names (see the #province-assets alias below and originality-report.md), so a second
+// province's folder would need to contain identically-named files (`daklak-metadata.json`, etc.)
+// until/unless a future pass also renames the files themselves. This is a bounded first step:
+// app source code no longer hardcodes the folder name in ~40 import sites, but porting to a real
+// second province still needs a new `src/assets/maps/<slug>/` folder built by the GIS pipeline
+// (`scripts/build_daklak_geojson.py` and friends, which are themselves not yet parameterized).
+const provinceSlug = process.env.PROVINCE_SLUG ?? 'daklak';
+const provinceAssetsDir = `./src/assets/maps/${provinceSlug}`;
+
 const datasetMetadata = JSON.parse(
-  readFileSync(new URL('./src/assets/maps/daklak/daklak-metadata.json', import.meta.url), 'utf8'),
+  readFileSync(new URL(`${provinceAssetsDir}/daklak-metadata.json`, import.meta.url), 'utf8'),
 ) as { generatedAt: string };
 const sourceMetadata = JSON.parse(
-  readFileSync(
-    new URL('./src/assets/maps/daklak/daklak-source-summary.json', import.meta.url),
-    'utf8',
-  ),
+  readFileSync(new URL(`${provinceAssetsDir}/daklak-source-summary.json`, import.meta.url), 'utf8'),
 ) as { sourceSnapshot: string };
 
 function resolveGitCommit(): string | undefined {
@@ -50,6 +59,12 @@ export default defineConfig(({ mode }) => {
         '#active-portfolio-source': fileURLToPath(
           new URL(activePortfolioSourceModule, import.meta.url),
         ),
+        // Prefix alias (not exact-match): '#province-assets/daklak-labels.json' resolves to
+        // '<provinceAssetsDir>/daklak-labels.json'. @rollup/plugin-alias (which Vite's resolve.alias
+        // uses) matches a string `find` either exactly or as `id.startsWith(find + '/')`, so every
+        // '#province-assets/<file>' import in src/ resolves under whichever directory
+        // `provinceSlug` points to, without each call site knowing the real path.
+        '#province-assets': fileURLToPath(new URL(provinceAssetsDir, import.meta.url)),
       },
     },
     plugins: [

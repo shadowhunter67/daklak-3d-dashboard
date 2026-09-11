@@ -1,8 +1,8 @@
-import terrainColorUrl from '../../assets/maps/daklak/daklak-terrain-color.png';
-import terrainHeightUrl from '../../assets/maps/daklak/daklak-terrain-height.png';
-import terrainMaskUrl from '../../assets/maps/daklak/daklak-terrain-mask.png';
-import terrainNormalUrl from '../../assets/maps/daklak/daklak-terrain-normal.png';
-import terrainMetadata from '../../assets/maps/daklak/daklak-terrain-metadata.json';
+import terrainColorUrl from '#province-assets/daklak-terrain-color.png';
+import terrainHeightUrl from '#province-assets/daklak-terrain-height.png';
+import terrainMaskUrl from '#province-assets/daklak-terrain-mask.png';
+import terrainNormalUrl from '#province-assets/daklak-terrain-normal.png';
+import terrainMetadata from '#province-assets/daklak-terrain-metadata.json';
 import { projection } from '../../utils/geo';
 
 const [minLon, minLat, maxLon, maxLat] = terrainMetadata.bbox;

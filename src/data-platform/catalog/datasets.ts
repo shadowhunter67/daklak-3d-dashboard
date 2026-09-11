@@ -8,13 +8,13 @@
  */
 import dashboardSources from '../../assets/data/dashboard-sources.json';
 import metricProvenance from '../../assets/data/metric-provenance.json';
-import roadMetadata from '../../assets/maps/daklak/road-metadata.json';
-import roadSourceRegistry from '../../assets/maps/daklak/road-source-registry.json';
-import buildingMetadata from '../../assets/maps/daklak/building-metadata.json';
-import buildingSourceRegistry from '../../assets/maps/daklak/building-source-registry.json';
-import terrainMetadata from '../../assets/maps/daklak/daklak-terrain-metadata.json';
-import mapMetadata from '../../assets/maps/daklak/daklak-metadata.json';
-import sourceSummary from '../../assets/maps/daklak/daklak-source-summary.json';
+import roadMetadata from '#province-assets/road-metadata.json';
+import roadSourceRegistry from '#province-assets/road-source-registry.json';
+import buildingMetadata from '#province-assets/building-metadata.json';
+import buildingSourceRegistry from '#province-assets/building-source-registry.json';
+import terrainMetadata from '#province-assets/daklak-terrain-metadata.json';
+import mapMetadata from '#province-assets/daklak-metadata.json';
+import sourceSummary from '#province-assets/daklak-source-summary.json';
 import type { DatasetDescriptor } from '../schemas/dataset';
 
 const roadRegistryEntry = roadSourceRegistry[0];

@@ -5,8 +5,8 @@
  * status UI, per docs/data-platform-architecture.md.
  */
 import dashboardSources from '../../assets/data/dashboard-sources.json';
-import communeMetrics from '../../assets/maps/daklak/daklak-metrics.json';
-import mapMetadata from '../../assets/maps/daklak/daklak-metadata.json';
+import communeMetrics from '#province-assets/daklak-metrics.json';
+import mapMetadata from '#province-assets/daklak-metadata.json';
 import type { IndicatorDefinition, IndicatorObservation } from '../schemas/indicator';
 
 export const INDICATOR_DEFINITIONS: readonly IndicatorDefinition[] = [

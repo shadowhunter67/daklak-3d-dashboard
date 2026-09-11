@@ -126,3 +126,29 @@ other.
 ## Adding a dataset, indicator, layer, or document reference
 
 See [docs/dataset-onboarding.md](dataset-onboarding.md) for the concrete steps.
+
+## Province asset directory (`#province-assets`)
+
+Every dataset built by the GIS pipeline (`daklak-labels.json`, `daklak-wards-render.json`,
+`daklak-metadata.json`, terrain PNGs, road/building registries, …) lives under
+`src/assets/maps/daklak/`, and ~40 `src/` files used to import it by that literal relative path.
+`vite.config.ts` now resolves a `#province-assets/<file>` alias to
+`src/assets/maps/${PROVINCE_SLUG ?? 'daklak'}/<file>` instead (a `find`/`replacement` prefix alias,
+matched via `id === find || id.startsWith(find + '/')` — see the comment beside it), and every one
+of those ~40 import sites uses the alias instead of the literal path. `tsconfig.app.json` and
+`tsconfig.scripts.json` both map `#province-assets/*` for `tsc` (the latter is needed too:
+`scripts/import-data/sourceRegistry.ts` imports `DATASET_CATALOG` from
+`src/data-platform/catalog/datasets.ts`, which pulls that project's compiler options into the same
+`tsc -b` graph).
+
+**What this does and doesn't buy today:** app source code no longer hardcodes the folder name, so
+swapping `PROVINCE_SLUG` at build time changes which directory every one of those ~40 imports reads
+from. It does **not** make the repository multi-province-ready by itself — the files inside still
+use their historical `daklak-*` names (e.g. `#province-assets/daklak-metadata.json`), so a second
+province's folder would need files with those exact names until a future pass also renames them,
+and the GIS pipeline that produces the folder (`scripts/build_daklak_geojson.py`,
+`generate_daklak_terrain.py`, `build_daklak_roads.py`, `build_daklak_buildings.py`,
+`validate_daklak_data.py`) still writes only to `src/assets/maps/daklak/` and is not itself
+parameterized. Treat this as the seam that a real second-province port would build on, not proof
+that port has been exercised — see [originality-report.md](originality-report.md) for the
+province-specific data pipeline this alias sits in front of.

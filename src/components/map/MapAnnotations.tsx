@@ -2,7 +2,7 @@ import { Html, useTexture } from '@react-three/drei';
 import { useEffect, useMemo } from 'react';
 import { CanvasTexture } from 'three';
 import dashboardData from '../../assets/data/dashboard-sources.json';
-import labels from '../../assets/maps/daklak/daklak-labels.json';
+import labels from '#province-assets/daklak-labels.json';
 import { useMapStore } from '../../stores/mapStore';
 import { projection } from '../../utils/geo';
 import { layoutAdministrativeLabels } from './administrativeLabelLayout';

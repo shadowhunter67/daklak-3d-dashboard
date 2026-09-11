@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { BufferGeometry, Float32BufferAttribute } from 'three';
 import { projection } from '../../utils/geo';
 import { loadRoads, type RoadClass } from '../../data/loadRoads';
-import labels from '../../assets/maps/daklak/daklak-labels.json';
+import labels from '#province-assets/daklak-labels.json';
 import { useMapStore } from '../../stores/mapStore';
 import {
   buildRoadGeometryBuckets,

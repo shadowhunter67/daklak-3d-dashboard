@@ -7,7 +7,7 @@ import {
   worldToLatLon,
 } from './worldCoordinates';
 import { projection } from '../../../utils/geo';
-import terrainMetadata from '../../../assets/maps/daklak/daklak-terrain-metadata.json';
+import terrainMetadata from '#province-assets/daklak-terrain-metadata.json';
 import { verifiedTourismDestinations } from '../../../entities/tourism/verifiedTourismDestinations';
 
 describe('latLonToWorld / worldToLatLon', () => {

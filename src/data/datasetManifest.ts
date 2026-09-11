@@ -1,9 +1,9 @@
 import dashboardSources from '../assets/data/dashboard-sources.json';
-import labels from '../assets/maps/daklak/daklak-labels.json';
-import mapMetadata from '../assets/maps/daklak/daklak-metadata.json';
-import metrics from '../assets/maps/daklak/daklak-metrics.json';
-import sourceSummary from '../assets/maps/daklak/daklak-source-summary.json';
-import wards from '../assets/maps/daklak/daklak-wards-render.json';
+import labels from '#province-assets/daklak-labels.json';
+import mapMetadata from '#province-assets/daklak-metadata.json';
+import metrics from '#province-assets/daklak-metrics.json';
+import sourceSummary from '#province-assets/daklak-source-summary.json';
+import wards from '#province-assets/daklak-wards-render.json';
 
 export type MetricStatus = 'official' | 'illustrative' | 'mixed';
 

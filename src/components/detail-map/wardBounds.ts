@@ -1,5 +1,5 @@
 import { geoBounds } from 'd3-geo';
-import wards from '../../assets/maps/daklak/daklak-wards-render.json';
+import wards from '#province-assets/daklak-wards-render.json';
 import type { WardCollection } from '../../types/map';
 import type { DetailBounds } from './detailMapTypes';
 

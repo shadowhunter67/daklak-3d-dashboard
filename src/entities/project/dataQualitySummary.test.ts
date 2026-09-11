@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import labels from '../../assets/maps/daklak/daklak-labels.json';
+import labels from '#province-assets/daklak-labels.json';
 import { summarizeDataQuality } from './dataQualitySummary';
 import {
   MOCK_AGENCIES,

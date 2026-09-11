@@ -25,7 +25,7 @@
  * Sống ở `src/data/`, không phải `src/entities/project/adapters/`, cùng lý do với
  * `IllustrativeProjectPortfolioSource` (concrete implementation, không phải type/interface thuần).
  */
-import labels from '../assets/maps/daklak/daklak-labels.json';
+import labels from '#province-assets/daklak-labels.json';
 import bundleFile from '../assets/data/project-portfolio.generated-fixture-demo.json';
 import {
   isSupportedCanonicalSchemaVersion,

@@ -20,7 +20,7 @@
  * (xem `src/features/executive-overview/data/FakeProjectPortfolioSource.ts`), theo đúng pattern
  * `FakeMapProvider.ts` đã dùng cho detail map.
  */
-import labels from '../assets/maps/daklak/daklak-labels.json';
+import labels from '#province-assets/daklak-labels.json';
 import {
   MOCK_PORTFOLIO_PROVENANCE,
   MOCK_PROJECT_BUNDLES,

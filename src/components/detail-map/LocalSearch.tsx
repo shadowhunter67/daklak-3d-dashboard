@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import labels from '../../assets/maps/daklak/daklak-labels.json';
+import labels from '#province-assets/daklak-labels.json';
 import { buildLocalSearchIndex, searchLocalIndex, type LocalSearchEntry } from './localSearchIndex';
 import { useTranslation } from '../../i18n/useTranslation';
 

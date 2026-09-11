@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 import { afterEach, describe, expect, it } from 'vitest';
-import labels from '../../assets/maps/daklak/daklak-labels.json';
+import labels from '#province-assets/daklak-labels.json';
 import { MOCK_PROJECT_BUNDLES } from '../../entities/project/illustrativeProjectPortfolio';
 import type { ProjectPortfolio } from '../../entities/project/adapters/ProjectPortfolioSource';
 import {

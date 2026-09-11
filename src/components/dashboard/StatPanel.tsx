@@ -1,5 +1,5 @@
-import metadata from '../../assets/maps/daklak/daklak-metadata.json';
-import metrics from '../../assets/maps/daklak/daklak-metrics.json';
+import metadata from '#province-assets/daklak-metadata.json';
+import metrics from '#province-assets/daklak-metrics.json';
 import dashboardData from '../../assets/data/dashboard-sources.json';
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
