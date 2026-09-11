@@ -42,8 +42,8 @@ jobs:
       - run: npm ci
       - name: Install GIS validators
         run: python -m pip install -r scripts/requirements.txt
-      - name: Unit tests
-        run: npm test
+      - name: Unit tests with coverage (fails below threshold — see vite.config.ts)
+        run: npm run test:coverage
       - name: Validate committed GIS artifacts
         run: npm run validate:data
       - name: Upload validation report
@@ -52,6 +52,13 @@ jobs:
         with:
           name: validation-report-${{ github.run_attempt }}
           path: reports/validation-report.json
+          if-no-files-found: error
+      - name: Upload coverage report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: coverage-report-${{ github.run_attempt }}
+          path: coverage/
           if-no-files-found: error
 
   contract-and-modes:

@@ -152,6 +152,22 @@ export default defineConfig(({ mode }) => {
       ],
       environment: 'jsdom',
       setupFiles: './src/test/setup.ts',
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'json-summary', 'html'],
+        include: ['src/**/*.{ts,tsx}', 'scripts/**/*.{ts,mjs}'],
+        exclude: ['src/**/*.test.{ts,tsx}', 'src/test/**', 'src/**/*.d.ts'],
+        // Baseline measured 2026-09-11: statements 68.5%, branches 64.44%, functions 68.21%,
+        // lines 70.3% (see reports/coverage or CI artifact for current numbers). Thresholds set
+        // a few points below baseline as a regression floor, not a target — raise them opportunistically
+        // as coverage improves, never lower them to make a failing PR pass.
+        thresholds: {
+          statements: 65,
+          branches: 60,
+          functions: 65,
+          lines: 68,
+        },
+      },
     },
   };
 });
