@@ -1,5 +1,5 @@
 import { lazy, Suspense, useEffect, useRef } from 'react';
-import labels from './assets/maps/daklak/daklak-labels.json';
+import labels from '#province-assets/daklak-labels.json';
 import { DashboardHeader } from './components/layout/DashboardHeader';
 import { DashboardPanels } from './components/layout/DashboardPanels';
 import { DatasetFooter } from './components/layout/DatasetFooter';

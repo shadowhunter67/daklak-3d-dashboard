@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import mapMetadata from '../assets/maps/daklak/daklak-metadata.json';
+import mapMetadata from '#province-assets/daklak-metadata.json';
 import {
   datasetManifest,
   datasetManifestIssues,

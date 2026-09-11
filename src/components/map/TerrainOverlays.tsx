@@ -1,8 +1,8 @@
 import { useTexture } from '@react-three/drei';
 import { CanvasTexture } from 'three';
 import { useEffect, useMemo } from 'react';
-import labels from '../../assets/maps/daklak/daklak-labels.json';
-import metrics from '../../assets/maps/daklak/daklak-metrics.json';
+import labels from '#province-assets/daklak-labels.json';
+import metrics from '#province-assets/daklak-metrics.json';
 import { useMapStore } from '../../stores/mapStore';
 import { projection } from '../../utils/geo';
 import { wardData } from './geometryHitTest';

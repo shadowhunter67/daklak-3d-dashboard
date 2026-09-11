@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { verifiedTourismDestinations } from './verifiedTourismDestinations';
 import { validateTourismDestination } from './validation/validateTourismDestination';
 import { TOURISM_DESTINATION_CATEGORIES } from './types';
-import terrainMetadata from '../../assets/maps/daklak/daklak-terrain-metadata.json';
+import terrainMetadata from '#province-assets/daklak-terrain-metadata.json';
 
 describe('verifiedTourismDestinations', () => {
   it('has exactly the 4 verified Phase T2 entries plus Phase T4’s krong-kmar-waterfall', () => {

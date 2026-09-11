@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { useCallback, useEffect, useRef } from 'react';
 import { OrthographicCamera, Vector3 } from 'three';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
-import labels from '../../assets/maps/daklak/daklak-labels.json';
+import labels from '#province-assets/daklak-labels.json';
 import { useMapStore } from '../../stores/mapStore';
 import { projection } from '../../utils/geo';
 import { shouldHandleCameraKey } from './cameraKeyboard';

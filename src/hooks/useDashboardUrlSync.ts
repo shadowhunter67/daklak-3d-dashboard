@@ -12,7 +12,7 @@ import {
   parseDetailMapLayers,
   serializeDetailMapParams,
 } from '../components/detail-map/detailMapUrl';
-import labels from '../assets/maps/daklak/daklak-labels.json';
+import labels from '#province-assets/daklak-labels.json';
 import { LOCALE_QUERY_PARAM } from '../i18n/locale';
 
 const validCodes = new Set(Object.keys(labels));

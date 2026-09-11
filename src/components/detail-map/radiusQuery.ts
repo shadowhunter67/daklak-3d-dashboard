@@ -1,7 +1,7 @@
 import type { Geometry, Position } from 'geojson';
 import { KEY_PROJECTS } from './keyProjects';
 import { PLANNING_ZONES } from './planningZones';
-import wardLabels from '../../assets/maps/daklak/daklak-labels.json';
+import wardLabels from '#province-assets/daklak-labels.json';
 
 /**
  * mapeffect.app capability 3 ("Marker & tiện ích — hiện khoảng cách quanh khu đất"), scoped to

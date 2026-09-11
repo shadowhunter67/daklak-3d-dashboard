@@ -1,5 +1,5 @@
-import wards from '../../assets/maps/daklak/daklak-wards-render.json';
-import metrics from '../../assets/maps/daklak/daklak-metrics.json';
+import wards from '#province-assets/daklak-wards-render.json';
+import metrics from '#province-assets/daklak-metrics.json';
 import type { WardCollection, Metric } from '../../types/map';
 import { normalizeDisplayName, splitDisplayNameWords } from '../../utils/displayName';
 import { useMapStore } from '../../stores/mapStore';

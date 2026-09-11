@@ -8,13 +8,13 @@
  */
 import dashboardSources from '../../assets/data/dashboard-sources.json';
 import metricProvenance from '../../assets/data/metric-provenance.json';
-import roadMetadata from '../../assets/maps/daklak/road-metadata.json';
-import roadSourceRegistry from '../../assets/maps/daklak/road-source-registry.json';
-import buildingMetadata from '../../assets/maps/daklak/building-metadata.json';
-import buildingSourceRegistry from '../../assets/maps/daklak/building-source-registry.json';
-import terrainMetadata from '../../assets/maps/daklak/daklak-terrain-metadata.json';
-import mapMetadata from '../../assets/maps/daklak/daklak-metadata.json';
-import sourceSummary from '../../assets/maps/daklak/daklak-source-summary.json';
+import roadMetadata from '#province-assets/road-metadata.json';
+import roadSourceRegistry from '#province-assets/road-source-registry.json';
+import buildingMetadata from '#province-assets/building-metadata.json';
+import buildingSourceRegistry from '#province-assets/building-source-registry.json';
+import terrainMetadata from '#province-assets/daklak-terrain-metadata.json';
+import mapMetadata from '#province-assets/daklak-metadata.json';
+import sourceSummary from '#province-assets/daklak-source-summary.json';
 import type { DatasetDescriptor } from '../schemas/dataset';
 
 const roadRegistryEntry = roadSourceRegistry[0];
@@ -335,6 +335,42 @@ export const DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET: DatasetDescriptor = {
 };
 
 /**
+ * Public-service POI (bệnh viện/trường học/cơ quan nhà nước) — SEPARATE archive from
+ * `road-network-detail-map-pmtiles` above, not a 4th source-layer merged into it; see
+ * serviceLayers.ts's doc comment for the reasoning (avoiding an undocumented tippecanoe
+ * feature-filter-file re-derivation risk on the already-shipped roads/buildings/places archive).
+ * Same pinned Geofabrik extract + Đắk Lắk clip polygon, filtered to OSM
+ * `amenity=hospital,clinic,doctors,pharmacy,school,university,college,kindergarten,townhall,
+ * police,post_office,courthouse` + `office=government`, NODES ONLY.
+ */
+export const DETAIL_MAP_SERVICES_PMTILES_DATASET: DatasetDescriptor = {
+  id: 'detail-map-services-pmtiles',
+  title: 'Dịch vụ công (y tế/giáo dục/hành chính, PMTiles) — bản đồ chi tiết',
+  description:
+    'Vector tile OSM thật (bệnh viện/trường học/cơ quan nhà nước, chỉ node) cho bản đồ chi tiết MapLibre, self-hosted cùng gốc từ /maps/daklak-services.pmtiles.',
+  domain: 'public-service',
+  classification: 'public',
+  authority: 'unknown',
+  publicationStatus: 'published',
+  administrativeLevel: 'mixed',
+  temporalResolution: 'static',
+  spatialRepresentation: 'vector-tile',
+  source: { organization: 'OpenStreetMap contributors', license: 'ODbL 1.0' },
+  version: 'osm-260831_services-pmtiles-v1',
+  checksum: '8cad51f16632ac3ccd94e69af7e7af67f0515cdd462b02d2d41eaa028a859d64',
+  quality: {
+    status: 'partially-verified',
+    knownLimitations: [
+      'CHỈ trích xuất OSM node (n/amenity=..., n/office=government) — cơ sở dịch vụ công được vẽ dưới dạng building way trong OSM (không có node riêng) sẽ KHÔNG xuất hiện ở layer này, dù có thật trên thực địa.',
+      'Độ phủ OSM cho amenity ở Đắk Lắk không đồng đều, tương tự building footprint (xem road-network-detail-map-pmtiles) — 506 điểm cho toàn tỉnh, tập trung ở đô thị.',
+      'Snapshot tĩnh (extract 2026-08-31, cùng lần với archive roads/buildings/places), không tự làm mới.',
+      'Zoom 10-15; điểm hiện từ zoom 11, tên hiện từ zoom 14.',
+    ],
+  },
+  access: { delivery: 'pmtiles', requiresAuthentication: false },
+};
+
+/**
  * Self-hosted glyph range PBFs (`public/fonts/Noto Sans Regular/*.pbf`) the detail map's
  * `road-labels`/`place-labels` symbol layers need — MapLibre style specs require a `glyphs` URL
  * for any symbol layer with `text-field`, and this project never points that at a live third-party
@@ -643,6 +679,7 @@ export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   BUILDING_FOOTPRINTS_BUON_MA_THUOT_DATASET,
   TERRAIN_IMAGERY_DATASET,
   DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET,
+  DETAIL_MAP_SERVICES_PMTILES_DATASET,
   DETAIL_MAP_GLYPHS_DATASET,
   PROJECT_PORTFOLIO_ILLUSTRATIVE_DATASET,
   PROJECT_PROGRESS_ILLUSTRATIVE_DATASET,

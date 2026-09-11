@@ -5,7 +5,7 @@ import {
   resolveLabelCollisions,
   type LabelPlacementInput,
 } from './wardLabelPlacement';
-import wardLabels from '../../assets/maps/daklak/daklak-labels.json';
+import wardLabels from '#province-assets/daklak-labels.json';
 
 describe('resolveLabelCollisions', () => {
   it('never drops a label: returns exactly one result per input, in input order', () => {

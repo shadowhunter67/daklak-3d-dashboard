@@ -12,6 +12,9 @@
     "skipLibCheck": true,
     "strict": true,
     "noEmit": true,
+    "paths": {
+      "#province-assets/*": ["./src/assets/maps/daklak/*"]
+    },
     "types": ["node"],
     "noUnusedLocals": true,
     "noUnusedParameters": true

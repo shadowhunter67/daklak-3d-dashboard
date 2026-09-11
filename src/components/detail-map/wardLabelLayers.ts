@@ -1,6 +1,6 @@
 import type { GeoJSONSourceSpecification, LayerSpecification } from 'maplibre-gl';
 import type { FeatureCollection, Point } from 'geojson';
-import wardLabels from '../../assets/maps/daklak/daklak-labels.json';
+import wardLabels from '#province-assets/daklak-labels.json';
 
 /**
  * Ward/commune NAME labels for the detail map — the MapLibre counterpart of the 2D SVG map's

@@ -14,7 +14,8 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "paths": {
-      "#active-portfolio-source": ["./src/data/activePortfolioSource.demo.ts"]
+      "#active-portfolio-source": ["./src/data/activePortfolioSource.demo.ts"],
+      "#province-assets/*": ["./src/assets/maps/daklak/*"]
     },
     "isolatedModules": true,
     "noEmit": true,
