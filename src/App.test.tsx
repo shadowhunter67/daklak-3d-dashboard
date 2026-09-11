@@ -126,21 +126,30 @@ describe('App', () => {
   // Phase T1 (reports/tourism-digital-twin/) — `?view=world`. jsdom has no real WebGL (same as
   // the detail-map/3D-overview tests above), so this exercises the lazy-chunk mount + the
   // documented WebGL-unsupported fallback, not the actual Three.js scene.
-  it('lazily mounts the world-exploration route and shows its illustrative badge/fallback once viewMode becomes "world"', async () => {
-    renderApp();
-    expect(
-      screen.queryByLabelText('Khám phá Đắk Lắk 3D — kịch bản minh họa'),
-    ).not.toBeInTheDocument();
-    act(() => useMapStore.getState().setViewMode('world'));
-    const section = await screen.findByLabelText(
-      'Khám phá Đắk Lắk 3D — kịch bản minh họa',
-      {},
-      LAZY_CHUNK_TIMEOUT,
-    );
-    expect(section).toBeInTheDocument();
-    expect(screen.getByText('ILLUSTRATIVE — KỊCH BẢN MINH HỌA')).toBeInTheDocument();
-    expect(
-      screen.getByText(/không hỗ trợ WebGL nên không thể hiển thị cảnh 3D minh họa/),
-    ).toBeInTheDocument();
-  });
+  //
+  // Explicit 15000ms test timeout: must exceed LAZY_CHUNK_TIMEOUT's inner findBy wait (5000ms)
+  // with headroom, otherwise this outer timeout can fire first under v8 coverage instrumentation,
+  // which slows dynamic import of the Three.js lazy chunk enough to matter here specifically.
+  const WORLD_ROUTE_TEST_TIMEOUT = 15000;
+  it(
+    'lazily mounts the world-exploration route and shows its illustrative badge/fallback once viewMode becomes "world"',
+    async () => {
+      renderApp();
+      expect(
+        screen.queryByLabelText('Khám phá Đắk Lắk 3D — kịch bản minh họa'),
+      ).not.toBeInTheDocument();
+      act(() => useMapStore.getState().setViewMode('world'));
+      const section = await screen.findByLabelText(
+        'Khám phá Đắk Lắk 3D — kịch bản minh họa',
+        {},
+        LAZY_CHUNK_TIMEOUT,
+      );
+      expect(section).toBeInTheDocument();
+      expect(screen.getByText('ILLUSTRATIVE — KỊCH BẢN MINH HỌA')).toBeInTheDocument();
+      expect(
+        screen.getByText(/không hỗ trợ WebGL nên không thể hiển thị cảnh 3D minh họa/),
+      ).toBeInTheDocument();
+    },
+    WORLD_ROUTE_TEST_TIMEOUT,
+  );
 });

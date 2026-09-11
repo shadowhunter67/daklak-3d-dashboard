@@ -3,6 +3,7 @@ node_modules/
 dist/
 playwright-report/
 test-results/
+coverage/
 .env
 __pycache__/
 *.pyc
