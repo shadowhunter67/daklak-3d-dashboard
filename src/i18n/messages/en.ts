@@ -731,6 +731,21 @@ export const en: Partial<Record<MessageKey, string>> = {
   'datasetFooter.thematicIllustrative':
     'Thematic layers currently use illustrative data with a fixed seed.',
   'datasetFooter.cacheVersionTitle': 'Cache version {version}',
+  'datasetFooter.about.ariaLabel': 'About this project, GitHub, report an issue',
+  'datasetFooter.about.title': 'About',
+
+  // AboutPanel
+  'about.panelHeading': 'About Đắk Lắk 3D Dashboard',
+  'about.close': 'Close',
+  'about.closeAria': 'Close the about dialog',
+  'about.tagline':
+    "A 3D dashboard showing all 102 communes/wards of Đắk Lắk province, plus a platform tracking the province's key investment projects.",
+  'about.disclaimer':
+    "This is an independent personal project, not affiliated with the Đắk Lắk Provincial People's Committee or any government agency. Project/budget/progress figures in the demo are illustrative data, not official operational figures.",
+  'about.linksAriaLabel': 'Project links',
+  'about.issuesLink': 'Report an issue',
+  'about.dataSourcesLink': 'Data sources',
+  'about.copyright': '© 2026 Đắk Lắk 3D Dashboard',
 
   // OnboardingOverlay
   'onboarding.eyebrow': 'EXPLORE ĐẮK LẮK 2025',

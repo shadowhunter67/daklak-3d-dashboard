@@ -744,6 +744,21 @@ export const vi = {
   'datasetFooter.communeIllustrative': '· Chỉ tiêu cấp xã: dữ liệu minh họa.',
   'datasetFooter.thematicIllustrative': 'Lớp chuyên đề đang dùng dữ liệu minh họa có seed cố định.',
   'datasetFooter.cacheVersionTitle': 'Phiên bản cache {version}',
+  'datasetFooter.about.ariaLabel': 'Giới thiệu dự án, GitHub, báo lỗi',
+  'datasetFooter.about.title': 'Giới thiệu',
+
+  // AboutPanel
+  'about.panelHeading': 'Về Đắk Lắk 3D Dashboard',
+  'about.close': 'Đóng',
+  'about.closeAria': 'Đóng hộp thoại giới thiệu',
+  'about.tagline':
+    'Dashboard bản đồ 3D thể hiện 102 xã/phường của tỉnh Đắk Lắk, kèm nền tảng theo dõi các dự án đầu tư trọng điểm của tỉnh.',
+  'about.disclaimer':
+    'Đây là dự án cá nhân độc lập, không thuộc UBND tỉnh Đắk Lắk hay bất kỳ cơ quan nhà nước nào. Số liệu dự án/ngân sách/tiến độ trong bản demo là dữ liệu minh họa, không phải số liệu vận hành chính thức.',
+  'about.linksAriaLabel': 'Liên kết dự án',
+  'about.issuesLink': 'Báo lỗi & góp ý',
+  'about.dataSourcesLink': 'Nguồn dữ liệu',
+  'about.copyright': '© 2026 Đắk Lắk 3D Dashboard',
 
   // OnboardingOverlay
   'onboarding.eyebrow': 'KHÁM PHÁ ĐẮK LẮK 2025',

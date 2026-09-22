@@ -91,6 +91,14 @@ const DataSourcesPanel = lazy(() =>
   })),
 );
 
+// Same lazy-boundary pattern as DataProvenancePanel above — see mapStore.ts's
+// `aboutPanelOpen` doc comment.
+const AboutPanel = lazy(() =>
+  import('./components/about/AboutPanel').then((module) => ({
+    default: module.AboutPanel,
+  })),
+);
+
 export default function App() {
   const { t } = useTranslation();
   const viewMode = useMapStore((state) => state.viewMode);
@@ -100,6 +108,7 @@ export default function App() {
   const provenancePanelOpen = useMapStore((state) => state.provenancePanelOpen);
   const dataSourcesPanelOpen = useMapStore((state) => state.dataSourcesPanelOpen);
   const closeDataSourcesPanel = useMapStore((state) => state.closeDataSourcesPanel);
+  const aboutPanelOpen = useMapStore((state) => state.aboutPanelOpen);
   const setDetailMapCamera = useMapStore((state) => state.setDetailMapCamera);
   const previousView = useRef(viewMode);
   useDashboardUrlSync();
@@ -228,6 +237,11 @@ export default function App() {
       {dataSourcesPanelOpen && (
         <Suspense fallback={<ProvenancePanelLoading />}>
           <DataSourcesPanel onClose={closeDataSourcesPanel} />
+        </Suspense>
+      )}
+      {aboutPanelOpen && (
+        <Suspense fallback={<ProvenancePanelLoading />}>
+          <AboutPanel />
         </Suspense>
       )}
       <p className="visually-hidden" aria-live="polite" aria-atomic="true">
