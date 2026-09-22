@@ -1,0 +1,78 @@
+name: GIS source freshness
+
+# Geofabrik (scripts/osm-pbf-source.json's provider) deletes dated PBF extracts after ~90 days —
+# see that file's own retentionNote. The real PMTiles pipeline (docs/detail-map-integration.md,
+# scripts/detail-map-tiles/Dockerfile) deliberately never runs in CI, so nothing else notices when
+# that window is about to close. This workflow only reads the two pinned-source manifests and
+# reports on their age — it never downloads OSM data and never touches the committed PMTiles/GIS
+# artifacts itself.
+#
+# Dedup follows the same pattern as public-data-refresh.yml: one tracked issue, identified by a
+# stable HTML-comment marker, updated in place instead of spawning a new issue every run.
+
+on:
+  schedule:
+    - cron: '0 3 * * 1' # weekly, Monday 03:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: gis-source-freshness
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with: { node-version: 22 }
+
+      - name: Check OSM PBF / admin-boundary snapshot age
+        id: check
+        run: |
+          set -euo pipefail
+          node scripts/check_gis_source_freshness.mjs
+          echo "stale=$(jq -r '.stale' reports/gis-source-freshness.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload freshness report
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: gis-source-freshness-report
+          path: reports/gis-source-freshness.json
+          retention-days: 30
+
+      # Dedup via a stable marker, same approach as public-data-refresh.yml's tracked issue.
+      - name: Open or update the tracked freshness issue
+        if: steps.check.outputs.stale == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh label create manual-review-required --color d93f0b --force
+          MARKER='<!-- daklak-gis-source-freshness -->'
+          EXTRACT_DATE=$(jq -r '.osmPbf.extractDate' reports/gis-source-freshness.json)
+          DAYS_REMAINING=$(jq -r '.osmPbf.daysRemaining' reports/gis-source-freshness.json)
+          BODY_FILE=$(mktemp)
+          {
+            echo "$MARKER"
+            echo ""
+            echo "The pinned OSM PBF snapshot (\`scripts/osm-pbf-source.json\`, extracted **$EXTRACT_DATE**) has **$DAYS_REMAINING day(s)** left before Geofabrik's ~90-day retention window closes and the download URL 404s."
+            echo ""
+            echo "To refresh: re-run \`python scripts/prepare_osm_pbf.py\` against a current Geofabrik snapshot, update \`scripts/osm-pbf-source.json\` (downloadUrl/fileName/sha256/sizeBytes/extractDate/snapshotDate), then rebuild the real PMTiles source per docs/detail-map-integration.md's \"Building the real PMTiles source\" section (manual — this pipeline intentionally never runs in CI)."
+          } > "$BODY_FILE"
+          EXISTING=$(gh issue list --search "$MARKER in:body" --state open --json number --jq '.[0].number')
+          if [ -n "$EXISTING" ] && [ "$EXISTING" != "null" ]; then
+            gh issue edit "$EXISTING" --add-assignee shadowhunter67 --add-label manual-review-required
+            gh issue comment "$EXISTING" --body-file "$BODY_FILE"
+          else
+            gh issue create --title "GIS source freshness: OSM PBF snapshot nearing Geofabrik's retention limit" \
+              --body-file "$BODY_FILE" \
+              --assignee shadowhunter67 \
+              --label manual-review-required
+          fi
