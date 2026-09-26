@@ -1,6 +1,13 @@
 name: quality
 
-on: [push, pull_request]
+# `push` only on main: a branch with an open pull request used to run this whole workflow twice (once
+# for the push, once for the pull_request), each ~15-20 min. Deploy Pages is triggered by this
+# workflow completing on main (see deploy-pages.yml), so main must keep running it.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -10,6 +17,32 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    # Decides whether the slow Playwright job (~20 min unsharded) is needed. Pull requests that only
+    # touch docs/Markdown/LICENSE skip it; the cheap lint/format/typecheck/unit jobs still run, so
+    # Markdown formatting is still checked. Pushes to main always run everything. When in doubt
+    # (empty diff, unusual paths) the output is `true`.
+    runs-on: ubuntu-latest
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with: { fetch-depth: 0 }
+      - id: filter
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          code=true
+          if [ "$EVENT" = "pull_request" ]; then
+            files=$(git diff --name-only "$BASE_SHA" HEAD)
+            if [ -n "$files" ] && ! printf '%s\n' "$files" | grep -qvE '^(docs/.*|.*\.md|LICENSE.*)$'; then
+              code=false
+            fi
+          fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "e2e needed: $code"
+
   static-analysis:
     runs-on: ubuntu-latest
     steps:
@@ -115,8 +148,17 @@ jobs:
           retention-days: 3
 
   e2e:
-    needs: build-and-budget
+    # `Production E2E` is ~95% of this job (~20 min measured on main); tests are fullyParallel, so
+    # split them across runners. Each shard still runs with workers: 1 (see playwright.config.ts),
+    # so per-runner behaviour is unchanged.
+    name: e2e (${{ matrix.shard }})
+    needs: [changes, build-and-budget]
+    if: needs.changes.outputs.code == 'true'
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['1/4', '2/4', '3/4', '4/4']
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -129,13 +171,13 @@ jobs:
           path: dist
       - name: Install tested browsers
         run: npx playwright install --with-deps chromium webkit
-      - name: Production E2E
-        run: npm run test:e2e:prod:built
+      - name: Production E2E (shard ${{ matrix.shard }})
+        run: npm run test:e2e:prod:built -- --shard=${{ matrix.shard }}
       - name: Upload Playwright failure evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: failure()
         with:
-          name: playwright-failure-${{ github.run_attempt }}
+          name: playwright-failure-${{ github.run_attempt }}-shard-${{ strategy.job-index }}
           path: |
             test-results/
             playwright-report/
