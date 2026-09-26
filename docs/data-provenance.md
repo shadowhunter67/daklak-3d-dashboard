@@ -124,5 +124,6 @@ townhall, police, post_office, courthouse` and `office=government`, **nodes only
 
 Known limitations (also in the catalog entry): nodes only, so facilities mapped as polygons in OSM are
 missing and counts are lower than reality; static snapshot (extract 2026-08-31) with no auto-refresh; coverage
-depends on the OSM community and is thinner in rural areas. The exact tippecanoe/osmium commands for this
-archive are not yet documented here — add them next to the roads pipeline when the archive is next rebuilt.
+depends on the OSM community and is thinner in rural areas. The build commands are recorded in
+`docs/detail-map-integration.md` ("Stage F"); the tippecanoe options are recovered from the archive's own
+metadata, but the full chain has not been re-run end-to-end since it was built.

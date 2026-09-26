@@ -192,6 +192,45 @@ file's own doc comment), `DetailMapViewport.tsx`/`MapLibreProvider.ts` plumbing 
 - self-hosted glyphs URL through (`detailMapStyle.ts` stays a pure function of its arguments —
   still no `import.meta.env` read inside it, so its own unit tests stay env-independent).
 
+**Stage F — public-service POI archive** (`public/maps/daklak-services.pmtiles`, catalog entry
+`detail-map-services-pmtiles`). A separate, standalone archive (see `serviceLayers.ts` for why it
+is not a fourth `source-layer` of the roads archive). It reuses Stage A/B unchanged: the pinned
+extract and the province `daklak.osm.pbf` already inside the `daklak-stage` container. The
+per-layer `osmium export` attribute configs live in `scripts/detail-map-tiles/export-configs/`
+(`roads|buildings|places|services.json`; copy the one you need into the container's `/data`).
+
+The `tippecanoe` line below is recovered verbatim from the archive's own metadata
+(`generator_options`); the `tags-filter` expression comes from the layer's documented scope in
+`serviceLayers.ts`; the `osmium export` flags are inferred from Stage C's convention and are the
+one part not recorded anywhere. **The whole chain has not been re-run end-to-end since the archive
+was built** — after any rebuild, compare against the reference below rather than trusting the hash
+to match byte-for-byte.
+
+```powershell
+# nodes only (n/), same convention as `places` (no `university` node appeared in the reference build)
+docker exec daklak-stage osmium tags-filter --overwrite -o /data/out/services.osm.pbf /data/out/daklak.osm.pbf `
+  "n/amenity=hospital,clinic,doctors,pharmacy,school,university,college,kindergarten,townhall,police,post_office,courthouse" `
+  "n/office=government"
+docker cp ".\scripts\detail-map-tiles\export-configs\services.json" daklak-stage:/data/services-export.json
+docker exec daklak-stage osmium export --overwrite -c /data/services-export.json -f geojsonseq `
+  -o /data/out/services.geojsonseq /data/out/services.osm.pbf
+docker exec daklak-stage tippecanoe --force -o /data/out/services.mbtiles -l services -Z10 -z15 `
+  --no-feature-limit --no-tile-size-limit /data/out/services.geojsonseq
+docker exec daklak-stage pmtiles convert /data/out/services.mbtiles /data/out/services.pmtiles
+docker exec daklak-stage pmtiles show /data/out/services.pmtiles
+docker cp daklak-stage:/data/out/services.pmtiles ".\public\maps\daklak-services.pmtiles"
+```
+
+Reference for the archive built from `vietnam-260831.osm.pbf` (read from its own header/metadata):
+PMTiles v3, mvt, **z10–z15**, one vector layer **`services`** with fields `amenity`, `office`,
+`name`, `name:vi`, **506 point features** in 781 tiles, bounds ≈ 107.62,12.18 → 109.32,13.50,
+tippecanoe v2.79.0, 116,804 bytes.
+
+Hard contracts to keep: `-l services` must equal `SERVICES_SOURCE_LAYER` in `serviceLayers.ts`
+(MapLibre silently renders nothing on a mismatch), and the `-Z10 -z15` range is the one
+`serviceLayers.ts` assumes. After rebuilding, update the checksum in `config/public-data-files.json`
+and in the `detail-map-services-pmtiles` catalog entry, then run `npm run generate:public-manifest`.
+
 ## Hosting: same-origin, decided by the build budget rather than the Pages 100MB limit
 
 GitHub Pages **can** serve PMTiles correctly for small-to-medium files: it's static file hosting
