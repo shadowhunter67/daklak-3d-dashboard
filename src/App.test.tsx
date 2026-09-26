@@ -127,10 +127,16 @@ describe('App', () => {
   // the detail-map/3D-overview tests above), so this exercises the lazy-chunk mount + the
   // documented WebGL-unsupported fallback, not the actual Three.js scene.
   //
-  // Explicit 15000ms test timeout: must exceed LAZY_CHUNK_TIMEOUT's inner findBy wait (5000ms)
-  // with headroom, otherwise this outer timeout can fire first under v8 coverage instrumentation,
-  // which slows dynamic import of the Three.js lazy chunk enough to matter here specifically.
-  const WORLD_ROUTE_TEST_TIMEOUT = 15000;
+  // This route pulls in the Three.js lazy chunk, which is much heavier than the other lazy chunks
+  // in this file. It normally resolves in well under a second, but on a busy machine the
+  // dynamic import has been observed to stall the event loop for ~8s (one local run took 12.7s
+  // and failed because findBy's 5000ms wall-clock window had already expired by the time the
+  // import resolved; it passed on rerun). Give this one test its own wider inner wait, and an
+  // outer test timeout that must stay above it with headroom (also needed under v8 coverage
+  // instrumentation). Root cause of the stall was not reproduced (cold cache and CPU load both
+  // ran in ~0.7s), so this hardens the test rather than fixing a known defect.
+  const WORLD_CHUNK_TIMEOUT = { timeout: 15000 };
+  const WORLD_ROUTE_TEST_TIMEOUT = 30000;
   it(
     'lazily mounts the world-exploration route and shows its illustrative badge/fallback once viewMode becomes "world"',
     async () => {
@@ -142,7 +148,7 @@ describe('App', () => {
       const section = await screen.findByLabelText(
         'Khám phá Đắk Lắk 3D — kịch bản minh họa',
         {},
-        LAZY_CHUNK_TIMEOUT,
+        WORLD_CHUNK_TIMEOUT,
       );
       expect(section).toBeInTheDocument();
       expect(screen.getByText('ILLUSTRATIVE — KỊCH BẢN MINH HỌA')).toBeInTheDocument();
