@@ -6,6 +6,7 @@ import { MapLayerPanel } from './MapLayerPanel';
 
 const availableSources = {
   roads: true,
+  services: true,
   administrativeBoundaries: true,
   dashboardOverlays: true,
   terrain: false,
@@ -14,6 +15,7 @@ const availableSources = {
 
 const noSources = {
   roads: false,
+  services: false,
   administrativeBoundaries: false,
   dashboardOverlays: false,
   terrain: false,
@@ -80,6 +82,28 @@ describe('MapLayerPanel', () => {
     switchToAdvanced();
     const heatmap = screen.getByRole('checkbox', { name: 'Heatmap' });
     expect(heatmap).not.toHaveAttribute('aria-describedby');
+  });
+
+  it('offers the public-service POI toggle under Advanced, gated on its OWN source flag (not "roads")', () => {
+    const { onToggleLayer } = renderPanel({ ...availableSources, services: false });
+    switchToAdvanced();
+    const services = screen.getByRole('checkbox', {
+      name: 'Dịch vụ công (y tế/giáo dục/hành chính)',
+    });
+    // "roads" (and everything else in availableSources) is available, but "services" alone is
+    // false here — the toggle must key off `services`, not silently piggyback on `roads` the way
+    // buildingsVisible correctly does (it's the SAME archive there, a different one here).
+    expect(services.getAttribute('aria-describedby')).toBeTruthy();
+    fireEvent.click(services);
+    expect(onToggleLayer).toHaveBeenCalledWith('servicesVisible');
+  });
+
+  it('clears the unavailable explanation once VITE_DETAIL_MAP_SERVICES_URL is configured', () => {
+    renderPanel(availableSources);
+    switchToAdvanced();
+    expect(
+      screen.getByRole('checkbox', { name: 'Dịch vụ công (y tế/giáo dục/hành chính)' }),
+    ).not.toHaveAttribute('aria-describedby');
   });
 
   it('defaults to Basic mode, hiding advanced-only layers like Heatmap until switched', () => {

@@ -23,6 +23,7 @@ describe('FakeMapProvider', () => {
       layers: DEFAULT_DETAIL_MAP_LAYER_STATE,
       sourceAvailability: {
         roads: false,
+        services: false,
         administrativeBoundaries: false,
         dashboardOverlays: false,
         terrain: false,
@@ -41,6 +42,7 @@ describe('FakeMapProvider', () => {
       layers: DEFAULT_DETAIL_MAP_LAYER_STATE,
       sourceAvailability: {
         roads: false,
+        services: false,
         administrativeBoundaries: false,
         dashboardOverlays: false,
         terrain: false,
@@ -60,6 +62,7 @@ describe('FakeMapProvider', () => {
       layers: DEFAULT_DETAIL_MAP_LAYER_STATE,
       sourceAvailability: {
         roads: false,
+        services: false,
         administrativeBoundaries: false,
         dashboardOverlays: false,
         terrain: false,
@@ -71,11 +74,13 @@ describe('FakeMapProvider', () => {
       baseMap: 'terrain',
       roadsVisible: false,
       heatmapVisible: true,
+      servicesVisible: true,
     });
     const placeholder = container.querySelector<HTMLElement>('[data-testid="fake-map-provider"]')!;
     expect(placeholder.dataset.baseMap).toBe('terrain');
     expect(placeholder.dataset.roadsVisible).toBe('false');
     expect(placeholder.dataset.heatmapVisible).toBe('true');
+    expect(placeholder.dataset.servicesVisible).toBe('true');
   });
 
   it('notifies registered ward-click handlers and supports unsubscribe', async () => {
@@ -84,6 +89,7 @@ describe('FakeMapProvider', () => {
       layers: DEFAULT_DETAIL_MAP_LAYER_STATE,
       sourceAvailability: {
         roads: false,
+        services: false,
         administrativeBoundaries: false,
         dashboardOverlays: false,
         terrain: false,
@@ -105,6 +111,7 @@ describe('FakeMapProvider', () => {
       layers: DEFAULT_DETAIL_MAP_LAYER_STATE,
       sourceAvailability: {
         roads: false,
+        services: false,
         administrativeBoundaries: false,
         dashboardOverlays: false,
         terrain: false,
@@ -124,6 +131,7 @@ describe('FakeMapProvider', () => {
       layers: DEFAULT_DETAIL_MAP_LAYER_STATE,
       sourceAvailability: {
         roads: false,
+        services: false,
         administrativeBoundaries: false,
         dashboardOverlays: false,
         terrain: false,

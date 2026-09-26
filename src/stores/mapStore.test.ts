@@ -120,6 +120,7 @@ describe('getInitialDashboardUrlState', () => {
       heatmapVisible: true,
       terrainVisible: true,
       satelliteVisible: false,
+      servicesVisible: false,
     });
     expect(state.detailMapCamera).toEqual({
       latitude: 12.9,

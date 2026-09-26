@@ -110,3 +110,19 @@ diacritics live)/`8192-8447` were chosen to cover Vietnamese + Latin text actual
 OpenStreetMap data is © OpenStreetMap contributors, ODbL 1.0 — `roadLayers.ts`'s
 `OPENSTREETMAP_ATTRIBUTION` constant is wired into the vector source's `attribution` field, which
 MapLibre's attribution control (never hidden, per `docs/accessibility.md`) renders as a real link.
+
+### Public-service POI (dịch vụ công) — separate archive
+
+`public/maps/daklak-services.pmtiles` (~114KB, sha256
+`8cad51f16632ac3ccd94e69af7e7af67f0515cdd462b02d2d41eaa028a859d64`, registered in
+`config/public-data-files.json`, catalog entry `detail-map-services-pmtiles`) is a **separate** archive from
+`daklak.pmtiles`, built from the same pinned Geofabrik extract and Đắk Lắk clip polygon (see
+`src/components/detail-map/serviceLayers.ts` for why it is not a fourth source-layer of the roads archive).
+Filtered to OSM `amenity=hospital, clinic, doctors, pharmacy, school, university, college, kindergarten,
+townhall, police, post_office, courthouse` and `office=government`, **nodes only**. URL comes from
+`VITE_DETAIL_MAP_SERVICES_URL`; empty keeps the "Dịch vụ công" toggle disabled with an explanation.
+
+Known limitations (also in the catalog entry): nodes only, so facilities mapped as polygons in OSM are
+missing and counts are lower than reality; static snapshot (extract 2026-08-31) with no auto-refresh; coverage
+depends on the OSM community and is thinner in rural areas. The exact tippecanoe/osmium commands for this
+archive are not yet documented here — add them next to the roads pipeline when the archive is next rebuilt.

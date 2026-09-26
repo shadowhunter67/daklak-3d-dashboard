@@ -42,6 +42,7 @@ const PLANNING_ZONE_IDS = [PLANNING_ZONES_FILL_LAYER_ID, PLANNING_ZONES_LINE_LAY
 
 const noSources: DetailMapSourceAvailability = {
   roads: false,
+  services: false,
   administrativeBoundaries: false,
   dashboardOverlays: false,
   terrain: false,
