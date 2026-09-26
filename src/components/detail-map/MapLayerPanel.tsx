@@ -79,6 +79,7 @@ const advancedLayerToggles: typeof basicLayerToggles = [
   { key: 'roadLabelsVisible', unavailableWhen: 'roads' },
   { key: 'placeLabelsVisible', unavailableWhen: 'roads' },
   { key: 'buildingsVisible', unavailableWhen: 'roads' },
+  { key: 'servicesVisible', unavailableWhen: 'services' },
   { key: 'dashboardMetricsVisible', unavailableWhen: 'dashboardOverlays' },
   { key: 'heatmapVisible', unavailableWhen: 'dashboardOverlays' },
 ];

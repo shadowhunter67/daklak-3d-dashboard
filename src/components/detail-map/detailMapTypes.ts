@@ -22,6 +22,10 @@ export interface DetailMapLayerState {
    * the `administrativeBoundariesVisible` polygon/outline toggle. */
   wardLabelsVisible: boolean;
   buildingsVisible: boolean;
+  /** Public-service POI layer (bệnh viện/trường học/cơ quan nhà nước) — `serviceLayers.ts`, a
+   * separate PMTiles archive from roads/buildings/places. Off by default (advanced tier), same
+   * "not blindly on" convention as `keyProjectsVisible`/`planningZonesVisible`. */
+  servicesVisible: boolean;
   dashboardMetricsVisible: boolean;
   heatmapVisible: boolean;
   terrainVisible: boolean;
@@ -60,6 +64,9 @@ export type MapInteractionMode = 'browse' | 'measure' | 'radius';
  * they're available when they aren't. */
 export interface DetailMapSourceAvailability {
   roads: boolean;
+  /** VITE_DETAIL_MAP_SERVICES_URL — a separate PMTiles archive from `roads` (see
+   * `serviceLayers.ts`'s doc comment for why it isn't folded into the same source). */
+  services: boolean;
   administrativeBoundaries: boolean;
   dashboardOverlays: boolean;
   terrain: boolean;
@@ -75,6 +82,9 @@ export interface DetailMapInitOptions {
    * is true — `sourceAvailability` alone is a boolean, not enough to actually build the style's
    * vector source. Undefined when no source is configured. */
   sourceUrl?: string;
+  /** Same as `sourceUrl` but for the separate services PMTiles archive
+   * (VITE_DETAIL_MAP_SERVICES_URL / `sourceAvailability.services`) — see `serviceLayers.ts`. */
+  servicesSourceUrl?: string;
 }
 
 export interface GeocodingResult {
@@ -138,6 +148,7 @@ export interface DetailedMapProvider {
    * off→on — same convention as `setKeyProjectsVisible`. */
   setPlanningZonesVisible(visible: boolean, options?: { animate?: boolean }): void;
   setBuildingsVisible(visible: boolean): void;
+  setServicesVisible(visible: boolean): void;
   setDashboardMetricsVisible(visible: boolean): void;
   setHeatmapVisible(visible: boolean): void;
 
@@ -168,6 +179,7 @@ export const DEFAULT_DETAIL_MAP_LAYER_STATE: DetailMapLayerState = {
   administrativeBoundariesVisible: true,
   wardLabelsVisible: true,
   buildingsVisible: true,
+  servicesVisible: false,
   dashboardMetricsVisible: false,
   heatmapVisible: false,
   terrainVisible: false,

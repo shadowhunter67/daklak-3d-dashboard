@@ -71,6 +71,7 @@ import {
   ROAD_LABELS_LAYER_ID,
 } from './roadLayers';
 import { BUILDINGS_FILL_LAYER_ID, BUILDINGS_OUTLINE_LAYER_ID } from './buildingLayers';
+import { SERVICES_LABELS_LAYER_ID, SERVICES_POINTS_LAYER_ID } from './serviceLayers';
 import {
   WARD_FLY_DURATION_MS,
   WARD_HIGHLIGHT_DURATION_MS,
@@ -136,7 +137,12 @@ export class MapLibreProvider implements DetailedMapProvider {
     const glyphsUrl = `${import.meta.env.BASE_URL}fonts/{fontstack}/{range}.pbf`;
     const map = new maplibregl.Map({
       container,
-      style: buildDetailMapStyle(options.sourceAvailability, options.sourceUrl, glyphsUrl),
+      style: buildDetailMapStyle(
+        options.sourceAvailability,
+        options.sourceUrl,
+        glyphsUrl,
+        options.servicesSourceUrl,
+      ),
       center: [options.camera.longitude, options.camera.latitude],
       zoom: options.camera.zoom,
       bearing: options.camera.bearing,
@@ -373,6 +379,7 @@ export class MapLibreProvider implements DetailedMapProvider {
       animate: canAnimate && layers.planningZonesVisible && !previous?.planningZonesVisible,
     });
     this.setBuildingsVisible(layers.buildingsVisible);
+    this.setServicesVisible(layers.servicesVisible);
     this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
     this.setHeatmapVisible(layers.heatmapVisible);
   }
@@ -595,6 +602,12 @@ export class MapLibreProvider implements DetailedMapProvider {
     if (!this.sourceAvailability?.roads) return;
     this.setLayerVisibility(BUILDINGS_FILL_LAYER_ID, visible);
     this.setLayerVisibility(BUILDINGS_OUTLINE_LAYER_ID, visible);
+  }
+
+  setServicesVisible(visible: boolean): void {
+    if (!this.sourceAvailability?.services) return;
+    this.setLayerVisibility(SERVICES_POINTS_LAYER_ID, visible);
+    this.setLayerVisibility(SERVICES_LABELS_LAYER_ID, visible);
   }
 
   setDashboardMetricsVisible(visible: boolean): void {

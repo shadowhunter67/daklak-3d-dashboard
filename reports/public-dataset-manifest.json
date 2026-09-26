@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-05T12:40:42.003Z",
+  "generatedAt": "2026-09-26T03:01:59.647Z",
   "allDatasetIds": [
     "administrative-units",
     "province-overview-indicators",
@@ -10,6 +10,7 @@
     "building-footprints-buon-ma-thuot-pilot",
     "terrain-imagery",
     "road-network-detail-map-pmtiles",
+    "detail-map-services-pmtiles",
     "map-glyphs-noto-sans",
     "project-portfolio-illustrative",
     "project-progress-illustrative",
@@ -29,6 +30,7 @@
     "building-footprints-buon-ma-thuot-pilot",
     "terrain-imagery",
     "road-network-detail-map-pmtiles",
+    "detail-map-services-pmtiles",
     "map-glyphs-noto-sans",
     "project-portfolio-illustrative",
     "project-progress-illustrative",
@@ -108,6 +110,12 @@
     },
     {
       "id": "road-network-detail-map-pmtiles",
+      "classification": "public",
+      "delivery": "pmtiles",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "detail-map-services-pmtiles",
       "classification": "public",
       "delivery": "pmtiles",
       "requiresAuthentication": false
@@ -305,6 +313,16 @@
       "delivery": "public-static-asset",
       "checksum": "5bb48508177f4bb722eec3d33b8574ed65b53cadc8a7d5c0ebdf9ee4ba844da5",
       "note": "Real OSM roads/buildings/places vector tile archive (PMTiles) for the MapLibre detail map, fetched at runtime via HTTP range requests by MapLibreProvider's pmtiles:// protocol. Vite copies public/ verbatim. Pipeline: docs/detail-map-integration.md."
+    },
+    {
+      "path": "public/maps/daklak-services.pmtiles",
+      "datasetIds": [
+        "detail-map-services-pmtiles"
+      ],
+      "classification": "public",
+      "delivery": "public-static-asset",
+      "checksum": "8cad51f16632ac3ccd94e69af7e7af67f0515cdd462b02d2d41eaa028a859d64",
+      "note": "Real OSM public-service POI (amenity=hospital/school/.../office=government, node-only) vector tile archive (PMTiles) for the MapLibre detail map — SEPARATE archive from daklak.pmtiles, see serviceLayers.ts. Vite copies public/ verbatim. Pipeline: docs/detail-map-integration.md."
     },
     {
       "path": "public/fonts/Noto Sans Regular/0-255.pbf",

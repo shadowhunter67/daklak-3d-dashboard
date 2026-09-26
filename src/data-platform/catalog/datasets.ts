@@ -335,6 +335,40 @@ export const DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET: DatasetDescriptor = {
 };
 
 /**
+ * Documents the detail map's public-service POI PMTiles archive (`public/maps/daklak-services.pmtiles`,
+ * ~114KB) as a real catalog entry. A SEPARATE archive from `daklak.pmtiles` — see serviceLayers.ts
+ * for why. Built from the same pinned Geofabrik Vietnam extract (vietnam-260831.osm.pbf) and the
+ * same Đắk Lắk clip polygon as the roads archive, filtered to OSM `amenity=hospital, clinic,
+ * doctors, pharmacy, school, university, college, kindergarten, townhall, police, post_office,
+ * courthouse` and `office=government`, nodes only.
+ */
+export const DETAIL_MAP_SERVICES_PMTILES_DATASET: DatasetDescriptor = {
+  id: 'detail-map-services-pmtiles',
+  title: 'Dịch vụ công (y tế, giáo dục, cơ quan nhà nước) — bản đồ chi tiết',
+  description:
+    'Điểm dịch vụ công thật từ OpenStreetMap (bệnh viện/phòng khám/hiệu thuốc, trường học, cơ quan hành chính/công an/bưu điện/tòa án) cho bản đồ chi tiết MapLibre, self-hosted cùng gốc (same-origin) từ /maps/daklak-services.pmtiles.',
+  domain: 'infrastructure',
+  classification: 'public',
+  authority: 'unknown',
+  publicationStatus: 'published',
+  administrativeLevel: 'mixed',
+  temporalResolution: 'static',
+  spatialRepresentation: 'vector-tile',
+  source: { organization: 'OpenStreetMap contributors', license: 'ODbL 1.0' },
+  version: 'osm-260831_services-pmtiles-v1',
+  checksum: '8cad51f16632ac3ccd94e69af7e7af67f0515cdd462b02d2d41eaa028a859d64',
+  quality: {
+    status: 'partially-verified',
+    knownLimitations: [
+      'Chỉ lấy node (điểm): một số bệnh viện/trường học trong OSM được vẽ dưới dạng đa giác (building way) nên không xuất hiện — số lượng hiển thị thấp hơn thực tế.',
+      'Snapshot tĩnh tại một thời điểm (extract 2026-08-31), không có cơ chế tự làm mới — cần chạy lại pipeline thủ công khi muốn cập nhật.',
+      'Độ phủ phụ thuộc cộng đồng OSM; vùng nông thôn thường thiếu điểm.',
+    ],
+  },
+  access: { delivery: 'pmtiles', requiresAuthentication: false },
+};
+
+/**
  * Self-hosted glyph range PBFs (`public/fonts/Noto Sans Regular/*.pbf`) the detail map's
  * `road-labels`/`place-labels` symbol layers need — MapLibre style specs require a `glyphs` URL
  * for any symbol layer with `text-field`, and this project never points that at a live third-party
@@ -643,6 +677,7 @@ export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   BUILDING_FOOTPRINTS_BUON_MA_THUOT_DATASET,
   TERRAIN_IMAGERY_DATASET,
   DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET,
+  DETAIL_MAP_SERVICES_PMTILES_DATASET,
   DETAIL_MAP_GLYPHS_DATASET,
   PROJECT_PORTFOLIO_ILLUSTRATIVE_DATASET,
   PROJECT_PROGRESS_ILLUSTRATIVE_DATASET,

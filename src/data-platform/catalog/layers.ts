@@ -23,6 +23,16 @@ function detailMapAvailability(): MapLayerDescriptor['availability'] {
   return detailMapRoadsSource.available ? 'available' : 'not-configured';
 }
 
+const detailMapServicesSource = new PmtilesSourceAdapter({
+  datasetId: 'detail-map-services-pmtiles',
+  configuredUrl: readEnv('VITE_DETAIL_MAP_SERVICES_URL'),
+  attribution: '© OpenStreetMap contributors (ODbL 1.0)',
+}).describe();
+
+function detailMapServicesAvailability(): MapLayerDescriptor['availability'] {
+  return detailMapServicesSource.available ? 'available' : 'not-configured';
+}
+
 export const LAYER_REGISTRY: readonly MapLayerDescriptor[] = [
   {
     id: 'road-3d2d',
@@ -151,6 +161,17 @@ export const LAYER_REGISTRY: readonly MapLayerDescriptor[] = [
     defaultVisible: true,
     accessPolicyId: 'public-standard',
     availability: detailMapAvailability(),
+  },
+  {
+    id: 'servicesVisible',
+    title: 'Dịch vụ công (y tế/giáo dục/hành chính)',
+    group: 'Bản đồ chi tiết',
+    datasetId: 'detail-map-services-pmtiles',
+    renderer: 'maplibre',
+    geometryType: 'point',
+    defaultVisible: false,
+    accessPolicyId: 'public-standard',
+    availability: detailMapServicesAvailability(),
   },
   {
     id: 'dashboardMetricsVisible',

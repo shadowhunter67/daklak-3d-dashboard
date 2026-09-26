@@ -6,6 +6,11 @@ import {
 } from './wardBoundaryLayers';
 import { buildBuildingLayers } from './buildingLayers';
 import {
+  buildServicePointLayers,
+  buildServicesSource,
+  SERVICES_VECTOR_SOURCE_ID,
+} from './serviceLayers';
+import {
   buildLabelLayers,
   buildOsmVectorSource,
   buildRoadLineLayers,
@@ -64,6 +69,7 @@ export function buildDetailMapStyle(
   sourceAvailability: DetailMapSourceAvailability,
   sourceUrl?: string,
   glyphsUrl?: string,
+  servicesSourceUrl?: string,
 ): StyleSpecification {
   const wardLayers = buildWardBoundaryLayers();
   const [wardFillLayer, ...wardRemainingLayers] = wardLayers;
@@ -131,6 +137,17 @@ export function buildDetailMapStyle(
   // it on deliberately and it must never be occluded. Starts hidden (visibility: 'none');
   // MapLibreProvider.setKeyProjectsVisible reveals it and its label layer needs glyphs.
   style.layers.push(...buildKeyProjectsLayers(Boolean(glyphsUrl)));
+
+  // Public-service POI overlay — separate PMTiles archive from `roads` (see serviceLayers.ts's doc
+  // comment for why), gated independently. Drawn on top like key-projects/planning-zones (an
+  // opt-in reference layer, must stay clickable above roads/buildings when enabled); starts hidden
+  // (visibility: 'none' baked into buildServicePointLayers) — MapLibreProvider.setServicesVisible
+  // reveals it. Label sub-layer only exists when glyphs are configured, same as every other symbol
+  // layer in this style.
+  if (sourceAvailability.services && servicesSourceUrl) {
+    style.sources[SERVICES_VECTOR_SOURCE_ID] = buildServicesSource(servicesSourceUrl);
+    style.layers.push(...buildServicePointLayers(Boolean(glyphsUrl)));
+  }
 
   return style;
 }

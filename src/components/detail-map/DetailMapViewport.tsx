@@ -33,6 +33,8 @@ function readSourceAvailability(): DetailMapSourceAvailability {
   const env = import.meta.env;
   return {
     roads: Boolean(env.VITE_DETAIL_MAP_SOURCE_URL),
+    // Separate PMTiles archive from `roads` — see serviceLayers.ts's doc comment for why.
+    services: Boolean(env.VITE_DETAIL_MAP_SERVICES_URL),
     // Ranh giới hành chính đến từ GeoJSON đóng gói sẵn trong repo (daklak-wards-render.json,
     // xem wardBoundaryLayers.ts), không phụ thuộc nguồn PMTiles theo env như các lớp còn lại.
     administrativeBoundaries: true,
@@ -59,6 +61,16 @@ function readSourceAvailability(): DetailMapSourceAvailability {
  * resolves correctly in both dev and the deployed subpath. */
 function readSourceUrl(): string | undefined {
   const url = import.meta.env.VITE_DETAIL_MAP_SOURCE_URL;
+  return typeof url === 'string' && url.length > 0
+    ? `${import.meta.env.BASE_URL}${url}`
+    : undefined;
+}
+
+/** Same as `readSourceUrl()` but for the separate services PMTiles archive — see
+ * serviceLayers.ts's doc comment for why it's a second file/env var, not a 4th layer merged into
+ * `VITE_DETAIL_MAP_SOURCE_URL`'s archive. */
+function readServicesSourceUrl(): string | undefined {
+  const url = import.meta.env.VITE_DETAIL_MAP_SERVICES_URL;
   return typeof url === 'string' && url.length > 0
     ? `${import.meta.env.BASE_URL}${url}`
     : undefined;
@@ -107,6 +119,7 @@ export function DetailMapViewport() {
   const [radiusMeters, setRadiusMeters] = useState<number>(RADIUS_PRESETS_METERS[0]);
   const [sourceAvailability] = useState(() => readSourceAvailability());
   const [sourceUrl] = useState(() => readSourceUrl());
+  const [servicesSourceUrl] = useState(() => readServicesSourceUrl());
   const containerRef = useRef<HTMLDivElement | null>(null);
   const providerRef = useRef<DetailedMapProvider | null>(null);
   const handleCameraChange = useDetailMapCameraSync();
@@ -141,7 +154,7 @@ export function DetailMapViewport() {
     if (!container) return;
 
     provider
-      .initialize(container, { camera, layers, sourceAvailability, sourceUrl })
+      .initialize(container, { camera, layers, sourceAvailability, sourceUrl, servicesSourceUrl })
       .then(() => {
         if (cancelled) return;
         provider.setSelectedWard(selectedCode);
