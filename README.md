@@ -13,7 +13,6 @@ Dashboard bản đồ 3D thể hiện 102 xã/phường của tỉnh Đắk Lắ
 [![Tổng quan điều hành — Đắk Lắk 3D Dashboard](docs/images/readme-gallery/executive-overview-desktop.png)](https://shadowhunter67.github.io/daklak-3d-dashboard/)
 
 **Bản demo trực tuyến:** https://shadowhunter67.github.io/daklak-3d-dashboard/
-**Khám phá Đắk Lắk 3D (bản xem trước, tạm ẩn khỏi menu chính — vào thẳng qua link):** https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world
 
 > **Lưu ý:** toàn bộ số liệu dự án/ngân sách/tiến độ hiển thị trong bản demo đều là **dữ liệu minh họa**, không phải số liệu vận hành hay số liệu chính thức của cơ quan nhà nước — chỉ để trình diễn giao diện. Ranh giới hành chính là dữ liệu mở tham khảo, không dùng cho mục đích pháp lý/quy hoạch.
 

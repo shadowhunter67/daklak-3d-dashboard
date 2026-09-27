@@ -44,7 +44,7 @@ operational figures.
 
 ## Demo
 
-**Live demo:** https://shadowhunter67.github.io/daklak-3d-dashboard/ · [**Explore Đắk Lắk 3D**](https://shadowhunter67.github.io/daklak-3d-dashboard/?view=world) (early preview, illustrative)
+**Live demo:** https://shadowhunter67.github.io/daklak-3d-dashboard/
 
 > **Disclaimer:** all project/work-package/milestone/budget/disbursement/issue data shown in
 > Executive Overview and the map experiences is **deterministic illustrative data** (a fixed seed
