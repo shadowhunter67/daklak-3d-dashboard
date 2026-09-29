@@ -23,14 +23,14 @@ lệ để ingest. Xem đánh giá đầy đủ (kèm mục "Candidate #5" mới
 
 Tự tải lại khi cần đối chiếu/tái tạo, không lưu trong Git:
 
-| Phụ lục | URL | MD5 (tải 2026-09-29) |
-|---|---|---|
-| PL1 — Năng lượng | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL1.pdf` | `b4f5a2d5a465c38f876c70f38b9dfdaa` |
-| PL2 — Đô thị/nhà ở | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL2.pdf` | `549cca3d08860743be13a0d0db098f52` |
-| PL3 — (xem cảnh báo) | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL3.pdf` | `549cca3d08860743be13a0d0db098f52` (**trùng PL2**) |
-| PL4 — Nông nghiệp/CN chế biến/TM dịch vụ | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL4.pdf` | `cd3f63d01afcb6e2c2ce74dcdfb1f9f7` |
-| PL5 — Y tế/Giáo dục/Môi trường/CNTT | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL5.pdf` | `0b986e88b325784603ff024412e2215a` |
-| PL6 — Du lịch/sân golf | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL6.pdf` | `014d5587c666332751ff4e080cfff8ef` |
+| Phụ lục                                  | URL                                                                                | MD5 (tải 2026-09-29)                               |
+| ---------------------------------------- | ---------------------------------------------------------------------------------- | -------------------------------------------------- |
+| PL1 — Năng lượng                         | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL1.pdf` | `b4f5a2d5a465c38f876c70f38b9dfdaa`                 |
+| PL2 — Đô thị/nhà ở                       | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL2.pdf` | `549cca3d08860743be13a0d0db098f52`                 |
+| PL3 — (xem cảnh báo)                     | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL3.pdf` | `549cca3d08860743be13a0d0db098f52` (**trùng PL2**) |
+| PL4 — Nông nghiệp/CN chế biến/TM dịch vụ | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL4.pdf` | `cd3f63d01afcb6e2c2ce74dcdfb1f9f7`                 |
+| PL5 — Y tế/Giáo dục/Môi trường/CNTT      | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL5.pdf` | `0b986e88b325784603ff024412e2215a`                 |
+| PL6 — Du lịch/sân golf                   | `https://vpubnd.daklak.gov.vn/CMS/Content/VanBan/2026/6.2026/1985-QĐ-UBND PL6.pdf` | `014d5587c666332751ff4e080cfff8ef`                 |
 
 (URL cần URL-encode khoảng trắng/`Đ` khi tải bằng `curl`; xem cách gọi trong `extract_1985.py`.)
 
