@@ -140,6 +140,51 @@ mục khác trong tài liệu này, AI không tự kết luận đây là đánh
    `compliance.mjs`/`diffRisk.mjs`, không dùng script ad-hoc trong `evidence/` làm nguồn dữ liệu
    chạy production.
 
+## Cập nhật 2026-09-29 (2): Khảo sát mở rộng toàn bộ sở/ngành tỉnh Đắk Lắk (mới, sau sáp nhập Phú Yên)
+
+**Không tìm thêm được candidate nào đạt tiêu chí.** Theo yêu cầu người dùng, AI (Claude, qua 1
+subagent) rà soát rộng cổng thông tin của các sở/ban/ngành khác thuộc tỉnh Đắk Lắk (không chỉ đầu
+tư) và một số nguồn liên tỉnh, để tìm thêm nguồn deterministic-parseable như Candidate #5. Lưu ý:
+Đắk Lắk hiện tại = Đắk Lắk cũ + Phú Yên cũ (sáp nhập hành chính 2025) — khảo sát có tính cả phần
+Phú Yên (VD Ban QL Khu kinh tế Phú Yên).
+
+**Kết quả: hầu hết cổng sở/ngành chỉ có tin tức + PDF quyết định rời rạc theo huyện/đơn vị, không
+phải bảng danh mục tổng hợp** — không đạt tiêu chí "parser deterministic khả thi" giống Candidate #1.
+
+| Cổng                                           | Đơn vị                          | Kết luận                                                                                                                                                                                                                                 |
+| ---------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `snnmt.daklak.gov.vn`                          | Sở Nông nghiệp và Môi trường    | Không — chỉ danh sách quyết định theo huyện, không có bảng tổng hợp                                                                                                                                                                      |
+| `daklak.gov.vn/thong-tin-quy-hoach`            | UBND tỉnh                       | Không — danh sách tin/link, 26 trang phân trang                                                                                                                                                                                          |
+| `soxaydung.daklak.gov.vn`                      | Sở Xây dựng                     | Chưa kết luận — có nhắc "Hệ thống cung cấp thông tin quy hoạch đô thị và cấp phép xây dựng" (có thể là webapp bản đồ riêng), cần khảo sát riêng ở vòng sau                                                                               |
+| `sogtvt.daklak.gov.vn`                         | Sở GTVT                         | Không — chỉ tin tức/văn bản, mục quy hoạch giao thông trống nội dung bảng                                                                                                                                                                |
+| `socongthuong.daklak.gov.vn`                   | Sở Công Thương                  | Chưa khảo sát sâu — đáng xem mục quy hoạch điện lực 110kV (có nhắc trên moit.gov.vn)                                                                                                                                                     |
+| `bqlkcn.daklak.gov.vn`                         | Ban QL các KCN (Đắk Lắk cũ)     | Không — tin tức, không có bảng tên/diện tích/tỷ lệ lấp đầy KCN                                                                                                                                                                           |
+| `bqlkkt.daklak.gov.vn`                         | Ban QL Khu kinh tế (Phú Yên cũ) | Không — tin tức + danh sách tên KCN dạng menu, không bảng                                                                                                                                                                                |
+| `yte.daklak.gov.vn`                            | Sở Y tế                         | Không — danh mục cơ sở dạng link rời, không bảng gộp                                                                                                                                                                                     |
+| `gddt.daklak.gov.vn`                           | Sở GD&ĐT                        | Chưa khảo sát sâu                                                                                                                                                                                                                        |
+| `vhttdl.daklak.gov.vn`                         | Sở VHTTDL                       | Chưa khảo sát sâu                                                                                                                                                                                                                        |
+| Niên giám Thống kê (`nso.gov.vn`/`gso.gov.vn`) | Cục Thống kê Đắk Lắk            | Tiềm năng cao về mặt bản chất (ấn phẩm dạng bảng chuẩn) nhưng chưa xác nhận được link tải PDF/Excel trực tiếp — domain `gso.gov.vn` lỗi DNS lúc khảo sát (2 lần, khác thời điểm), `nso.gov.vn` phân giải được nhưng chưa thấy nút tải rõ |
+| `data.gov.vn` (cổng dữ liệu mở quốc gia)       | Bộ KH&CN                        | Không truy cập được — lỗi DNS lần thứ 2 (khác thời điểm với lần đánh giá 2026-07-24) — nghi vấn hạ tầng mạng môi trường AI, chưa chắc site thật sự down; cần thử từ mạng khác                                                            |
+
+**2 dự án hạ tầng liên tỉnh thật, không có cổng dữ liệu cấu trúc nhưng đủ rõ để ghi nhận thủ công
+nếu owner muốn (không phải diện "onboard tự động" của ADR 0004, chỉ là ghi 1-2 bản ghi tay nếu cần
+hiển thị hạ tầng trọng điểm quốc gia đi qua tỉnh):**
+
+- Lưới điện 500kV Krông Búk – Tây Ninh 1 (EVNNPT): trạm 500kV đặt tại xã Ea Kiết, Đắk Lắk, tuyến
+  ~330km qua Đắk Lắk–Lâm Đồng–Đồng Nai–TP.HCM–Tây Ninh, tổng vốn ~14.059 tỷ đồng.
+- Cao tốc Khánh Hòa – Buôn Ma Thuột (Bộ Xây dựng/GTVT): mục tiêu hoàn thành cơ bản trước
+  31/12/2026.
+
+### Khuyến nghị bước tiếp theo (nếu owner muốn đào sâu thêm)
+
+1. Khảo sát kỹ hệ thống tra cứu quy hoạch đô thị/cấp phép xây dựng của Sở Xây dựng — có thể là
+   webapp bản đồ (giống `bando.daklak.gov.vn` chưa khảo sát kỹ), không phải file tải về, cần cách
+   đánh giá khác (network tab qua chrome-devtools thay vì WebFetch tĩnh).
+2. Thử lại Niên giám Thống kê GSO từ mạng khác để loại trừ nguyên nhân DNS môi trường trước khi kết
+   luận "không truy cập được".
+3. Không ưu tiên Sở Công Thương/GD&ĐT/VHTTDL — mới chỉ lướt qua, chưa đủ căn cứ kết luận, cần khảo
+   sát riêng nếu owner thấy lĩnh vực đó đáng giá cho roadmap.
+
 ## Why this stops here, not with a workaround
 
 - No OCR of decision-document PDFs/scans (explicitly out of scope for this PR).
