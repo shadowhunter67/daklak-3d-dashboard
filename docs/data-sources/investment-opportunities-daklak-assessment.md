@@ -88,6 +88,58 @@ prose that would need per-document judgment calls to extract fields from.
   DNS issue rather than the portal being genuinely down; worth retrying from a different network
   before ruling it out entirely. Flagged here rather than silently dropped.
 
+## Cập nhật 2026-09-29: Candidate #5 — Quyết định 1985/QĐ-UBND (phụ lục PDF có cấu trúc bảng)
+
+**Không đảo ngược verdict BLOCKED ở trên — bổ sung một ứng viên MỚI, cần review riêng.** Phần dưới
+đây được AI (Claude) tra cứu/trích xuất theo yêu cầu của người dùng trong phiên làm việc; giống mọi
+mục khác trong tài liệu này, AI không tự kết luận đây là đánh giá pháp lý/compliance đầy đủ.
+
+- **Nguồn:** Quyết định số **1985/QĐ-UBND** (UBND tỉnh Đắk Lắk, ký 24/06/2026) — "Phê duyệt Danh mục
+  dự án thu hút đầu tư giai đoạn 2026-2030 của tỉnh Đắk Lắk". Trang tra cứu:
+  https://vpubnd.daklak.gov.vn/Documents/Detail/11262 (Trang thông tin điện tử Văn phòng UBND tỉnh,
+  KHÁC domain với `daklak.gov.vn` đã đánh giá ở Candidate #1 — cần review compliance riêng, không
+  dùng chung kết luận robots/terms của `daklak.gov.vn`).
+- **`robots.txt` của `vpubnd.daklak.gov.vn`** (kiểm tra 2026-09-29): không `Disallow` đường dẫn
+  `/CMS/Content/VanBan/` hay `/Documents/Detail/` — chỉ chặn từ khoá SEO/cờ bạc/nội dung xấu không
+  liên quan.
+- **Redistribution notice:** CHƯA tìm thấy dòng thông báo kiểu "ghi rõ nguồn khi phát hành lại" ở
+  footer riêng của `vpubnd.daklak.gov.vn` (khác Candidate #1, nơi `daklak.gov.vn` có dòng này rõ
+  ràng) — đây là khoảng trống cần owner xác nhận thêm, KHÔNG mặc định suy ra chính sách từ domain
+  khác cùng tỉnh.
+- **Cấu trúc — điểm khác biệt then chốt so với Candidate #1:** đây không phải trang tin tức, mà là
+  **6 file PDF phụ lục** đính kèm quyết định, mỗi file là **bảng dữ liệu 12 cột nhất quán** (STT, Tên
+  dự án, Địa điểm theo xã/phường, Diện tích, Tổng vốn dự kiến, Nguồn gốc đất, Hiện trạng SDĐ, Quy mô
+  đầu tư, Quyết định phê duyệt quy hoạch, Điều kiện hạ tầng, Hình thức đầu tư/GPMB, Ghi chú) — parser
+  **deterministic khả thi đã được chứng minh bằng script thật** (`PyMuPDF.find_tables()`), không cần
+  OCR, không cần LLM diễn giải nội dung. Đây là điểm khác Candidate #1 (từng bị chặn chính vì thiếu
+  cấu trúc deterministic).
+- **Kết quả trích xuất thử nghiệm:** 201 dự án, 5/6 phụ lục (phụ lục 3 bị chính nguồn upload trùng
+  byte-for-byte với phụ lục 2 — lỗi phía tỉnh, không phải lỗi trích xuất). Chi tiết đầy đủ, script tái
+  tạo được, và checksum từng file PDF gốc: xem
+  [`evidence/1985-qd-ubnd/README.md`](evidence/1985-qd-ubnd/README.md).
+- **Vẫn KHÔNG đủ để tự động onboard** — hai khoảng trống compliance chưa có người xác nhận:
+  1. `redistributionPolicy` của riêng `vpubnd.daklak.gov.vn` (footer không có thông báo rõ ràng như
+     `daklak.gov.vn`).
+  2. Đây là **văn bản hành chính nhà nước** (Quyết định), không phải "dữ liệu mở" có giấy phép công
+     bố tường minh — dù theo Luật SHTT VN Điều 15, văn bản hành chính không thuộc đối tượng bảo hộ
+     quyền tác giả, đây vẫn là một nhận định pháp lý mà AI không có thẩm quyền tự kết luận thay
+     owner.
+  3. `terms`/điều khoản sử dụng chưa được review đầy đủ như quy trình Candidate #1 đã làm.
+- **Chưa có** entry nào được thêm vào `data/source-registry.yml`, chưa viết adapter — đúng nguyên tắc
+  ở mục "Why this stops here" bên dưới, áp dụng y hệt cho candidate mới này.
+
+### Khuyến nghị bước tiếp theo (nếu owner muốn theo hướng này)
+
+1. `shadowhunter67` xác nhận độc lập redistribution policy của `vpubnd.daklak.gov.vn` (liên hệ
+   banbientap@vpubnd.daklak.gov.vn nếu cần) — ghi ngày thật vào `robotsCheckedAt`/`termsCheckedAt`
+   khi tạo entry registry, không dùng ngày AI kiểm tra ở trên làm căn cứ compliance chính thức.
+2. Liên hệ tỉnh xin bản đúng của phụ lục 3 (hiện bị trùng phụ lục 2 trên server nguồn).
+3. Nếu quyết định onboard: entity đích là `InvestmentOpportunity`
+   (`src/entities/investment-opportunity/`) theo ADR 0004 mục 1 — **không** trộn vào `Project`/
+   `ProjectPortfolioSource` hiện có. Viết adapter thật trong `scripts/data-refresh/` theo đúng pattern
+   `compliance.mjs`/`diffRisk.mjs`, không dùng script ad-hoc trong `evidence/` làm nguồn dữ liệu
+   chạy production.
+
 ## Why this stops here, not with a workaround
 
 - No OCR of decision-document PDFs/scans (explicitly out of scope for this PR).
