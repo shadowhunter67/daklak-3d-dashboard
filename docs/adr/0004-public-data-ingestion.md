@@ -181,10 +181,13 @@ PR.
 ## Phạm vi chưa làm (khuyến nghị phase sau)
 
 - Onboard nguồn thật (cần xác nhận robots.txt/terms/compliance officer trước) — **đã thử và bị
-  chặn** cho `investment-opportunities-daklak`, xem
+  chặn** cho `investment-opportunities-daklak` ở lần đánh giá đầu (2026-07-24), xem
   [`docs/data-sources/investment-opportunities-daklak-assessment.md`](../data-sources/investment-opportunities-daklak-assessment.md):
-  các nguồn chính thức đã kiểm tra không có cấu trúc dữ liệu deterministic-parseable hoặc không truy
-  cập được.
+  các nguồn chính thức đã kiểm tra khi đó không có cấu trúc dữ liệu deterministic-parseable hoặc
+  không truy cập được. **Cập nhật 2026-09-29:** tìm được 1 candidate mới (Quyết định 1985/QĐ-UBND,
+  phụ lục PDF dạng bảng, deterministic-parseable — đã chứng minh bằng script thật, xem mục "Candidate
+  #5" trong cùng tài liệu) nhưng **vẫn chưa onboard** — còn thiếu xác nhận redistribution policy của
+  domain `vpubnd.daklak.gov.vn` bởi owner, chưa có trong `data/source-registry.yml`.
 - GitHub Release asset thật cho raw evidence.
 - Evidence-checksum store thật cho `autoMergePolicy.mjs`'s `evidenceChecksumConflict` (hiện luôn
   `false`).
