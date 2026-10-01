@@ -55,14 +55,14 @@
     "build:buildings": "python scripts/build_daklak_buildings.py"
   },
   "dependencies": {
-    "@react-three/drei": "^10.7.8",
-    "@react-three/fiber": "^9.8.0",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.1",
     "d3-geo": "^3.1.1",
     "maplibre-gl": "^6.11.0",
     "pmtiles": "^4.5.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "three": "^0.186.0",
+    "three": "^0.186.1",
     "zustand": "^5.0.15"
   },
   "devDependencies": {
