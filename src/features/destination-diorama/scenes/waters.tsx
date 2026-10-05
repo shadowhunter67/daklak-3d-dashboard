@@ -1,7 +1,14 @@
 import { useMemo, type ReactNode } from 'react';
 import type { CameraPoses, DioramaSceneProps, SkySpec } from '../dioramaConfig';
 import { seeded, smoothstep } from '../dioramaGeometry';
-import { DioramaCanvas, Forest, Heightfield, Instances, WaterSheet } from '../dioramaKit';
+import {
+  DioramaCanvas,
+  Forest,
+  Heightfield,
+  Instances,
+  ShoreFoam,
+  WaterSheet,
+} from '../dioramaKit';
 import {
   BasaltColumns,
   Boat,
@@ -115,6 +122,7 @@ function ShoreScene({ spec, ...scene }: DioramaSceneProps & { spec: ShoreSceneSp
         repeat={9}
         flow={[0.01, 0.02]}
       />
+      <ShoreFoam height={height} center={[0, -4]} extent={[56, 40]} level={0} size={256} />
       <Forest placements={trees} tones={['#2a5a2c', '#386e33', '#4b7438']} />
       {spec.extras?.(height)}
     </DioramaCanvas>

@@ -14,6 +14,7 @@ import {
   type SunSpec,
 } from './dioramaConfig';
 import { MotionContext, ShadowsContext, useReducedMotionScene, useShadows } from './dioramaContext';
+import { surfaceMaterialProps, type SurfaceKind } from './dioramaMaterials';
 import {
   createBoulderGeometry,
   createStreakTextureData,
@@ -22,6 +23,7 @@ import {
   type Placement,
 } from './dioramaGeometry';
 import {
+  createFoamTextureData,
   createHeightfieldGeometry,
   type ForestPlacements,
   type HeightFn,
@@ -62,6 +64,7 @@ export function Instances({
   roughness = 0.9,
   cuts = 0,
   flat = false,
+  surface = 'rock',
 }: {
   placements: Placement[];
   seed: number;
@@ -73,8 +76,11 @@ export function Instances({
   cuts?: number;
   /** Tô bóng theo mặt (cạnh sắc) thay vì mượt. */
   flat?: boolean;
+  /** Chi tiết bề mặt sinh bằng shader: vân đá, tán lá có lỗ + AO, hoặc không. */
+  surface?: SurfaceKind | 'none';
 }) {
   const shadows = useShadows();
+  const surfaceProps = surface === 'none' ? undefined : surfaceMaterialProps(surface);
   const geometry = useMemo(
     () => createBoulderGeometry(detail, amount, seeded(seed), cuts),
     [detail, amount, seed, cuts],
@@ -89,7 +95,12 @@ export function Instances({
       castShadow={shadows}
       receiveShadow={shadows}
     >
-      <meshStandardMaterial vertexColors roughness={roughness} flatShading={flat} />
+      <meshStandardMaterial
+        vertexColors
+        roughness={roughness}
+        flatShading={flat}
+        {...surfaceProps}
+      />
     </instancedMesh>
   );
 }
@@ -162,6 +173,7 @@ export function Forest({
           amount={0.5}
           roughness={1}
           flat
+          surface="leaf"
         />
       ))}
     </>
@@ -186,7 +198,48 @@ export function Heightfield({
   useEffect(() => () => geometry.dispose(), [geometry]);
   return (
     <mesh geometry={geometry} receiveShadow={shadows}>
-      <meshStandardMaterial vertexColors roughness={1} />
+      <meshStandardMaterial vertexColors roughness={1} {...surfaceMaterialProps('ground')} />
+    </mesh>
+  );
+}
+
+/** Bọt trắng loang dọc đường bờ/ven đá: lấy mẫu từ hàm độ cao quanh mực nước `level`. */
+export function ShoreFoam({
+  height,
+  center,
+  extent,
+  level,
+  band = 0.28,
+  opacity = 0.75,
+  size = 192,
+}: {
+  height: HeightFn;
+  center: [number, number];
+  extent: [number, number];
+  level: number;
+  band?: number;
+  opacity?: number;
+  size?: number;
+}) {
+  const [cx, cz] = center;
+  const [ew, ed] = extent;
+  const texture = useMemo(() => {
+    const result = new THREE.DataTexture(
+      createFoamTextureData(size, [cx, cz], [ew, ed], height, level, band),
+      size,
+      size,
+      THREE.RGBAFormat,
+    );
+    result.magFilter = THREE.LinearFilter;
+    result.minFilter = THREE.LinearFilter;
+    result.needsUpdate = true;
+    return result;
+  }, [size, cx, cz, ew, ed, height, level, band]);
+  useEffect(() => () => texture.dispose(), [texture]);
+  return (
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[cx, level + 0.035, cz]}>
+      <planeGeometry args={[ew, ed]} />
+      <meshBasicMaterial map={texture} transparent opacity={opacity} depthWrite={false} />
     </mesh>
   );
 }

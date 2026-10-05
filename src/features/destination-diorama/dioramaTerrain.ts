@@ -162,6 +162,44 @@ export function makeShoreHeight(spec: ShoreSpec): HeightFn {
   };
 }
 
+/**
+ * Độ đục của bọt nước tại một điểm có độ cao `h` so với mặt nước `level`: bọt ở dải nông sát đường bờ
+ * (từ `level - band` đến một chút trên mặt nước), mờ dần khi sâu hơn; `noise` ∈ [0, 1] làm bọt loang.
+ */
+export function foamAlpha(h: number, level: number, band: number, noise: number): number {
+  const depth = level - h;
+  if (depth > band) return 0;
+  const edge = depth < 0 ? 1 - smoothstep(0, 0.12, -depth) : 1 - smoothstep(0, band, depth);
+  return Math.max(0, Math.min(1, edge * (0.45 + 0.75 * noise)));
+}
+
+/** Bản đồ bọt (RGBA trắng, alpha = bọt) lấy mẫu từ hàm độ cao trên một hình chữ nhật. */
+export function createFoamTextureData(
+  size: number,
+  center: [number, number],
+  extent: [number, number],
+  height: HeightFn,
+  level: number,
+  band: number,
+): Uint8Array {
+  const data = new Uint8Array(size * size * 4);
+  for (let j = 0; j < size; j++) {
+    for (let i = 0; i < size; i++) {
+      // Ảnh chạy theo (x, -z) vì mặt phẳng được xoay -90° quanh X khi hiển thị.
+      const x = center[0] + (i / (size - 1) - 0.5) * extent[0];
+      const z = center[1] - (j / (size - 1) - 0.5) * extent[1];
+      const noise = fbm3(x * 3.2, 0, z * 3.2, 3, 41);
+      const a = foamAlpha(height(x, z), level, band, noise);
+      const index = (j * size + i) * 4;
+      data[index] = 255;
+      data[index + 1] = 255;
+      data[index + 2] = 255;
+      data[index + 3] = Math.round(a * 255);
+    }
+  }
+  return data;
+}
+
 export interface ForestOptions {
   count: number;
   seed: number;
