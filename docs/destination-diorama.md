@@ -15,19 +15,20 @@ Test `dioramaRegistry.test.ts` giữ hai bất biến: có đúng một scene ch
 
 ## Cấu trúc mã (`src/features/destination-diorama/`)
 
-| File                                       | Vai trò                                                                                                                                                               |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DestinationDioramaView.tsx`               | Shell: fallback WebGL, badge, panel (mô tả, nguồn, ảnh, cơ sở dựng, preset camera, chọn điểm đến), mất/khôi phục context                                              |
-| `dioramaRegistry.ts`                       | id điểm đến → scene (lazy, theo nhóm)                                                                                                                                 |
-| `dioramaConfig.ts`                         | `DIORAMA_BASIS`, kiểu camera, `SkySpec`/`SunSpec`                                                                                                                     |
-| `dioramaKit.tsx`                           | `DioramaCanvas` (Canvas + ánh sáng + trời + camera + giảm chuyển động), `Heightfield`, `Instances`, `Forest`, `WaterSheet`, `FallingWater`, `Mist`                    |
-| `dioramaProps.tsx`                         | Khối dựng: voi, nhà dài Ê Đê, đình ngói, tháp Chăm, cột bazan, tượng, cầu gỗ, thuyền, cọ, cột ăng-ten                                                                 |
-| `dioramaTerrain.ts` / `dioramaGeometry.ts` | Hàm thuần có test: nhiễu, địa hình thung lũng/ven bờ, rải cây, đá granit vỡ, normal map sóng nước                                                                     |
-| `scenes/waterfalls.tsx`                    | Thác bậc (Đray Nur, Gia Long, Thủy Tiên, Đray K'nao), ghềnh/sông (Bảy Nhánh, Ea Sô, Yok Đôn)                                                                          |
-| `scenes/waters.tsx`                        | Hồ Lắk, Đầm Ô Loan, Vịnh Xuân Đài, Vũng Rô, Gành Đá Đĩa, Mũi Điện                                                                                                     |
-| `scenes/landmarks.tsx`                     | Núi Chóp Chài, Núi Đá Bia, Cao nguyên Vân Hòa                                                                                                                         |
-| `scenes/structures.tsx`                    | Tháp Nhạn, Tháp Yang Prong, Buôn Đôn, Buôn Akõ Dhông, Đình Lạc Giao, Bảo tàng Đắk Lắk, Nhà đày Buôn Ma Thuột, Làng cà phê Trung Nguyên, Đức Mẹ Giang Sơn, Cầu Ông Cọp |
-| `KrongKmarScene.tsx`                       | Thác Krông Kmar (cảnh đầu tiên, có Canvas riêng)                                                                                                                      |
+| File                                       | Vai trò                                                                                                                                                                                                 |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DestinationDioramaView.tsx`               | Shell: fallback WebGL, badge, panel (mô tả, nguồn, ảnh, cơ sở dựng, preset camera, chọn điểm đến), mất/khôi phục context                                                                                |
+| `dioramaRegistry.ts`                       | id điểm đến → scene (lazy, theo nhóm)                                                                                                                                                                   |
+| `dioramaConfig.ts`                         | `DIORAMA_BASIS`, kiểu camera, `SkySpec`/`SunSpec`                                                                                                                                                       |
+| `dioramaKit.tsx`                           | `DioramaCanvas` (Canvas + ánh sáng + trời + camera + giảm chuyển động), `Heightfield`, `Instances`, `Forest`, `WaterSheet`, `FallingWater`, `Mist`                                                      |
+| `dioramaMaterials.ts`                      | Chi tiết bề mặt sinh bằng shader (không texture ngoài): vân và sọc ẩm cho đá, tán lá có lỗ + AO giả, nhiễu đất. Bọt nước ven bờ (`ShoreFoam` trong kit) chỉ dùng ở cảnh ven biển/hồ vì cần bờ có độ dốc |
+| `dioramaProps.tsx`                         | Khối dựng: voi, nhà dài Ê Đê, đình ngói, tháp Chăm, cột bazan, tượng, cầu gỗ, thuyền, cọ, cột ăng-ten                                                                                                   |
+| `dioramaTerrain.ts` / `dioramaGeometry.ts` | Hàm thuần có test: nhiễu, địa hình thung lũng/ven bờ, rải cây, đá granit vỡ, normal map sóng nước                                                                                                       |
+| `scenes/waterfalls.tsx`                    | Thác bậc (Đray Nur, Gia Long, Thủy Tiên, Đray K'nao), ghềnh/sông (Bảy Nhánh, Ea Sô, Yok Đôn)                                                                                                            |
+| `scenes/waters.tsx`                        | Hồ Lắk, Đầm Ô Loan, Vịnh Xuân Đài, Vũng Rô, Gành Đá Đĩa, Mũi Điện                                                                                                                                       |
+| `scenes/landmarks.tsx`                     | Núi Chóp Chài, Núi Đá Bia, Cao nguyên Vân Hòa                                                                                                                                                           |
+| `scenes/structures.tsx`                    | Tháp Nhạn, Tháp Yang Prong, Buôn Đôn, Buôn Akõ Dhông, Đình Lạc Giao, Bảo tàng Đắk Lắk, Nhà đày Buôn Ma Thuột, Làng cà phê Trung Nguyên, Đức Mẹ Giang Sơn, Cầu Ông Cọp                                   |
+| `KrongKmarScene.tsx`                       | Thác Krông Kmar (cảnh đầu tiên, có Canvas riêng)                                                                                                                                                        |
 
 ## Ràng buộc đã giữ
 
