@@ -17,6 +17,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'app.live.selected': '{name} selected.',
   'app.live.openedDataReadiness': 'Data Readiness page opened.',
   'app.live.openedWorld': 'Explore Đắk Lắk 3D opened.',
+  'app.live.openedDiorama': 'Illustrative 3D diorama opened.',
   'app.loading': 'Loading…',
 
   // Header
@@ -560,6 +561,24 @@ export const en: Partial<Record<MessageKey, string>> = {
     'This browser or device does not support WebGL, so the illustrative 3D scene cannot render.',
   'worldExploration.backToOverview': 'Back to Executive Overview',
 
+  'diorama.aria': 'Illustrative 3D diorama — {name}',
+  'diorama.illustrativeBadge': 'ILLUSTRATIVE — DIORAMA',
+  'diorama.illustrativeAria': 'Illustrative scene, not a surveyed model',
+  'diorama.basis.photo':
+    'Built from the real photo linked above; the shapes remain illustrative, not a surveyed model.',
+  'diorama.basis.text':
+    "Built from the source's text description only, not checked against a real photo — a general hint of the shape that may differ from reality.",
+  'diorama.source': 'Fact source',
+  'diorama.photo': 'Real photo',
+  'diorama.back': 'Back to Executive Overview',
+  'diorama.notFound': 'No diorama exists for this destination yet.',
+  'diorama.contextLost': 'Graphics context lost — waiting to restore…',
+  'diorama.cameraGroup': 'Viewpoint',
+  'diorama.preset.overview': 'Overview',
+  'diorama.pickAnother': 'Switch to another destination',
+  'diorama.preset.close': 'Close-up',
+  'diorama.preset.high': 'High view',
+
   // World Exploration destination markers (Phase T2, reports/tourism-digital-twin/) — real,
   // sourced destinations (src/entities/tourism/verifiedTourismDestinations.ts), rendered on top
   // of the illustrative terrain. The scene rendering stays illustrative; the destination facts
@@ -568,6 +587,8 @@ export const en: Partial<Record<MessageKey, string>> = {
   'worldExploration.destination.category.nationalPark': 'National park',
   'worldExploration.destination.category.waterfall': 'Waterfall',
   'worldExploration.destination.category.culturalVillage': 'Cultural village',
+  'worldExploration.destination.category.heritageStructure': 'Structure / heritage site',
+  'worldExploration.destination.category.naturalLandmark': 'Natural landmark',
   'worldExploration.destination.markerAriaLabel': 'Tourism destination: {name}',
   'worldExploration.destination.closeLabel': 'Close',
   'worldExploration.destination.verifiedNote':

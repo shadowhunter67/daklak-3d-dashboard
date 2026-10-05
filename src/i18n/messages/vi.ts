@@ -22,6 +22,7 @@ export const vi = {
   'app.live.selected': 'Đã chọn {name}.',
   'app.live.openedDataReadiness': 'Đã mở trang Mức độ sẵn sàng dữ liệu.',
   'app.live.openedWorld': 'Đã mở Khám phá Đắk Lắk 3D.',
+  'app.live.openedDiorama': 'Đã mở diorama 3D minh họa.',
   'app.loading': 'Đang tải…',
 
   // Header
@@ -566,6 +567,25 @@ export const vi = {
     'Trình duyệt hoặc thiết bị này không hỗ trợ WebGL nên không thể hiển thị cảnh 3D minh họa.',
   'worldExploration.backToOverview': 'Về Tổng quan điều hành',
 
+  // Diorama điểm đến (#/diorama/:id) — cảnh dựng thủ tục MINH HOẠ, không phải mô hình đo đạc.
+  'diorama.aria': 'Diorama 3D minh họa — {name}',
+  'diorama.illustrativeBadge': 'ILLUSTRATIVE — DIORAMA MINH HỌA',
+  'diorama.illustrativeAria': 'Cảnh dựng minh họa, không phải mô hình đo đạc thực tế',
+  'diorama.basis.photo':
+    'Dựng theo ảnh thực tế đã dẫn ở trên; hình dạng vẫn chỉ mang tính minh họa, không phải mô hình đo đạc.',
+  'diorama.basis.text':
+    'Dựng theo mô tả văn bản của nguồn, chưa đối chiếu được ảnh thực tế — chỉ gợi ý hình dạng chung, có thể khác thực tế.',
+  'diorama.source': 'Nguồn dữ kiện',
+  'diorama.photo': 'Ảnh thực tế',
+  'diorama.back': 'Về Tổng quan điều hành',
+  'diorama.notFound': 'Chưa có diorama cho điểm đến này.',
+  'diorama.contextLost': 'Mất ngữ cảnh đồ họa — đang chờ khôi phục…',
+  'diorama.cameraGroup': 'Góc nhìn',
+  'diorama.preset.overview': 'Toàn cảnh',
+  'diorama.pickAnother': 'Chuyển sang điểm đến khác',
+  'diorama.preset.close': 'Cận cảnh',
+  'diorama.preset.high': 'Trên cao',
+
   // World Exploration — điểm đến du lịch (Phase T2, reports/tourism-digital-twin/) — dữ liệu thật,
   // có nguồn (src/entities/tourism/verifiedTourismDestinations.ts), hiển thị trên nền địa hình minh
   // hoạ. Cảnh render vẫn là minh hoạ; dữ kiện điểm đến và liên kết nguồn là thật, nên có
@@ -574,6 +594,8 @@ export const vi = {
   'worldExploration.destination.category.nationalPark': 'Vườn quốc gia',
   'worldExploration.destination.category.waterfall': 'Thác nước',
   'worldExploration.destination.category.culturalVillage': 'Làng văn hóa',
+  'worldExploration.destination.category.heritageStructure': 'Công trình / di tích',
+  'worldExploration.destination.category.naturalLandmark': 'Danh thắng thiên nhiên',
   'worldExploration.destination.markerAriaLabel': 'Điểm đến du lịch: {name}',
   'worldExploration.destination.closeLabel': 'Đóng',
   'worldExploration.destination.verifiedNote':

@@ -20,6 +20,17 @@ import { decodeGrayscale8Png } from '../../../test/decodeGrayscale8Png';
  * this sub-item.
  */
 
+/** Điểm ven biển/đồng bằng, độ cao thấp là đúng thực tế (không phải giá trị void của SRTM). */
+const LOWLAND_IDS = new Set([
+  'cau-ong-cop',
+  'dam-o-loan',
+  'ganh-da-dia',
+  'mui-dien',
+  'thap-nhan',
+  'vinh-xuan-dai',
+  'vung-ro',
+]);
+
 describe('real daklak-terrain-height.png elevation sanity check (Phase T4)', () => {
   const pngPath = resolve(__dirname, '../../../assets/maps/daklak/daklak-terrain-height.png');
   const grid = decodeGrayscale8Png(readFileSync(pngPath));
@@ -45,12 +56,17 @@ describe('real daklak-terrain-height.png elevation sanity check (Phase T4)', () 
       // suspicious. Hồ Lắk and Buôn Đôn/Yok Đôn are lowland-basin locations; Đray Nur is a
       // mid-elevation river waterfall — none should resolve near sea level (0 m, the SRTM-tile
       // background/void value) or the province's alpine peak elevations (>1200 m).
-      expect(meters).toBeGreaterThan(50);
+      // Đợt mở rộng 2026-10: các điểm ven biển/đồng bằng Tuy Hòa (Phú Yên cũ) hợp lệ ở độ cao thấp —
+      // lưới DEM ~210 m/pixel làm phẳng cả ngọn đồi nhỏ như núi Nhạn nên có thể đọc ra 0 m. Chúng chỉ
+      // cần >= 0; mọi điểm còn lại (cao nguyên/lòng chảo) vẫn phải > 50 m như trước.
+      const lowland = LOWLAND_IDS.has(destination.id);
+      expect(meters).toBeGreaterThanOrEqual(0);
+      if (!lowland) expect(meters).toBeGreaterThan(50);
       expect(meters).toBeLessThan(1200);
     },
   );
 
-  it('the 4 destinations do not all resolve to the exact same elevation (would indicate a broken lookup, not real terrain)', () => {
+  it('the destinations do not all resolve to the exact same elevation (would indicate a broken lookup, not real terrain)', () => {
     const values = verifiedTourismDestinations.map((destination) => {
       const { x, z } = latLonToWorld(destination.coordinates[0], destination.coordinates[1]);
       return sampleHeightGrid(grid, bounds, x, z);

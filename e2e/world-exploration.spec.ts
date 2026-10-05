@@ -1,5 +1,6 @@
 /// <reference lib="dom" />
 import { expect, test } from '@playwright/test';
+import { verifiedTourismDestinations } from '../src/entities/tourism/verifiedTourismDestinations';
 
 // Phase T1 (reports/tourism-digital-twin/) — `?view=world`, "Khám phá Đắk Lắk 3D". Smoke coverage
 // proving: the route lazy-loads its own chunk, it doesn't leak into other routes' bundles, and the
@@ -138,15 +139,16 @@ test.describe('world exploration — destination markers (Phase T2)', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
   });
 
-  test('renders all 5 verified destination markers at plausible positions', async ({ page }) => {
+  test('renders every sourced destination marker at plausible positions', async ({ page }) => {
     await page.goto('./?view=world');
     const worldRegion = page.getByLabel('Khám phá Đắk Lắk 3D — kịch bản minh họa');
     await expect(worldRegion).toBeVisible();
 
-    // 5 since Phase T4 added `krong-kmar-waterfall` to the 4 verified in Phase T2 (see
-    // `verifiedTourismDestinations.ts`).
+    // One marker per entry in `verifiedTourismDestinations.ts` (5 through Phase T4, 27 after the
+    // 2026-10 expansion) — counted from the data so adding a destination doesn't silently break
+    // this test again.
     const markers = page.getByRole('button', { name: /^Điểm đến du lịch:/ });
-    await expect(markers).toHaveCount(5);
+    await expect(markers).toHaveCount(verifiedTourismDestinations.length);
 
     const viewport = page.viewportSize();
     const boxes = await Promise.all((await markers.all()).map((marker) => marker.boundingBox()));
@@ -173,7 +175,21 @@ test.describe('world exploration — destination markers (Phase T2)', () => {
       // desktop viewport's bottom edge) without silently accepting a badly broken projection —
       // still a real, bounded position, not NaN/off-screen-by-thousands-of-pixels.
       const overflowTolerance = 60;
-      for (const box of boxes) {
+      // Only the five original destinations are guaranteed to sit inside the fixed intro framing:
+      // the 2026-10 expansion added sites at the province's edges (the former Phú Yên coast), which
+      // legitimately land outside it — the finite-position check above still covers those.
+      const framedNames = [
+        'Hồ Lắk',
+        'Vườn quốc gia Yok Đôn',
+        'Thác Đray Nur',
+        'Buôn Đôn',
+        'Thác Krông Kmar',
+      ];
+      for (const name of framedNames) {
+        const box = await page
+          .getByRole('button', { name: `Điểm đến du lịch: ${name}` })
+          .boundingBox();
+        expect(box, `${name} must resolve a bounding box`).not.toBeNull();
         expect(box!.x).toBeGreaterThanOrEqual(-overflowTolerance);
         expect(box!.y).toBeGreaterThanOrEqual(-overflowTolerance);
         expect(box!.x).toBeLessThanOrEqual(viewport!.width + overflowTolerance);
@@ -246,7 +262,9 @@ test.describe('world exploration — destination markers, no pre-existing onboar
     // -opens here — a genuinely fresh profile with nothing in localStorage is exactly the case it
     // is meant to show for. Markers must still exist in the DOM underneath it regardless.
     await expect(page.getByRole('dialog', { name: /bắt đầu khám phá/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /^Điểm đến du lịch:/ })).toHaveCount(5);
+    await expect(page.getByRole('button', { name: /^Điểm đến du lịch:/ })).toHaveCount(
+      verifiedTourismDestinations.length,
+    );
   });
 });
 

@@ -705,3 +705,56 @@ _Filled in after merge — see below._
 ### Post-merge deployment
 
 _Filled in after live verification — see below._
+
+## T5 — Mở rộng danh sách điểm đến (2026-10-05)
+
+Quét thể loại vi.wikipedia (Du lịch/Di tích/Bảo tàng/Rừng đặc dụng Đắk Lắk và Phú Yên, nay thuộc
+tỉnh Đắk Lắk) bằng MediaWiki API; toạ độ lấy từ bài vi.wikipedia, hoặc Wikidata (P625) khi bài
+không có. **Mỗi toạ độ được đối chiếu thêm với OpenStreetMap Nominatim** (nguồn độc lập): chỉ giữ
+điểm khớp tên trong ≤ 1 km (vùng rộng như vườn quốc gia: ≤ 7 km). Thêm 12 điểm (tổng 17), mở rộng
+union `category` (+`heritage-structure`, `natural-landmark`) và `imageLicense` (+CC BY-SA 2.0/4.0,
+chỉ cho ảnh Commons đã đọc giấy phép + tác giả).
+
+**Phát hiện:** Wikidata ghi sai toạ độ Vườn quốc gia Chư Yang Sin (~12,877°B; OSM và Wikipedia mô tả
+đều ở khoảng 12,4°B, lệch ~56 km) → **không thêm**. Đối chiếu OSM cũng giúp tránh nhận nhầm các
+điểm khác ở dưới.
+
+**Hoãn (toạ độ xung đột/chưa xác nhận được bằng nguồn thứ hai):** Vườn quốc gia Chư Yang Sin (Wikidata
+sai), Thác H'Ly (OSM không khớp), Thác Đray K'nao (OSM không có), Thác Drai Dlông (lệch 2,5 km), Làng
+cà phê Trung Nguyên (lệch 2,1 km), Đình Lạc Giao (OSM không có đối tượng cùng tên), Hai cây long não
+biệt điện Bảo Đại (không có Wikidata/OSM; một cây đã bị chặt hạ 2018).
+
+**Vẫn chưa có toạ độ ở Wikipedia/Wikidata:** Chùa Khải Đoan, Bảo tàng các dân tộc VN tại Đắk Lắk,
+Buôn Akõ Dhông, Chùa Liên Trì, Chùa Phổ Minh, Chùa Đá Trắng, Hang đá Đăk Tuar, Hồ Ea Kao, Hồ Ea Súp
+Thượng, Khu bảo tồn lan rừng Troh Bư, Khu bảo tồn thiên nhiên Nam Kar, Nhà dài Ê Đê, Thác Bay, Thác
+Trinh Nữ, Tịnh xá Ngọc Quang, Đồi Cư H'Lăm, Đồn điền CADA.
+
+Test độ cao thực (`destinationElevation.realTerrain.test.ts`) nới cận dưới cho 4 điểm ven biển/đồng bằng
+(DEM ~210 m/pixel làm phẳng cả núi Nhạn nên đọc ra 0 m).
+
+### T5b — Khảo sát đa nguồn, đợt 2 (2026-10-05)
+
+Quét thêm **Wikidata theo khung toạ độ** (1925 mục có bài Wikipedia; phần lớn là sông/núi/xã/địa
+danh GeoNames, chỉ ~15 mục là điểm du lịch/công trình) và **OpenStreetMap theo ranh giới tỉnh Đắk Lắk
+sau sáp nhập** (relation 1884034; ghi nhận 97 đối tượng có tên ở các nhóm du lịch, di tích, thác, bờ
+biển — các nhóm khu bảo tồn/công trình/nơi thờ tự bị máy chủ Overpass quá tải nên **chưa quét xong**).
+
+Thêm 10 điểm, chia hai bậc bằng chứng (ghi trong comment từng entry):
+
+- **Bậc A — `confidence: 'verified'`** (toạ độ hai nguồn độc lập khớp): Đình Lạc Giao, Thác Đray
+  K'nao, Vịnh Xuân Đài, Đầm Ô Loan, Vũng Rô. (Đình Lạc Giao và Đray K'nao trước đây bị hoãn vì OSM
+  chưa tìm được; nay OSM khớp Wikipedia ≤ 0,2 km.)
+- **Bậc B — `confidence: 'medium'`, `verificationStatus: 'validated-automatically'`** (bài vi.wikipedia
+  xác nhận địa điểm có thật, **toạ độ chỉ từ OpenStreetMap**, © OpenStreetMap contributors, ODbL):
+  Bảo tàng các dân tộc VN tại Đắk Lắk, Nhà đày Buôn Ma Thuột, Buôn Akõ Dhông, Đức Mẹ Giang Sơn, Làng
+  cà phê Trung Nguyên (đã chuyển từ "hoãn" sang bậc B: toạ độ Wikidata trùng điểm OSM Bảo tàng Thế giới
+  Cà phê cùng khuôn viên).
+
+**Wikidata sai toạ độ lần thứ hai:** Đèo Cả (Wikidata 109,278°Đ; OSM 109,397°Đ, lệch ~12 km) → không
+thêm. Thác Drai Dlông: Wikipedia và OSM lệch 2,5 km → vẫn hoãn.
+
+**Còn mở:** Nhà thờ chính tòa Ban Mê Thuột, Nhà thờ Mằng Lăng, Thành Phú Yên (có toạ độ Wikidata,
+chưa có nguồn thứ hai), Chùa Khải Đoan, Chùa Đá Trắng, Hồ Ea Kao, Hồ Ea Súp Thượng, Nhà dài Ê Đê,
+KBTTN Nam Kar, VQG Chư Yang Sin (Wikidata sai) — cần quét lại OSM khi máy chủ rảnh. Có thêm ~30 điểm
+chỉ có trên OSM (Bãi Xép, Bãi Om, Thác Cây Đu, Địa đạo Gò Thì Thùng, Khu du lịch Ea Nhái…) chưa
+thêm vì không có bài Wikipedia/Wikidata đi kèm.
