@@ -38,7 +38,8 @@ function useMatrixSetter(placements: Placement[]) {
     const dummy = new THREE.Object3D();
     const color = new THREE.Color();
     return (mesh: THREE.InstancedMesh | null, base: string) => {
-      if (!mesh) return;
+      // Chỉ áp ma trận cho InstancedMesh thật (ref là null khi unmount; trong test jsdom là phần tử DOM).
+      if (!(mesh instanceof THREE.InstancedMesh)) return;
       placements.forEach((placement, index) => {
         dummy.position.set(...placement.position);
         dummy.rotation.set(0, placement.rotationY, 0);
