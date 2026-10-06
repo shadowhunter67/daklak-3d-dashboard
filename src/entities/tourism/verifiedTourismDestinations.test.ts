@@ -5,13 +5,35 @@ import { TOURISM_DESTINATION_CATEGORIES } from './types';
 import terrainMetadata from '#province-assets/daklak-terrain-metadata.json';
 
 describe('verifiedTourismDestinations', () => {
-  it('has exactly the 4 verified Phase T2 entries plus Phase T4’s krong-kmar-waterfall', () => {
-    expect(verifiedTourismDestinations).toHaveLength(5);
+  it('has exactly the sourced entries (5 from phases T2/T4 + 22 from the 2026-10 expansion)', () => {
+    expect(verifiedTourismDestinations).toHaveLength(27);
     expect(verifiedTourismDestinations.map((d) => d.id).sort()).toEqual([
+      'bao-tang-dak-lak',
+      'buon-ako-dhong',
       'buon-don',
+      'cao-nguyen-van-hoa',
+      'cau-ong-cop',
+      'dam-o-loan',
+      'dinh-lac-giao',
       'dray-nur-waterfall',
+      'duc-me-giang-son',
+      'ganh-da-dia',
       'ho-lak',
       'krong-kmar-waterfall',
+      'lang-ca-phe-trung-nguyen',
+      'mui-dien',
+      'nha-day-buon-ma-thuot',
+      'nui-chop-chai',
+      'nui-da-bia',
+      'thac-bay-nhanh',
+      'thac-dray-knao',
+      'thac-gia-long',
+      'thac-thuy-tien',
+      'thap-nhan',
+      'thap-yang-prong',
+      'vinh-xuan-dai',
+      'vung-ro',
+      'vuon-quoc-gia-ea-so',
       'yok-don-national-park',
     ]);
   });
@@ -52,9 +74,25 @@ describe('verifiedTourismDestinations', () => {
     }
   });
 
-  it('only the two entries with a verified free image carry image fields', () => {
+  it('only entries with a verified free image carry image fields', () => {
     const withImage = verifiedTourismDestinations.filter((d) => d.imageUrl);
-    expect(withImage.map((d) => d.id).sort()).toEqual(['ho-lak', 'yok-don-national-park']);
+    expect(withImage.map((d) => d.id).sort()).toEqual([
+      'bao-tang-dak-lak',
+      'dam-o-loan',
+      'dinh-lac-giao',
+      'duc-me-giang-son',
+      'ganh-da-dia',
+      'ho-lak',
+      'krong-kmar-waterfall',
+      'lang-ca-phe-trung-nguyen',
+      'thac-bay-nhanh',
+      'thap-nhan',
+      'thap-yang-prong',
+      'vinh-xuan-dai',
+      'vung-ro',
+      'vuon-quoc-gia-ea-so',
+      'yok-don-national-park',
+    ]);
     for (const destination of withImage) {
       expect(destination.imageAttribution).toBeTruthy();
       expect(destination.imageLicense).toBeTruthy();

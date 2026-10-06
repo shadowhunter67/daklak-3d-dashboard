@@ -36,13 +36,20 @@ const dist = join(root, 'dist');
 // simpler than a Release asset at this size — no CSP `connect-src` addition, no cross-origin range
 // requests. Same "only downloaded by a user who actually opens the detail map" download-cost
 // reasoning as the maplibre-gl chunk above (it's not part of the eager entry bundle).
+//
+// totalBuildBytes raised again (27 destination dioramas + 27-destination dataset, 2026-10) from
+// 21.0MB to 21.15MB. Measured, not guessed: the build went 21,000,000 -> 21,078,257 bytes (+78KB):
+// the dioramas are 5 lazy chunks (waterfalls/waters/landmarks/structures ~3-10KB each + the shared
+// kit), the rest is the 22 new sourced destinations. None of it is in the eager entry bundle —
+// totalJavaScriptBytes/gzip budgets above still pass unchanged — and a diorama chunk is only fetched
+// when a user opens `#/diorama/:id`. The ceiling keeps ~70KB headroom, not an open-ended bump.
 const limits = {
   totalJavaScriptBytes: 3_400_000,
   totalJavaScriptGzipBytes: 950_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 21_000_000,
+  totalBuildBytes: 21_150_000,
 };
 
 async function filesAt(directory) {

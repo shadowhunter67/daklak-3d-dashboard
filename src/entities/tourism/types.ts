@@ -24,6 +24,9 @@ export const TOURISM_DESTINATION_CATEGORIES = [
   'national-park',
   'waterfall',
   'cultural-village',
+  // Mở rộng 2026-10-05 cùng đợt thêm 12 điểm có toạ độ đối chiếu 2 nguồn (xem phase-status.md).
+  'heritage-structure',
+  'natural-landmark',
 ] as const;
 export type TourismDestinationCategory = (typeof TOURISM_DESTINATION_CATEGORIES)[number];
 
@@ -33,7 +36,12 @@ export type TourismDestinationCategory = (typeof TOURISM_DESTINATION_CATEGORIES)
  * union này một cách cố ý: nếu chưa xác minh giấy phép, field ảnh phải vắng mặt hoàn toàn
  * (`imageUrl` optional), không gán license giả.
  */
-export const TOURISM_IMAGE_LICENSES = ['CC BY-SA 3.0', 'GFDL'] as const;
+export const TOURISM_IMAGE_LICENSES = [
+  'CC BY-SA 3.0',
+  'GFDL',
+  'CC BY-SA 2.0',
+  'CC BY-SA 4.0',
+] as const;
 export type TourismImageLicense = (typeof TOURISM_IMAGE_LICENSES)[number];
 
 export interface TourismDestination {

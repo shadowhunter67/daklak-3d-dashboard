@@ -9,6 +9,7 @@
  *   #/projects?status=delayed&...    -> { kind: 'portfolio', filters: {...} }
  *   #/projects/:id                   -> { kind: 'project-detail', projectId: id }
  *   #/data-readiness                 -> { kind: 'data-readiness' } (Phase 5 §C)
+ *   #/diorama/:destinationId         -> { kind: 'diorama', destinationId } (illustrative destination diorama)
  *   bất kỳ giá trị nào khác          -> { kind: 'none' } (không crash trên hash lạ/hỏng)
  */
 
@@ -35,7 +36,8 @@ export type HashRoute =
   | { kind: 'none' }
   | { kind: 'portfolio'; filters: PortfolioFilters }
   | { kind: 'project-detail'; projectId: string }
-  | { kind: 'data-readiness' };
+  | { kind: 'data-readiness' }
+  | { kind: 'diorama'; destinationId: string };
 
 function isPortfolioSortKey(value: string): value is PortfolioSortKey {
   return (PORTFOLIO_SORT_KEYS as readonly string[]).includes(value);
@@ -81,6 +83,11 @@ export function parseHashRoute(rawHash: string): HashRoute {
   if (segments[0] === 'data-readiness') {
     return segments.length === 1 ? { kind: 'data-readiness' } : { kind: 'none' };
   }
+  if (segments[0] === 'diorama') {
+    if (segments.length !== 2) return { kind: 'none' };
+    const destinationId = decodeURIComponent(segments[1]);
+    return destinationId.trim() ? { kind: 'diorama', destinationId } : { kind: 'none' };
+  }
   if (segments[0] !== 'projects') return { kind: 'none' };
 
   if (segments.length === 1) {
@@ -106,4 +113,8 @@ export function serializeProjectDetailHash(projectId: string): string {
 
 export function serializeDataReadinessHash(): string {
   return '#/data-readiness';
+}
+
+export function serializeDioramaHash(destinationId: string): string {
+  return `#/diorama/${encodeURIComponent(destinationId)}`;
 }

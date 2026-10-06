@@ -9,4 +9,6 @@ export const CATEGORY_MESSAGE_KEY: Record<TourismDestinationCategory, MessageKey
   'national-park': 'worldExploration.destination.category.nationalPark',
   waterfall: 'worldExploration.destination.category.waterfall',
   'cultural-village': 'worldExploration.destination.category.culturalVillage',
+  'heritage-structure': 'worldExploration.destination.category.heritageStructure',
+  'natural-landmark': 'worldExploration.destination.category.naturalLandmark',
 };

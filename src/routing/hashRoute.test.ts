@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   parseHashRoute,
   serializeDataReadinessHash,
+  serializeDioramaHash,
   serializePortfolioHash,
   serializeProjectDetailHash,
 } from './hashRoute';
@@ -103,5 +104,14 @@ describe('serializePortfolioHash / serializeProjectDetailHash', () => {
 
   it('round-trips the data-readiness hash', () => {
     expect(parseHashRoute(serializeDataReadinessHash())).toEqual({ kind: 'data-readiness' });
+  });
+
+  it('round-trips a diorama destination id and rejects malformed diorama hashes', () => {
+    expect(parseHashRoute(serializeDioramaHash('krong-kmar-waterfall'))).toEqual({
+      kind: 'diorama',
+      destinationId: 'krong-kmar-waterfall',
+    });
+    expect(parseHashRoute('#/diorama')).toEqual({ kind: 'none' });
+    expect(parseHashRoute('#/diorama/a/b')).toEqual({ kind: 'none' });
   });
 });

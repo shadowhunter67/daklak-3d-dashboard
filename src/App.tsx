@@ -11,7 +11,11 @@ import { ExecutiveOverview } from './features/executive-overview/ExecutiveOvervi
 import { useDashboardUrlSync } from './hooks/useDashboardUrlSync';
 import { useMapStore } from './stores/mapStore';
 import { useHashRoute } from './routing/useHashRoute';
-import { serializePortfolioHash, serializeProjectDetailHash } from './routing/hashRoute';
+import {
+  serializeDioramaHash,
+  serializePortfolioHash,
+  serializeProjectDetailHash,
+} from './routing/hashRoute';
 import type { PortfolioFilters } from './routing/hashRoute';
 import { useTranslation } from './i18n/useTranslation';
 
@@ -41,6 +45,14 @@ const DataReadinessView = lazy(() =>
 const WorldExplorationView = lazy(() =>
   import('./features/world-exploration/WorldExplorationView').then((module) => ({
     default: module.WorldExplorationView,
+  })),
+);
+
+// Lazy: illustrative destination diorama (`#/diorama/:id`) — own Three.js chunk, only fetched when
+// that hash route is opened; never part of the eager chunk or of any query-based view.
+const DestinationDioramaView = lazy(() =>
+  import('./features/destination-diorama/DestinationDioramaView').then((module) => ({
+    default: module.DestinationDioramaView,
   })),
 );
 
@@ -156,13 +168,16 @@ export default function App() {
   const isProjectRoute =
     route.kind === 'portfolio' ||
     route.kind === 'project-detail' ||
-    route.kind === 'data-readiness';
+    route.kind === 'data-readiness' ||
+    route.kind === 'diorama';
   const skipLinkTargetId = isProjectRoute
     ? route.kind === 'portfolio'
       ? 'project-portfolio'
       : route.kind === 'project-detail'
         ? 'project-detail'
-        : 'data-readiness'
+        : route.kind === 'diorama'
+          ? 'destination-diorama'
+          : 'data-readiness'
     : viewMode === 'map'
       ? 'detail-map-viewport'
       : viewMode === 'overview'
@@ -202,6 +217,13 @@ export default function App() {
                 setViewMode('map');
                 navigate('', { replace: false });
               }}
+            />
+          )}
+          {route.kind === 'diorama' && (
+            <DestinationDioramaView
+              destinationId={route.destinationId}
+              onBack={goToOverview}
+              onSelect={(id) => navigate(serializeDioramaHash(id))}
             />
           )}
           {route.kind === 'data-readiness' && (
@@ -250,7 +272,9 @@ export default function App() {
             ? t('app.live.openedPortfolio')
             : route.kind === 'project-detail'
               ? t('app.live.openedProjectDetail')
-              : t('app.live.openedDataReadiness')
+              : route.kind === 'diorama'
+                ? t('app.live.openedDiorama')
+                : t('app.live.openedDataReadiness')
           : viewMode === 'map'
             ? t('app.live.openedMap')
             : viewMode === 'overview'
