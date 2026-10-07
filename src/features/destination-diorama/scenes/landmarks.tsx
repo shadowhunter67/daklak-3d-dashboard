@@ -2,12 +2,13 @@ import { useEffect, useMemo, type ReactNode } from 'react';
 import { Meadow, type CoverTone } from '../dioramaCoverLayer';
 import type { CameraPoses, DioramaSceneProps, SkySpec } from '../dioramaConfig';
 import { createCliffBlockGeometry, fbm3, seeded, smoothstep } from '../dioramaGeometry';
-import { DioramaCanvas, Forest, Heightfield, WaterSheet } from '../dioramaKit';
-import { Mast } from '../dioramaProps';
+import { DioramaCanvas, Forest, Heightfield, Instances, WaterSheet } from '../dioramaKit';
+import { Box, Mast } from '../dioramaProps';
 import { useShadows } from '../dioramaContext';
 import {
   forestPlacements,
   makeTerrainColor,
+  scatterOnTerrain,
   type HeightFn,
   type HeightfieldSpec,
   type PaletteSpec,
@@ -121,28 +122,55 @@ export function ChopChaiScene(props: DioramaSceneProps) {
 
 /* ----------------- Núi Đá Bia: đỉnh có tảng đá bia khổng lồ ~80 m --------------------- */
 const daBiaHeight: HeightFn = (x, z) => {
-  const r2 = x * x + (z + 3) * (z + 3);
-  const peak = 8 * Math.exp(-r2 / (2 * 2.6 * 2.6));
-  const skirt = 2.2 * Math.exp(-r2 / (2 * 7 * 7));
-  const sea = -smoothstep(2, 9, z) * 1.2;
-  return peak * (0.9 + 0.2 * fbm3(x * 0.5, 0, z * 0.5, 3, 4)) + skirt + 0.15 + sea;
+  // Ảnh: sườn núi dài phủ rừng thấp dần về hai phía, đỉnh nhọn có tảng đá dựng đứng, chân núi sát đường.
+  const along = Math.exp(-(x * x) / (2 * 9 * 9));
+  const across = Math.exp(-((z + 5) * (z + 5)) / (2 * 4.6 * 4.6));
+  const peak = 5.4 * Math.exp(-((x + 1) * (x + 1) + (z + 5) * (z + 5)) / (2 * 2.2 * 2.2));
+  const ridge = 3.4 * along * across;
+  const road = -smoothstep(3.5, 6.5, z) * 0.9;
+  return (ridge + peak) * (0.9 + 0.2 * fbm3(x * 0.5, 0, z * 0.5, 3, 4)) + 0.2 + road;
 };
+const DA_BIA_PEAK_X = -1;
+const DA_BIA_PEAK_Z = -5;
 
 function DaBiaSlab() {
   const shadows = useShadows();
-  const geometry = useMemo(() => createCliffBlockGeometry(0.95, 2.8, 0.5, seeded(17)), []);
+  const geometry = useMemo(() => createCliffBlockGeometry(0.55, 3.2, 0.42, seeded(17)), []);
   useEffect(() => () => geometry.dispose(), [geometry]);
-  const y = daBiaHeight(0, -3);
+  const y = daBiaHeight(DA_BIA_PEAK_X, DA_BIA_PEAK_Z);
+  const slopeRocks = useMemo(
+    () =>
+      scatterOnTerrain(40, 433, (r) => [(r() - 0.5) * 22, -9 + r() * 8], daBiaHeight, [0.25, 0.7]),
+    [],
+  );
   return (
-    <mesh
-      geometry={geometry}
-      position={[0, y + 1.25, -3]}
-      rotation={[0, 0.5, 0.05]}
-      castShadow={shadows}
-      receiveShadow={shadows}
-    >
-      <meshStandardMaterial color="#8b857a" roughness={0.95} flatShading />
-    </mesh>
+    <>
+      <mesh
+        geometry={geometry}
+        position={[DA_BIA_PEAK_X, y + 0.95, DA_BIA_PEAK_Z]}
+        rotation={[0, 0.5, 0.03]}
+        castShadow={shadows}
+        receiveShadow={shadows}
+      >
+        <meshStandardMaterial color="#9a958a" roughness={0.95} flatShading />
+      </mesh>
+      <Instances
+        placements={slopeRocks}
+        seed={9}
+        color="#a29d92"
+        detail={2}
+        amount={0.3}
+        cuts={5}
+        flat
+      />
+      <Box position={[0, 0.02, 7.2]} size={[40, 0.05, 3.2]} color="#55565a" />
+      <Box position={[0, 0.07, 7.2]} size={[40, 0.01, 0.08]} color="#d9d6c8" />
+      <group position={[1.2, 0.35, 7.2]}>
+        <Box position={[0, 0.15, 0]} size={[1.9, 0.5, 0.8]} color="#6b6258" />
+        <Box position={[-1.1, 0.12, 0]} size={[0.55, 0.45, 0.78]} color="#d9dde0" />
+        <Box position={[0, -0.12, 0]} size={[2.6, 0.08, 0.7]} color="#2a2a2a" />
+      </group>
+    </>
   );
 }
 
@@ -153,24 +181,17 @@ const DA_BIA: LandmarkSpec = {
     high: '#3f6a34',
     highAt: 5,
     rock: '#8a8478',
-    rockStrength: 0.7,
-    shore: { color: '#d8c898', waterY: 0, band: 0.6 },
-    underwater: '#b9a97c',
+    rockStrength: 0.5,
   },
-  trees: 200,
-  treeMaxY: 4.2,
-  treeSample: (r) => {
-    const a = r() * Math.PI * 2;
-    const d = 1.6 + r() ** 0.8 * 8;
-    return [Math.cos(a) * d, -3 + Math.sin(a) * d];
-  },
-  treeMinY: 0.5,
+  trees: 330,
+  treeMaxY: 6.6,
+  treeSample: (r) => [(r() - 0.5) * 34, -11 + r() * 8],
+  treeMinY: 1.2,
   seed: 411,
-  sea: true,
   poses: {
-    overview: { position: [5, 8.5, 19], target: [0, 5.6, -3] },
-    close: { position: [2.6, 5.4, 3], target: [0, 7.2, -3] },
-    high: { position: [5, 11, 3], target: [0, 3, -3] },
+    overview: { position: [4, 4, 25], target: [0, 8.4, -5] },
+    close: { position: [3, 5, 16], target: [-1, 9, -5] },
+    high: { position: [5, 11, 3], target: [0, 3, -5] },
   },
   extras: () => <DaBiaSlab />,
 };

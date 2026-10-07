@@ -23,6 +23,12 @@
      position:absolute, so full-height panels underneath it (e.g. the detail-map directory
      sidebar) must reserve this much space at the top or their content renders behind it. */
   --app-header-height: 98px;
+  /* Height of the fixed dataset footer bar (`footer`, z-index 5). Same reasoning as
+     --app-header-height above, but for the bottom edge: full-height panels (the 3D overview
+     stat card, the detail-map directory sidebar) must reserve this much space at the bottom or
+     their last rows render behind the footer instead of above it. Hidden entirely (display:none)
+     on the 767px-portrait mobile layout, which uses its own bottom-sheet chrome instead. */
+  --app-footer-height: 44px;
 
   /* Accessibility typography tokens (AccessibilityControls.tsx sets --user-font-scale on
      <html>, persisted to localStorage). Applied to substantive reading content — Executive
@@ -1242,6 +1248,12 @@ button.directory-row:hover,
   top: 128px;
   width: 238px;
   padding: 20px;
+  /* On shorter viewports the hero stat + stat-pair + metrics + chart stack taller than the space
+     between the header and the footer, and being position:absolute with no height constraint let
+     the bottom of it (the chart's x-axis labels) render behind the footer (z-index 5 > this
+     panel's 4). Cap it to the actual available height and scroll internally instead. */
+  max-height: calc(100vh - 128px - var(--app-footer-height) - 16px);
+  overflow-y: auto;
 }
 .hero-stat {
   display: flex;
@@ -2146,6 +2158,11 @@ footer a {
      its top edge). Mobile re-lays this panel out as an absolute overlay below the header, so it
      zeroes this in the max-width:767px block. */
   padding-top: var(--app-header-height);
+  /* Same reasoning as padding-top above, mirrored for the bottom edge: this sidebar stretches to
+     the full height of `.detail-map-viewport` (inset:0, i.e. 100vh), but the footer bar paints
+     over its bottom 44px at a higher z-index (5 vs. this sidebar's 3), which hid the directory
+     list's last row(s) behind it on viewports shorter than ~900px. */
+  padding-bottom: var(--app-footer-height);
   border-right: 1px solid #8bb3a433;
   transition: flex-basis 200ms ease;
 }
