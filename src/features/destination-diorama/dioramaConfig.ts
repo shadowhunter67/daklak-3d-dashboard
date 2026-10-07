@@ -19,7 +19,7 @@ export const DIORAMA_BASIS: Record<string, DioramaBasis> = {
   'krong-kmar-waterfall': 'photo',
   'ho-lak': 'photo',
   'yok-don-national-park': 'photo',
-  'dray-nur-waterfall': 'text',
+  'dray-nur-waterfall': 'photo',
   'buon-don': 'text',
   'cao-nguyen-van-hoa': 'text',
   'cau-ong-cop': 'text',

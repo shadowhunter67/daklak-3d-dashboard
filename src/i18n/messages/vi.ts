@@ -572,7 +572,13 @@ export const vi = {
   'diorama.illustrativeBadge': 'ILLUSTRATIVE — DIORAMA MINH HỌA',
   'diorama.illustrativeAria': 'Cảnh dựng minh họa, không phải mô hình đo đạc thực tế',
   'diorama.basis.photo':
-    'Dựng theo ảnh thực tế đã dẫn ở trên; hình dạng vẫn chỉ mang tính minh họa, không phải mô hình đo đạc.',
+    'Dựng theo ảnh thực tế (xem ảnh đối chiếu); hình dạng vẫn chỉ mang tính minh họa, không phải mô hình đo đạc.',
+  'diorama.basis.textWithPhoto':
+    'Cảnh dựng theo mô tả văn bản; ảnh thực tế bên cạnh chỉ để đối chiếu — cảnh chưa được chỉnh theo ảnh này nên có thể khác thực tế.',
+  'diorama.photo.caption': 'Ảnh thực tế để đối chiếu:',
+  'diorama.photo.alt': 'Ảnh thực tế của {name} (Wikimedia Commons)',
+  'diorama.photo.enlarge': 'Phóng to ảnh thực tế',
+  'diorama.photo.shrink': 'Thu nhỏ ảnh thực tế',
   'diorama.basis.text':
     'Dựng theo mô tả văn bản của nguồn, chưa đối chiếu được ảnh thực tế — chỉ gợi ý hình dạng chung, có thể khác thực tế.',
   'diorama.source': 'Nguồn dữ kiện',

@@ -9,9 +9,9 @@ Diorama KHÔNG phải mô hình đo đạc. Mỗi cảnh có badge "ILLUSTRATIVE
 - `photo` — dựng theo ảnh thực tế đã xác minh giấy phép tự do và dẫn link trong dữ liệu điểm đến (`imageUrl`);
 - `text` — chỉ dựng theo mô tả văn bản của nguồn, **chưa đối chiếu được ảnh thực tế**; hình dạng chỉ là gợi ý chung, có thể khác thực tế.
 
-Test `dioramaRegistry.test.ts` giữ hai bất biến: có đúng một scene cho mỗi điểm đến, và `photo` ⇔ điểm đến có `imageUrl` + `imageLicense`. Bài học gốc: bản Krông Kmar đầu tiên dựng theo chữ là sai hẳn (thác bậc thang, trong khi thật là sông đá + đập thấp) cho tới khi có ảnh.
+Test `dioramaRegistry.test.ts` giữ hai bất biến: có đúng một scene cho mỗi điểm đến, và `photo` chỉ khi điểm đến có `imageUrl` + `imageLicense` (ngược lại không bắt buộc: một điểm có thể có ảnh đối chiếu mà cảnh vẫn `text`). Bài học gốc: bản Krông Kmar đầu tiên dựng theo chữ là sai hẳn (thác bậc thang, trong khi thật là sông đá + đập thấp) cho tới khi có ảnh.
 
-Ảnh chỉ được **liên kết** tới trang file Wikimedia Commons, không nhúng: CSP `img-src` trong `index.html` chỉ cho cùng domain, và bundle ảnh sẽ làm phình build.
+**Ảnh thật hiện ngay cạnh cảnh** (góc phải trên panel, bấm để phóng to) cho 24/27 điểm đến, để so trực tiếp: bản nén ≤ 640 px (JPEG progressive, ~35–100 KB) chép vào `public/images/destinations/<id>.jpg` — cùng origin nên hợp CSP `img-src 'self'`; ảnh gốc là Wikimedia Commons (CC BY-SA/CC BY), tác giả, giấy phép và link trang file hiện ngay dưới ảnh. Tải lười (`loading="lazy"`), không nằm trong chunk JS nào. Cảnh `text` có ảnh đối chiếu nói rõ "cảnh chưa được chỉnh theo ảnh này nên có thể khác thực tế"; điểm chưa có ảnh tự do (Cao nguyên Vân Hòa, Cầu Ông Cọp, Thác Thủy Tiên) chỉ ghi "chưa đối chiếu được ảnh thực tế". `dioramaPhotos.test.ts` giữ file ↔ dữ liệu khớp hai chiều và mỗi file ≤ 130 KB.
 
 ## Cấu trúc mã (`src/features/destination-diorama/`)
 

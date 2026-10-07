@@ -5,6 +5,7 @@ import { verifiedTourismDestinations } from '../../entities/tourism/verifiedTour
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import { DIORAMA_BASIS, type CameraPresetId } from './dioramaConfig';
+import { destinationPhotoUrl } from './dioramaPhotos';
 import { DIORAMA_SCENES } from './dioramaRegistry';
 
 const PRESETS: readonly CameraPresetId[] = ['overview', 'close', 'high'];
@@ -30,6 +31,7 @@ export function DestinationDioramaView({
   const [webGLSupported] = useState(() => hasWebGLSupport());
   const [preset, setPreset] = useState<CameraPresetId>('overview');
   const [contextLost, setContextLost] = useState(false);
+  const [photoOpen, setPhotoOpen] = useState(false);
   const handleLost = useCallback(() => setContextLost(true), []);
   const handleRestored = useCallback(() => setContextLost(false), []);
 
@@ -49,6 +51,13 @@ export function DestinationDioramaView({
   }
 
   const basis = DIORAMA_BASIS[destinationId] ?? 'text';
+  // `text` + có ảnh: ảnh chỉ để đối chiếu, cảnh chưa chỉnh theo ảnh — nói rõ để không gây hiểu nhầm.
+  const basisKey =
+    basis === 'photo'
+      ? 'diorama.basis.photo'
+      : destination.imageUrl
+        ? 'diorama.basis.textWithPhoto'
+        : 'diorama.basis.text';
 
   return (
     <section
@@ -86,6 +95,31 @@ export function DestinationDioramaView({
       >
         {t('diorama.illustrativeBadge')}
       </div>
+      {destination.imageUrl && (
+        <figure className="destination-diorama__photo" data-open={photoOpen}>
+          <button
+            type="button"
+            className="destination-diorama__photo-toggle"
+            aria-expanded={photoOpen}
+            aria-label={t(photoOpen ? 'diorama.photo.shrink' : 'diorama.photo.enlarge')}
+            onClick={() => setPhotoOpen((open) => !open)}
+          >
+            <img
+              src={destinationPhotoUrl(destination.id)}
+              alt={t('diorama.photo.alt', { name: destination.name })}
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+          <figcaption>
+            <strong>{t('diorama.photo.caption')}</strong> {destination.imageAttribution} ·{' '}
+            <a href={destination.imageUrl} target="_blank" rel="noreferrer noopener">
+              {t('diorama.photo')}
+            </a>{' '}
+            ({destination.imageLicense})
+          </figcaption>
+        </figure>
+      )}
       <div className="destination-diorama__panel">
         <span>{destination.name}</span>
         <p>{destination.description}</p>
@@ -93,18 +127,9 @@ export function DestinationDioramaView({
           <a href={destination.sourceUrl} target="_blank" rel="noreferrer noopener">
             {t('diorama.source')}
           </a>
-          {destination.imageUrl && (
-            <>
-              {' · '}
-              <a href={destination.imageUrl} target="_blank" rel="noreferrer noopener">
-                {t('diorama.photo')}
-              </a>
-              {` (${destination.imageLicense})`}
-            </>
-          )}
         </p>
         <p className="destination-diorama__basis" data-basis={basis}>
-          {t(basis === 'photo' ? 'diorama.basis.photo' : 'diorama.basis.text')}
+          {t(basisKey)}
         </p>
         <div
           className="destination-diorama__controls"

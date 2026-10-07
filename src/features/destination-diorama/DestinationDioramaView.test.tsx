@@ -30,22 +30,52 @@ describe('DestinationDioramaView', () => {
       'href',
       destination.imageUrl,
     );
-    expect(screen.getByText(/dựng theo ảnh thực tế đã dẫn/i)).toHaveAttribute(
+    expect(screen.getByText(/dựng theo ảnh thực tế \(xem ảnh đối chiếu\)/i)).toHaveAttribute(
       'data-basis',
       'photo',
     );
   });
 
-  it('says plainly when a scene is built from text only', () => {
+  it('shows the real photo next to the scene with attribution and licence, and lets it be enlarged', () => {
     render(
-      <DestinationDioramaView destinationId="thac-gia-long" onBack={vi.fn()} onSelect={vi.fn()} />,
+      <DestinationDioramaView destinationId="ganh-da-dia" onBack={vi.fn()} onSelect={vi.fn()} />,
     );
-    expect(DIORAMA_BASIS['thac-gia-long']).toBe('text');
+    const destination = verifiedTourismDestinations.find((d) => d.id === 'ganh-da-dia')!;
+    const image = screen.getByRole('img', { name: /ảnh thực tế của gành đá đĩa/i });
+    expect(image).toHaveAttribute(
+      'src',
+      expect.stringContaining('images/destinations/ganh-da-dia.jpg'),
+    );
+    expect(screen.getByText(destination.imageAttribution!, { exact: false })).toBeInTheDocument();
+    const toggle = screen.getByRole('button', { name: /phóng to ảnh thực tế/i });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    fireEvent.click(toggle);
+    expect(screen.getByRole('button', { name: /thu nhỏ ảnh thực tế/i })).toHaveAttribute(
+      'aria-expanded',
+      'true',
+    );
+  });
+
+  it('says plainly when a scene is built from text only and has no photo to compare', () => {
+    render(
+      <DestinationDioramaView destinationId="thac-thuy-tien" onBack={vi.fn()} onSelect={vi.fn()} />,
+    );
+    expect(DIORAMA_BASIS['thac-thuy-tien']).toBe('text');
     expect(screen.getByText(/chưa đối chiếu được ảnh thực tế/i)).toHaveAttribute(
       'data-basis',
       'text',
     );
+    expect(screen.queryByRole('img')).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /ảnh thực tế/i })).not.toBeInTheDocument();
+  });
+
+  it('says the scene was not adjusted to the photo when a text-built scene has a comparison photo', () => {
+    render(
+      <DestinationDioramaView destinationId="thac-gia-long" onBack={vi.fn()} onSelect={vi.fn()} />,
+    );
+    expect(DIORAMA_BASIS['thac-gia-long']).toBe('text');
+    expect(screen.getByText(/chưa được chỉnh theo ảnh này/i)).toHaveAttribute('data-basis', 'text');
+    expect(screen.getByRole('img', { name: /ảnh thực tế của thác gia long/i })).toBeInTheDocument();
   });
 
   it('lists every destination in the picker and reports the chosen one', () => {
