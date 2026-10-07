@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from 'react';
+import { Meadow } from '../dioramaCoverLayer';
 import type { CameraPoses, DioramaSceneProps } from '../dioramaConfig';
 import { createCliffBlockGeometry, seeded, type Placement } from '../dioramaGeometry';
 import {
@@ -47,6 +48,10 @@ const DRY: PaletteSpec = {
   highAt: 5,
   shore: { color: '#a8946a', waterY: 0, band: 0.9 },
 };
+
+const COVER_AREA = { x: [-18, 18] as [number, number], z: [-20, 6] as [number, number] };
+const POOL_REEDS = { band: [0.09, 0.5] as [number, number], count: 1800 };
+const RIVER_REEDS = { band: [0.1, 0.55] as [number, number], count: 2600 };
 
 interface Stream {
   x: number;
@@ -186,6 +191,13 @@ function CascadeScene({ spec, ...scene }: DioramaSceneProps & { spec: CascadeSpe
     <DioramaCanvas poses={poses} {...scene}>
       <Heightfield spec={FIELD} height={height} color={color} />
       <Forest placements={trees} />
+      <Meadow
+        height={height}
+        area={COVER_AREA}
+        minY={0.3}
+        reeds={POOL_REEDS}
+        seed={spec.seed + 500}
+      />
       <Instances placements={rim} seed={7} color="#8a857b" detail={2} amount={0.3} cuts={5} flat />
       {spec.tiers.map((tier, i) => {
         const drop = tier.top - (spec.tiers[i + 1]?.top ?? 0);
@@ -413,6 +425,14 @@ function RapidsScene({ spec, ...scene }: DioramaSceneProps & { spec: RapidsSpec 
     <DioramaCanvas poses={RAPIDS_POSES} {...scene}>
       <Heightfield spec={FIELD} height={height} color={color} />
       <Forest placements={trees} tones={tones} />
+      <Meadow
+        height={height}
+        area={COVER_AREA}
+        tone={spec.forest === 'dry' ? 'dry' : 'lush'}
+        minY={0.25}
+        reeds={RIVER_REEDS}
+        seed={spec.seed + 500}
+      />
       <WaterSheet
         position={[0, 0.07, -8]}
         size={[spec.riverHalf * 2, 56]}

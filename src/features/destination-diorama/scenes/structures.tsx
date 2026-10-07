@@ -1,4 +1,5 @@
 import { useEffect, useMemo, type ReactNode } from 'react';
+import { Meadow } from '../dioramaCoverLayer';
 import type { CameraPoses, DioramaSceneProps, SkySpec } from '../dioramaConfig';
 import { createBoulderGeometry, seeded, smoothstep } from '../dioramaGeometry';
 import { DioramaCanvas, Forest, Heightfield, WaterSheet } from '../dioramaKit';
@@ -47,11 +48,18 @@ const flatGround: HeightFn = makeValleyHeight({
   steepness: 0.8,
 });
 
+const COVER_AREA = { x: [-16, 16] as [number, number], z: [-14, 12] as [number, number] };
+const BRIDGE_REEDS = { band: [0.09, 0.5] as [number, number], count: 1800 };
+
 interface StructureSpec {
   height?: HeightFn;
   palette?: PaletteSpec;
   /** Bán kính vùng quanh gốc toạ độ được để trống (không trồng cây). */
   clearRadius: number;
+  /** Vị trí không phủ cỏ (sân lát, nền công trình, lối đi, lòng sông). */
+  coverExclude?: (x: number, z: number) => boolean;
+  /** Lau sậy ven nước (cầu Ông Cọp). */
+  coverReeds?: { band: [number, number]; count?: number };
   trees: number;
   treeSeed: number;
   tones?: [string, string, string];
@@ -82,6 +90,14 @@ function StructureScene({ spec, ...scene }: DioramaSceneProps & { spec: Structur
     <DioramaCanvas poses={spec.poses} sky={spec.sky ?? SKY} {...scene}>
       <Heightfield spec={FIELD} height={height} color={color} />
       <Forest placements={trees} tones={spec.tones ?? ['#2a5a2c', '#386e33', '#4b7438']} />
+      <Meadow
+        height={height}
+        area={COVER_AREA}
+        minY={-1}
+        exclude={spec.coverExclude}
+        reeds={spec.coverReeds}
+        seed={spec.treeSeed + 500}
+      />
       {spec.content(height)}
     </DioramaCanvas>
   );
@@ -116,6 +132,7 @@ const THAP_NHAN: StructureSpec = {
   clearRadius: 4.2,
   trees: 120,
   treeSeed: 501,
+  coverExclude: (x, z) => Math.hypot(x, z) < 5.4,
   poses: {
     overview: { position: [5, 5.6, 11], target: [0, 4, 0] },
     close: { position: [2.6, 3.8, 5.4], target: [0, 4.4, 0] },
@@ -153,6 +170,7 @@ const YANG_PRONG: StructureSpec = {
   clearRadius: 6.5,
   trees: 220,
   treeSeed: 511,
+  coverExclude: (x, z) => Math.hypot(x, z) < 2.6,
   tones: ['#1f4d26', '#2c6030', '#3a6b34'],
   poses: {
     overview: { position: [4, 4.6, 11], target: [0, 1.6, 0] },
@@ -224,6 +242,7 @@ const AKO_DHONG: StructureSpec = {
   clearRadius: 9,
   trees: 120,
   treeSeed: 531,
+  coverExclude: (_x, z) => Math.abs(z - 1.6) < 0.9,
   poses: {
     overview: { position: [4, 6, 17], target: [0, 0.8, 1] },
     close: { position: [1.4, 1.6, 6.4], target: [0, 0.9, -1] },
@@ -257,6 +276,7 @@ const DINH_LAC_GIAO: StructureSpec = {
   clearRadius: 7,
   trees: 70,
   treeSeed: 541,
+  coverExclude: (x, z) => Math.abs(x) < 4.8 && z > -2.6 && z < 5.6,
   poses: {
     overview: { position: [3, 4.6, 13], target: [0, 1, 0] },
     close: { position: [1.4, 1.4, 5.6], target: [0, 1.1, 0] },
@@ -282,6 +302,7 @@ const BAO_TANG: StructureSpec = {
   clearRadius: 8,
   trees: 40,
   treeSeed: 551,
+  coverExclude: (x, z) => z > 3.6 && Math.abs(x) < 9.2,
   poses: {
     overview: { position: [3, 3.6, 11], target: [0, 1.2, -1] },
     close: { position: [1.6, 1.4, 6.2], target: [0, 1.3, 0] },
@@ -321,6 +342,7 @@ const NHA_DAY: StructureSpec = {
   clearRadius: 10,
   trees: 60,
   treeSeed: 561,
+  coverExclude: (x, z) => Math.abs(x) < 4.6 && Math.abs(z) < 3.6,
   poses: {
     overview: { position: [5, 5.4, 12], target: [0, 0.8, 0] },
     close: { position: [3, 2.6, 7], target: [0, 0.9, 0] },
@@ -396,6 +418,7 @@ const LANG_CA_PHE: StructureSpec = {
   clearRadius: 8,
   trees: 70,
   treeSeed: 571,
+  coverExclude: (x, z) => Math.abs(x) < 6.2 && z > -1.2 && z < 5.2,
   poses: {
     overview: { position: [3, 3.6, 11], target: [0, 0.9, 0] },
     close: { position: [-1, 1.4, 6.4], target: [-2.4, 0.9, 2.4] },
@@ -426,6 +449,7 @@ const GIANG_SON: StructureSpec = {
   clearRadius: 4,
   trees: 130,
   treeSeed: 581,
+  coverExclude: (x, z) => Math.hypot(x, z + 1) < 2.4 || (Math.abs(x) < 1.5 && z > 0 && z < 7),
   poses: {
     overview: { position: [3, 5, 11], target: [0, 3.4, -1] },
     close: { position: [1.4, 3.6, 5], target: [0, 4.2, -1] },
@@ -471,6 +495,8 @@ const CAU_ONG_COP: StructureSpec = {
   clearRadius: 7,
   trees: 120,
   treeSeed: 591,
+  coverExclude: (x) => Math.abs(x) < 3.5,
+  coverReeds: BRIDGE_REEDS,
   poses: {
     overview: { position: [0, 3, 11], target: [0, 0.8, -1] },
     close: { position: [-1, 1.2, 5], target: [0, 0.8, -1] },

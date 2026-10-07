@@ -1,4 +1,5 @@
 import { useEffect, useMemo, type ReactNode } from 'react';
+import { Meadow, type CoverTone } from '../dioramaCoverLayer';
 import type { CameraPoses, DioramaSceneProps, SkySpec } from '../dioramaConfig';
 import { createCliffBlockGeometry, fbm3, seeded, smoothstep } from '../dioramaGeometry';
 import { DioramaCanvas, Forest, Heightfield, WaterSheet } from '../dioramaKit';
@@ -26,6 +27,8 @@ const FIELD: HeightfieldSpec = {
 };
 const SKY: SkySpec = { top: '#6fa6d4', mid: '#b9d6e6', bottom: '#dbe8e6', fogFar: 62 };
 
+const COVER_AREA = { x: [-24, 24] as [number, number], z: [-22, 10] as [number, number] };
+
 interface LandmarkSpec {
   height: HeightFn;
   palette: PaletteSpec;
@@ -34,6 +37,8 @@ interface LandmarkSpec {
   treeSample: (random: () => number) => [number, number] | null;
   treeMinY: number;
   treeMaxY?: number;
+  /** Lớp phủ cỏ: mật độ, tông màu, độ cao tối thiểu (mặc định 1 / lush / 0,3). */
+  meadow?: { density?: number; tone?: CoverTone; minY?: number };
   seed: number;
   poses: CameraPoses;
   sky?: SkySpec;
@@ -70,6 +75,14 @@ function LandmarkScene({ spec, ...scene }: DioramaSceneProps & { spec: LandmarkS
         />
       )}
       <Forest placements={trees} tones={['#2a5a2c', '#386e33', '#4b7438']} />
+      <Meadow
+        height={spec.height}
+        area={COVER_AREA}
+        tone={spec.meadow?.tone ?? 'lush'}
+        density={spec.meadow?.density ?? 1}
+        minY={spec.meadow?.minY ?? 0.3}
+        seed={spec.seed + 500}
+      />
       {spec.extras?.(spec.height)}
     </DioramaCanvas>
   );
@@ -94,6 +107,7 @@ const CHOP_CHAI: LandmarkSpec = {
   },
   treeMinY: 0.5,
   seed: 401,
+  meadow: { minY: 0.04 },
   poses: {
     overview: { position: [0, 4.6, 14], target: [0, 1.6, -3] },
     close: { position: [3, 2.6, 7], target: [0, 2.4, -3] },
@@ -178,6 +192,7 @@ const VAN_HOA: LandmarkSpec = {
   treeSample: (r) => [(r() - 0.5) * 50, -22 + r() * 30],
   treeMinY: 0.8,
   seed: 421,
+  meadow: { density: 1.5, minY: 0.3 },
   sky: { top: '#7ab0d8', mid: '#c1dbe8', bottom: '#e3eeee', fogFar: 64 },
   poses: {
     overview: { position: [0, 5.4, 14], target: [0, 1.2, -4] },

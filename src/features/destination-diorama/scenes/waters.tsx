@@ -1,4 +1,5 @@
 import { useMemo, type ReactNode } from 'react';
+import { Meadow, type CoverTone } from '../dioramaCoverLayer';
 import type { CameraPoses, DioramaSceneProps, SkySpec } from '../dioramaConfig';
 import { seeded, smoothstep } from '../dioramaGeometry';
 import {
@@ -43,6 +44,8 @@ const FIELD: HeightfieldSpec = {
 const SEA_SKY: SkySpec = { top: '#5fa0d8', mid: '#a9d0e8', bottom: '#dcebf0', fogFar: 60 };
 const LAKE_SKY: SkySpec = { top: '#8fa9bb', mid: '#c4d1d6', bottom: '#dfe6e6', fogFar: 55 };
 
+const COVER_AREA = { x: [-26, 26] as [number, number], z: [-24, 8] as [number, number] };
+
 interface ShoreSceneSpec {
   inland: (x: number, z: number) => number;
   slopeLen: number;
@@ -68,6 +71,10 @@ interface ShoreSceneSpec {
   poses: CameraPoses;
   sky: SkySpec;
   extras?: (height: HeightFn) => ReactNode;
+  /** Màu/tông lớp phủ cỏ (mặc định ven biển). */
+  coverTone?: CoverTone;
+  /** Dải độ cao mọc lau sậy (hồ/đầm: ngay sát mép nước). */
+  reedBand?: [number, number];
 }
 
 function ShoreScene({ spec, ...scene }: DioramaSceneProps & { spec: ShoreSceneSpec }) {
@@ -110,6 +117,10 @@ function ShoreScene({ spec, ...scene }: DioramaSceneProps & { spec: ShoreSceneSp
       }),
     [spec, height],
   );
+  const reeds = useMemo(
+    () => (spec.reedBand ? { band: spec.reedBand, count: 2600 } : undefined),
+    [spec],
+  );
   return (
     <DioramaCanvas poses={spec.poses} sky={spec.sky} {...scene}>
       <Heightfield spec={FIELD} height={height} color={color} />
@@ -124,6 +135,14 @@ function ShoreScene({ spec, ...scene }: DioramaSceneProps & { spec: ShoreSceneSp
       />
       <ShoreFoam height={height} center={[0, -4]} extent={[56, 40]} level={0} size={256} />
       <Forest placements={trees} tones={['#2a5a2c', '#386e33', '#4b7438']} />
+      <Meadow
+        height={height}
+        area={COVER_AREA}
+        tone={spec.coverTone ?? 'coast'}
+        minY={0.4}
+        reeds={reeds}
+        seed={spec.seed + 500}
+      />
       {spec.extras?.(height)}
     </DioramaCanvas>
   );
@@ -186,6 +205,8 @@ const HO_LAK: ShoreSceneSpec = {
   low: '#6f8f44',
   high: '#4a6d36',
   frontLow: 4,
+  coverTone: 'lush',
+  reedBand: [-0.14, 0.05],
   trees: 150,
   seed: 301,
   poses: {
@@ -233,6 +254,8 @@ const DAM_O_LOAN: ShoreSceneSpec = {
   low: '#8a9a4a',
   high: '#5f7a3a',
   frontLow: 3,
+  coverTone: 'lush',
+  reedBand: [-0.14, 0.05],
   trees: 90,
   seed: 311,
   poses: {
