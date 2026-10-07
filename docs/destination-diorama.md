@@ -46,3 +46,16 @@ Test `dioramaRegistry.test.ts` giữ hai bất biến: có đúng một scene ch
 1. Thêm điểm vào `verifiedTourismDestinations.ts` (đủ nguồn toạ độ theo `reports/tourism-digital-twin/phase-status.md`).
 2. Dựng scene (thông số cho một nhóm hiện có, hoặc cảnh mới) và đăng ký trong `dioramaRegistry.ts`.
 3. Khai báo `photo`/`text` trong `DIORAMA_BASIS` — chỉ `photo` khi đã dựa vào ảnh dẫn trong dữ liệu.
+
+## Ảnh 360° thật (bộ xem toàn cảnh)
+
+Cảnh dựng thủ tục không thể "đúng từng chi tiết theo mọi hướng" — chỉ ảnh 360° thật làm được. Mỗi diorama có nút **Xem 360° ảnh thật** khi điểm đến có một mục trong `DESTINATION_PANORAMAS` (`panoramas.ts`); không có mục thì không hiện nút và không dựng ảnh giả. Bộ xem (`PanoramaViewer.tsx`, tải lười) dán ảnh equirectangular lên quả cầu nhìn từ bên trong, kéo để xoay, kèm tác giả/giấy phép/link nguồn.
+
+Thêm ảnh 360° cho một điểm đến:
+
+1. Chỉ dùng ảnh có giấy phép tự do (CC BY/CC BY-SA/CC0) hoặc được chủ ảnh/đơn vị quản lý cho phép bằng văn bản. Ảnh Google Street View và ảnh không rõ giấy phép KHÔNG được dùng.
+2. Ảnh tỉ lệ 2:1 (equirectangular), JPEG, ≤ 4096 px chiều ngang, < 6 MB; đặt vào `public/panoramas/<id>.jpg` (cùng origin, hợp CSP).
+3. Thêm mục vào `DESTINATION_PANORAMAS`: `file`, `attribution`, `license`, `sourceUrl` (https).
+4. `panoramas.test.ts` kiểm tra id hợp lệ, file tồn tại, kích thước, không có file thừa, có đủ ghi công. Nếu ảnh làm build vượt ngân sách, nâng `totalBuildBytes` có ghi lý do đo được.
+
+Tình trạng 2026-10-07: chưa có ảnh 360° giấy phép tự do cho điểm nào (khảo sát Wikimedia Commons cho 10 điểm lớn không ra kết quả); danh sách đang rỗng.
