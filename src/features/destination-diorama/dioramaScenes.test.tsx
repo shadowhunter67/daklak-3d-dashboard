@@ -42,6 +42,7 @@ const props: DioramaSceneProps = {
 type SceneModule = Record<string, unknown>;
 const loaders: Array<[string, () => Promise<SceneModule>]> = [
   ['waterfalls', () => import('./scenes/waterfalls')],
+  ['gia-long', () => import('./scenes/giaLong')],
   ['waters', () => import('./scenes/waters')],
   ['landmarks', () => import('./scenes/landmarks')],
   ['structures', () => import('./scenes/structures')],
@@ -74,7 +75,8 @@ describe('diorama scenes mount without GPU', () => {
   );
 
   it('also renders with reduced motion on and a different camera preset', async () => {
-    const { DrayNurScene, GiaLongScene } = await import('./scenes/waterfalls');
+    const { DrayNurScene } = await import('./scenes/waterfalls');
+    const { GiaLongScene } = await import('./scenes/giaLong');
     const { container } = render(
       <>
         <DrayNurScene {...props} reducedMotion preset="close" />

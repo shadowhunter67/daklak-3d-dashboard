@@ -46,3 +46,7 @@ Test `dioramaRegistry.test.ts` giữ hai bất biến: có đúng một scene ch
 1. Thêm điểm vào `verifiedTourismDestinations.ts` (đủ nguồn toạ độ theo `reports/tourism-digital-twin/phase-status.md`).
 2. Dựng scene (thông số cho một nhóm hiện có, hoặc cảnh mới) và đăng ký trong `dioramaRegistry.ts`.
 3. Khai báo `photo`/`text` trong `DIORAMA_BASIS` — chỉ `photo` khi đã dựa vào ảnh dẫn trong dữ liệu.
+
+## Thác Gia Long (dựng lại 2026-10-07)
+
+Bản đầu (khối thác thẳng + cầu thẳng) trông như đập bê tông nên được dựng lại riêng trong `scenes/giaLong.tsx` + `giaLongTerrain.ts` (hàm thuần, có test): sông rộng hạ qua **bốn gờ đá bất quy tắc** (mép gờ không thẳng, mỗi gờ chẻ thành nhiều dải nước đổ xen khối đá nhô), mặt nước từng tầng khác mực/dòng chảy, vũng chân thác có sương bọt; hai bờ nhô thành bậc; đá có ba bậc kích thước (tảng neo → cụm vừa → đá nhỏ ven nước/trong vũng, đều chìm một phần); rừng ba tầng theo cụm (cây cao, cây vừa, bụi + cỏ, không mọc trong lòng sông); **cầu treo cong** (`CurvedSuspensionBridge`: sàn ván mảnh võng nhẹ, hai dây cáp catenary, dây treo thưa, trụ gỗ). Camera chéo ~30° so với cầu, đặt trên bờ (cao hơn địa hình tại chỗ). Vẫn là minh hoạ, không phải mô hình đo đạc.
