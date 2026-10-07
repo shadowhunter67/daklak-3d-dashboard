@@ -45,6 +45,7 @@ const loaders: Array<[string, () => Promise<SceneModule>]> = [
   ['waters', () => import('./scenes/waters')],
   ['landmarks', () => import('./scenes/landmarks')],
   ['structures', () => import('./scenes/structures')],
+  ['krong-kmar', () => import('./KrongKmarScene')],
 ];
 
 describe('diorama scenes mount without GPU', () => {

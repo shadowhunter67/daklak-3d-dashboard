@@ -14,6 +14,9 @@ import {
   type SunSpec,
 } from './dioramaConfig';
 import { MotionContext, ShadowsContext, useReducedMotionScene, useShadows } from './dioramaContext';
+import { Bloom } from './dioramaPost';
+import { useMatrixSetter } from './dioramaMatrices';
+import { useSoftSpot } from './dioramaSprites';
 import { surfaceMaterialProps, type SurfaceKind } from './dioramaMaterials';
 import {
   createBoulderGeometry,
@@ -32,28 +35,6 @@ import {
 } from './dioramaTerrain';
 
 /** Bộ dựng chung cho mọi diorama: Canvas + ánh sáng + bầu trời + camera + địa hình + nước + cây. */
-
-function useMatrixSetter(placements: Placement[]) {
-  return useMemo(() => {
-    const dummy = new THREE.Object3D();
-    const color = new THREE.Color();
-    return (mesh: THREE.InstancedMesh | null, base: string) => {
-      // Chỉ áp ma trận cho InstancedMesh thật (ref là null khi unmount; trong test jsdom là phần tử DOM).
-      if (!(mesh instanceof THREE.InstancedMesh)) return;
-      placements.forEach((placement, index) => {
-        dummy.position.set(...placement.position);
-        dummy.rotation.set(0, placement.rotationY, 0);
-        dummy.scale.set(...placement.scale);
-        dummy.updateMatrix();
-        mesh.setMatrixAt(index, dummy.matrix);
-        color.set(base).offsetHSL(0, 0, placement.hue);
-        mesh.setColorAt(index, color);
-      });
-      mesh.instanceMatrix.needsUpdate = true;
-      if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
-    };
-  }, [placements]);
-}
 
 /** Nhiều khối cùng một hình học (đá, tán cây, bụi) dựng bằng một lệnh vẽ. */
 export function Instances({
@@ -211,7 +192,7 @@ export function ShoreFoam({
   extent,
   level,
   band = 0.28,
-  opacity = 0.75,
+  opacity = 0.5,
   size = 192,
 }: {
   height: HeightFn;
@@ -243,26 +224,6 @@ export function ShoreFoam({
       <meshBasicMaterial map={texture} transparent opacity={opacity} depthWrite={false} />
     </mesh>
   );
-}
-
-function useSoftSpot(): THREE.CanvasTexture {
-  const texture = useMemo(() => {
-    const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
-    const context = canvas.getContext('2d');
-    if (context) {
-      const gradient = context.createRadialGradient(32, 32, 0, 32, 32, 32);
-      gradient.addColorStop(0, 'rgba(255,255,255,1)');
-      gradient.addColorStop(0.5, 'rgba(255,255,255,0.45)');
-      gradient.addColorStop(1, 'rgba(255,255,255,0)');
-      context.fillStyle = gradient;
-      context.fillRect(0, 0, 64, 64);
-    }
-    return new THREE.CanvasTexture(canvas);
-  }, []);
-  useEffect(() => () => texture.dispose(), [texture]);
-  return texture;
 }
 
 /** Mặt nước có sóng gợn (normal map cuộn); `shape="ellipse"` cho hồ/đầm/vũng. */
@@ -569,6 +530,8 @@ export function DioramaCanvas({
 }) {
   const quality = getGraphicsQualityConfigForCurrentDevice();
   const shadows = quality.contactShadows;
+  // Bloom cần GPU khỏe và khung hình liên tục: chỉ bật ở cấu hình cao, không giảm chuyển động.
+  const bloom = quality.tier === 'high' && !reducedMotion;
   const start = poses.overview;
   return (
     <Canvas
@@ -599,6 +562,7 @@ export function DioramaCanvas({
             shadow-normalBias={0.03}
           />
           {children}
+          {bloom && <Bloom />}
           <CameraRig
             poses={poses}
             preset={preset}
