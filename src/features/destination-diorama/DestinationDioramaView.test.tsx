@@ -70,12 +70,10 @@ describe('DestinationDioramaView', () => {
   });
 
   it('says the scene was not adjusted to the photo when a text-built scene has a comparison photo', () => {
-    render(
-      <DestinationDioramaView destinationId="thac-gia-long" onBack={vi.fn()} onSelect={vi.fn()} />,
-    );
-    expect(DIORAMA_BASIS['thac-gia-long']).toBe('text');
+    render(<DestinationDioramaView destinationId="mui-dien" onBack={vi.fn()} onSelect={vi.fn()} />);
+    expect(DIORAMA_BASIS['mui-dien']).toBe('text');
     expect(screen.getByText(/chưa được chỉnh theo ảnh này/i)).toHaveAttribute('data-basis', 'text');
-    expect(screen.getByRole('img', { name: /ảnh thực tế của thác gia long/i })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: /ảnh thực tế của mũi điện/i })).toBeInTheDocument();
   });
 
   it('lists every destination in the picker and reports the chosen one', () => {

@@ -213,24 +213,27 @@ export function ThapYangProngScene(props: DioramaSceneProps) {
 
 /* --------------------------- Buôn Đôn & Buôn Akõ Dhông (text) --------------------- */
 const BUON_DON: StructureSpec = {
+  // Ảnh: sân đất khô dưới tán cây, hai-ba con voi có yên gỗ và người quản tượng; nhà sàn ở phía sau.
   clearRadius: 9,
   trees: 120,
   treeSeed: 521,
+  coverExclude: (x, z) => Math.abs(x) < 7 && z > -2 && z < 7,
   poses: {
-    overview: { position: [5, 6, 17], target: [0, 0.8, -1] },
-    close: { position: [2, 1.8, 6], target: [0, 0.9, -1] },
+    overview: { position: [3, 3.4, 11], target: [0, 1.0, 0] },
+    close: { position: [2.4, 1.7, 5.4], target: [0, 1.1, 0.2] },
     high: { position: [3, 11, 4], target: [0, 0.5, -2] },
   },
   content: () => (
     <>
-      <StiltLonghouse position={[-3.2, 0, -2.4]} rotationY={0.1} length={3.4} />
-      <StiltLonghouse position={[1.4, 0, -3.4]} rotationY={-0.15} length={3.6} />
-      <StiltLonghouse position={[3.8, 0, 0.2]} rotationY={1.5} length={3.2} />
-      <StiltLonghouse position={[-4.2, 0, 2]} rotationY={1.4} length={3.0} />
-      <StiltLonghouse position={[-0.6, 0, 2.2]} rotationY={0.05} length={3.4} />
-      <Elephant position={[0.8, 0, -0.2]} rotationY={0.5} />
-      <Elephant position={[-2.4, 0, 0.4]} rotationY={-0.7} scale={0.8} />
-      <BigTree position={[6.4, 0, 2.4]} scale={1.2} />
+      <Box position={[0, 0.02, 2]} size={[15, 0.04, 9]} color="#b89e72" />
+      <StiltLonghouse position={[-3.6, 0, -4.6]} rotationY={0.1} length={3.4} />
+      <StiltLonghouse position={[2.4, 0, -5.2]} rotationY={-0.15} length={3.6} />
+      <StiltLonghouse position={[7.4, 0, -1]} rotationY={1.5} length={3.2} />
+      <Elephant position={[0.6, 0, 1.6]} rotationY={0.35} scale={1.15} rider />
+      <Elephant position={[-2.2, 0, 1.2]} rotationY={0.15} scale={1.05} rider />
+      <Elephant position={[3.2, 0, -0.4]} rotationY={-0.5} scale={0.85} />
+      <BigTree position={[-6, 0, 1]} scale={1.3} />
+      <BigTree position={[6.2, 0, 3]} scale={1.2} />
     </>
   ),
 };
@@ -238,32 +241,75 @@ export function BuonDonScene(props: DioramaSceneProps) {
   return <StructureScene spec={BUON_DON} {...props} />;
 }
 
+/** Chòi mái tranh trên sàn cao ven ao (Akõ Dhông): bốn cột, sàn gỗ, mái chóp tranh xám nâu. */
+function ThatchPavilion({
+  position,
+  rotationY = 0,
+  size = 1.7,
+}: {
+  position: [number, number, number];
+  rotationY?: number;
+  size?: number;
+}) {
+  return (
+    <group position={position} rotation={[0, rotationY, 0]}>
+      <Box position={[0, 0.5, 0]} size={[size, 0.1, size]} color="#8a6a45" />
+      {[-1, 1].flatMap((sx) =>
+        [-1, 1].map((sz) => (
+          <Cylinder
+            key={`${sx}${sz}`}
+            position={[(sx * size) / 2.2, 0.55, (sz * size) / 2.2]}
+            radius={0.05}
+            height={1.1}
+            color="#5a4228"
+            segments={6}
+          />
+        )),
+      )}
+      <mesh position={[0, 1.55, 0]} rotation={[0, Math.PI / 4, 0]} scale={[1, 1, 1]}>
+        <coneGeometry args={[size * 0.95, 0.95, 4]} />
+        <meshStandardMaterial color="#7a6a4a" roughness={1} flatShading />
+      </mesh>
+      <Box position={[0, 0.2, 0]} size={[size * 0.5, 0.4, size * 0.5]} color="#5a4228" />
+    </group>
+  );
+}
+const akoHeight: HeightFn = (x, z) => {
+  const r = Math.hypot((x - 1.5) / 1.25, z + 1);
+  return flatGround(x, z) * 0.35 - 0.55 * (1 - smoothstep(3.8, 5.2, r));
+};
 const AKO_DHONG: StructureSpec = {
+  // Ảnh: ao nước đục xanh lục, vài chòi mái tranh trên sàn cao bên bờ, lối ván gỗ có cọc dẫn ra ao.
+  height: akoHeight,
   clearRadius: 9,
-  trees: 120,
+  trees: 130,
   treeSeed: 531,
-  coverExclude: (_x, z) => Math.abs(z - 1.6) < 0.9,
+  coverExclude: (x, z) =>
+    Math.hypot((x - 1.5) / 1.25, z + 1) < 5.2 || (Math.abs(x + 2) < 0.8 && z > -0.5 && z < 9),
   poses: {
-    overview: { position: [4, 6, 17], target: [0, 0.8, 1] },
-    close: { position: [1.4, 1.6, 6.4], target: [0, 0.9, -1] },
-    high: { position: [3, 11, 4], target: [0, 0.5, -2] },
+    overview: { position: [-3, 4.6, 14], target: [2, 0.6, -1.5] },
+    close: { position: [-1.6, 1.5, 8.6], target: [2, 0.8, -2] },
+    high: { position: [3, 11, 4], target: [1.5, 0.3, -1] },
   },
   content: () => (
     <>
-      <Box position={[0, 0.02, 1.6]} size={[16, 0.03, 1.4]} color="#b79d6a" />
-      {[-5.4, -1.8, 1.8, 5.4].map((x, i) => (
-        <StiltLonghouse
-          key={`a${x}`}
-          position={[x, 0, -0.6]}
-          rotationY={Math.PI + 0.03 * i}
-          length={3.2}
-        />
-      ))}
-      {[-5.4, -1.8, 1.8, 5.4].map((x, i) => (
-        <StiltLonghouse key={`b${x}`} position={[x, 0, 3.8]} rotationY={0.04 * i} length={3.2} />
-      ))}
-      <BigTree position={[0, 0, -3.6]} scale={1.3} />
-      <BigTree position={[-3.6, 0, 6.4]} />
+      <WaterSheet
+        position={[1.5, 0.07, -1]}
+        size={[13, 10]}
+        shape="ellipse"
+        color="#6d7a4f"
+        opacity={0.9}
+      />
+      <group position={[-2, 0, 9]} rotation={[0, Math.PI / 2, 0]}>
+        <WoodenBridge y={0.42} z={0} from={0} to={9} width={0.9} piers={8} />
+      </group>
+      <ThatchPavilion position={[6, 0, -2.4]} rotationY={0.3} size={2.1} />
+      <ThatchPavilion position={[3.4, 0, -5.4]} rotationY={-0.2} size={1.8} />
+      <ThatchPavilion position={[-1.2, 0, -5.2]} rotationY={0.5} size={1.7} />
+      <ThatchPavilion position={[7.4, 0, 1.6]} rotationY={1.1} size={1.6} />
+      <BigTree position={[8.6, 0, -4.4]} scale={1.2} />
+      <BigTree position={[-5.6, 0, -2.4]} />
+      <StiltLonghouse position={[-8, 0, 3]} rotationY={0.9} length={3.2} />
     </>
   ),
 };
@@ -338,53 +384,101 @@ export function BaoTangScene(props: DioramaSceneProps) {
 }
 
 /* ------------------------------- Nhà đày Buôn Ma Thuột (text) ---------------- */
+/** Cửa gỗ xanh ngọc vòm bán nguyệt trên mặt tường: cánh cửa chữ nhật + vòm dẹt + khung vữa. */
+function ArchedDoor({ x, y = 0.55, z }: { x: number; y?: number; z: number }) {
+  return (
+    <group position={[x, y, z]}>
+      <Box position={[0, 0, 0]} size={[0.84, 1.1, 0.06]} color="#7fbfc8" />
+      <Cylinder
+        position={[0, 0.55, 0]}
+        radius={0.42}
+        height={0.06}
+        color="#7fbfc8"
+        segments={14}
+        rotation={[Math.PI / 2, 0, 0]}
+      />
+      {[-0.46, 0.46].map((dx) => (
+        <Box key={dx} position={[dx, 0.15, 0]} size={[0.1, 1.5, 0.08]} color="#e3c985" />
+      ))}
+    </group>
+  );
+}
+function TiledRoof({
+  position,
+  width,
+  depth,
+  height = 0.8,
+}: {
+  position: [number, number, number];
+  width: number;
+  depth: number;
+  height?: number;
+}) {
+  return (
+    <mesh
+      position={position}
+      rotation={[0, Math.PI / 4, 0]}
+      scale={[width / depth, 1, 1]}
+      castShadow
+    >
+      <coneGeometry args={[depth * 0.78, height, 4]} />
+      <meshStandardMaterial color="#6a362b" roughness={0.95} flatShading />
+    </mesh>
+  );
+}
 const NHA_DAY: StructureSpec = {
+  // Ảnh: dãy nhà một tầng tường vàng ocher, mái ngói nâu sẫm, ba cửa vòm xanh ngọc nhìn ra sân lát.
   clearRadius: 10,
   trees: 60,
   treeSeed: 561,
-  coverExclude: (x, z) => Math.abs(x) < 4.6 && Math.abs(z) < 3.6,
+  coverExclude: (x, z) => Math.abs(x) < 9 && z > -4 && z < 9,
   poses: {
-    overview: { position: [5, 5.4, 12], target: [0, 0.8, 0] },
-    close: { position: [3, 2.6, 7], target: [0, 0.9, 0] },
+    overview: { position: [2, 2.6, 12], target: [0, 1.0, -1] },
+    close: { position: [1, 1.5, 7], target: [0, 1.0, -1.6] },
     high: { position: [3, 13, 4], target: [0, 0.3, 0] },
   },
   content: () => (
     <>
-      <Box position={[0, 0.02, 0]} size={[8.6, 0.03, 6.6]} color="#a39574" />
-      {[
-        [0, -3.3, 8.6, 0.25],
-        [0, 3.3, 8.6, 0.25],
-        [-4.3, 0, 0.25, 6.6],
-        [4.3, 0, 0.25, 6.6],
-      ].map(([x, z, w, d]) => (
-        <Box key={`${x}${z}`} position={[x, 0.7, z]} size={[w, 1.4, d]} color="#bfae8a" />
+      <Box position={[0, 0.02, 3]} size={[22, 0.04, 12]} color="#cdb58b" />
+      <Box position={[0, 0.8, -1.6]} size={[6.4, 1.6, 2.6]} color="#e3c27a" />
+      {[-3.0, -1.5, 1.5, 3.0].map((x) => (
+        <Box key={x} position={[x, 0.8, -0.27]} size={[0.28, 1.6, 0.1]} color="#efd9a0" />
       ))}
-      <Box position={[0, 0.7, 3.3]} size={[1.6, 1.4, 0.3]} color="#6a4a2a" />
-      {[
-        [-3.9, -2.9],
-        [3.9, -2.9],
-        [-3.9, 2.9],
-        [3.9, 2.9],
-      ].map(([x, z]) => (
-        <group key={`${x}${z}`} position={[x, 0, z]}>
-          <Box position={[0, 1.2, 0]} size={[0.7, 2.4, 0.7]} color="#a89870" />
-          <mesh position={[0, 2.75, 0]}>
-            <coneGeometry args={[0.7, 0.7, 4]} />
-            <meshStandardMaterial color="#8a3f2a" roughness={0.9} />
-          </mesh>
+      <Box position={[0, 1.6, -0.3]} size={[6.5, 0.1, 0.18]} color="#efd9a0" />
+      {[-2.2, 0, 2.2].map((x) => (
+        <ArchedDoor key={x} x={x} z={-0.28} />
+      ))}
+      <TiledRoof position={[0, 2.0, -1.6]} width={6.8} depth={2.8} height={0.85} />
+      {[-1, 1].map((side) => (
+        <group key={side}>
+          <Box position={[side * 5.6, 0.7, -2.4]} size={[3.4, 1.4, 2.0]} color="#d9b774" />
+          <TiledRoof position={[side * 5.6, 1.7, -2.4]} width={3.6} depth={2.3} height={0.7} />
+          <Box position={[side * 5.6, 0.62, -1.35]} size={[0.5, 0.7, 0.06]} color="#4a3a2a" />
+          <Box position={[side * 8.4, 0.9, 0.4]} size={[0.5, 1.8, 3.4]} color="#d9b774" />
         </group>
       ))}
-      {[-1.6, 0, 1.6].map((z) => (
-        <Box key={z} position={[-0.6, 0.35, z - 0.3]} size={[5.2, 0.7, 0.9]} color="#d8cdb0" />
+      {/* Tường bao cao ~4 m dày 40 cm và tháp canh ở bốn góc (mô tả của nguồn; ảnh không thấy). */}
+      {[
+        [0, -7.4, 24, 0.3],
+        [-12, 2, 0.3, 19],
+        [12, 2, 0.3, 19],
+      ].map(([x, z, w, dd]) => (
+        <Box key={`w${x}${z}`} position={[x, 0.9, z]} size={[w, 1.8, dd]} color="#cbb58a" />
       ))}
-      {[-1.6, 0, 1.6].map((z) => (
-        <Box
-          key={`r${z}`}
-          position={[-0.6, 0.85, z - 0.3]}
-          size={[5.5, 0.12, 1.1]}
-          color="#8a3f2a"
-        />
+      {[
+        [-12, -7.4],
+        [12, -7.4],
+        [-12, 11.4],
+        [12, 11.4],
+      ].map(([x, z]) => (
+        <group key={`t${x}${z}`} position={[x, 0, z]}>
+          <Box position={[0, 1.3, 0]} size={[0.9, 2.6, 0.9]} color="#c9b284" />
+          <Box position={[0, 2.8, 0]} size={[1.2, 0.4, 1.2]} color="#a89870" />
+          <TiledRoof position={[0, 3.35, 0]} width={1.5} depth={1.5} height={0.6} />
+        </group>
       ))}
+      <BigTree position={[-3.2, 0, -5.6]} scale={1.4} />
+      <BigTree position={[2.4, 0, -6.2]} scale={1.2} />
     </>
   ),
 };

@@ -11,7 +11,7 @@ import {
   Mist,
   WaterSheet,
 } from '../dioramaKit';
-import { Box, Elephant } from '../dioramaProps';
+import { BanyanRoots, Box, Elephant, SuspensionBridge } from '../dioramaProps';
 import {
   forestPlacements,
   makeTerrainColor,
@@ -72,6 +72,14 @@ interface CascadeSpec {
   mist: number;
   rock: string;
   seed: number;
+  /** Màu nước/bọt khi thác đục (mùa lũ) thay vì xanh trong. */
+  tint?: string;
+  waterColor?: string;
+  /** Cầu treo bắc ngang đỉnh thác (Gia Long). */
+  bridge?: { y: number; z: number; from: number; to: number };
+  /** Cây đa/si bám đá bên bờ + đá tảng lớn (Đray K'nao). */
+  banyan?: { position: [number, number, number]; scale: number }[];
+  bigRocks?: number;
 }
 
 function cascadePoses(spec: CascadeSpec): CameraPoses {
@@ -180,6 +188,20 @@ function CascadeScene({ spec, ...scene }: DioramaSceneProps & { spec: CascadeSpe
     }
     return list;
   }, [spec]);
+  const bigRocks = useMemo(
+    () =>
+      scatterOnTerrain(
+        spec.bigRocks ?? 0,
+        spec.seed + 4,
+        (r) => [
+          (r() < 0.5 ? -1 : 1) * (1 + r() * (spec.channelHalf + 1)),
+          last.z + 0.2 + r() * 4.5,
+        ],
+        height,
+        [1.0, 1.9],
+      ),
+    [spec, height, last.z],
+  );
   const mistX = last.streams.reduce((sum, s) => sum + s.x, 0) / last.streams.length;
   const mistCenter = useMemo<[number, number, number]>(
     () => [mistX, 0.1, frontZ + 0.6],
@@ -214,7 +236,7 @@ function CascadeScene({ spec, ...scene }: DioramaSceneProps & { spec: CascadeSpe
             <Box
               position={[0, tier.top + 0.012, tier.z]}
               size={[tier.width * 0.82, 0.02, tier.depth * 0.96]}
-              color="#5da7b8"
+              color={spec.waterColor ?? '#5da7b8'}
               roughness={0.3}
             />
             {tier.streams.map((s) => (
@@ -223,6 +245,7 @@ function CascadeScene({ spec, ...scene }: DioramaSceneProps & { spec: CascadeSpe
                 position={[s.x, tier.top - drop / 2, tier.z + tier.depth / 2 + 0.14]}
                 width={s.width}
                 height={drop}
+                tint={spec.tint}
                 seed={Math.round(tier.z * 10 + s.x * 7)}
               />
             ))}
@@ -237,10 +260,39 @@ function CascadeScene({ spec, ...scene }: DioramaSceneProps & { spec: CascadeSpe
       <WaterSheet
         position={[0, first.top + 0.03, backEdge - 7]}
         size={[spec.channelHalf * 2, 14]}
-        color="#33727f"
+        color={spec.waterColor ?? '#33727f'}
         opacity={0.92}
       />
-      <WaterSheet position={[0, 0.07, poolZ]} size={spec.pool} shape="ellipse" color="#3c7f8c" />
+      <WaterSheet
+        position={[0, 0.07, poolZ]}
+        size={spec.pool}
+        shape="ellipse"
+        color={spec.waterColor ?? '#3c7f8c'}
+      />
+      {spec.bridge && <SuspensionBridge {...spec.bridge} />}
+      {spec.bridge &&
+        [-1, 1].map((side) => (
+          <Box
+            key={`kè${side}`}
+            position={[side * (spec.channelHalf - 0.1), 0.5, last.z + 0.2]}
+            size={[0.7, 1.0, 5]}
+            color="#8f897c"
+          />
+        ))}
+      {spec.banyan?.map((b, i) => (
+        <BanyanRoots key={i} position={b.position} scale={b.scale} seed={spec.seed + i} />
+      ))}
+      {bigRocks.length > 0 && (
+        <Instances
+          placements={bigRocks}
+          seed={11}
+          color="#7d7a70"
+          detail={2}
+          amount={0.35}
+          cuts={6}
+          flat
+        />
+      )}
       <Mist
         center={mistCenter}
         spread={mistSpread}
@@ -282,16 +334,29 @@ const DRAY_NUR: CascadeSpec = {
   seed: 101,
 };
 const GIA_LONG: CascadeSpec = {
+  // Ảnh: thác rất rộng, nước đục nâu cuồn cuộn qua một bậc thấp, cầu treo dây bắc ngang đỉnh.
   tiers: [
-    { top: 3.2, z: -4.2, width: 3.6, depth: 1.6, streams: [{ x: 0, width: 2.4 }] },
-    { top: 1.4, z: -2.4, width: 4.2, depth: 1.6, streams: [{ x: -0.4, width: 2.8 }] },
+    {
+      top: 1.3,
+      z: -3.4,
+      width: 9.4,
+      depth: 1.8,
+      streams: [
+        { x: -3.1, width: 3.0 },
+        { x: 0, width: 3.2 },
+        { x: 3.1, width: 3.0 },
+      ],
+    },
   ],
-  pool: [5.4, 3.4],
-  channelHalf: 3,
-  boulders: 24,
-  mist: 90,
-  rock: '#77726a',
+  pool: [8.4, 4.2],
+  channelHalf: 5,
+  boulders: 18,
+  mist: 150,
+  rock: '#6a6459',
   seed: 111,
+  tint: '#c9ab8a',
+  waterColor: '#a98c6c',
+  bridge: { y: 2.1, z: -2.6, from: -4.9, to: 4.9 },
 };
 const THUY_TIEN: CascadeSpec = {
   tiers: [
@@ -326,16 +391,22 @@ const THUY_TIEN: CascadeSpec = {
   seed: 121,
 };
 const DRAY_KNAO: CascadeSpec = {
+  // Ảnh: ghềnh đá tảng xám phủ rêu, nước trắng chảy giữa hai bờ rừng, cây đa rễ khổng lồ bám đá.
   tiers: [
-    { top: 2.0, z: -3.8, width: 3.4, depth: 1.5, streams: [{ x: 0, width: 2.0 }] },
-    { top: 0.9, z: -2.2, width: 3.8, depth: 1.4, streams: [{ x: 0.3, width: 2.4 }] },
+    { top: 1.5, z: -4.2, width: 2.6, depth: 1.5, streams: [{ x: 0, width: 1.5 }] },
+    { top: 0.6, z: -2.4, width: 3.0, depth: 1.4, streams: [{ x: 0.2, width: 1.8 }] },
   ],
-  pool: [4.6, 2.8],
+  pool: [3.8, 2.4],
   channelHalf: 3,
-  boulders: 24,
-  mist: 60,
-  rock: '#746e63',
+  boulders: 34,
+  mist: 55,
+  rock: '#6b6a5f',
   seed: 131,
+  bigRocks: 7,
+  banyan: [
+    { position: [3.6, 0, -1.4], scale: 1.4 },
+    { position: [-4.2, 0, -2.2], scale: 1.0 },
+  ],
 };
 
 export function DrayNurScene(props: DioramaSceneProps) {

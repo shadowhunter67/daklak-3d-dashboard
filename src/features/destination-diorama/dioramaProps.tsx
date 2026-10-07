@@ -85,11 +85,14 @@ export function Elephant({
   rotationY = 0,
   scale = 1,
   color = '#7a746b',
+  rider = false,
 }: {
   position: V3;
   rotationY?: number;
   scale?: number;
   color?: string;
+  /** Yên gỗ có thành + người quản tượng ngồi cổ voi (voi cưỡi ở Bản Đôn). */
+  rider?: boolean;
 }) {
   const legs: Array<[number, number]> = [
     [-0.32, -0.5],
@@ -128,6 +131,23 @@ export function Elephant({
         color={color}
         rotation={[-0.3, 0, 0]}
       />
+      {rider && (
+        <>
+          <Box position={[0, 1.58, -0.05]} size={[0.56, 0.05, 0.62]} color="#8a6a45" />
+          {[-1, 1].map((side) => (
+            <Box
+              key={side}
+              position={[side * 0.28, 1.72, -0.05]}
+              size={[0.04, 0.3, 0.62]}
+              color="#6e5236"
+            />
+          ))}
+          <Box position={[0, 1.72, -0.36]} size={[0.56, 0.3, 0.04]} color="#6e5236" />
+          <Blob position={[0, 1.6, 0.62]} scale={[0.12, 0.16, 0.1]} color="#4a6ea8" />
+          <Blob position={[0, 1.82, 0.62]} scale={[0.07, 0.07, 0.07]} color="#c79a73" />
+          <Blob position={[0, 1.9, 0.62]} scale={[0.13, 0.03, 0.13]} color="#e8e1cf" />
+        </>
+      )}
     </group>
   );
 }
@@ -577,6 +597,97 @@ export function Mast({ position, height = 1.4 }: { position: V3; height?: number
         />
       ))}
       <Box position={[0, height * 0.85, 0]} size={[0.32, 0.03, 0.03]} color="#444444" />
+    </group>
+  );
+}
+
+/** Cầu treo dây bắc ngang (trục x): sàn ván mảnh, lan can thưa, hai trụ đứng, dây võng nhẹ. */
+export function SuspensionBridge({
+  y,
+  z,
+  from,
+  to,
+  width = 0.5,
+}: {
+  y: number;
+  z: number;
+  from: number;
+  to: number;
+  width?: number;
+}) {
+  const length = to - from;
+  const cx = (from + to) / 2;
+  const posts = Math.max(4, Math.round(length * 1.6));
+  return (
+    <group>
+      <Box position={[cx, y, z]} size={[length, 0.05, width]} color="#5f4a33" />
+      {[-1, 1].map((side) => (
+        <group key={side}>
+          <Box
+            position={[cx, y + 0.34, z + side * (width / 2)]}
+            size={[length, 0.03, 0.03]}
+            color="#2f2a24"
+          />
+          {Array.from({ length: posts }).map((_, i) => (
+            <Box
+              key={i}
+              position={[from + (i * length) / (posts - 1), y + 0.17, z + side * (width / 2)]}
+              size={[0.025, 0.34, 0.025]}
+              color="#2f2a24"
+            />
+          ))}
+        </group>
+      ))}
+      {[from, to].map((x) => (
+        <Box key={x} position={[x, y - 0.2, z]} size={[0.12, 0.9, width + 0.2]} color="#4a4338" />
+      ))}
+    </group>
+  );
+}
+
+/** Rễ đa/si bám đá: các rễ thon nghiêng toả từ một gốc, dựng từ hình trụ. */
+export function BanyanRoots({
+  position,
+  scale = 1,
+  count = 9,
+  seed = 1,
+}: {
+  position: V3;
+  scale?: number;
+  count?: number;
+  seed?: number;
+}) {
+  const roots = useMemo(() => {
+    const random = seeded(seed);
+    return Array.from({ length: count }, () => ({
+      angle: random() * Math.PI * 2,
+      lean: 0.35 + random() * 0.6,
+      length: 0.9 + random() * 1.1,
+      radius: 0.035 + random() * 0.05,
+    }));
+  }, [count, seed]);
+  return (
+    <group position={position} scale={scale}>
+      <Cylinder
+        position={[0, 1.6, 0]}
+        radius={0.55}
+        radiusTop={0.38}
+        height={3.2}
+        color="#6b5d4c"
+      />
+      {roots.map((r, i) => (
+        <group key={i} rotation={[0, r.angle, 0]}>
+          <Cylinder
+            position={[Math.sin(r.lean) * r.length * 0.5, 0.45, 0]}
+            radius={r.radius}
+            radiusTop={r.radius * 0.6}
+            height={r.length}
+            color="#6e5f4c"
+            segments={6}
+            rotation={[0, 0, -r.lean]}
+          />
+        </group>
+      ))}
     </group>
   );
 }
