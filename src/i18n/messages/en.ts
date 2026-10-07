@@ -565,7 +565,13 @@ export const en: Partial<Record<MessageKey, string>> = {
   'diorama.illustrativeBadge': 'ILLUSTRATIVE — DIORAMA',
   'diorama.illustrativeAria': 'Illustrative scene, not a surveyed model',
   'diorama.basis.photo':
-    'Built from the real photo linked above; the shapes remain illustrative, not a surveyed model.',
+    'Built from the real photo shown for comparison; the shapes remain illustrative, not a surveyed model.',
+  'diorama.basis.textWithPhoto':
+    'Built from the text description; the real photo alongside is for comparison only — the scene has not been adjusted to it and may differ from reality.',
+  'diorama.photo.caption': 'Real photo for comparison:',
+  'diorama.photo.alt': 'Real photo of {name} (Wikimedia Commons)',
+  'diorama.photo.enlarge': 'Enlarge the real photo',
+  'diorama.photo.shrink': 'Shrink the real photo',
   'diorama.basis.text':
     "Built from the source's text description only, not checked against a real photo — a general hint of the shape that may differ from reality.",
   'diorama.source': 'Fact source',

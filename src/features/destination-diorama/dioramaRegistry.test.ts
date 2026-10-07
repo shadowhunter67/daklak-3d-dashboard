@@ -23,12 +23,4 @@ describe('diorama registry', () => {
       }
     }
   });
-
-  it('every destination with a linked photo is built from it (basis photo)', () => {
-    for (const destination of verifiedTourismDestinations) {
-      if (destination.imageUrl) {
-        expect(DIORAMA_BASIS[destination.id], destination.id).toBe('photo');
-      }
-    }
-  });
 });

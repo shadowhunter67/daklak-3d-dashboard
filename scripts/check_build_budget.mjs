@@ -43,13 +43,22 @@ const dist = join(root, 'dist');
 // kit), the rest is the 22 new sourced destinations. None of it is in the eager entry bundle —
 // totalJavaScriptBytes/gzip budgets above still pass unchanged — and a diorama chunk is only fetched
 // when a user opens `#/diorama/:id`. The ceiling keeps ~70KB headroom, not an open-ended bump.
+//
+// totalBuildBytes raised again (24 reference photos next to the dioramas, 2026-10) from 21.15MB to
+// 22.6MB. Measured, not guessed: the build went 21,099,642 -> 22,517,476 bytes (+1.42MB), and the 24
+// JPEGs in public/images/destinations/ (<= 640 px, progressive, ~35-100KB each, ~1.38MB total) are
+// essentially all of it. They exist so a visitor can compare the procedural scene with the real photo
+// (CC BY-SA/CC BY from Wikimedia Commons, attribution shown beside each one) — same-origin copies
+// because the CSP only allows `img-src 'self'`. They are plain static files fetched lazily when a
+// diorama is opened (`<img loading="lazy">`), never part of any JS chunk, so the JavaScript and gzip
+// budgets above are unchanged. dioramaPhotos.test.ts caps each file at 130KB so this can't creep.
 const limits = {
   totalJavaScriptBytes: 3_400_000,
   totalJavaScriptGzipBytes: 950_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 21_150_000,
+  totalBuildBytes: 22_600_000,
 };
 
 async function filesAt(directory) {

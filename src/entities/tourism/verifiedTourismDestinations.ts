@@ -52,8 +52,11 @@ export const verifiedTourismDestinations: TourismDestination[] = [
       "Thác nước trên hệ thống sông Serepốk, thuộc xã Ea Na, huyện Krông Ana, cách Buôn Ma Thuột khoảng 25 km. Một phần của cụm ba thác Đray Nur – Gia Long – Dray Sáp. Dài hơn 250 m, cao 30 m, rộng khoảng 150 m; tên trong tiếng Ê Đê nghĩa là 'thác cái'. Du khách có thể đi xuyên qua hang phía sau dòng thác.",
     coordinates: [107.8897, 12.5419],
     sourceUrl: 'https://vi.wikipedia.org/wiki/Th%C3%A1c_%C4%90ray_Nur',
-    // Không có ảnh tự do đã xác minh — cố ý KHÔNG thêm imageUrl placeholder (xem
-    // validateTourismDestination.ts: imageUrl vắng mặt thì attribution/license cũng phải vắng mặt).
+    // Ảnh tự do đã xác minh trên Wikimedia Commons (2026-10-07): File:Draynur falls.jpg, tác giả Y Kpia
+    // Mlo, CC BY-SA 3.0 — trang file Commons liệt kê đúng giấy phép + tác giả.
+    imageUrl: 'https://commons.wikimedia.org/wiki/File:Draynur_falls.jpg',
+    imageAttribution: 'Ảnh: Y Kpia Mlo, Wikimedia Commons, File:Draynur falls.jpg',
+    imageLicense: 'CC BY-SA 3.0',
     confidence: 'verified',
     verificationStatus: 'reviewed',
     dataOwner: 'tourism-digital-twin-phase-t2',
@@ -67,6 +70,11 @@ export const verifiedTourismDestinations: TourismDestination[] = [
     coordinates: [107.67778, 12.80833],
     sourceUrl:
       'https://en.wikipedia.org/wiki/Bu%C3%B4n_%C4%90%C3%B4n,_%C4%90%E1%BA%AFk_L%E1%BA%AFk',
+    // Ảnh tự do đã xác minh trên Wikimedia Commons (2026-10-07), CC BY-SA 3.0, tác giả Bùi Thụy Đào Nguyên — trang file
+    // Commons liệt kê đúng giấy phép + tác giả; bản nén ≤ 640 px chép vào public/images/destinations/.
+    imageUrl: 'https://commons.wikimedia.org/wiki/File:Voi_%E1%BB%9F_B%E1%BA%A3n_%C4%90%C3%B4n.jpg',
+    imageAttribution: 'Ảnh: Bùi Thụy Đào Nguyên, Wikimedia Commons, File:Voi ở Bản Đôn.jpg',
+    imageLicense: 'CC BY-SA 3.0',
     confidence: 'verified',
     verificationStatus: 'reviewed',
     dataOwner: 'tourism-digital-twin-phase-t2',
@@ -139,6 +147,13 @@ export const verifiedTourismDestinations: TourismDestination[] = [
     coordinates: [109.456988, 12.896538],
     sourceUrl: 'https://vi.wikipedia.org/wiki/M%C5%A9i_%C4%90i%E1%BB%87n',
     // Đối chiếu độc lập với OpenStreetMap Nominatim 2026-10-05 (lệch ≤ 1 km, hoặc là vùng rộng); toạ độ lấy từ bài vi.wikipedia.
+    // Ảnh tự do đã xác minh trên Wikimedia Commons (2026-10-07), CC BY-SA 2.0, tác giả Tran Anh Khoa (zorrotran) — trang file
+    // Commons liệt kê đúng giấy phép + tác giả; bản nén ≤ 640 px chép vào public/images/destinations/.
+    imageUrl:
+      'https://commons.wikimedia.org/wiki/File:M%C5%A9i_%C4%90i%E1%BB%87n_(27942176497).jpg',
+    imageAttribution:
+      'Ảnh: Tran Anh Khoa (zorrotran), Wikimedia Commons, File:Mũi Điện (27942176497).jpg',
+    imageLicense: 'CC BY-SA 2.0',
     confidence: 'verified',
     verificationStatus: 'reviewed',
     dataOwner: 'tourism-digital-twin-expansion-2026-10',
@@ -152,6 +167,11 @@ export const verifiedTourismDestinations: TourismDestination[] = [
     coordinates: [109.273014, 13.113113],
     sourceUrl: 'https://vi.wikipedia.org/wiki/N%C3%BAi_Ch%C3%B3p_Ch%C3%A0i',
     // Đối chiếu độc lập với OpenStreetMap Nominatim 2026-10-05 (lệch ≤ 1 km, hoặc là vùng rộng); toạ độ lấy từ bài vi.wikipedia.
+    // Ảnh tự do đã xác minh trên Wikimedia Commons (2026-10-07), CC BY-SA 4.0, tác giả Christophe95 — trang file
+    // Commons liệt kê đúng giấy phép + tác giả; bản nén ≤ 640 px chép vào public/images/destinations/.
+    imageUrl: 'https://commons.wikimedia.org/wiki/File:Rice_fields_in_Tuy_Hoa.jpg',
+    imageAttribution: 'Ảnh: Christophe95, Wikimedia Commons, File:Rice fields in Tuy Hoa.jpg',
+    imageLicense: 'CC BY-SA 4.0',
     confidence: 'verified',
     verificationStatus: 'reviewed',
     dataOwner: 'tourism-digital-twin-expansion-2026-10',
@@ -165,6 +185,13 @@ export const verifiedTourismDestinations: TourismDestination[] = [
     coordinates: [109.40138888889, 12.898611111111],
     sourceUrl: 'https://vi.wikipedia.org/wiki/N%C3%BAi_%C4%90%C3%A1_Bia',
     // Đối chiếu độc lập với OpenStreetMap Nominatim 2026-10-05 (lệch ≤ 1 km, hoặc là vùng rộng); toạ độ lấy từ Wikidata (P625).
+    // Ảnh tự do đã xác minh trên Wikimedia Commons (2026-10-07), CC BY-SA 3.0, tác giả Nguyễn Đông Sơn — trang file
+    // Commons liệt kê đúng giấy phép + tác giả; bản nén ≤ 640 px chép vào public/images/destinations/.
+    imageUrl:
+      'https://commons.wikimedia.org/wiki/File:N%C3%BAi_%C4%90%C3%A1_Bia,_ph%C3%ADa_nam_Ph%C3%BA_Y%C3%AAn.JPG',
+    imageAttribution:
+      'Ảnh: Nguyễn Đông Sơn, Wikimedia Commons, File:Núi Đá Bia, phía nam Phú Yên.JPG',
+    imageLicense: 'CC BY-SA 3.0',
     confidence: 'verified',
     verificationStatus: 'reviewed',
     dataOwner: 'tourism-digital-twin-expansion-2026-10',
@@ -230,6 +257,11 @@ export const verifiedTourismDestinations: TourismDestination[] = [
     coordinates: [107.913664, 12.527781],
     sourceUrl: 'https://vi.wikipedia.org/wiki/Th%C3%A1c_Gia_Long',
     // Đối chiếu độc lập với OpenStreetMap Nominatim 2026-10-05 (lệch ≤ 1 km, hoặc là vùng rộng); toạ độ lấy từ bài vi.wikipedia.
+    // Ảnh tự do đã xác minh trên Wikimedia Commons (2026-10-07), CC BY-SA 3.0, tác giả Đỗ Tuấn Hưng — trang file
+    // Commons liệt kê đúng giấy phép + tác giả; bản nén ≤ 640 px chép vào public/images/destinations/.
+    imageUrl: 'https://commons.wikimedia.org/wiki/File:Thacgialong01.JPG',
+    imageAttribution: 'Ảnh: Đỗ Tuấn Hưng, Wikimedia Commons, File:Thacgialong01.JPG',
+    imageLicense: 'CC BY-SA 3.0',
     confidence: 'verified',
     verificationStatus: 'reviewed',
     dataOwner: 'tourism-digital-twin-expansion-2026-10',
@@ -287,6 +319,11 @@ export const verifiedTourismDestinations: TourismDestination[] = [
     coordinates: [108.704702, 12.780437],
     sourceUrl: 'https://vi.wikipedia.org/wiki/Th%C3%A1c_%C4%90ray_K%27nao',
     // Đối chiếu hai nguồn độc lập 2026-10-05: toạ độ Wikipedia khớp OpenStreetMap trong 0,2 km.
+    // Ảnh tự do đã xác minh trên Wikimedia Commons (2026-10-07), CC BY-SA 3.0, tác giả Đỗ Tuấn Hưng — trang file
+    // Commons liệt kê đúng giấy phép + tác giả; bản nén ≤ 640 px chép vào public/images/destinations/.
+    imageUrl: 'https://commons.wikimedia.org/wiki/File:Drayknao01.JPG',
+    imageAttribution: 'Ảnh: Đỗ Tuấn Hưng, Wikimedia Commons, File:Drayknao01.JPG',
+    imageLicense: 'CC BY-SA 3.0',
     confidence: 'verified',
     verificationStatus: 'reviewed',
     dataOwner: 'tourism-digital-twin-expansion-2026-10',
@@ -367,6 +404,13 @@ export const verifiedTourismDestinations: TourismDestination[] = [
     coordinates: [108.0472, 12.6768],
     sourceUrl: 'https://vi.wikipedia.org/wiki/Nh%C3%A0_%C4%91%C3%A0y_Bu%C3%B4n_Ma_Thu%E1%BB%99t',
     // Một nguồn toạ độ (OpenStreetMap, © OpenStreetMap contributors, ODbL); bài vi.wikipedia xác nhận địa điểm có thật. Chưa đối chiếu được nguồn toạ độ thứ hai.
+    // Ảnh tự do đã xác minh trên Wikimedia Commons (2026-10-07), CC BY-SA 4.0, tác giả Dominic Nelson — trang file
+    // Commons liệt kê đúng giấy phép + tác giả; bản nén ≤ 640 px chép vào public/images/destinations/.
+    imageUrl:
+      'https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_01.jpg',
+    imageAttribution:
+      'Ảnh: Dominic Nelson, Wikimedia Commons, File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 01.jpg',
+    imageLicense: 'CC BY-SA 4.0',
     confidence: 'medium',
     verificationStatus: 'validated-automatically',
     dataOwner: 'tourism-digital-twin-expansion-2026-10',
@@ -380,6 +424,11 @@ export const verifiedTourismDestinations: TourismDestination[] = [
     coordinates: [108.0491, 12.6965],
     sourceUrl: 'https://vi.wikipedia.org/wiki/Bu%C3%B4n_Ak%C3%B5_Dh%C3%B4ng',
     // Một nguồn toạ độ (OpenStreetMap, © OpenStreetMap contributors, ODbL); bài vi.wikipedia xác nhận địa điểm có thật. Chưa đối chiếu được nguồn toạ độ thứ hai.
+    // Ảnh tự do đã xác minh trên Wikimedia Commons (2026-10-07), CC BY-SA 4.0, tác giả Key2015 — trang file
+    // Commons liệt kê đúng giấy phép + tác giả; bản nén ≤ 640 px chép vào public/images/destinations/.
+    imageUrl: 'https://commons.wikimedia.org/wiki/File:Buon_ako_dhong.JPG',
+    imageAttribution: 'Ảnh: Key2015, Wikimedia Commons, File:Buon ako dhong.JPG',
+    imageLicense: 'CC BY-SA 4.0',
     confidence: 'medium',
     verificationStatus: 'validated-automatically',
     dataOwner: 'tourism-digital-twin-expansion-2026-10',
