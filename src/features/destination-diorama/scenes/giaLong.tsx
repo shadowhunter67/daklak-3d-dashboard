@@ -34,14 +34,14 @@ import {
  * Địa hình/bố cục nằm ở `giaLongTerrain.ts` (hàm thuần, có test).
  */
 const POSES: CameraPoses = {
-  overview: { position: [6.2, 4.7, 8.4], target: [-1.2, 1.0, -5] },
+  overview: { position: [6.2, 3.9, 8.4], target: [-1.2, 1.0, -5] },
   close: { position: [4.2, 2.4, 3.6], target: [-0.8, 0.9, -5] },
   high: { position: [4, 8, 3], target: [0, 0.8, -5] },
 };
 const SKY: SkySpec = { top: '#6597c4', mid: '#aecbd6', bottom: '#cddcd6', fogNear: 12, fogFar: 46 };
 const SUN: SunSpec = { position: [-9, 10, 8], intensity: 1.5, color: '#ffe8c2' };
 const COVER_AREA = { x: [-18, 18] as [number, number], z: [-20, 6] as [number, number] };
-const FOAM = '#b9cdc6';
+const FOAM = '#d9cdb4';
 
 export function GiaLongScene(props: DioramaSceneProps) {
   const color = useMemo(() => giaLongColor(), []);
@@ -50,7 +50,7 @@ export function GiaLongScene(props: DioramaSceneProps) {
   const tall = useMemo(
     () =>
       forestPlacements({
-        count: 90,
+        count: 55,
         seed: 75,
         height: giaLongHeight,
         minY: 0.8,
@@ -64,7 +64,7 @@ export function GiaLongScene(props: DioramaSceneProps) {
   const mid = useMemo(
     () =>
       forestPlacements({
-        count: 170,
+        count: 100,
         seed: 77,
         height: giaLongHeight,
         minY: 0.6,
@@ -142,7 +142,7 @@ export function GiaLongScene(props: DioramaSceneProps) {
           key={tier}
           position={[0, level, z]}
           size={[10.8, length]}
-          color={tier === 4 ? '#4d7773' : '#6c8a82'}
+          color={tier === 4 ? '#5d6b5a' : '#9a8a6c'}
           opacity={tier === 4 ? 0.92 : 0.84}
           normalScale={tier === 4 ? 0.3 : 0.5}
           flow={tier === 4 ? [0.004, 0.012] : [0.01, 0.06]}
