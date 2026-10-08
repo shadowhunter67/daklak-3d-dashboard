@@ -601,46 +601,98 @@ export function Mast({ position, height = 1.4 }: { position: V3; height?: number
   );
 }
 
-/** Cầu treo dây bắc ngang (trục x): sàn ván mảnh, lan can thưa, hai trụ đứng, dây võng nhẹ. */
-export function SuspensionBridge({
-  y,
-  z,
+/**
+ * Cầu treo dây mảnh bắc ngang (trục x): sàn ván nhỏ võng nhẹ ở giữa, hai dây cáp chính cong
+ * (catenary) treo cao hơn sàn, dây treo thưa theo nhịp, trụ gỗ ở hai đầu.
+ */
+export function CurvedSuspensionBridge({
   from,
   to,
-  width = 0.5,
+  z,
+  yEnd,
+  sag = 0.32,
+  cableRise = 0.95,
+  cableSag = 0.7,
+  width = 0.55,
 }: {
-  y: number;
-  z: number;
   from: number;
   to: number;
+  z: number;
+  /** Cao độ sàn ở hai đầu cầu. */
+  yEnd: number;
+  sag?: number;
+  cableRise?: number;
+  cableSag?: number;
   width?: number;
 }) {
-  const length = to - from;
-  const cx = (from + to) / 2;
-  const posts = Math.max(4, Math.round(length * 1.6));
+  const unit = useMemo(() => new THREE.BoxGeometry(1, 1, 1), []);
+  const { planks, hangers, cables } = useMemo(() => {
+    const length = to - from;
+    const cx = (from + to) / 2;
+    const u2 = (x: number) => ((x - cx) / (length / 2)) ** 2;
+    const deckY = (x: number) => yEnd - sag * (1 - u2(x));
+    const cableY = (x: number) => yEnd + cableRise - cableSag * (1 - u2(x));
+    const random = seeded(5);
+    const plankCount = Math.round(length * 3.4);
+    const planks: Placement[] = Array.from({ length: plankCount }, (_, i) => {
+      const x = from + ((i + 0.5) * length) / plankCount;
+      return {
+        position: [x, deckY(x), z],
+        rotationY: 0,
+        scale: [(length / plankCount) * 0.8, 0.04, width],
+        hue: (random() - 0.5) * 0.08,
+      };
+    });
+    const hangerCount = Math.round(length * 1.1);
+    const hangers: Placement[] = [-1, 1].flatMap((side) =>
+      Array.from({ length: hangerCount + 1 }, (_, i) => {
+        const x = from + (i * length) / hangerCount;
+        const len = cableY(x) - deckY(x);
+        return {
+          position: [x, deckY(x) + len / 2, z + side * (width / 2)] as V3,
+          rotationY: 0,
+          scale: [0.014, len, 0.014] as V3,
+          hue: 0,
+        };
+      }),
+    );
+    const cables = [-1, 1].map((side) => {
+      const points = Array.from({ length: 29 }, (_, i) => {
+        const x = from + (i * length) / 28;
+        return new THREE.Vector3(x, cableY(x), z + side * (width / 2));
+      });
+      return new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), 40, 0.02, 5);
+    });
+    return { planks, hangers, cables };
+  }, [from, to, z, yEnd, sag, cableRise, cableSag, width]);
+  useEffect(
+    () => () => {
+      unit.dispose();
+      cables.forEach((g) => g.dispose());
+    },
+    [unit, cables],
+  );
   return (
     <group>
-      <Box position={[cx, y, z]} size={[length, 0.05, width]} color="#5f4a33" />
-      {[-1, 1].map((side) => (
-        <group key={side}>
-          <Box
-            position={[cx, y + 0.34, z + side * (width / 2)]}
-            size={[length, 0.03, 0.03]}
-            color="#2f2a24"
+      <InstancedPlacements geometry={unit} placements={planks} color="#6b543a" flat={false} />
+      <InstancedPlacements geometry={unit} placements={hangers} color="#3a342c" flat={false} />
+      {cables.map((geometry, i) => (
+        <mesh key={i} geometry={geometry}>
+          <meshStandardMaterial color="#35302a" roughness={0.8} />
+        </mesh>
+      ))}
+      {[from, to].flatMap((x) =>
+        [-1, 1].map((side) => (
+          <Cylinder
+            key={`${x}${side}`}
+            position={[x, yEnd + cableRise / 2 - 0.05, z + side * (width / 2)]}
+            radius={0.06}
+            height={cableRise + 0.2}
+            color="#5a4228"
+            segments={6}
           />
-          {Array.from({ length: posts }).map((_, i) => (
-            <Box
-              key={i}
-              position={[from + (i * length) / (posts - 1), y + 0.17, z + side * (width / 2)]}
-              size={[0.025, 0.34, 0.025]}
-              color="#2f2a24"
-            />
-          ))}
-        </group>
-      ))}
-      {[from, to].map((x) => (
-        <Box key={x} position={[x, y - 0.2, z]} size={[0.12, 0.9, width + 0.2]} color="#4a4338" />
-      ))}
+        )),
+      )}
     </group>
   );
 }

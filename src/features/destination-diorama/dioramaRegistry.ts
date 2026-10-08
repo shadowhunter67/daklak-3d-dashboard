@@ -18,7 +18,9 @@ export const DIORAMA_SCENES: Record<string, SceneComponent> = {
     import('./KrongKmarScene').then((m) => ({ default: m.KrongKmarScene })),
   ),
   'dray-nur-waterfall': lazy(() => waterfalls().then((m) => ({ default: m.DrayNurScene }))),
-  'thac-gia-long': lazy(() => waterfalls().then((m) => ({ default: m.GiaLongScene }))),
+  'thac-gia-long': lazy(() =>
+    import('./scenes/giaLong').then((m) => ({ default: m.GiaLongScene })),
+  ),
   'thac-thuy-tien': lazy(() => waterfalls().then((m) => ({ default: m.ThuyTienScene }))),
   'thac-dray-knao': lazy(() => waterfalls().then((m) => ({ default: m.DrayKnaoScene }))),
   'thac-bay-nhanh': lazy(() => waterfalls().then((m) => ({ default: m.BayNhanhScene }))),

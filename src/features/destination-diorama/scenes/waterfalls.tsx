@@ -11,7 +11,7 @@ import {
   Mist,
   WaterSheet,
 } from '../dioramaKit';
-import { BanyanRoots, Box, Elephant, SuspensionBridge } from '../dioramaProps';
+import { BanyanRoots, Box, Elephant } from '../dioramaProps';
 import {
   forestPlacements,
   makeTerrainColor,
@@ -75,8 +75,6 @@ interface CascadeSpec {
   /** Màu nước/bọt khi thác đục (mùa lũ) thay vì xanh trong. */
   tint?: string;
   waterColor?: string;
-  /** Cầu treo bắc ngang đỉnh thác (Gia Long). */
-  bridge?: { y: number; z: number; from: number; to: number };
   /** Cây đa/si bám đá bên bờ + đá tảng lớn (Đray K'nao). */
   banyan?: { position: [number, number, number]; scale: number }[];
   bigRocks?: number;
@@ -269,16 +267,6 @@ function CascadeScene({ spec, ...scene }: DioramaSceneProps & { spec: CascadeSpe
         shape="ellipse"
         color={spec.waterColor ?? '#3c7f8c'}
       />
-      {spec.bridge && <SuspensionBridge {...spec.bridge} />}
-      {spec.bridge &&
-        [-1, 1].map((side) => (
-          <Box
-            key={`kè${side}`}
-            position={[side * (spec.channelHalf - 0.1), 0.5, last.z + 0.2]}
-            size={[0.7, 1.0, 5]}
-            color="#8f897c"
-          />
-        ))}
       {spec.banyan?.map((b, i) => (
         <BanyanRoots key={i} position={b.position} scale={b.scale} seed={spec.seed + i} />
       ))}
@@ -333,31 +321,6 @@ const DRAY_NUR: CascadeSpec = {
   rock: '#6f6a60',
   seed: 101,
 };
-const GIA_LONG: CascadeSpec = {
-  // Ảnh: thác rất rộng, nước đục nâu cuồn cuộn qua một bậc thấp, cầu treo dây bắc ngang đỉnh.
-  tiers: [
-    {
-      top: 1.3,
-      z: -3.4,
-      width: 9.4,
-      depth: 1.8,
-      streams: [
-        { x: -3.1, width: 3.0 },
-        { x: 0, width: 3.2 },
-        { x: 3.1, width: 3.0 },
-      ],
-    },
-  ],
-  pool: [8.4, 4.2],
-  channelHalf: 5,
-  boulders: 18,
-  mist: 150,
-  rock: '#6a6459',
-  seed: 111,
-  tint: '#c9ab8a',
-  waterColor: '#a98c6c',
-  bridge: { y: 2.1, z: -2.6, from: -4.9, to: 4.9 },
-};
 const THUY_TIEN: CascadeSpec = {
   tiers: [
     { top: 2.6, z: -4.8, width: 2.0, depth: 1.5, streams: [{ x: 0, width: 1.0 }] },
@@ -411,9 +374,6 @@ const DRAY_KNAO: CascadeSpec = {
 
 export function DrayNurScene(props: DioramaSceneProps) {
   return <CascadeScene spec={DRAY_NUR} {...props} />;
-}
-export function GiaLongScene(props: DioramaSceneProps) {
-  return <CascadeScene spec={GIA_LONG} {...props} />;
 }
 export function ThuyTienScene(props: DioramaSceneProps) {
   return <CascadeScene spec={THUY_TIEN} {...props} />;
