@@ -50,3 +50,16 @@ Test `dioramaRegistry.test.ts` giữ hai bất biến: có đúng một scene ch
 ## Thác Gia Long (dựng lại 2026-10-07)
 
 Bản đầu (khối thác thẳng + cầu thẳng) trông như đập bê tông nên được dựng lại riêng trong `scenes/giaLong.tsx` + `giaLongTerrain.ts` (hàm thuần, có test): sông rộng hạ qua **bốn gờ đá bất quy tắc** (mép gờ không thẳng, mỗi gờ chẻ thành nhiều dải nước đổ xen khối đá nhô), mặt nước từng tầng khác mực/dòng chảy, vũng chân thác có sương bọt; hai bờ nhô thành bậc; đá có ba bậc kích thước (tảng neo → cụm vừa → đá nhỏ ven nước/trong vũng, đều chìm một phần); rừng ba tầng theo cụm (cây cao, cây vừa, bụi + cỏ, không mọc trong lòng sông); **cầu treo cong** (`CurvedSuspensionBridge`: sàn ván mảnh võng nhẹ, hai dây cáp catenary, dây treo thưa, trụ gỗ). Camera chéo ~30° so với cầu, đặt trên bờ (cao hơn địa hình tại chỗ). Vẫn là minh hoạ, không phải mô hình đo đạc.
+
+## Ảnh 360° thật (bộ xem toàn cảnh)
+
+Cảnh dựng thủ tục không thể "đúng từng chi tiết theo mọi hướng" — chỉ ảnh 360° thật làm được. Mỗi diorama có nút **Xem 360° ảnh thật** khi điểm đến có một mục trong `DESTINATION_PANORAMAS` (`panoramas.ts`); không có mục thì không hiện nút và không dựng ảnh giả. Bộ xem (`PanoramaViewer.tsx`, tải lười) dán ảnh equirectangular lên quả cầu nhìn từ bên trong, kéo để xoay, kèm tác giả/giấy phép/link nguồn.
+
+Thêm ảnh 360° cho một điểm đến:
+
+1. Chỉ dùng ảnh có giấy phép tự do (CC BY/CC BY-SA/CC0) hoặc được chủ ảnh/đơn vị quản lý cho phép bằng văn bản. Ảnh Google Street View và ảnh không rõ giấy phép KHÔNG được dùng.
+2. Ảnh tỉ lệ 2:1 (equirectangular), JPEG, ≤ 4096 px chiều ngang, < 6 MB; đặt vào `public/panoramas/<id>.jpg` (cùng origin, hợp CSP).
+3. Thêm mục vào `DESTINATION_PANORAMAS`: `file`, `attribution`, `license`, `sourceUrl` (https).
+4. `panoramas.test.ts` kiểm tra id hợp lệ, file tồn tại, kích thước, không có file thừa, có đủ ghi công. Nếu ảnh làm build vượt ngân sách, nâng `totalBuildBytes` có ghi lý do đo được.
+
+Tình trạng 2026-10-07: chưa có ảnh 360° giấy phép tự do cho điểm nào (khảo sát Wikimedia Commons cho 10 điểm lớn không ra kết quả); danh sách đang rỗng.

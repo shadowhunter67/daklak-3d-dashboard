@@ -4706,3 +4706,34 @@ footer a {
 .destination-diorama__photo a {
   color: #ffe49a;
 }
+
+.destination-diorama__pano {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  background: #05100f;
+  cursor: grab;
+}
+.destination-diorama__pano canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.destination-diorama__pano-bar {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(5, 16, 15, 0.82);
+  color: #e8efe9;
+  font-size: 0.85rem;
+}
+.destination-diorama__pano-bar a {
+  color: #f0c86e;
+}
