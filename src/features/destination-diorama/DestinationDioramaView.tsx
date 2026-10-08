@@ -1,4 +1,4 @@
-import { Suspense, useCallback, useState } from 'react';
+import { lazy, Suspense, useCallback, useState } from 'react';
 import { hasWebGLSupport } from '../../components/map/webglLifecycle';
 import { MapErrorBoundary, MapFallback, MapLoading } from '../../components/map/MapFallback';
 import { verifiedTourismDestinations } from '../../entities/tourism/verifiedTourismDestinations';
@@ -6,7 +6,12 @@ import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import { DIORAMA_BASIS, type CameraPresetId } from './dioramaConfig';
 import { destinationPhotoUrl } from './dioramaPhotos';
+import { destinationPanorama } from './panoramas';
 import { DIORAMA_SCENES } from './dioramaRegistry';
+
+const PanoramaViewer = lazy(() =>
+  import('./PanoramaViewer').then((m) => ({ default: m.PanoramaViewer })),
+);
 
 const PRESETS: readonly CameraPresetId[] = ['overview', 'close', 'high'];
 
@@ -32,11 +37,13 @@ export function DestinationDioramaView({
   const [preset, setPreset] = useState<CameraPresetId>('overview');
   const [contextLost, setContextLost] = useState(false);
   const [photoOpen, setPhotoOpen] = useState(false);
+  const [panoOpen, setPanoOpen] = useState(false);
   const handleLost = useCallback(() => setContextLost(true), []);
   const handleRestored = useCallback(() => setContextLost(false), []);
 
   const destination = verifiedTourismDestinations.find((item) => item.id === destinationId);
   const Scene = DIORAMA_SCENES[destinationId];
+  const panorama = destinationPanorama(destinationId);
 
   if (!destination || !Scene) {
     return (
@@ -120,6 +127,15 @@ export function DestinationDioramaView({
           </figcaption>
         </figure>
       )}
+      {panorama && panoOpen && (
+        <Suspense fallback={<MapLoading />}>
+          <PanoramaViewer
+            panorama={panorama}
+            name={destination.name}
+            onClose={() => setPanoOpen(false)}
+          />
+        </Suspense>
+      )}
       <div className="destination-diorama__panel">
         <span>{destination.name}</span>
         <p>{destination.description}</p>
@@ -146,6 +162,11 @@ export function DestinationDioramaView({
               {t(`diorama.preset.${id}`)}
             </button>
           ))}
+          {panorama && (
+            <button type="button" onClick={() => setPanoOpen(true)}>
+              {t('diorama.pano.open')}
+            </button>
+          )}
           <label className="destination-diorama__pick">
             <span className="visually-hidden">{t('diorama.pickAnother')}</span>
             <select
