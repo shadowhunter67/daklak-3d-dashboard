@@ -1,7 +1,7 @@
-import { useEffect, useMemo, type ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { Meadow } from '../dioramaCoverLayer';
 import type { CameraPoses, DioramaSceneProps, SkySpec } from '../dioramaConfig';
-import { createBoulderGeometry, seeded, smoothstep } from '../dioramaGeometry';
+import { smoothstep } from '../dioramaGeometry';
 import { DioramaCanvas, Forest, Heightfield, WaterSheet } from '../dioramaKit';
 import {
   Blob,
@@ -14,7 +14,7 @@ import {
   TiledHall,
   WoodenBridge,
 } from '../dioramaProps';
-import { useShadows } from '../dioramaContext';
+import { FootprintBuilding } from '../dioramaFootprint';
 import {
   forestPlacements,
   makeTerrainColor,
@@ -35,6 +35,13 @@ const FIELD: HeightfieldSpec = {
   segmentsX: 150,
   segmentsZ: 120,
   centerZ: -4,
+};
+const WIDE_SKY: SkySpec = {
+  top: '#6fa6d4',
+  mid: '#b9d6e6',
+  bottom: '#dbe8e6',
+  fogNear: 40,
+  fogFar: 140,
 };
 const SKY: SkySpec = { top: '#6fa6d4', mid: '#b9d6e6', bottom: '#dbe8e6', fogFar: 60 };
 const GROUND: PaletteSpec = { low: '#8aa04e', high: '#4f7d37', highAt: 4, rockStrength: 0.2 };
@@ -62,9 +69,13 @@ interface StructureSpec {
   coverReeds?: { band: [number, number]; count?: number };
   trees: number;
   treeSeed: number;
+  /** Độ cao tối thiểu để trồng cây (mặc định -1); nâng lên để tránh lòng sông. */
+  treeMinY?: number;
   tones?: [string, string, string];
   poses: CameraPoses;
   sky?: SkySpec;
+  /** Cảnh rộng (công trình thật theo tỉ lệ) cho phép lùi camera xa hơn mặc định 18. */
+  maxDistance?: number;
   content: (height: HeightFn) => ReactNode;
 }
 
@@ -77,7 +88,7 @@ function StructureScene({ spec, ...scene }: DioramaSceneProps & { spec: Structur
         count: spec.trees,
         seed: spec.treeSeed,
         height,
-        minY: -1,
+        minY: spec.treeMinY ?? -1,
         sample: (r) => {
           const a = r() * Math.PI * 2;
           const d = spec.clearRadius + r() ** 0.8 * 16;
@@ -87,7 +98,12 @@ function StructureScene({ spec, ...scene }: DioramaSceneProps & { spec: Structur
     [spec, height],
   );
   return (
-    <DioramaCanvas poses={spec.poses} sky={spec.sky ?? SKY} {...scene}>
+    <DioramaCanvas
+      poses={spec.poses}
+      sky={spec.sky ?? SKY}
+      maxDistance={spec.maxDistance}
+      {...scene}
+    >
       <Heightfield spec={FIELD} height={height} color={color} />
       <Forest placements={trees} tones={spec.tones ?? ['#2a5a2c', '#386e33', '#4b7438']} />
       <Meadow
@@ -410,37 +426,28 @@ export function DinhLacGiaoScene(props: DioramaSceneProps) {
 
 /* ------------------------------- Bảo tàng Đắk Lắk (photo) -------------------- */
 const BAO_TANG: StructureSpec = {
-  clearRadius: 8,
-  trees: 40,
+  // Mặt bằng THẬT từ OpenStreetMap (hình chữ H ~119 × 60 m, 2 tầng), 1 đơn vị = 5 m; xem dioramaRealScale.ts.
+  clearRadius: 16,
+  trees: 60,
   treeSeed: 551,
-  coverExclude: (x, z) => z > 3.6 && Math.abs(x) < 9.2,
+  coverExclude: (x, z) => Math.abs(x) < 13 && Math.abs(z) < 8.5,
+  maxDistance: 40,
+  sky: WIDE_SKY,
   poses: {
-    overview: { position: [3, 3.6, 11], target: [0, 1.2, -1] },
-    close: { position: [1.6, 1.4, 6.2], target: [0, 1.3, 0] },
-    high: { position: [3, 11, 3], target: [0, 0.5, -1] },
+    overview: { position: [8, 14, 30], target: [0, 1, 0] },
+    close: { position: [4, 5, 17], target: [0, 1.4, 0] },
+    high: { position: [3, 38, 6], target: [0, 0, 0] },
   },
   content: () => (
     <>
-      <Box position={[0, 0.02, 5.4]} size={[18, 0.03, 3.2]} color="#7d8085" />
-      {[-1.5, 1.5].map((x) => (
-        <Box key={x} position={[x, 0.7, 3.4]} size={[0.3, 1.4, 0.3]} color="#c9a227" />
-      ))}
-      <Box position={[0, 1.55, 3.4]} size={[3.8, 0.22, 0.5]} color="#d9b43a" />
-      <mesh position={[0, 2.1, 3.4]}>
-        <coneGeometry args={[0.3, 0.9, 4]} />
-        <meshStandardMaterial color="#c9a227" roughness={0.8} />
-      </mesh>
-      <StiltLonghouse
-        position={[0, 0.3, -0.6]}
-        length={6}
-        width={2}
-        floorY={0.4}
-        roofColor="#a8723a"
-        wallColor="#c9a672"
+      <FootprintBuilding
+        site="bao-tang-dak-lak"
+        metersPerUnit={5}
+        heightMeters={7}
+        color="#a87d4a"
       />
-      <BigTree position={[-5, 0, 2]} scale={1.5} />
-      <BigTree position={[5.4, 0, 1.4]} scale={1.4} />
-      <BigTree position={[-6, 0, -2]} scale={1.2} />
+      <BigTree position={[-17, 0, 9]} scale={2.2} />
+      <BigTree position={[18, 0, 7]} scale={2} />
     </>
   ),
 };
@@ -552,45 +559,29 @@ export function NhaDayScene(props: DioramaSceneProps) {
 }
 
 /* ------------------------------ Làng cà phê Trung Nguyên (photo) ------------- */
-function SignBoulder() {
-  const shadows = useShadows();
-  const geometry = useMemo(() => createBoulderGeometry(3, 0.18, seeded(8), 3), []);
-  useEffect(() => () => geometry.dispose(), [geometry]);
-  return (
-    <group position={[-2.6, 0.18, 2.4]}>
-      <Box position={[0, 0, 0]} size={[3.2, 0.36, 1.4]} color="#e6dcc3" />
-      <mesh
-        geometry={geometry}
-        position={[0, 0.18, 0]}
-        scale={[2.6, 1.4, 0.9]}
-        rotation={[0, 0.15, 0]}
-        castShadow={shadows}
-        receiveShadow={shadows}
-      >
-        <meshStandardMaterial color="#a38b66" roughness={0.9} flatShading />
-      </mesh>
-      <Box position={[0, 0.85, 0.46]} size={[1.9, 0.4, 0.04]} color="#6e4f2e" />
-    </group>
-  );
-}
 const LANG_CA_PHE: StructureSpec = {
-  clearRadius: 8,
+  // Mặt bằng THẬT của Bảo tàng Thế giới Cà phê từ OpenStreetMap (~79 × 73 m), 1 đơn vị = 5 m.
+  clearRadius: 14,
   trees: 70,
   treeSeed: 571,
-  coverExclude: (x, z) => Math.abs(x) < 6.2 && z > -1.2 && z < 5.2,
+  coverExclude: (x, z) => Math.abs(x) < 10 && Math.abs(z) < 9,
+  maxDistance: 36,
+  sky: WIDE_SKY,
   poses: {
-    overview: { position: [3, 3.6, 11], target: [0, 0.9, 0] },
-    close: { position: [-1, 1.4, 6.4], target: [-2.4, 0.9, 2.4] },
-    high: { position: [3, 11, 4], target: [0, 0.3, 0] },
+    overview: { position: [6, 12, 26], target: [0, 1, 0] },
+    close: { position: [4, 5, 14], target: [0, 1.2, 0] },
+    high: { position: [3, 32, 5], target: [0, 0, 0] },
   },
   content: () => (
     <>
-      <Box position={[0, 0.02, 2]} size={[12, 0.04, 6]} color="#b8844a" />
-      <SignBoulder />
-      <StiltLonghouse position={[2.6, 0, -1.4]} rotationY={0.2} length={3.6} width={1.4} />
-      <StiltLonghouse position={[-1.4, 0, -2.6]} rotationY={-0.1} length={3.2} width={1.3} />
-      <StiltLonghouse position={[5.2, 0, 1.6]} rotationY={1.45} length={3.0} width={1.3} />
-      <BigTree position={[-5.4, 0, 0.4]} scale={1.1} />
+      <FootprintBuilding
+        site="lang-ca-phe-trung-nguyen"
+        metersPerUnit={5}
+        heightMeters={7}
+        color="#c4a574"
+      />
+      <BigTree position={[-14, 0, 6]} scale={1.8} />
+      <BigTree position={[13, 0, -9]} scale={1.8} />
     </>
   ),
 };
@@ -633,14 +624,11 @@ export function GiangSonScene(props: DioramaSceneProps) {
 }
 
 /* -------------------------------- Cầu Ông Cọp (text) ------------------------- */
-const bridgeHeight: HeightFn = makeValleyHeight({
-  channelHalf: 3.2,
-  sideHeight: 2,
-  backHeight: 5,
-  backStart: -12,
-  relief: 1.5,
-  steepness: 1.3,
-});
+const bridgeHeight: HeightFn = (x, z) => {
+  // Sông chạy đông-tây: lòng sông trũng quanh z = -4 rộng ~190 m (19 đơn vị), hai bờ là đất bằng.
+  const bank = smoothstep(9, 13, Math.abs(z + 4));
+  return flatGround(x, z) * 0.4 - 0.9 * (1 - bank);
+};
 const BRIDGE_PALETTE: PaletteSpec = {
   low: '#8aa04e',
   high: '#4f7d37',
@@ -649,28 +637,34 @@ const BRIDGE_PALETTE: PaletteSpec = {
   shore: { color: '#b8a47a', waterY: 0, band: 0.8 },
 };
 const CAU_ONG_COP: StructureSpec = {
+  // Cầu gỗ THẬT dài ~422 m × rộng ~7 m (OpenStreetMap), 1 đơn vị = 10 m; chạy bắc-nam (trục z) qua sông.
   height: bridgeHeight,
   palette: BRIDGE_PALETTE,
-  clearRadius: 7,
+  clearRadius: 4,
   trees: 120,
   treeSeed: 591,
-  coverExclude: (x) => Math.abs(x) < 3.5,
+  treeMinY: 0.02,
+  coverExclude: (x, z) => Math.abs(z + 4) < 12 || Math.abs(x) < 1.5,
   coverReeds: BRIDGE_REEDS,
+  maxDistance: 48,
+  sky: WIDE_SKY,
   poses: {
-    overview: { position: [0, 3, 11], target: [0, 0.8, -1] },
-    close: { position: [-1, 1.2, 5], target: [0, 0.8, -1] },
-    high: { position: [4, 10, 4], target: [0, 0.3, -2] },
+    overview: { position: [18, 9, 26], target: [0, 0.4, -4] },
+    close: { position: [4, 2.4, 8], target: [0, 0.4, -4] },
+    high: { position: [3, 44, 2], target: [0, 0, -4] },
   },
   content: () => (
     <>
       <WaterSheet
-        position={[0, 0.07, -2]}
-        size={[6.4, 30]}
+        position={[0, -0.3, -4]}
+        size={[64, 24]}
         color="#5a8f8a"
-        opacity={0.85}
-        flow={[0.01, 0.03]}
+        opacity={0.88}
+        flow={[0.01, 0.01]}
       />
-      <WoodenBridge y={0.85} z={-0.5} from={-5.6} to={5.6} />
+      <group position={[0, 0, -4]} rotation={[0, Math.PI / 2, 0]}>
+        <WoodenBridge y={0.3} z={0} from={-21} to={21} width={0.7} piers={42} />
+      </group>
     </>
   ),
 };

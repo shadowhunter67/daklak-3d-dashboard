@@ -4650,6 +4650,14 @@ footer a {
   color: #071918;
   background: #ffe49a;
 }
+.destination-diorama__scale {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+.destination-diorama__scale a {
+  color: #f0c86e;
+}
 .destination-diorama__basis {
   font-size: 12.5px;
   font-style: italic;

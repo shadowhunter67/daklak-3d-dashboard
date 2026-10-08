@@ -587,6 +587,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'diorama.pano.hint': 'Drag to look around',
   'diorama.pano.source': 'Photo source',
   'diorama.pano.failed': 'The 360° photo could not be loaded.',
+  'diorama.realScale': 'Real size:',
   'diorama.pickAnother': 'Switch to another destination',
   'diorama.preset.close': 'Close-up',
   'diorama.preset.high': 'High view',

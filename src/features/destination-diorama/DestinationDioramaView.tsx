@@ -7,6 +7,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { DIORAMA_BASIS, type CameraPresetId } from './dioramaConfig';
 import { destinationPhotoUrl } from './dioramaPhotos';
 import { destinationPanorama } from './panoramas';
+import { REAL_SCALE } from './dioramaRealScale';
 import { DIORAMA_SCENES } from './dioramaRegistry';
 
 const PanoramaViewer = lazy(() =>
@@ -31,7 +32,7 @@ export function DestinationDioramaView({
   /** Chuyển sang diorama của điểm đến khác (đổi route). */
   onSelect: (destinationId: string) => void;
 }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const reducedMotion = useMapStore((state) => state.reducedMotion);
   const [webGLSupported] = useState(() => hasWebGLSupport());
   const [preset, setPreset] = useState<CameraPresetId>('overview');
@@ -44,6 +45,7 @@ export function DestinationDioramaView({
   const destination = verifiedTourismDestinations.find((item) => item.id === destinationId);
   const Scene = DIORAMA_SCENES[destinationId];
   const panorama = destinationPanorama(destinationId);
+  const realScale = REAL_SCALE[destinationId];
 
   if (!destination || !Scene) {
     return (
@@ -147,6 +149,15 @@ export function DestinationDioramaView({
         <p className="destination-diorama__basis" data-basis={basis}>
           {t(basisKey)}
         </p>
+        {realScale && (
+          <p className="destination-diorama__scale" data-testid="real-scale">
+            <strong>{t('diorama.realScale')}</strong>{' '}
+            {locale === 'en' ? realScale.en : realScale.vi}{' '}
+            <a href={realScale.sourceUrl} target="_blank" rel="noreferrer noopener">
+              {realScale.source}
+            </a>
+          </p>
+        )}
         <div
           className="destination-diorama__controls"
           role="group"
