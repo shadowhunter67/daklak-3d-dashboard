@@ -63,3 +63,7 @@ Thêm ảnh 360° cho một điểm đến:
 4. `panoramas.test.ts` kiểm tra id hợp lệ, file tồn tại, kích thước, không có file thừa, có đủ ghi công. Nếu ảnh làm build vượt ngân sách, nâng `totalBuildBytes` có ghi lý do đo được.
 
 Tình trạng 2026-10-07: chưa có ảnh 360° giấy phép tự do cho điểm nào (khảo sát Wikimedia Commons cho 10 điểm lớn không ra kết quả); danh sách đang rỗng.
+
+## Địa hình thật (DEM) cho địa danh lớn
+
+`Núi Đá Bia` và `Cao nguyên Vân Hòa` dùng độ cao thật cắt từ DEM của repo (NASA SRTM ~2000 qua Mapzen/AWS Open Data; ~200 m/điểm ảnh, 8-bit ~6,3 m/mức): mảnh 40×40 (~8 km) sinh bằng `scripts/generate_diorama_dem.py` ra `demCrops.ts` (~9 KB, tự sinh), đọc bằng `dioramaDem.ts`. Tỉ lệ: 1 đơn vị cảnh = 125 m theo chiều ngang, 62,5 m theo chiều dọc (phóng đại dọc ×2). **Giới hạn trung thực:** DEM thô và đã làm mượt nên đỉnh nhọn bị hạ thấp (Đá Bia DEM 480 m so với ~706 m thật), nên đây là hình thế địa hình cỡ vùng, không phải 1:1. Chóp Chài thử và bị loại vì DEM chỉ còn ~190 m (thật 394 m) làm đồi bẹt. Thác, cầu, công trình quá nhỏ so với 200 m/điểm ảnh nên không dùng DEM này; muốn 1:1 cần dữ liệu đo chi tiết (LiDAR/ảnh quét) hoặc số đo từ ban quản lý.
