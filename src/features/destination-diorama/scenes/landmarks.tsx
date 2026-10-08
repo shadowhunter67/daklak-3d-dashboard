@@ -1,8 +1,9 @@
 import { useEffect, useMemo, type ReactNode } from 'react';
 import { Meadow, type CoverTone } from '../dioramaCoverLayer';
 import type { CameraPoses, DioramaSceneProps, SkySpec } from '../dioramaConfig';
-import { createCliffBlockGeometry, fbm3, seeded, smoothstep } from '../dioramaGeometry';
+import { createCliffBlockGeometry, fbm3, seeded } from '../dioramaGeometry';
 import { DioramaCanvas, Forest, Heightfield, Instances, WaterSheet } from '../dioramaKit';
+import { makeDemHeight, demPeak } from '../dioramaDem';
 import { Box, Mast } from '../dioramaProps';
 import { useShadows } from '../dioramaContext';
 import {
@@ -121,17 +122,10 @@ export function ChopChaiScene(props: DioramaSceneProps) {
 }
 
 /* ----------------- Núi Đá Bia: đỉnh có tảng đá bia khổng lồ ~80 m --------------------- */
-const daBiaHeight: HeightFn = (x, z) => {
-  // Ảnh: sườn núi dài phủ rừng thấp dần về hai phía, đỉnh nhọn có tảng đá dựng đứng, chân núi sát đường.
-  const along = Math.exp(-(x * x) / (2 * 9 * 9));
-  const across = Math.exp(-((z + 5) * (z + 5)) / (2 * 4.6 * 4.6));
-  const peak = 5.4 * Math.exp(-((x + 1) * (x + 1) + (z + 5) * (z + 5)) / (2 * 2.2 * 2.2));
-  const ridge = 3.4 * along * across;
-  const road = -smoothstep(3.5, 6.5, z) * 0.9;
-  return (ridge + peak) * (0.9 + 0.2 * fbm3(x * 0.5, 0, z * 0.5, 3, 4)) + 0.2 + road;
-};
-const DA_BIA_PEAK_X = -1;
-const DA_BIA_PEAK_Z = -5;
+const daBiaHeight: HeightFn = makeDemHeight('nui-da-bia');
+const DA_BIA_PEAK = demPeak('nui-da-bia');
+const DA_BIA_PEAK_X = DA_BIA_PEAK.x;
+const DA_BIA_PEAK_Z = DA_BIA_PEAK.z;
 
 function DaBiaSlab() {
   const shadows = useShadows();
@@ -189,9 +183,9 @@ const DA_BIA: LandmarkSpec = {
   treeMinY: 1.2,
   seed: 411,
   poses: {
-    overview: { position: [4, 4, 25], target: [0, 8.4, -5] },
-    close: { position: [3, 5, 16], target: [-1, 9, -5] },
-    high: { position: [5, 11, 3], target: [0, 3, -5] },
+    overview: { position: [5, 11, 19], target: [0, 5.5, -3] },
+    close: { position: [3, 9, 11], target: [0, 7, -3] },
+    high: { position: [5, 18, 3], target: [0, 4, -3] },
   },
   extras: () => <DaBiaSlab />,
 };
@@ -200,12 +194,7 @@ export function DaBiaScene(props: DioramaSceneProps) {
 }
 
 /* ------------------------ Cao nguyên Vân Hòa: ~400 m, thoải, mát ---------------------- */
-const vanHoaHeight: HeightFn = (x, z) => {
-  const plateau = 1 - smoothstep(10, 20, Math.hypot(x * 0.8, z + 4));
-  const rolling = (fbm3(x * 0.1, 0, z * 0.1, 4, 8) - 0.35) * 2.2;
-  const rim = smoothstep(14, 26, Math.hypot(x, z + 4)) * 4.5;
-  return 0.8 + plateau * (1.2 + rolling) + rim + (fbm3(x * 0.6, 0, z * 0.6, 3, 2) - 0.5) * 0.2;
-};
+const vanHoaHeight: HeightFn = makeDemHeight('cao-nguyen-van-hoa');
 const VAN_HOA: LandmarkSpec = {
   height: vanHoaHeight,
   palette: { low: '#9bb35a', high: '#5d8a3e', highAt: 6, rockStrength: 0.2 },
@@ -216,9 +205,9 @@ const VAN_HOA: LandmarkSpec = {
   meadow: { density: 1.5, minY: 0.3 },
   sky: { top: '#7ab0d8', mid: '#c1dbe8', bottom: '#e3eeee', fogFar: 64 },
   poses: {
-    overview: { position: [0, 5.4, 14], target: [0, 1.2, -4] },
-    close: { position: [2, 2.2, 8], target: [0, 1.2, -3] },
-    high: { position: [3, 12, 4], target: [0, 1, -5] },
+    overview: { position: [0, 12, 17], target: [0, 6.5, -4] },
+    close: { position: [2, 9, 10], target: [0, 7, -3] },
+    high: { position: [3, 20, 4], target: [0, 6.5, -5] },
   },
 };
 export function VanHoaScene(props: DioramaSceneProps) {
