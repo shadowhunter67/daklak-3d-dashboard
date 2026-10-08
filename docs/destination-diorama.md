@@ -1,6 +1,6 @@
 # Destination diorama (`#/diorama/:id`)
 
-Cảnh 3D **minh hoạ** cho từng điểm đến trong `src/entities/tourism/verifiedTourismDestinations.ts` (27 điểm). Vào bằng hash route `#/diorama/<destinationId>` (xem `src/routing/hashRoute.ts`); trong panel có ô chọn để chuyển sang điểm đến khác. Route này render thay cho các view query-based, giống Portfolio/Detail; mỗi nhóm cảnh là một chunk lazy riêng nên không vào bundle chính.
+Cảnh 3D **minh hoạ** cho từng điểm đến trong `src/entities/tourism/verifiedTourismDestinations.ts` (28 điểm). Vào bằng hash route `#/diorama/<destinationId>` (xem `src/routing/hashRoute.ts`); trong panel có ô chọn để chuyển sang điểm đến khác. Route này render thay cho các view query-based, giống Portfolio/Detail; mỗi nhóm cảnh là một chunk lazy riêng nên không vào bundle chính.
 
 ## Nguyên tắc: không đánh lừa về độ chính xác
 
@@ -13,7 +13,7 @@ Test `dioramaRegistry.test.ts` giữ hai bất biến: có đúng một scene ch
 
 **Sáu cảnh chỉnh theo ảnh + nguồn chữ bổ sung (2026-10-07)** — Thác Gia Long (thác rộng nước đục nâu, cầu treo dây, kè đá chắn lũ), Đray K'nao (ghềnh đá tảng, cây đa rễ bám đá), Nhà đày Buôn Ma Thuột (dãy nhà ocher, ba cửa vòm xanh, mái ngói nâu; tường bao + tháp canh bốn góc lấy từ mô tả di tích vì ảnh không thấy), Buôn Akõ Dhông (ao, chòi mái tranh, lối ván cọc), Núi Đá Bia (sườn núi dài, tảng đá dựng đứng, đường quốc lộ), Buôn Đôn (voi có yên gỗ + người quản tượng). Một ảnh chỉ cho một góc nhìn nên phần bị che (mặt sau, bố cục tổng thể) được bổ sung từ mô tả chữ trong các trang di tích/du lịch; chi tiết đó là suy luận, không phải đo đạc. Chúng đã đổi sang `photo`, nhưng vẫn chỉ mang tính minh họa.
 
-**Ảnh thật hiện ngay cạnh cảnh** (góc phải trên panel, bấm để phóng to) cho 24/27 điểm đến, để so trực tiếp: bản nén ≤ 640 px (JPEG progressive, ~35–100 KB) chép vào `public/images/destinations/<id>.jpg` — cùng origin nên hợp CSP `img-src 'self'`; ảnh gốc là Wikimedia Commons (CC BY-SA/CC BY), tác giả, giấy phép và link trang file hiện ngay dưới ảnh. Tải lười (`loading="lazy"`), không nằm trong chunk JS nào. Cảnh `text` có ảnh đối chiếu nói rõ "cảnh chưa được chỉnh theo ảnh này nên có thể khác thực tế"; điểm chưa có ảnh tự do (Cao nguyên Vân Hòa, Cầu Ông Cọp, Thác Thủy Tiên) chỉ ghi "chưa đối chiếu được ảnh thực tế". `dioramaPhotos.test.ts` giữ file ↔ dữ liệu khớp hai chiều và mỗi file ≤ 130 KB.
+**Ảnh thật hiện ngay cạnh cảnh** (góc phải trên panel, bấm để phóng to) cho 25/28 điểm đến, để so trực tiếp: bản nén ≤ 640 px (JPEG progressive, ~35–100 KB) chép vào `public/images/destinations/<id>.jpg` — cùng origin nên hợp CSP `img-src 'self'`; ảnh gốc là Wikimedia Commons (CC BY-SA/CC BY), tác giả, giấy phép và link trang file hiện ngay dưới ảnh. Tải lười (`loading="lazy"`), không nằm trong chunk JS nào. Cảnh `text` có ảnh đối chiếu nói rõ "cảnh chưa được chỉnh theo ảnh này nên có thể khác thực tế"; điểm chưa có ảnh tự do (Cao nguyên Vân Hòa, Cầu Ông Cọp, Thác Thủy Tiên) chỉ ghi "chưa đối chiếu được ảnh thực tế". `dioramaPhotos.test.ts` giữ file ↔ dữ liệu khớp hai chiều và mỗi file ≤ 130 KB.
 
 ## Cấu trúc mã (`src/features/destination-diorama/`)
 

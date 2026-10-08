@@ -416,6 +416,24 @@ export const verifiedTourismDestinations: TourismDestination[] = [
     dataOwner: 'tourism-digital-twin-expansion-2026-10',
   },
   {
+    id: 'chua-pho-minh',
+    name: 'Chùa Phổ Minh',
+    category: 'heritage-structure',
+    description:
+      'Ngôi chùa tại phường Buôn Ma Thuột (đường Nguyễn Cư Trinh): chính điện mái cong trên đỉnh dãy bậc thang dài, hai bên là lan can đá chạm phù điêu.',
+    coordinates: [108.0475, 12.6729],
+    sourceUrl: 'https://www.wikidata.org/wiki/Q10748516',
+    // Toạ độ: OpenStreetMap/Nominatim (12.6729434, 108.0475138, © OpenStreetMap contributors, ODbL); mục Wikidata Q10748516
+    // xác nhận địa điểm có thật (toạ độ Wikidata không dùng làm nguồn thứ hai vì trường này hiện trống).
+    // Ảnh tự do đã xác minh trên Wikimedia Commons (2026-10-08), CC BY-SA 3.0, tác giả tài khoản Group7KeToanK10DHTN.
+    imageUrl: 'https://commons.wikimedia.org/wiki/File:Phominhbmt1.jpg',
+    imageAttribution: 'Ảnh: Group7KeToanK10DHTN, Wikimedia Commons, File:Phominhbmt1.jpg',
+    imageLicense: 'CC BY-SA 3.0',
+    confidence: 'medium',
+    verificationStatus: 'validated-automatically',
+    dataOwner: 'tourism-digital-twin-expansion-2026-10',
+  },
+  {
     id: 'buon-ako-dhong',
     name: 'Buôn Akõ Dhông',
     category: 'cultural-village',
