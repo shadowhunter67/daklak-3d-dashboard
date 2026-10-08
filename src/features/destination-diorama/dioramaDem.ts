@@ -19,9 +19,11 @@ function grid(site: string): Uint16Array {
     const encoded = DEM_CROPS[site];
     if (!encoded) throw new Error(`Không có DEM cho ${site}`);
     const binary = atob(encoded);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-    data = new Uint16Array(bytes.buffer);
+    // Little-endian tường minh (không phụ thuộc endianness của máy).
+    data = new Uint16Array(binary.length / 2);
+    for (let i = 0; i < data.length; i++) {
+      data[i] = binary.charCodeAt(i * 2) | (binary.charCodeAt(i * 2 + 1) << 8);
+    }
     cache.set(site, data);
   }
   return data;
