@@ -6,13 +6,14 @@ import terrainMetadata from '#province-assets/daklak-terrain-metadata.json';
 
 describe('verifiedTourismDestinations', () => {
   it('has exactly the sourced entries (5 from phases T2/T4 + 22 from the 2026-10 expansion)', () => {
-    expect(verifiedTourismDestinations).toHaveLength(27);
+    expect(verifiedTourismDestinations).toHaveLength(28);
     expect(verifiedTourismDestinations.map((d) => d.id).sort()).toEqual([
       'bao-tang-dak-lak',
       'buon-ako-dhong',
       'buon-don',
       'cao-nguyen-van-hoa',
       'cau-ong-cop',
+      'chua-pho-minh',
       'dam-o-loan',
       'dinh-lac-giao',
       'dray-nur-waterfall',
@@ -80,6 +81,7 @@ describe('verifiedTourismDestinations', () => {
       'bao-tang-dak-lak',
       'buon-ako-dhong',
       'buon-don',
+      'chua-pho-minh',
       'dam-o-loan',
       'dinh-lac-giao',
       'dray-nur-waterfall',

@@ -317,6 +317,71 @@ export function AkoDhongScene(props: DioramaSceneProps) {
   return <StructureScene spec={AKO_DHONG} {...props} />;
 }
 
+/* --------------------------------- Chùa Phổ Minh (photo) --------------------- */
+/** Mái chùa hai tầng cong: hai chóp vuông chồng nhau, màu ngói đỏ nâu. */
+function PagodaHall({ position }: { position: [number, number, number] }) {
+  return (
+    <group position={position}>
+      <Box position={[0, 0.55, 0]} size={[3.6, 1.1, 1.8]} color="#d8b46a" />
+      <Box position={[0, 1.35, 0]} size={[3.0, 0.5, 1.5]} color="#c99a52" />
+      <mesh position={[0, 1.2, 0]} rotation={[0, Math.PI / 4, 0]} scale={[1.55, 1, 0.8]}>
+        <coneGeometry args={[1.35, 0.7, 4]} />
+        <meshStandardMaterial color="#9a4a2e" roughness={0.9} flatShading />
+      </mesh>
+      <mesh position={[0, 1.95, 0]} rotation={[0, Math.PI / 4, 0]} scale={[1.2, 1, 0.65]}>
+        <coneGeometry args={[1.1, 0.7, 4]} />
+        <meshStandardMaterial color="#8a3f2a" roughness={0.9} flatShading />
+      </mesh>
+      {[-1.2, 0, 1.2].map((x) => (
+        <Box key={x} position={[x, 0.45, 0.92]} size={[0.5, 0.7, 0.05]} color="#7a3a22" />
+      ))}
+    </group>
+  );
+}
+const PHO_MINH: StructureSpec = {
+  // Ảnh: nhìn từ chân dãy bậc thang dài lên chính điện mái cong; hai bên lan can đá chạm phù điêu,
+  // cột trụ có chóp nhỏ; cột cờ cao ở giữa; cây cổ thụ bên phải.
+  clearRadius: 8,
+  trees: 70,
+  treeSeed: 601,
+  coverExclude: (x, z) => Math.abs(x) < 4.4 && z > -9 && z < 8,
+  poses: {
+    overview: { position: [0.5, 1.6, 10], target: [0, 2.2, -5] },
+    close: { position: [0, 1.2, 6], target: [0, 2.4, -4] },
+    high: { position: [3, 12, 4], target: [0, 1, -4] },
+  },
+  content: () => (
+    <>
+      {Array.from({ length: 16 }, (_, s) => (
+        <Box
+          key={s}
+          position={[0, 0.1 + s * 0.17, 6 - s * 0.7]}
+          size={[3.4, 0.17, 0.72]}
+          color="#8f8a80"
+        />
+      ))}
+      {[-1, 1].map((side) => (
+        <group key={side}>
+          <Box position={[side * 2.05, 1.5, -0.3]} size={[0.5, 3.0, 11.6]} color="#b98e5a" />
+          <Box position={[side * 2.05, 3.05, -0.3]} size={[0.62, 0.12, 11.7]} color="#d8c9a6" />
+          {[5, 1.6, -2, -5.4].map((z) => (
+            <Box key={z} position={[side * 2.05, 3.3, z]} size={[0.5, 0.45, 0.5]} color="#cdbf9e" />
+          ))}
+          <Box position={[side * 1.78, 1.5, -0.3]} size={[0.06, 2.2, 8.2]} color="#c9bc9a" />
+        </group>
+      ))}
+      <Box position={[0, 2.9, -6.2]} size={[5.4, 0.3, 3.0]} color="#8f8a80" />
+      <Cylinder position={[0, 4.4, -4.6]} radius={0.035} height={5.2} color="#e8e8e0" />
+      <PagodaHall position={[0, 3.05, -7.2]} />
+      <BigTree position={[5.2, 0, -2]} scale={2.1} />
+      <BigTree position={[-6, 0, -5]} scale={1.4} />
+    </>
+  ),
+};
+export function PhoMinhScene(props: DioramaSceneProps) {
+  return <StructureScene spec={PHO_MINH} {...props} />;
+}
+
 /* ------------------------------ Đình Lạc Giao (photo) ------------------------ */
 const DINH_LAC_GIAO: StructureSpec = {
   clearRadius: 7,

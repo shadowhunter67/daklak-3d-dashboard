@@ -38,6 +38,7 @@ export const DIORAMA_SCENES: Record<string, SceneComponent> = {
   'thap-nhan': lazy(() => structures().then((m) => ({ default: m.ThapNhanScene }))),
   'thap-yang-prong': lazy(() => structures().then((m) => ({ default: m.ThapYangProngScene }))),
   'buon-don': lazy(() => structures().then((m) => ({ default: m.BuonDonScene }))),
+  'chua-pho-minh': lazy(() => structures().then((m) => ({ default: m.PhoMinhScene }))),
   'buon-ako-dhong': lazy(() => structures().then((m) => ({ default: m.AkoDhongScene }))),
   'dinh-lac-giao': lazy(() => structures().then((m) => ({ default: m.DinhLacGiaoScene }))),
   'bao-tang-dak-lak': lazy(() => structures().then((m) => ({ default: m.BaoTangScene }))),

@@ -41,6 +41,7 @@ export const DIORAMA_BASIS: Record<string, DioramaBasis> = {
   'bao-tang-dak-lak': 'photo',
   'nha-day-buon-ma-thuot': 'photo',
   'buon-ako-dhong': 'photo',
+  'chua-pho-minh': 'photo',
   'duc-me-giang-son': 'photo',
   'lang-ca-phe-trung-nguyen': 'photo',
 };
