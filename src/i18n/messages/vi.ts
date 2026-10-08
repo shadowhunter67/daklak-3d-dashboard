@@ -594,6 +594,7 @@ export const vi = {
   'diorama.pano.hint': 'Kéo để xoay quanh',
   'diorama.pano.source': 'Nguồn ảnh',
   'diorama.pano.failed': 'Không tải được ảnh 360°.',
+  'diorama.realScale': 'Kích thước thật:',
   'diorama.pickAnother': 'Chuyển sang điểm đến khác',
   'diorama.preset.close': 'Cận cảnh',
   'diorama.preset.high': 'Trên cao',
