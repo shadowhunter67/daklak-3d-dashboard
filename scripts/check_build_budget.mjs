@@ -52,13 +52,17 @@ const dist = join(root, 'dist');
 // because the CSP only allows `img-src 'self'`. They are plain static files fetched lazily when a
 // diorama is opened (`<img loading="lazy">`), never part of any JS chunk, so the JavaScript and gzip
 // budgets above are unchanged. dioramaPhotos.test.ts caps each file at 130KB so this can't creep.
+// totalBuildBytes raised again (sidebar shell + overview workspace, PR #201, 2026-10) from
+// 22.6MB to 22.8MB. Measured, not guessed: origin/main was 22,602,328 bytes and this branch is
+// 22,625,270 bytes (+22,942 bytes; mainly the new shell CSS and UI modules). The 200KB rounded
+// headroom is intentionally small and keeps the existing JS/gzip/asset budgets unchanged.
 const limits = {
   totalJavaScriptBytes: 3_400_000,
   totalJavaScriptGzipBytes: 950_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 22_600_000,
+  totalBuildBytes: 22_800_000,
 };
 
 async function filesAt(directory) {

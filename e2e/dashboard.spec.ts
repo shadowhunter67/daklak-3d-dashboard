@@ -18,6 +18,17 @@ function primaryNav(page: import('@playwright/test').Page) {
   return page.getByRole('navigation', { name: 'Điều hướng chính' });
 }
 
+// At <=900px the sidebar is an off-canvas menu: open it first when the menu button is shown.
+async function openNavIfCollapsed(page: import('@playwright/test').Page) {
+  const menuButton = page.getByRole('button', { name: 'Mở menu điều hướng' });
+  if (await menuButton.isVisible()) await menuButton.click();
+}
+
+async function clickNav(page: import('@playwright/test').Page, name: string) {
+  await openNavIfCollapsed(page);
+  await primaryNav(page).getByRole('button', { name, exact: true }).click();
+}
+
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() =>
     window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true'),
@@ -43,12 +54,14 @@ test.describe('dashboard smoke tests', () => {
     });
     await page.goto('./?view=3d');
 
-    await expect(page.getByRole('heading', { name: /Đắk Lắk/i })).toBeVisible();
+    // The brand heading lives in the sidebar, which is an off-canvas menu on narrow screens.
+    await expect(page.locator('.sidebar-brand h1')).toBeAttached();
     await expect(page.locator('canvas')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Tổng quan', exact: true })).toHaveAttribute(
-      'aria-pressed',
-      'true',
-    );
+    await expect(
+      page
+        .getByRole('navigation', { name: 'Chế độ dữ liệu' })
+        .getByRole('button', { name: 'Tổng quan', exact: true }),
+    ).toHaveAttribute('aria-pressed', 'true');
     const summaryToggle = page.getByRole('button', { name: 'Mở tóm tắt' });
     if (await summaryToggle.isVisible()) await summaryToggle.click();
     await expect(page.getByText('SỐ LIỆU CẤP TỈNH CÓ NGUỒN')).toBeVisible();
@@ -71,7 +84,7 @@ test.describe('dashboard smoke tests', () => {
     page,
   }) => {
     await page.goto('./?view=3d');
-    await primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }).click();
+    await clickNav(page, 'Bản đồ');
     await openMapDirectory(page);
 
     const search = page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' });
@@ -101,8 +114,9 @@ test.describe('dashboard smoke tests', () => {
   test('preserves native arrow-key behavior on interactive controls', async ({ page }) => {
     await page.goto('./?view=3d');
     await expect(page.locator('canvas')).toBeVisible();
+    await openNavIfCollapsed(page);
     const switchView = primaryNav(page).getByRole('button', {
-      name: 'Bản đồ & danh sách',
+      name: 'Bản đồ',
       exact: true,
     });
     const controlEventWasNotCancelled = await switchView.evaluate((element) =>
@@ -150,7 +164,7 @@ test.describe('dashboard smoke tests', () => {
       ),
     ).toEqual([]);
 
-    await primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }).click();
+    await clickNav(page, 'Bản đồ');
     const mapResults = await new AxeBuilder({ page }).analyze();
     expect(
       mapResults.violations.filter(({ impact }) => impact === 'critical' || impact === 'serious'),
@@ -228,7 +242,7 @@ test.describe('dashboard smoke tests', () => {
     const selectedRow = page.locator('[role="row"][aria-selected="true"]');
     await expect(selectedRow).toContainText(/Tuy Ho/);
 
-    await primaryNav(page).getByRole('button', { name: '3D', exact: true }).click();
+    await clickNav(page, 'Bản đồ 3D');
     await expect(page).toHaveURL(/view=3d&mode=energy&ward=22015/);
     await expect(page.getByRole('button', { name: 'Năng lượng' })).toHaveAttribute(
       'aria-pressed',
@@ -269,7 +283,7 @@ test.describe('dashboard smoke tests', () => {
     // DetailMapViewport has its own independent layer toggles; see DashboardHeader.tsx's
     // `viewMode === '3d'` gate. Use a primary-nav view switch instead to exercise the same
     // push-vs-replace history rule this test is actually about.)
-    await primaryNav(page).getByRole('button', { name: '3D', exact: true }).click();
+    await clickNav(page, 'Bản đồ 3D');
     expect(await historyLength()).toBe(lengthBeforeSelection + 1);
     await page.goBack();
     // ?view=2d canonicalizes to ?view=map on load — see the comment in the test above.
@@ -303,9 +317,8 @@ test.describe('mobile dashboard composition', () => {
   test('keeps the compact header, tabs, and map inside portrait viewport', async ({ page }) => {
     await page.goto('./?view=3d&mode=overview');
     await expect(page.locator('canvas')).toBeVisible();
-    await expect(
-      primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }),
-    ).toBeVisible();
+    // Sidebar is an off-canvas menu at this width; its trigger must be reachable instead.
+    await expect(page.getByRole('button', { name: 'Mở menu điều hướng' })).toBeVisible();
     await expect(page.locator('#mobile-dashboard-sheet')).toHaveAttribute('data-state', 'closed');
     const layout = await page.evaluate(() => {
       const header = document.querySelector('header')?.getBoundingClientRect();
@@ -321,8 +334,9 @@ test.describe('mobile dashboard composition', () => {
       };
     });
     expect(layout.overflow).toBe(false);
-    expect(layout.tabsTop).toBeGreaterThanOrEqual(layout.headerBottom - 1);
-    expect(layout.mapTop).toBeGreaterThanOrEqual(layout.tabsBottom - 1);
+    // The data-mode tabs now wrap onto their own row inside the (taller) header.
+    expect(layout.tabsBottom).toBeLessThanOrEqual(layout.headerBottom + 1);
+    expect(layout.mapTop).toBeGreaterThanOrEqual(layout.headerBottom - 1);
     expect(layout.mapHeight).toBeGreaterThan(600);
   });
 
@@ -348,7 +362,7 @@ test.describe('mobile dashboard composition', () => {
       'aria-pressed',
       'true',
     );
-    await primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }).click();
+    await clickNav(page, 'Bản đồ');
     await openMapDirectory(page);
     await expect(page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' })).toBeVisible();
     expect(
@@ -356,33 +370,6 @@ test.describe('mobile dashboard composition', () => {
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
       ),
     ).toBe(false);
-  });
-
-  test('hides the primary-nav edge-fade once scrolled to the true end (real-browser regression for useScrollEdgeFade)', async ({
-    page,
-  }) => {
-    // jsdom unit tests (useScrollEdgeFade.test.ts) stub scrollWidth/clientWidth and cannot catch
-    // real CSS/pseudo-element/sticky-positioning bugs — this is exactly the kind of bug that
-    // shipped in Phase 9 (edge-fade staying visible with nothing left to scroll to). This test
-    // exercises the real `.primary-nav::after` pseudo-element in a real browser at a mobile
-    // viewport instead of asserting only on the `data-scroll-end` attribute.
-    await page.goto('./?view=3d&mode=overview');
-    const nav = primaryNav(page);
-    const fadeOpacity = () =>
-      nav.evaluate((element) => window.getComputedStyle(element, '::after').opacity);
-
-    // Only meaningful when there's actually something to scroll — assert the pre-scroll fade is
-    // visible in that case, since it's the "there's more here" affordance this hook exists for.
-    const hasOverflow = await nav.evaluate(
-      (element) => element.scrollWidth - element.clientWidth > 1,
-    );
-    if (hasOverflow) await expect.poll(fadeOpacity).toBe('1');
-
-    await nav.evaluate((element) => {
-      element.scrollLeft = element.scrollWidth;
-      element.dispatchEvent(new Event('scroll'));
-    });
-    await expect.poll(fadeOpacity).toBe('0');
   });
 
   test('recomposes safely after an orientation-sized resize', async ({ page }) => {
@@ -454,7 +441,7 @@ test.describe('mobile dashboard composition', () => {
       animations: 'disabled',
       maxDiffPixelRatio: 0.03,
     });
-    await primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }).click();
+    await clickNav(page, 'Bản đồ');
     await openMapDirectory(page);
     await expect(page.getByRole('searchbox', { name: 'Tìm theo tên hoặc mã' })).toBeVisible();
     await expect(page).toHaveScreenshot('dashboard-mobile-directory.png', {
@@ -705,11 +692,11 @@ test.describe('detail map (MapLibre)', () => {
     // is slow on loaded CI runners and occasionally missed the default 30s test timeout.
     test.setTimeout(60_000);
     await page.goto('./?view=3d');
-    await primaryNav(page).getByRole('button', { name: 'Bản đồ & danh sách', exact: true }).click();
+    await clickNav(page, 'Bản đồ');
     await expect(page.locator('#detail-map-viewport')).toBeVisible({ timeout: 20_000 });
     await expect(page).toHaveURL(/view=map/);
 
-    await primaryNav(page).getByRole('button', { name: '3D', exact: true }).click();
+    await clickNav(page, 'Bản đồ 3D');
     await expect(page).toHaveURL(/view=3d/);
     await expect(page.locator('#detail-map-viewport')).toHaveCount(0);
 
@@ -901,13 +888,15 @@ test.describe('Executive Overview (Phase 2A)', () => {
     // header-declutter fix) and renders on every viewport, including mobile, scrolling
     // internally if needed rather than being hidden — so this test now runs unconditionally.
     await page.goto('./');
-    const threeD = primaryNav(page).getByRole('button', { name: '3D', exact: true });
+    await openNavIfCollapsed(page);
+    const threeD = primaryNav(page).getByRole('button', { name: 'Bản đồ 3D', exact: true });
     await threeD.focus();
     await threeD.press('Enter');
     await expect(page.locator('canvas')).toBeVisible();
 
+    await openNavIfCollapsed(page);
     const overview = primaryNav(page).getByRole('button', {
-      name: 'Tổng quan điều hành',
+      name: 'Tổng quan',
       exact: true,
     });
     await overview.focus();
@@ -916,8 +905,9 @@ test.describe('Executive Overview (Phase 2A)', () => {
       page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
     ).toBeVisible();
 
+    await openNavIfCollapsed(page);
     const mapAndDirectory = primaryNav(page).getByRole('button', {
-      name: 'Bản đồ & danh sách',
+      name: 'Bản đồ',
       exact: true,
     });
     await mapAndDirectory.focus();

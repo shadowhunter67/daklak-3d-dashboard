@@ -62,6 +62,7 @@ describe('App', () => {
 
   it('opens the data provenance panel after its lazy chunk resolves, once the header button is clicked', async () => {
     renderApp();
+    fireEvent.click(screen.getByRole('button', { name: 'Cài đặt hiển thị' }));
     fireEvent.click(screen.getByRole('button', { name: 'Xem nguồn và chất lượng dữ liệu' }));
     expect(
       await screen.findByRole(
@@ -113,7 +114,7 @@ describe('App', () => {
     expect(
       screen.queryByText(/không hỗ trợ WebGL nên không thể mở bản đồ chi tiết/),
     ).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Bản đồ & danh sách' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Bản đồ' }));
     expect(
       await screen.findByText(
         /không hỗ trợ WebGL nên không thể mở bản đồ chi tiết/,

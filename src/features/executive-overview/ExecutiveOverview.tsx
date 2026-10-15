@@ -8,6 +8,7 @@ import { AlertList } from './AlertList';
 import { DataHealthPanel } from './DataHealthPanel';
 import { ExecutiveStatusHero } from './ExecutiveStatusHero';
 import { KpiCardGrid } from './KpiCardGrid';
+import { OverviewWorkspace } from './OverviewWorkspace';
 import { PortfolioStatusChart } from './PortfolioStatusChart';
 import { PriorityProjectList } from './PriorityProjectList';
 import { useExecutiveOverview } from './data/useExecutiveOverview';
@@ -124,6 +125,7 @@ export function ExecutiveOverview({
       ) : (
         <>
           <KpiCardGrid kpis={model.kpis} disbursementRateTrend={model.disbursementRateTrend} />
+          <OverviewWorkspace attention={model.priorityProjects} onOpenPortfolio={onOpenPortfolio} />
           <div className="executive-overview__columns">
             {/* Main column (~65%): the two things a leader acts on — which projects need
                 attention, and how the whole portfolio is distributed across the pipeline. */}

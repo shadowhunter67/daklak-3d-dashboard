@@ -8,6 +8,20 @@ test.beforeEach(async ({ page }) => {
   );
 });
 
+// Language lives in the sidebar's display-settings popover (off-canvas menu on narrow screens).
+async function openSettings(page: import('@playwright/test').Page) {
+  const menuButton = page.getByRole('button', {
+    name: /^(Mở|Open) (menu điều hướng|navigation menu)$/,
+  });
+  if (await menuButton.isVisible()) await menuButton.click();
+  await page.getByRole('button', { name: /^(Cài đặt hiển thị|Display settings)$/ }).click();
+}
+
+async function switchToEnglish(page: import('@playwright/test').Page) {
+  await openSettings(page);
+  await page.getByRole('button', { name: 'Switch to English' }).click();
+}
+
 test.describe('Internationalization (vi/en)', () => {
   test('defaults to Vietnamese with no ?lang= param and no persisted preference', async ({
     page,
@@ -21,7 +35,7 @@ test.describe('Internationalization (vi/en)', () => {
 
   test('switching to English updates the visible text and html lang', async ({ page }) => {
     await page.goto('./');
-    await page.getByRole('button', { name: 'Switch to English' }).click();
+    await switchToEnglish(page);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await expect(
       page.getByRole('heading', { name: 'Key Project Executive Overview' }),
@@ -29,7 +43,7 @@ test.describe('Internationalization (vi/en)', () => {
     // `.primary-nav` renders on every viewport, including mobile (scrolling internally if
     // needed) — see the header-declutter fix that removed the duplicate header-meta buttons
     // this used to be conditionally skipped on mobile in favor of.
-    await expect(page.getByRole('navigation', { name: 'Primary navigation' })).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Main navigation' })).toBeAttached();
   });
 
   test('?lang=en direct-loads in English without any prior interaction', async ({ page }) => {
@@ -44,7 +58,7 @@ test.describe('Internationalization (vi/en)', () => {
     page,
   }) => {
     await page.goto('./');
-    await page.getByRole('button', { name: 'Switch to English' }).click();
+    await switchToEnglish(page);
     await expect(page).toHaveURL(/lang=en/);
     await page.reload();
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
@@ -57,7 +71,7 @@ test.describe('Internationalization (vi/en)', () => {
     page,
   }) => {
     await page.goto('./?view=3d');
-    await page.getByRole('button', { name: 'Switch to English' }).click();
+    await switchToEnglish(page);
     await expect(page).toHaveURL(/view=3d/);
     await expect(page).toHaveURL(/lang=en/);
     await expect(page.locator('canvas')).toBeVisible();
@@ -65,7 +79,7 @@ test.describe('Internationalization (vi/en)', () => {
 
   test('switching locale preserves the current hash route (#/projects)', async ({ page }) => {
     await page.goto('./#/projects');
-    await page.getByRole('button', { name: 'Switch to English' }).click();
+    await switchToEnglish(page);
     await expect(page).toHaveURL(/lang=en/);
     await expect(page).toHaveURL(/#\/projects$/);
   });
@@ -74,7 +88,7 @@ test.describe('Internationalization (vi/en)', () => {
     page,
   }) => {
     await page.goto('./#/projects?status=delayed');
-    await page.getByRole('button', { name: 'Switch to English' }).click();
+    await switchToEnglish(page);
     await expect(page).toHaveURL(/lang=en/);
     await expect(page).toHaveURL(/#\/projects\?status=delayed$/);
   });
@@ -82,7 +96,7 @@ test.describe('Internationalization (vi/en)', () => {
   test('Back undoes a locale switch, Forward redoes it', async ({ page }) => {
     await page.goto('./');
     await expect(page.locator('html')).toHaveAttribute('lang', 'vi');
-    await page.getByRole('button', { name: 'Switch to English' }).click();
+    await switchToEnglish(page);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
     await page.goBack();
     await expect(page.locator('html')).toHaveAttribute('lang', 'vi');
@@ -128,6 +142,7 @@ test.describe('Internationalization (vi/en)', () => {
     page,
   }) => {
     await page.goto('./');
+    await openSettings(page);
     await expect(page.getByRole('button', { name: 'Chuyển sang tiếng Việt' })).toHaveAttribute(
       'aria-pressed',
       'true',

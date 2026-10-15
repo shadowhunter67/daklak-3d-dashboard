@@ -55,14 +55,6 @@ test.describe('Executive Overview — no card/panel overlap, no horizontal overf
         })),
       );
       await expectNoOverlap(kpiEntries);
-
-      await expectNoOverlap([
-        { label: 'brand', locator: page.locator('.dashboard-brand') },
-        {
-          label: 'primary-nav',
-          locator: page.getByRole('navigation', { name: 'Điều hướng chính' }),
-        },
-      ]);
     });
   }
 });
@@ -135,6 +127,12 @@ test.describe('Font-scale control at its largest step — no new overlap on Exec
     test(`at ${viewport.width}x${viewport.height}`, async ({ page }) => {
       await page.setViewportSize(viewport);
       await page.goto('./');
+      // At <=900px the topbar copy is hidden; the control is in the settings popover instead.
+      const menuButton = page.getByRole('button', { name: 'Mở menu điều hướng' });
+      if (await menuButton.isVisible()) {
+        await menuButton.click();
+        await page.getByRole('button', { name: 'Cài đặt hiển thị' }).click();
+      }
       await page.getByRole('button', { name: 'Chữ lớn hơn' }).click();
       await expect(page.getByRole('button', { name: 'Chữ lớn hơn' })).toHaveAttribute(
         'aria-pressed',

@@ -1,6 +1,8 @@
-import { lazy, Suspense, useEffect, useRef } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import labels from '#province-assets/daklak-labels.json';
+import { AppSidebar } from './components/layout/AppSidebar';
 import { DashboardHeader } from './components/layout/DashboardHeader';
+import type { LocalSearchEntry } from './components/detail-map/localSearchIndex';
 import { DashboardPanels } from './components/layout/DashboardPanels';
 import { DatasetFooter } from './components/layout/DatasetFooter';
 import { MapViewport } from './components/layout/MapViewport';
@@ -31,6 +33,9 @@ const ProjectDetailView = lazy(() =>
   import('./features/project-detail/ProjectDetailView').then((module) => ({
     default: module.ProjectDetailView,
   })),
+);
+const ReportsView = lazy(() =>
+  import('./features/reports/ReportsView').then((module) => ({ default: module.ReportsView })),
 );
 const DataReadinessView = lazy(() =>
   import('./features/data-readiness/DataReadinessView').then((module) => ({
@@ -122,6 +127,8 @@ export default function App() {
   const closeDataSourcesPanel = useMapStore((state) => state.closeDataSourcesPanel);
   const aboutPanelOpen = useMapStore((state) => state.aboutPanelOpen);
   const setDetailMapCamera = useMapStore((state) => state.setDetailMapCamera);
+  const select = useMapStore((state) => state.select);
+  const [menuOpen, setMenuOpen] = useState(false);
   const previousView = useRef(viewMode);
   useDashboardUrlSync();
   const { route, navigate } = useHashRoute();
@@ -169,6 +176,7 @@ export default function App() {
     route.kind === 'portfolio' ||
     route.kind === 'project-detail' ||
     route.kind === 'data-readiness' ||
+    route.kind === 'reports' ||
     route.kind === 'diorama';
   const skipLinkTargetId = isProjectRoute
     ? route.kind === 'portfolio'
@@ -177,7 +185,9 @@ export default function App() {
         ? 'project-detail'
         : route.kind === 'diorama'
           ? 'destination-diorama'
-          : 'data-readiness'
+          : route.kind === 'reports'
+            ? 'reports'
+            : 'data-readiness'
     : viewMode === 'map'
       ? 'detail-map-viewport'
       : viewMode === 'overview'
@@ -189,67 +199,91 @@ export default function App() {
   const goToPortfolio = (filters: PortfolioFilters = {}, opts?: { replace?: boolean }) =>
     navigate(serializePortfolioHash(filters), opts);
   const goToOverview = () => navigate('', { replace: false });
+  const selectPlace = (entry: LocalSearchEntry) => {
+    if (isProjectRoute) navigate('', { replace: false });
+    select(entry.code);
+    if (viewMode === 'map') {
+      setDetailMapCamera({
+        latitude: entry.latitude,
+        longitude: entry.longitude,
+        zoom: 12,
+        bearing: 0,
+        pitch: 0,
+      });
+    }
+  };
 
   return (
     <main className="app-shell">
       <a href={`#${skipLinkTargetId}`} className="skip-link">
         {t('app.skipLink')}
       </a>
-      <DashboardHeader />
-      {isProjectRoute ? (
-        <Suspense fallback={<ProjectRouteLoading />}>
-          {route.kind === 'portfolio' && (
-            <ProjectPortfolioView
-              filters={route.filters}
-              onFiltersChange={goToPortfolio}
-              onOpenProject={(projectId) => navigate(serializeProjectDetailHash(projectId))}
-              onBackToOverview={goToOverview}
-            />
-          )}
-          {route.kind === 'project-detail' && (
-            <ProjectDetailView
-              projectId={route.projectId}
-              onBackToPortfolio={() => goToPortfolio()}
-              onViewOnMap={(geometry) => {
-                if (geometry.type !== 'Point') return;
-                const [longitude, latitude] = geometry.coordinates;
-                setDetailMapCamera({ latitude, longitude, zoom: 13, bearing: 0, pitch: 0 });
-                setViewMode('map');
-                navigate('', { replace: false });
-              }}
-            />
-          )}
-          {route.kind === 'diorama' && (
-            <DestinationDioramaView
-              destinationId={route.destinationId}
-              onBack={goToOverview}
-              onSelect={(id) => navigate(serializeDioramaHash(id))}
-            />
-          )}
-          {route.kind === 'data-readiness' && (
-            <DataReadinessView
-              onBackToOverview={goToOverview}
-              onOpenProject={(projectId) => navigate(serializeProjectDetailHash(projectId))}
-            />
-          )}
-        </Suspense>
-      ) : (
-        <>
-          <MapViewport />
-          {viewMode === 'map' && (
-            <Suspense fallback={<MapLoading />}>
-              <DetailMapViewport />
-            </Suspense>
-          )}
-          {viewMode === 'overview' && <ExecutiveOverview onOpenPortfolio={() => goToPortfolio()} />}
-          {viewMode === 'world' && (
-            <Suspense fallback={<MapLoading />}>
-              <WorldExplorationView />
-            </Suspense>
-          )}
-          <DashboardPanels />
-        </>
-      )}
+      <AppSidebar
+        route={route}
+        navigate={navigate}
+        mobileOpen={menuOpen}
+        onClose={() => setMenuOpen(false)}
+      />
+      <div className="app-main">
+        <DashboardHeader onOpenMenu={() => setMenuOpen(true)} onSelectPlace={selectPlace} />
+        {isProjectRoute ? (
+          <Suspense fallback={<ProjectRouteLoading />}>
+            {route.kind === 'portfolio' && (
+              <ProjectPortfolioView
+                filters={route.filters}
+                onFiltersChange={goToPortfolio}
+                onOpenProject={(projectId) => navigate(serializeProjectDetailHash(projectId))}
+                onBackToOverview={goToOverview}
+              />
+            )}
+            {route.kind === 'project-detail' && (
+              <ProjectDetailView
+                projectId={route.projectId}
+                onBackToPortfolio={() => goToPortfolio()}
+                onViewOnMap={(geometry) => {
+                  if (geometry.type !== 'Point') return;
+                  const [longitude, latitude] = geometry.coordinates;
+                  setDetailMapCamera({ latitude, longitude, zoom: 13, bearing: 0, pitch: 0 });
+                  setViewMode('map');
+                  navigate('', { replace: false });
+                }}
+              />
+            )}
+            {route.kind === 'diorama' && (
+              <DestinationDioramaView
+                destinationId={route.destinationId}
+                onBack={goToOverview}
+                onSelect={(id) => navigate(serializeDioramaHash(id))}
+              />
+            )}
+            {route.kind === 'reports' && <ReportsView onBackToOverview={goToOverview} />}
+            {route.kind === 'data-readiness' && (
+              <DataReadinessView
+                onBackToOverview={goToOverview}
+                onOpenProject={(projectId) => navigate(serializeProjectDetailHash(projectId))}
+              />
+            )}
+          </Suspense>
+        ) : (
+          <>
+            <MapViewport />
+            {viewMode === 'map' && (
+              <Suspense fallback={<MapLoading />}>
+                <DetailMapViewport />
+              </Suspense>
+            )}
+            {viewMode === 'overview' && (
+              <ExecutiveOverview onOpenPortfolio={() => goToPortfolio()} />
+            )}
+            {viewMode === 'world' && (
+              <Suspense fallback={<MapLoading />}>
+                <WorldExplorationView />
+              </Suspense>
+            )}
+            <DashboardPanels />
+          </>
+        )}
+      </div>
       <OnboardingOverlay />
       {provenancePanelOpen && (
         <Suspense fallback={<ProvenancePanelLoading />}>
@@ -274,7 +308,9 @@ export default function App() {
               ? t('app.live.openedProjectDetail')
               : route.kind === 'diorama'
                 ? t('app.live.openedDiorama')
-                : t('app.live.openedDataReadiness')
+                : route.kind === 'reports'
+                  ? t('reports.title')
+                  : t('app.live.openedDataReadiness')
           : viewMode === 'map'
             ? t('app.live.openedMap')
             : viewMode === 'overview'

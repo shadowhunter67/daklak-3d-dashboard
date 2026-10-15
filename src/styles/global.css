@@ -3274,23 +3274,30 @@ footer a {
 /* Decorative colour swatch per KPI category (money/rate/count/warning) — purely visual grouping,
    never the only signal for anything: the label text next to it always says what the number means. */
 .kpi-card__icon {
-  display: block;
-  width: 10px;
-  height: 10px;
-  margin-bottom: 8px;
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 12px;
   border-radius: 50%;
+  color: #082a25;
+}
+.kpi-card__icon svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2;
 }
 .kpi-card[data-kpi-group='money'] .kpi-card__icon {
-  background: #e7c471;
+  background: #f0c75e;
 }
 .kpi-card[data-kpi-group='rate'] .kpi-card__icon {
-  background: #5fb8a8;
+  background: #69c9b2;
 }
 .kpi-card[data-kpi-group='count'] .kpi-card__icon {
-  background: #7fa8d9;
+  background: #8db8e8;
 }
 .kpi-card[data-kpi-group='warning'] .kpi-card__icon {
-  background: #d97757;
+  background: #ed8a6b;
 }
 .kpi-card[data-unavailable] .kpi-card__icon {
   background: #8fa39a54;

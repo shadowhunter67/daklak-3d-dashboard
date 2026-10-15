@@ -44,6 +44,7 @@ const ALLOWLIST_FILES = new Set([
   // Brand mark/wordmark ("ĐL" logo initials, "ĐẮK LẮK" province name in the <h1>) — a proper noun
   // and visual brand identity, not translatable UI copy (see docs/adr/0003-internationalization.md).
   'src/components/layout/DashboardHeader.tsx',
+  'src/components/layout/AppSidebar.tsx',
 ]);
 
 function isTestOrTypeFile(relPath) {
