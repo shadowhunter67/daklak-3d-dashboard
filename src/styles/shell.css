@@ -400,9 +400,11 @@
     border-right: 1px solid var(--shell-rule);
     border-radius: 10px;
   }
-  .topbar-actions .font-scale-control,
-  .topbar-actions .topbar-button--help {
+  .topbar-actions .font-scale-control {
     display: none;
+  }
+  .topbar-button {
+    padding: 0 10px;
   }
   .display-settings__font {
     display: flex;
