@@ -1,10 +1,11 @@
-import { useRef, useState } from 'react';
-import { captureProvenanceFocusTrigger } from '../provenance/provenanceFocusTrigger';
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
-import { useScrollEdgeFade } from '../../hooks/useScrollEdgeFade';
+import { DEFAULT_DETAIL_MAP_CAMERA } from '../detail-map/detailMapTypes';
+import type { LocalSearchEntry } from '../detail-map/localSearchIndex';
 import { FontScaleControl } from './FontScaleControl';
-import type { MessageKey } from '../../i18n/messages';
+import { GlobalSearch } from './GlobalSearch';
+import { HelpIcon, HomeIcon, MenuIcon } from './icons';
+import { ThemeToggle } from './ThemeToggle';
 
 const modes = [
   ['overview', 'header.mode.overview'],
@@ -12,86 +13,45 @@ const modes = [
   ['heatmap', 'header.mode.heatmap'],
 ] as const;
 
-// Primary navigation: the four mutually-exclusive top-level experiences. Distinct from the
-// `modes` thematic tabs above (which only apply within the 3D overview, gated to viewMode 3d
-// below — see the header-declutter fix that removed a since-redundant duplicate set of
-// view-switch buttons that used to live in header-meta alongside these).
-// 'map' folds in the former standalone 'table' (SVG map + ward directory) view — see
-// DetailMapViewport.tsx, which now renders the directory as a sidebar next to the MapLibre canvas.
-// Label is "Tổng quan điều hành" (not "Tổng quan") specifically to avoid an accessible-name clash
-// with the `modes` data-mode tab of the same literal text — the two are unrelated concepts
-// (top-level view vs. 3D thematic overlay) and must resolve unambiguously by role+name in tests.
-// The `'world'` (Khám phá Đắk Lắk 3D / Tourism Digital Twin) entry is intentionally omitted for
-// now — the idea is paused. The route itself still resolves (`?view=world` in dashboardUrl.ts,
-// WorldExplorationView in App.tsx), so a shared link keeps working; only the nav tab is hidden.
-// Re-add `['world', 'header.nav.world', 'header.nav.worldShort']` here to bring the tab back.
-const primaryViews = [
-  ['overview', 'header.nav.overview', 'header.nav.overviewShort'],
-  ['3d', 'header.nav.3d', 'header.nav.3d'],
-  ['map', 'header.nav.map', 'header.nav.mapShort'],
-] as const satisfies ReadonlyArray<readonly [string, MessageKey, MessageKey]>;
-
-export function DashboardHeader() {
-  const { t, locale, setLocale } = useTranslation();
-  const [shareStatus, setShareStatus] = useState('');
-  const shareTimer = useRef(0);
-  const shareDashboard = async () => {
-    const url = window.location.href;
-    try {
-      await navigator.clipboard.writeText(url);
-      setShareStatus(t('header.share.status'));
-      window.clearTimeout(shareTimer.current);
-      shareTimer.current = window.setTimeout(() => setShareStatus(''), 2400);
-    } catch {
-      window.prompt(t('header.share.prompt'), url);
-    }
-  };
+/**
+ * Topbar of the app shell: menu button (narrow screens), place search, "Về toàn tỉnh", text size,
+ * theme and help. Primary navigation moved to `AppSidebar`; rarely-used utilities (language, share,
+ * data provenance/sources) moved to the sidebar's display-settings popover. The 3D data-mode tabs
+ * stay here because they only exist while the 3D view is open.
+ */
+export function DashboardHeader({
+  onOpenMenu,
+  onSelectPlace,
+}: {
+  onOpenMenu: () => void;
+  onSelectPlace: (entry: LocalSearchEntry) => void;
+}) {
+  const { t } = useTranslation();
   const dataMode = useMapStore((state) => state.dataMode);
   const viewMode = useMapStore((state) => state.viewMode);
   const changeDataMode = useMapStore((state) => state.changeDataMode);
-  const setViewMode = useMapStore((state) => state.setViewMode);
+  const select = useMapStore((state) => state.select);
+  const requestCameraReset = useMapStore((state) => state.requestCameraReset);
+  const setDetailMapCamera = useMapStore((state) => state.setDetailMapCamera);
   const requestHelp = useMapStore((state) => state.requestHelp);
-  const openProvenancePanel = useMapStore((state) => state.openProvenancePanel);
-  const openDataSourcesPanel = useMapStore((state) => state.openDataSourcesPanel);
-  const primaryNavRef = useRef<HTMLElement>(null);
-  const headerMetaRef = useRef<HTMLDivElement>(null);
-  useScrollEdgeFade(primaryNavRef);
-  useScrollEdgeFade(headerMetaRef);
+
+  const backToProvince = () => {
+    select(null);
+    requestCameraReset();
+    setDetailMapCamera(DEFAULT_DETAIL_MAP_CAMERA);
+  };
 
   return (
     <header className="dashboard-header">
-      <div className="dashboard-brand">
-        <div className="brand-mark">ĐL</div>
-        <div>
-          <p className="eyebrow">{t('header.eyebrow')}</p>
-          <h1>
-            ĐẮK LẮK <i>3D</i>
-          </h1>
-        </div>
-      </div>
-      {/* Header declutter: the "DỮ LIỆU MINH HỌA" badge and the "{n} xã/phường" count both used
-          to sit here. Neither was a control, and both crowded out ones that are — at 1440px this
-          row was scrolling ~354px of real controls (A-/A/A+, VI/EN) out of sight behind the edge
-          fade. The illustrative-data warning is not lost: every view that renders illustrative
-          figures already states it far more prominently in-page (`.executive-overview__notice`,
-          `.project-portfolio__mock-badge`). The unit count is dataset metadata and belongs with
-          the rest of it, in the Data Sources panel, not in the global control bar. */}
-      <nav className="primary-nav" aria-label={t('header.nav.ariaLabel')} ref={primaryNavRef}>
-        {primaryViews.map(([mode, labelKey, shortLabelKey]) => (
-          <button
-            key={mode}
-            className={viewMode === mode ? 'active' : ''}
-            aria-current={viewMode === mode ? 'page' : undefined}
-            aria-label={t(labelKey)}
-            onClick={() => setViewMode(mode)}
-          >
-            <span className="control-label control-label--desktop">{t(labelKey)}</span>
-            <span className="control-label control-label--mobile" aria-hidden="true">
-              {t(shortLabelKey)}
-            </span>
-          </button>
-        ))}
-      </nav>
+      <button
+        type="button"
+        className="topbar-menu-button"
+        aria-label={t('sidebar.openMenu')}
+        onClick={onOpenMenu}
+      >
+        <MenuIcon />
+      </button>
+      <GlobalSearch onSelect={onSelectPlace} />
       {viewMode === '3d' && (
         <nav className="mode-tabs" aria-label={t('header.modeTabs.ariaLabel')}>
           {modes.map(([mode, labelKey]) => (
@@ -106,76 +66,29 @@ export function DashboardHeader() {
           ))}
         </nav>
       )}
-      {/* The four scene controls that used to open this row — auto-rotate, roads, centre labels
-          and camera reset — now render in `SceneToolsPanel`, beside the scene they act on. In the
-          3D view they made this an eleven-control row and pushed the app-level controls at the end
-          of it (font scale, language) off the right edge behind the scroll fade. What is left here
-          is only what every view needs. */}
-      <div className="header-meta" ref={headerMetaRef}>
+      <div className="topbar-actions">
         <button
-          className="header-secondary-control"
-          onClick={shareDashboard}
-          aria-label={t('header.share.ariaLabel')}
-          title={t('header.share.title')}
+          type="button"
+          className="topbar-button"
+          onClick={backToProvince}
+          aria-label={t('header.resetCamera.ariaLabel')}
         >
-          {t('header.share.label')}
+          <HomeIcon />
+          <span>{t('topbar.backToProvince')}</span>
         </button>
+        <FontScaleControl />
+        <ThemeToggle />
         <button
-          className="header-secondary-control header-help-control"
+          type="button"
+          className="topbar-button topbar-button--help"
           onClick={requestHelp}
           aria-label={t('header.help.ariaLabel')}
           title={t('header.help.title')}
         >
-          ?
+          <HelpIcon />
+          <span>{t('topbar.help')}</span>
         </button>
-        <button
-          id="open-data-provenance-panel"
-          className="header-secondary-control"
-          aria-haspopup="dialog"
-          onClick={(event) => {
-            captureProvenanceFocusTrigger(event.currentTarget);
-            openProvenancePanel();
-          }}
-          aria-label={t('header.provenance.ariaLabel')}
-          title={t('header.provenance.title')}
-        >
-          {t('header.provenance.label')}
-        </button>
-        <button
-          id="open-data-sources-panel"
-          className="header-secondary-control"
-          aria-haspopup="true"
-          onClick={openDataSourcesPanel}
-          aria-label={t('header.dataSources.ariaLabel')}
-          title={t('header.dataSources.title')}
-        >
-          {t('header.dataSources.label')}
-        </button>
-        <FontScaleControl />
-        <div className="header-lang-switch" role="group" aria-label={t('header.lang.ariaLabel')}>
-          <button
-            type="button"
-            className="header-lang-button"
-            aria-pressed={locale === 'vi'}
-            aria-label={t('header.lang.viAriaLabel')}
-            onClick={() => setLocale('vi')}
-          >
-            {t('header.lang.vi')}
-          </button>
-          <button
-            type="button"
-            className="header-lang-button"
-            aria-pressed={locale === 'en'}
-            aria-label={t('header.lang.enAriaLabel')}
-            onClick={() => setLocale('en')}
-          >
-            {t('header.lang.en')}
-          </button>
-        </div>
       </div>
-      <span className="share-status" role="status" aria-live="polite">
-        {shareStatus}
-      </span>
     </header>
   );
 }

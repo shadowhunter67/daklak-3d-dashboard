@@ -37,6 +37,7 @@ export type HashRoute =
   | { kind: 'portfolio'; filters: PortfolioFilters }
   | { kind: 'project-detail'; projectId: string }
   | { kind: 'data-readiness' }
+  | { kind: 'reports' }
   | { kind: 'diorama'; destinationId: string };
 
 function isPortfolioSortKey(value: string): value is PortfolioSortKey {
@@ -83,6 +84,9 @@ export function parseHashRoute(rawHash: string): HashRoute {
   if (segments[0] === 'data-readiness') {
     return segments.length === 1 ? { kind: 'data-readiness' } : { kind: 'none' };
   }
+  if (segments[0] === 'reports') {
+    return segments.length === 1 ? { kind: 'reports' } : { kind: 'none' };
+  }
   if (segments[0] === 'diorama') {
     if (segments.length !== 2) return { kind: 'none' };
     const destinationId = decodeURIComponent(segments[1]);
@@ -113,6 +117,10 @@ export function serializeProjectDetailHash(projectId: string): string {
 
 export function serializeDataReadinessHash(): string {
   return '#/data-readiness';
+}
+
+export function serializeReportsHash(): string {
+  return '#/reports';
 }
 
 export function serializeDioramaHash(destinationId: string): string {

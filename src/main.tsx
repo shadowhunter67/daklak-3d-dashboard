@@ -6,6 +6,7 @@ import { I18nProvider } from './i18n/I18nProvider';
 // Face declarations first so `global.css`'s --font-* tokens resolve against loaded families.
 import './styles/fonts.css';
 import './styles/global.css';
+import './styles/shell.css';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <I18nProvider>

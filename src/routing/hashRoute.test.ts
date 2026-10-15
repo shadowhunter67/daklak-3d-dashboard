@@ -65,6 +65,11 @@ describe('parseHashRoute', () => {
     expect(parseHashRoute('#projects')).toEqual({ kind: 'portfolio', filters: {} });
   });
 
+  it('parses #/reports and rejects extra segments', () => {
+    expect(parseHashRoute('#/reports')).toEqual({ kind: 'reports' });
+    expect(parseHashRoute('#/reports/x')).toEqual({ kind: 'none' });
+  });
+
   it('parses #/data-readiness', () => {
     expect(parseHashRoute('#/data-readiness')).toEqual({ kind: 'data-readiness' });
   });

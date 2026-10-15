@@ -5,10 +5,18 @@ import { formatPercentagePointsDelta } from '../../i18n/formatters';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
 import type { ExecutiveOverviewKpis } from './model/executiveOverviewTypes';
+import { AlertIcon, CoinsIcon, TargetIcon, TrendIcon } from '../../components/layout/icons';
 
 /** Nhóm ngữ nghĩa cho mỗi KPI — chỉ dùng để tô màu vòng tròn trang trí (`kpi-card__icon`), không
  * mang thông tin riêng (trạng thái vẫn luôn có nhãn chữ đi kèm, không bao giờ chỉ dựa vào màu). */
 type KpiGroup = 'count' | 'money' | 'rate' | 'warning';
+
+const KPI_ICONS = {
+  count: TargetIcon,
+  money: CoinsIcon,
+  rate: TrendIcon,
+  warning: AlertIcon,
+} as const;
 
 const KPI_CARD_DEFS: Array<{
   key: keyof ExecutiveOverviewKpis;
@@ -62,9 +70,12 @@ function KpiCard({
 }) {
   const { t, locale } = useTranslation();
   const { text, isUnavailable, fullText } = formatKpiValueLocalized(kpi, locale, t);
+  const Icon = KPI_ICONS[group];
   return (
     <li className="kpi-card" data-unavailable={isUnavailable || undefined} data-kpi-group={group}>
-      <span className="kpi-card__icon" aria-hidden="true" />
+      <span className="kpi-card__icon" aria-hidden="true">
+        <Icon />
+      </span>
       <p className="kpi-card__label" id={`kpi-label-${label}`}>
         {label}
       </p>
