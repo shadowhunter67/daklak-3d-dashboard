@@ -1062,6 +1062,11 @@
   .detail-map-legend {
     display: none;
   }
+  /* The directory overlay owns the screen while open; the selected-unit card must not sit on top
+     of its rows (it blocked taps on the next ward). */
+  .detail-map-viewport__sidebar:not(.is-collapsed) ~ .detail-map-stage > .detail-panel {
+    display: none;
+  }
   .detail-map-stage > .detail-panel {
     top: auto;
     bottom: 56px;
