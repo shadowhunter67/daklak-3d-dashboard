@@ -290,6 +290,10 @@ export function DetailMapViewport() {
       aria-label={t('detailMapViewport.aria')}
       tabIndex={-1}
     >
+      <header className="detail-map-viewport__intro">
+        <h1>{t('detailMapViewport.heading')}</h1>
+        <p>{t('detailMapViewport.description')}</p>
+      </header>
       <div className={`detail-map-viewport__sidebar${directoryOpen ? '' : ' is-collapsed'}`}>
         {directoryOpen && <AccessibleDirectory />}
       </div>

@@ -6,12 +6,37 @@ import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
 import { AlertList } from './AlertList';
 import { DataHealthPanel } from './DataHealthPanel';
-import { ExecutiveStatusHero } from './ExecutiveStatusHero';
 import { KpiCardGrid } from './KpiCardGrid';
 import { OverviewWorkspace } from './OverviewWorkspace';
-import { PortfolioStatusChart } from './PortfolioStatusChart';
 import { PriorityProjectList } from './PriorityProjectList';
 import { useExecutiveOverview } from './data/useExecutiveOverview';
+import type { ExecutiveOverviewModel } from './model/executiveOverviewTypes';
+
+function RecentUpdates({ timeline }: { timeline: ExecutiveOverviewModel['dataTimeline'] }) {
+  const { t, locale } = useTranslation();
+  const entries = [
+    ['effectiveAt', 'executiveOverview.timeline.effectiveAt'],
+    ['sourcePublishedAt', 'executiveOverview.timeline.sourcePublishedAt'],
+    ['retrievedAt', 'executiveOverview.timeline.retrievedAt'],
+    ['publishedToDashboardAt', 'executiveOverview.timeline.publishedToDashboardAt'],
+    ['loadedInBrowserAt', 'executiveOverview.timeline.loadedInBrowserAt'],
+  ] as const;
+  return (
+    <section className="recent-updates" aria-labelledby="recent-updates-heading">
+      <h3 id="recent-updates-heading">{t('executiveOverview.recentUpdates')}</h3>
+      <ol>
+        {entries.map(([field, label]) => (
+          <li key={field}>
+            <span>{t(label)}</span>
+            <time dateTime={timeline[field]}>
+              {formatAbsoluteDateTime(timeline[field], locale)}
+            </time>
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
 
 const ERROR_KIND_MESSAGE_KEY: Record<string, MessageKey> = {
   unauthorized: 'executiveOverview.error.kind.unauthorized',
@@ -89,7 +114,6 @@ export function ExecutiveOverview({
       tabIndex={-1}
     >
       <h2 id="executive-overview-heading">{t('executiveOverview.heading')}</h2>
-      {!isEmpty && <ExecutiveStatusHero model={model} />}
       {(model.isIllustrative || onOpenPortfolio) && (
         <div className="executive-overview__notice">
           {model.isIllustrative && (
@@ -101,6 +125,7 @@ export function ExecutiveOverview({
             <button
               type="button"
               className="executive-overview__portfolio-link"
+              style={{ color: '#765400' }}
               onClick={onOpenPortfolio}
             >
               {t('executiveOverview.openPortfolio')}
@@ -111,7 +136,13 @@ export function ExecutiveOverview({
       {/* Chữ "Trạng thái danh mục: X" trước đây lặp lại đúng thông tin Executive Status Hero ở
           trên đã nói to và rõ hơn nhiều — chỉ còn giữ lại mốc "dữ liệu có hiệu lực" (vẫn cần cho
           minh bạch nguồn dữ liệu), tránh nói hai lần cùng một điều theo hai cách khác nhau. */}
-      <p className="executive-overview__status">
+      <p className="executive-overview__status" data-status={model.portfolioStatus}>
+        {t('executiveOverview.description')}{' '}
+        <strong>
+          {t('executiveOverview.statusLabel')}{' '}
+          {t(`portfolioStatus.${model.portfolioStatus}` as MessageKey)}
+        </strong>
+        {' · '}
         {t('executiveOverview.dataEffectiveLabel')}{' '}
         {formatAbsoluteDateTime(model.dataTimeline.effectiveAt, locale)}
       </p>
@@ -131,7 +162,7 @@ export function ExecutiveOverview({
                 attention, and how the whole portfolio is distributed across the pipeline. */}
             <div className="executive-overview__main-column">
               <PriorityProjectList items={model.priorityProjects} asOf={asOf} />
-              <PortfolioStatusChart statusDistribution={model.statusDistribution} />
+              <RecentUpdates timeline={model.dataTimeline} />
             </div>
             {/* Sidebar (~35%): supporting context — active alerts and whether the underlying data
                 can be trusted. */}

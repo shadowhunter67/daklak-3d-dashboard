@@ -1,5 +1,6 @@
 import metadata from '#province-assets/daklak-metadata.json';
 import metrics from '#province-assets/daklak-metrics.json';
+import wards from '#province-assets/daklak-wards-render.json';
 import dashboardData from '../../assets/data/dashboard-sources.json';
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -70,23 +71,76 @@ export function StatPanel() {
   const dataMode = useMapStore((state) => state.dataMode);
   const values = Object.values(metrics);
   const population = values.reduce((s, v) => s + v.population, 0);
+  const area = wards.features.reduce((s, ward) => s + ward.properties.areaKm2, 0);
+  const average = (items: number[]) =>
+    items.length ? Math.round(items.reduce((sum, value) => sum + value, 0) / items.length) : 0;
+  const energyValues = dashboardData.energy.nodes;
   const bars =
     dataMode === 'energy'
       ? [
-          { label: t('statPanel.bar.hydro'), value: 83 },
-          { label: t('statPanel.bar.renewable'), value: 76 },
-          { label: t('statPanel.bar.load'), value: 92 },
+          {
+            label: t('statPanel.bar.hydro'),
+            value: average(
+              energyValues.filter((node) => node.kind === 'hydro').map((node) => node.value),
+            ),
+          },
+          {
+            label: t('statPanel.bar.renewable'),
+            value: average(
+              energyValues.filter((node) => node.kind === 'renewable').map((node) => node.value),
+            ),
+          },
+          {
+            label: t('statPanel.bar.load'),
+            value: average(
+              energyValues.filter((node) => node.kind === 'load').map((node) => node.value),
+            ),
+          },
         ]
       : dataMode === 'heatmap'
         ? [
-            { label: t('statPanel.bar.low'), value: 42 },
-            { label: t('statPanel.bar.medium'), value: 68 },
-            { label: t('statPanel.bar.high'), value: 94 },
+            {
+              label: t('statPanel.bar.low'),
+              value: average(
+                values.filter((metric) => metric.coverage < 50).map((metric) => metric.coverage),
+              ),
+            },
+            {
+              label: t('statPanel.bar.medium'),
+              value: average(
+                values
+                  .filter((metric) => metric.coverage >= 50 && metric.coverage < 80)
+                  .map((metric) => metric.coverage),
+              ),
+            },
+            {
+              label: t('statPanel.bar.high'),
+              value: average(
+                values.filter((metric) => metric.coverage >= 80).map((metric) => metric.coverage),
+              ),
+            },
           ]
         : [
-            { label: t('statPanel.bar.west'), value: 62 },
-            { label: t('statPanel.bar.central'), value: 84 },
-            { label: t('statPanel.bar.east'), value: 73 },
+            {
+              label: t('statPanel.bar.low'),
+              value: average(
+                values.filter((metric) => metric.coverage < 50).map((metric) => metric.coverage),
+              ),
+            },
+            {
+              label: t('statPanel.bar.medium'),
+              value: average(
+                values
+                  .filter((metric) => metric.coverage >= 50 && metric.coverage < 80)
+                  .map((metric) => metric.coverage),
+              ),
+            },
+            {
+              label: t('statPanel.bar.high'),
+              value: average(
+                values.filter((metric) => metric.coverage >= 80).map((metric) => metric.coverage),
+              ),
+            },
           ];
   const chartAriaLabel = t('statPanel.chartAria', {
     summary: bars.map((bar) => `${bar.label} ${bar.value}`).join(', '),
@@ -111,7 +165,7 @@ export function StatPanel() {
             ? metadata.totalUnits
             : dataMode === 'energy'
               ? dashboardData.energy.nodes.length
-              : 20}
+              : values.length}
         </strong>
         <span>
           {dataMode === 'overview'
@@ -159,7 +213,13 @@ export function StatPanel() {
       {dataMode === 'overview' && (
         <div className="metric metric--mock">
           <span>{t('statPanel.communePopulation')}</span>
-          <b>{t('statPanel.metricValue.illustrative')}</b>
+          <b>{formatNumber(population, locale)}</b>
+        </div>
+      )}
+      {dataMode === 'overview' && (
+        <div className="metric">
+          <span>{t('statPanel.area')}</span>
+          <b>{formatNumber(area, locale)} km²</b>
         </div>
       )}
       <div className="chart-title">

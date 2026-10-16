@@ -735,6 +735,165 @@
   border-bottom: 1px solid var(--shell-rule);
   font-size: 13px;
 }
+
+/* Executive overview redesign: light, compact dashboard panels inspired by the approved mockup. */
+.executive-overview {
+  inset: var(--app-header-height) 0 0;
+  padding: 24px clamp(16px, 2.4vw, 40px) 56px;
+  color: var(--shell-ink);
+  background: var(--shell-ground);
+}
+.executive-overview > * {
+  width: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+.executive-overview > .overview-workspace,
+.executive-overview > .executive-overview__columns {
+  width: 100%;
+  margin-inline: 0;
+}
+.executive-overview h2 {
+  margin: 0 0 4px;
+  color: var(--shell-ink);
+  font-size: clamp(24px, 2.2vw, 34px);
+}
+.executive-overview__status {
+  margin: 0 0 16px;
+  color: var(--shell-ink-2);
+}
+.executive-overview__status strong {
+  color: var(--shell-ink);
+}
+.executive-overview__notice {
+  margin: 12px 0 18px;
+  padding: 8px 14px;
+  border-color: #d8b24d;
+  background: #fff8df;
+  box-shadow: none;
+}
+.executive-overview__mock-badge {
+  color: #72520a;
+  font-size: 13px;
+}
+.kpi-card-grid {
+  gap: 10px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+.kpi-card {
+  padding: 14px;
+  border: 1px solid var(--shell-rule);
+  border-radius: 12px;
+  background: var(--shell-panel);
+  box-shadow: 0 4px 14px #163c3212;
+}
+.kpi-card__label {
+  color: var(--shell-ink-2);
+}
+.kpi-card__value {
+  color: var(--shell-ink);
+}
+.overview-workspace {
+  grid-template-columns: minmax(250px, 0.9fr) minmax(380px, 1.7fr) minmax(250px, 0.9fr);
+  gap: 10px;
+}
+.workspace-card,
+.priority-project-list,
+.alert-list,
+.recent-updates,
+.data-health-panel {
+  border-color: var(--shell-rule);
+  background: var(--shell-panel);
+  box-shadow: 0 4px 14px #163c3212;
+}
+.workspace-card h3,
+.priority-project-list h3,
+.recent-updates h3,
+.data-health-panel h3 {
+  color: var(--shell-ink);
+}
+.workspace-wards__search,
+.workspace-info__facts,
+.workspace-info__projects {
+  border-color: var(--shell-rule);
+}
+.recent-updates {
+  padding: 0 20px 16px;
+}
+.recent-updates h3 {
+  margin: 0 -20px 8px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--shell-rule);
+}
+.recent-updates ol {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 8px 0 0 20px;
+}
+.recent-updates li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--shell-ink-2);
+  font-size: 13px;
+}
+.recent-updates time {
+  color: var(--shell-ink);
+  text-align: right;
+  white-space: nowrap;
+}
+@media (max-width: 1100px) {
+  .overview-workspace {
+    grid-template-columns: 1fr 1fr;
+  }
+  .workspace-info {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 700px) {
+  .overview-workspace,
+  .executive-overview__columns {
+    grid-template-columns: 1fr;
+  }
+  .workspace-info {
+    grid-column: auto;
+  }
+  .kpi-card-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .recent-updates li {
+    display: grid;
+    gap: 2px;
+  }
+  .recent-updates time {
+    text-align: left;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .executive-overview *,
+  .executive-overview *::before,
+  .executive-overview *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+:root:not([data-theme='light']) .executive-overview {
+  color: var(--shell-ink);
+  background: var(--shell-ground);
+}
+:root:not([data-theme='light']) .executive-overview h2,
+:root:not([data-theme='light']) .kpi-card__value,
+:root:not([data-theme='light']) .workspace-card h3,
+:root:not([data-theme='light']) .priority-project-list h3,
+:root:not([data-theme='light']) .recent-updates h3,
+:root:not([data-theme='light']) .data-health-panel h3 {
+  color: var(--shell-ink);
+}
 .workspace-info__projects small {
   color: var(--shell-ink-2);
 }

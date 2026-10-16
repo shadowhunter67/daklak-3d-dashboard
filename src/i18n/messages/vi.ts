@@ -136,9 +136,19 @@ export const vi = {
   'theme.lightAriaLabel': 'Chuyển sang giao diện sáng',
   'theme.darkAriaLabel': 'Chuyển sang giao diện tối',
   'reports.title': 'Báo cáo',
-  'reports.comingSoon': 'Tính năng đang phát triển',
-  'reports.body':
-    'Trang báo cáo tổng hợp chưa có nguồn dữ liệu thật để hiển thị nên được giữ chỗ tại đây. Bạn có thể xem số liệu hiện có ở Tổng quan, Dự án và Dữ liệu & nguồn.',
+  'reports.description': 'Tổng hợp và phân tích danh mục dự án từ nguồn dữ liệu hiện hành.',
+  'reports.sourceBadge': 'DỮ LIỆU MINH HỌA — không phải số liệu vận hành chính thức',
+  'reports.filters': 'Bộ lọc báo cáo',
+  'reports.total': 'Tổng dự án',
+  'reports.disbursement': 'Tỷ lệ giải ngân',
+  'reports.delayed': 'Chậm tiến độ',
+  'reports.completed': 'Hoàn thành',
+  'reports.warnings': 'Cảnh báo dữ liệu',
+  'reports.statusStructure': 'Cơ cấu trạng thái dự án',
+  'reports.sectors': 'Phân bố theo lĩnh vực',
+  'reports.areas': 'Địa bàn có nhiều dự án',
+  'reports.attention': 'Đơn vị cần chú ý',
+  'reports.noAttention': 'Không có đơn vị cần chú ý.',
   'reports.backToOverview': 'Về Tổng quan',
 
   // FontScaleControl ("A- / A / A+")
@@ -161,6 +171,8 @@ export const vi = {
   'executiveOverview.error.kind.rateLimited': 'Hệ thống đang quá tải, vui lòng thử lại sau.',
   'executiveOverview.error.kind.unknown': 'Đã xảy ra lỗi không xác định.',
   'executiveOverview.heading': 'Tổng quan điều hành dự án trọng điểm',
+  'executiveOverview.description':
+    'Theo dõi tiến độ thực hiện, giải ngân và các vướng mắc của dự án trọng điểm trên địa bàn tỉnh Đắk Lắk.',
   'executiveOverview.mockBadge':
     'DỮ LIỆU MINH HỌA — không phải số liệu vận hành chính thức, không dùng cho quyết định quản lý thực tế.',
   'executiveOverview.openPortfolio': 'Xem danh mục dự án →',
@@ -170,6 +182,12 @@ export const vi = {
     'Một phần dữ liệu hiện không tải được ({issues}) — các số liệu bên dưới chỉ tính trên phần dữ liệu đã tải thành công.',
   'executiveOverview.empty':
     'Chưa có dự án nào trong danh mục. Khi có dữ liệu, tổng quan sẽ hiển thị tại đây.',
+  'executiveOverview.recentUpdates': 'Cập nhật gần đây',
+  'executiveOverview.timeline.effectiveAt': 'Dữ liệu có hiệu lực',
+  'executiveOverview.timeline.sourcePublishedAt': 'Nguồn công bố',
+  'executiveOverview.timeline.retrievedAt': 'Hệ thống thu thập',
+  'executiveOverview.timeline.publishedToDashboardAt': 'Đưa lên dashboard',
+  'executiveOverview.timeline.loadedInBrowserAt': 'Trình duyệt nạp dữ liệu',
   'portfolioStatus.healthy': 'Ổn định',
   'portfolioStatus.attention': 'Cần chú ý',
   'portfolioStatus.critical': 'Nghiêm trọng',
@@ -557,6 +575,7 @@ export const vi = {
   'statPanel.metricValue.simulatedPopulation': 'Dân số giả lập',
   'statPanel.newBusinesses': 'Doanh nghiệp thành lập mới',
   'statPanel.communePopulation': 'Dân số cấp xã',
+  'statPanel.area': 'Diện tích tự nhiên',
   'statPanel.chartTitle.energy': 'Chỉ số theo nhóm điểm',
   'statPanel.chartTitle.heatmap': 'Cường độ phân bố (thang minh hoạ 0–100)',
   'statPanel.chartTitle.overview': 'Chỉ số tiếp cận dịch vụ',
@@ -833,6 +852,9 @@ export const vi = {
   'detailMapViewport.retry': 'Thử lại',
   'detailMapViewport.backTo3d': 'Quay về tổng quan 3D',
   'detailMapViewport.aria': 'Bản đồ chi tiết',
+  'detailMapViewport.heading': 'Bản đồ hành chính 2D',
+  'detailMapViewport.description':
+    'Khám phá ranh giới, đơn vị hành chính và các lớp dữ liệu thật của tỉnh Đắk Lắk.',
   'detailMapViewport.hideDirectory': 'Ẩn danh sách',
   'detailMapViewport.showDirectory': 'Hiện danh sách',
 
@@ -996,6 +1018,18 @@ export const vi = {
   'dataReadiness.businessHeading': 'Cảnh báo nghiệp vụ (business alert, không phải lỗi)',
   'dataReadiness.businessEmpty': 'Không có cảnh báo nghiệp vụ nào.',
   'dataReadiness.issue.openProject': 'Xem dự án liên quan',
+  'dataReadiness.sourcesHeading': 'Danh mục nguồn',
+  'dataReadiness.sourceActive': 'Đang dùng',
+  'dataReadiness.recordStatusHeading': 'Bản ghi theo trạng thái',
+  'dataReadiness.records': 'bản ghi',
+  'dataReadiness.alertsHeading': 'Danh sách cảnh báo dữ liệu',
+  'dataReadiness.severityFilter': 'Mức độ',
+  'dataReadiness.search': 'Tìm kiếm',
+  'dataReadiness.searchPlaceholder': 'Tìm trong cảnh báo…',
+  'dataReadiness.all': 'Tất cả',
+  'dataReadiness.error': 'Lỗi',
+  'dataReadiness.warning': 'Cảnh báo',
+  'dataReadiness.filteredEmpty': 'Không có cảnh báo phù hợp.',
 
   // Nhãn tiếng Việt dễ hiểu cho từng `DataQualityIssue.rule` — dùng thay cho slug kỹ thuật
   // ("multiple-verification-stage-records", "unknown-managing-authority"...) ở mọi nơi hiển thị
