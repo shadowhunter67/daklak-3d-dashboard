@@ -913,3 +913,78 @@
     max-height: 360px;
   }
 }
+
+/* ---- Detail map (2D): intro row on top, directory + map below (>=768px) ----
+   The view is a grid so the title/layer tabs row, the directory and the map never overlap; the
+   legacy rules positioned everything against the fixed header and assumed no intro row. */
+@media (min-width: 768px) {
+  .detail-map-viewport {
+    --detail-intro-h: 92px;
+    display: grid;
+    grid-template-columns: 340px minmax(0, 1fr);
+    grid-template-rows: var(--detail-intro-h) minmax(0, 1fr);
+    padding-top: var(--app-header-height);
+    transition: grid-template-columns 200ms ease;
+  }
+  .detail-map-viewport:has(.detail-map-viewport__sidebar.is-collapsed) {
+    grid-template-columns: 0 minmax(0, 1fr);
+  }
+  .detail-map-viewport__intro {
+    position: static;
+    grid-column: 1 / -1;
+    height: var(--detail-intro-h);
+    max-width: none;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-width: 0 0 1px;
+    border-radius: 0;
+    background: var(--shell-ground);
+    color: var(--shell-ink);
+  }
+  .detail-map-viewport__sidebar {
+    grid-row: 2;
+    grid-column: 1;
+    flex: none;
+    padding-top: 0;
+  }
+  .detail-map-viewport__sidebar-toggle {
+    top: calc(var(--app-header-height) + var(--detail-intro-h) + 16px);
+  }
+  .detail-map-stage {
+    grid-row: 2;
+    grid-column: 2;
+  }
+  .detail-map-layer-panel {
+    top: 16px;
+  }
+  .detail-map-source-notice {
+    top: auto;
+    bottom: 48px;
+    left: 16px;
+    transform: none;
+    width: min(340px, 45%);
+    text-align: left;
+  }
+  .detail-map-map-hud {
+    inset: 64px 16px 16px auto;
+  }
+  .detail-map-stage > .detail-panel {
+    top: 64px;
+    right: 16px;
+    width: 260px;
+  }
+  /* Scale bar sits clear of the footer strip; legend above it. */
+  .detail-map-scale {
+    bottom: 34px;
+  }
+  .detail-map-legend {
+    bottom: 72px;
+  }
+  /* Directory rows: keep "73,71 km²" on one line. */
+  .detail-map-viewport__sidebar .directory-row {
+    grid-template-columns: minmax(110px, 1.4fr) 56px minmax(80px, 1fr);
+  }
+  .detail-map-viewport__sidebar .directory-row > :nth-child(3) {
+    white-space: nowrap;
+  }
+}

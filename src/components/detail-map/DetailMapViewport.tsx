@@ -26,6 +26,9 @@ import type {
 } from './detailMapTypes';
 import type { LocalSearchEntry } from './localSearchIndex';
 import { useTranslation } from '../../i18n/useTranslation';
+import { MapIcon, LayersIcon, TrendIcon, FolderIcon } from '../layout/icons';
+import { DetailPanel } from '../dashboard/DetailPanel';
+import { pickScaleBar } from './mapScale';
 
 type LoadStatus = 'loading' | 'ready' | 'error';
 
@@ -101,6 +104,8 @@ export function DetailMapViewport() {
   const setDetailMapBaseMap = useMapStore((state) => state.setDetailMapBaseMap);
   const toggleDetailMapLayer = useMapStore((state) => state.toggleDetailMapLayer);
   const setDetailMapPlanningOverlay = useMapStore((state) => state.setDetailMapPlanningOverlay);
+  const planningActive = layers.planningOverlay !== 'none';
+  const scaleBar = pickScaleBar(camera.latitude, camera.zoom);
   const setDetailMapCamera = useMapStore((state) => state.setDetailMapCamera);
 
   const [webGLSupported] = useState(() => hasWebGLSupport());
@@ -291,8 +296,48 @@ export function DetailMapViewport() {
       tabIndex={-1}
     >
       <header className="detail-map-viewport__intro">
-        <h1>{t('detailMapViewport.heading')}</h1>
-        <p>{t('detailMapViewport.description')}</p>
+        <div>
+          <h1>{t('detailMapViewport.heading')}</h1>
+          <p>{t('detailMapViewport.description')}</p>
+        </div>
+        <div
+          className="detail-map-layer-tabs"
+          role="group"
+          aria-label={t('detailMapViewport.layerTabs')}
+        >
+          <button
+            type="button"
+            aria-pressed={layers.administrativeBoundariesVisible}
+            onClick={() => toggleDetailMapLayer('administrativeBoundariesVisible')}
+          >
+            <MapIcon />
+            {t('detailMapViewport.boundaries')}
+          </button>
+          <button
+            type="button"
+            aria-pressed={layers.roadsVisible}
+            onClick={() => toggleDetailMapLayer('roadsVisible')}
+          >
+            <LayersIcon />
+            {t('detailMapViewport.roads')}
+          </button>
+          <button
+            type="button"
+            aria-pressed={planningActive}
+            onClick={() => setDetailMapPlanningOverlay(planningActive ? 'none' : 'land-use')}
+          >
+            <TrendIcon />
+            {t('detailMapViewport.planning')}
+          </button>
+          <button
+            type="button"
+            aria-pressed={layers.keyProjectsVisible}
+            onClick={() => toggleDetailMapLayer('keyProjectsVisible')}
+          >
+            <FolderIcon />
+            {t('detailMapViewport.projects')}
+          </button>
+        </div>
       </header>
       <div className={`detail-map-viewport__sidebar${directoryOpen ? '' : ' is-collapsed'}`}>
         {directoryOpen && <AccessibleDirectory />}
@@ -342,6 +387,35 @@ export function DetailMapViewport() {
             }
           />
         )}
+        <div className="detail-map-map-hud" aria-label={t('detailMapViewport.mapHud')}>
+          <div className="detail-map-north" aria-label={t('detailMapViewport.north')}>
+            N<br />
+            <strong>↑</strong>
+          </div>
+          <div className="detail-map-scale" style={{ width: scaleBar.widthPx + 16 }}>
+            {scaleBar.label}
+          </div>
+          <div className="detail-map-legend">
+            <strong>{t('detailMapViewport.legend')}</strong>
+            <span>
+              <i className="legend-dot selected" />
+              {t('detailMapViewport.legendSelected')}
+            </span>
+            <span>
+              <i className="legend-dot" />
+              {t('detailMapViewport.legendOther')}
+            </span>
+            <span>
+              <i className="legend-line province" />
+              {t('detailMapViewport.legendProvince')}
+            </span>
+            <span>
+              <i className="legend-line ward" />
+              {t('detailMapViewport.legendWard')}
+            </span>
+          </div>
+        </div>
+        {selectedCode && <DetailPanel />}
       </div>
     </section>
   );

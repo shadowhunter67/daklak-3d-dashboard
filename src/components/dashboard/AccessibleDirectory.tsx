@@ -17,6 +17,7 @@ const sortedUnits = sortAdministrativeUnits(
 export function AccessibleDirectory() {
   const { t, locale } = useTranslation();
   const [query, setQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState<'all' | 'xa' | 'phuong'>('all');
   const selectedCode = useMapStore((state) => state.selectedCode);
   const select = useMapStore((state) => state.select);
   const rows = useRef<Array<HTMLButtonElement | null>>([]);
@@ -24,12 +25,23 @@ export function AccessibleDirectory() {
   const headerRef = useRef<HTMLDivElement>(null);
   const filtered = useMemo(() => {
     const term = normalizeSearchText(query);
-    if (!term) return sortedUnits;
-    return sortedUnits.filter(
+    const byType =
+      typeFilter === 'all'
+        ? sortedUnits
+        : sortedUnits.filter((unit) =>
+            typeFilter === 'phuong' ? unit.type === 'phuong' : unit.type !== 'phuong',
+          );
+    if (!term) return byType;
+    return byType.filter(
       (properties) =>
         normalizeSearchText(properties.name).includes(term) || properties.code.includes(term),
     );
-  }, [query]);
+  }, [query, typeFilter]);
+  const counts = {
+    all: sortedUnits.length,
+    xa: sortedUnits.filter((unit) => unit.type !== 'phuong').length,
+    phuong: sortedUnits.filter((unit) => unit.type === 'phuong').length,
+  };
 
   useEffect(() => {
     const table = tableRef.current;
@@ -94,6 +106,18 @@ export function AccessibleDirectory() {
       <p className="directory-status" role="status" aria-live="polite">
         {t('directory.status', { count: filtered.length })}
       </p>
+      <div className="directory-filters" role="group" aria-label={t('directory.filterLabel')}>
+        {(['all', 'xa', 'phuong'] as const).map((filter) => (
+          <button
+            key={filter}
+            type="button"
+            aria-pressed={typeFilter === filter}
+            onClick={() => setTypeFilter(filter)}
+          >
+            {t(`directory.filter.${filter}`)} <span>{counts[filter]}</span>
+          </button>
+        ))}
+      </div>
       <div ref={tableRef} className="directory-table" role="table" aria-rowcount={filtered.length}>
         <div ref={headerRef} className="directory-row directory-header" role="row">
           <span role="columnheader">{t('directory.col.unit')}</span>
