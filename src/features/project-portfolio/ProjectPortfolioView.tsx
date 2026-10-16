@@ -54,7 +54,11 @@ function ProjectRow({ row, onOpen }: { row: ProjectPortfolioRow; onOpen: () => v
         </button>
       </td>
       <td>{t(`sector.${row.sector}` as MessageKey)}</td>
-      <td>{t(`status.${row.status}` as MessageKey)}</td>
+      <td>
+        <span className={`portfolio-status portfolio-status--${row.status}`}>
+          {t(`status.${row.status}` as MessageKey)}
+        </span>
+      </td>
       <td>
         <MiniProgressBar value={row.overallProgress} planned={row.plannedProgress} />
         {row.overallProgress}% <span aria-hidden="true">/</span>{' '}
@@ -250,6 +254,9 @@ export function ProjectPortfolioView({
   const hasActiveFilters = Boolean(
     filters.status || filters.sector || filters.area || filters.query,
   );
+  const statusCards = model.filterOptions.status;
+  const attentionRows = sorted.filter((row) => row.reasonCategory);
+  const sectorCards = [...model.filterOptions.sector].sort((a, b) => b.count - a.count).slice(0, 5);
 
   return (
     <section
@@ -272,123 +279,116 @@ export function ProjectPortfolioView({
       <p className="project-portfolio__description">
         {t(model.isIllustrative ? 'portfolio.description' : 'portfolio.descriptionReal')}
       </p>
+      <div className="portfolio-kpis" aria-label={t('portfolio.tableCaption')}>
+        <article className="portfolio-kpi portfolio-kpi--total">
+          <span aria-hidden="true">▣</span>
+          <div>
+            <small>{t('portfolio.col.project')}</small>
+            <strong>{model.totalCount}</strong>
+          </div>
+        </article>
+        {statusCards.map((card) => (
+          <article className="portfolio-kpi" key={card.value}>
+            <span aria-hidden="true">●</span>
+            <div>
+              <small>{t(`status.${card.value}` as MessageKey)}</small>
+              <strong>{card.count}</strong>
+            </div>
+          </article>
+        ))}
+      </div>
       {state.status === 'degraded' && (
         <p role="alert" className="project-portfolio__degraded-banner">
           {t('portfolio.degradedBanner', { issues: state.sourceIssues.join('; ') })}
         </p>
       )}
 
-      <form
-        className="project-portfolio__filters"
-        role="search"
-        onSubmit={(e) => e.preventDefault()}
-      >
-        <div className="project-portfolio__filter-field">
-          <label htmlFor="project-portfolio-search">{t('portfolio.searchLabel')}</label>
-          <input
-            id="project-portfolio-search"
-            type="search"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder={t('portfolio.searchPlaceholder')}
-          />
-        </div>
-        <div className="project-portfolio__filter-field">
-          <label htmlFor="project-portfolio-status">{t('portfolio.statusLabel')}</label>
-          <select
-            id="project-portfolio-status"
-            value={filters.status ?? ''}
-            onChange={(e) => onFiltersChange({ ...filters, status: e.target.value || undefined })}
+      <div className="portfolio-layout">
+        <div className="portfolio-main">
+          <form
+            className="project-portfolio__filters"
+            role="search"
+            onSubmit={(e) => e.preventDefault()}
           >
-            <option value="">{t('portfolio.statusAll')}</option>
-            {model.filterOptions.status.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {t(`status.${opt.value}` as MessageKey)} ({opt.count})
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="project-portfolio__filter-field">
-          <label htmlFor="project-portfolio-sector">{t('portfolio.sectorLabel')}</label>
-          <select
-            id="project-portfolio-sector"
-            value={filters.sector ?? ''}
-            onChange={(e) => onFiltersChange({ ...filters, sector: e.target.value || undefined })}
-          >
-            <option value="">{t('portfolio.sectorAll')}</option>
-            {model.filterOptions.sector.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {t(`sector.${opt.value}` as MessageKey)} ({opt.count})
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="project-portfolio__filter-field">
-          <label htmlFor="project-portfolio-area">{t('portfolio.areaLabel')}</label>
-          <select
-            id="project-portfolio-area"
-            value={filters.area ?? ''}
-            onChange={(e) => onFiltersChange({ ...filters, area: e.target.value || undefined })}
-          >
-            <option value="">{t('portfolio.areaAll')}</option>
-            {model.filterOptions.area.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.value} ({opt.count})
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="project-portfolio__filter-field">
-          <label htmlFor="project-portfolio-sort">{t('portfolio.sortLabel')}</label>
-          <select
-            id="project-portfolio-sort"
-            value={filters.sort ?? 'attention-first'}
-            onChange={(e) =>
-              onFiltersChange({ ...filters, sort: e.target.value as PortfolioSortKey })
-            }
-          >
-            {SORT_KEYS.map((key) => (
-              <option key={key} value={key}>
-                {t(`portfolio.sort.${key}` as MessageKey)}
-              </option>
-            ))}
-          </select>
-        </div>
-        <button
-          type="button"
-          className="project-portfolio__clear-filters"
-          disabled={!hasActiveFilters}
-          onClick={() => {
-            setSearchInput('');
-            onFiltersChange({});
-          }}
-        >
-          {t('portfolio.clearFilters')}
-        </button>
-      </form>
-
-      <div className="project-portfolio__result-bar">
-        <p aria-live="polite" aria-atomic="true" className="project-portfolio__result-count">
-          {t('portfolio.resultCount', { shown: sorted.length, total: model.totalCount })}
-        </p>
-        <button
-          type="button"
-          className="project-portfolio__export-csv"
-          onClick={handleExportCsv}
-          disabled={sorted.length === 0}
-          title={t('portfolio.exportCsvHint', { count: sorted.length })}
-        >
-          {t('portfolio.exportCsv')}
-        </button>
-      </div>
-
-      {sorted.length === 0 ? (
-        <p className="project-portfolio__empty">
-          {t('portfolio.empty')}{' '}
-          {hasActiveFilters && (
+            <div className="project-portfolio__filter-field">
+              <label htmlFor="project-portfolio-search">{t('portfolio.searchLabel')}</label>
+              <input
+                id="project-portfolio-search"
+                type="search"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder={t('portfolio.searchPlaceholder')}
+              />
+            </div>
+            <div className="project-portfolio__filter-field">
+              <label htmlFor="project-portfolio-status">{t('portfolio.statusLabel')}</label>
+              <select
+                id="project-portfolio-status"
+                value={filters.status ?? ''}
+                onChange={(e) =>
+                  onFiltersChange({ ...filters, status: e.target.value || undefined })
+                }
+              >
+                <option value="">{t('portfolio.statusAll')}</option>
+                {model.filterOptions.status.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {t(`status.${opt.value}` as MessageKey)} ({opt.count})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="project-portfolio__filter-field">
+              <label htmlFor="project-portfolio-sector">{t('portfolio.sectorLabel')}</label>
+              <select
+                id="project-portfolio-sector"
+                value={filters.sector ?? ''}
+                onChange={(e) =>
+                  onFiltersChange({ ...filters, sector: e.target.value || undefined })
+                }
+              >
+                <option value="">{t('portfolio.sectorAll')}</option>
+                {model.filterOptions.sector.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {t(`sector.${opt.value}` as MessageKey)} ({opt.count})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="project-portfolio__filter-field">
+              <label htmlFor="project-portfolio-area">{t('portfolio.areaLabel')}</label>
+              <select
+                id="project-portfolio-area"
+                value={filters.area ?? ''}
+                onChange={(e) => onFiltersChange({ ...filters, area: e.target.value || undefined })}
+              >
+                <option value="">{t('portfolio.areaAll')}</option>
+                {model.filterOptions.area.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.value} ({opt.count})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="project-portfolio__filter-field">
+              <label htmlFor="project-portfolio-sort">{t('portfolio.sortLabel')}</label>
+              <select
+                id="project-portfolio-sort"
+                value={filters.sort ?? 'attention-first'}
+                onChange={(e) =>
+                  onFiltersChange({ ...filters, sort: e.target.value as PortfolioSortKey })
+                }
+              >
+                {SORT_KEYS.map((key) => (
+                  <option key={key} value={key}>
+                    {t(`portfolio.sort.${key}` as MessageKey)}
+                  </option>
+                ))}
+              </select>
+            </div>
             <button
               type="button"
-              className="project-portfolio__clear-filters-inline"
+              className="project-portfolio__clear-filters"
+              disabled={!hasActiveFilters}
               onClick={() => {
                 setSearchInput('');
                 onFiltersChange({});
@@ -396,52 +396,135 @@ export function ProjectPortfolioView({
             >
               {t('portfolio.clearFilters')}
             </button>
-          )}
-        </p>
-      ) : (
-        <>
-          <div
-            className="project-portfolio-table-wrap"
-            role="region"
-            aria-label={t('portfolio.tableLabel')}
-          >
-            <table className="project-portfolio-table">
-              <caption className="visually-hidden">{t('portfolio.tableCaption')}</caption>
-              <thead>
-                <tr>
-                  <th scope="col">{t('portfolio.col.project')}</th>
-                  <th scope="col">{t('portfolio.col.sector')}</th>
-                  <th scope="col">{t('portfolio.col.status')}</th>
-                  <th scope="col">{t('portfolio.col.progress')}</th>
-                  <th scope="col">{t('portfolio.col.disbursement')}</th>
-                  <th scope="col">{t('portfolio.col.plannedCompletion')}</th>
-                  <th scope="col">{t('portfolio.col.freshness')}</th>
-                  <th scope="col">{t('portfolio.col.reason')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sorted.map((row) => (
-                  <tr key={row.projectId}>
-                    <ProjectRow row={row} onOpen={() => onOpenProject(row.projectId)} />
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          </form>
+
+          <div className="project-portfolio__result-bar">
+            <p aria-live="polite" aria-atomic="true" className="project-portfolio__result-count">
+              {t('portfolio.resultCount', { shown: sorted.length, total: model.totalCount })}
+            </p>
+            <button
+              type="button"
+              className="project-portfolio__export-csv"
+              onClick={handleExportCsv}
+              disabled={sorted.length === 0}
+              title={t('portfolio.exportCsvHint', { count: sorted.length })}
+            >
+              {t('portfolio.exportCsv')}
+            </button>
           </div>
-          <ul className="project-portfolio-cards">
-            {sorted.map((row) => (
-              <ProjectCard
-                key={row.projectId}
-                row={row}
-                onOpen={() => onOpenProject(row.projectId)}
-              />
-            ))}
-          </ul>
-        </>
-      )}
-      <p className="project-portfolio__hash-hint">
-        {t('portfolio.hashHint')} <code>{serializePortfolioHash(filters)}</code>
-      </p>
+
+          {sorted.length === 0 ? (
+            <p className="project-portfolio__empty">
+              {t('portfolio.empty')}{' '}
+              {hasActiveFilters && (
+                <button
+                  type="button"
+                  className="project-portfolio__clear-filters-inline"
+                  onClick={() => {
+                    setSearchInput('');
+                    onFiltersChange({});
+                  }}
+                >
+                  {t('portfolio.clearFilters')}
+                </button>
+              )}
+            </p>
+          ) : (
+            <>
+              <div
+                className="project-portfolio-table-wrap"
+                role="region"
+                aria-label={t('portfolio.tableLabel')}
+              >
+                <table className="project-portfolio-table">
+                  <caption className="visually-hidden">{t('portfolio.tableCaption')}</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">{t('portfolio.col.project')}</th>
+                      <th scope="col">{t('portfolio.col.sector')}</th>
+                      <th scope="col">{t('portfolio.col.status')}</th>
+                      <th scope="col">{t('portfolio.col.progress')}</th>
+                      <th scope="col">{t('portfolio.col.disbursement')}</th>
+                      <th scope="col">{t('portfolio.col.plannedCompletion')}</th>
+                      <th scope="col">{t('portfolio.col.freshness')}</th>
+                      <th scope="col">{t('portfolio.col.reason')}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sorted.map((row) => (
+                      <tr key={row.projectId}>
+                        <ProjectRow row={row} onOpen={() => onOpenProject(row.projectId)} />
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <ul className="project-portfolio-cards">
+                {sorted.map((row) => (
+                  <ProjectCard
+                    key={row.projectId}
+                    row={row}
+                    onOpen={() => onOpenProject(row.projectId)}
+                  />
+                ))}
+              </ul>
+            </>
+          )}
+          <p className="project-portfolio__hash-hint">
+            {t('portfolio.hashHint')} <code>{serializePortfolioHash(filters)}</code>
+          </p>
+        </div>
+        <aside className="portfolio-aside" aria-label={t('portfolio.tableCaption')}>
+          <section className="portfolio-panel">
+            <h3>{t('portfolio.col.reason')}</h3>
+            {attentionRows.length === 0 ? (
+              <p>{t('portfolio.reasonNone')}</p>
+            ) : (
+              <ul>
+                {attentionRows.slice(0, 4).map((row) => (
+                  <li key={row.projectId}>
+                    <strong>{row.name}</strong>
+                    <span>
+                      {row.reasonCategory ? t(`reason.${row.reasonCategory}` as MessageKey) : ''}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <section className="portfolio-panel">
+            <h3>{t('portfolio.col.status')}</h3>
+            <dl className="portfolio-quick-list">
+              <div>
+                <dt>{t('portfolio.col.project')}</dt>
+                <dd>{model.totalCount}</dd>
+              </div>
+              {statusCards.map((card) => (
+                <div key={card.value}>
+                  <dt>{t(`status.${card.value}` as MessageKey)}</dt>
+                  <dd>{card.count}</dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+          <section className="portfolio-panel">
+            <h3>{t('portfolio.col.sector')}</h3>
+            <ul className="portfolio-sector-list">
+              {sectorCards.map((card) => (
+                <li key={card.value}>
+                  <span>{t(`sector.${card.value}` as MessageKey)}</span>
+                  <b>{card.count}</b>
+                  <i
+                    style={{
+                      width: `${Math.max(8, (card.count / Math.max(1, sectorCards[0]?.count ?? 1)) * 100)}%`,
+                    }}
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        </aside>
+      </div>
       {/* Kept for reference/tests only — not rendered as a link, so it does not create a duplicate
           navigable element; serializeProjectDetailHash is exercised via onOpenProject instead. */}
     </section>

@@ -133,6 +133,103 @@ function IssueList({
   );
 }
 
+function DataReadinessOperationalPanels({ model }: { model: DataReadinessModel }) {
+  const { t } = useTranslation();
+  const [severity, setSeverity] = useState<'all' | 'error' | 'warning'>('all');
+  const [query, setQuery] = useState('');
+  const records = [
+    { key: 'projects', count: model.counts.projects, tone: 'valid' },
+    { key: 'workPackages', count: model.counts.workPackages, tone: 'review' },
+    { key: 'milestones', count: model.counts.milestones, tone: 'error' },
+    { key: 'progressSnapshots', count: model.counts.progressSnapshots, tone: 'pending' },
+  ] as const;
+  const issues = [...model.dataQualityIssues, ...model.businessAlerts].filter((issue) => {
+    const matchesSeverity = severity === 'all' || issue.severity === severity;
+    const haystack = `${issue.message} ${issue.rule} ${issue.entityId}`.toLocaleLowerCase();
+    return matchesSeverity && haystack.includes(query.toLocaleLowerCase());
+  });
+  const total = records.reduce((sum, item) => sum + item.count, 0);
+
+  return (
+    <>
+      <div className="data-readiness__operations-grid">
+        <section className="data-readiness__operation-card" aria-labelledby="data-sources-heading">
+          <h3 id="data-sources-heading">{t('dataReadiness.sourcesHeading')}</h3>
+          <ul className="data-readiness__source-list">
+            {model.metadata.datasetIds.map((datasetId) => (
+              <li key={datasetId}>
+                <span aria-hidden="true">●</span>
+                <span>{datasetId}</span>
+                <strong>{t('dataReadiness.sourceActive')}</strong>
+              </li>
+            ))}
+          </ul>
+        </section>
+        <section className="data-readiness__operation-card" aria-labelledby="record-status-heading">
+          <h3 id="record-status-heading">{t('dataReadiness.recordStatusHeading')}</h3>
+          <p className="data-readiness__record-total">
+            {total.toLocaleString()} {t('dataReadiness.records')}
+          </p>
+          <ul className="data-readiness__record-bars">
+            {records.map((item) => {
+              const percent = total ? (item.count / total) * 100 : 0;
+              return (
+                <li key={item.key}>
+                  <span>{t(`dataReadiness.count.${item.key}` as MessageKey)}</span>
+                  <strong>{item.count.toLocaleString()}</strong>
+                  <span className="data-readiness__bar">
+                    <i className={`is-${item.tone}`} style={{ width: `${percent}%` }} />
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      </div>
+      <section className="data-readiness__alerts" aria-labelledby="data-alerts-heading">
+        <div className="data-readiness__alerts-header">
+          <h3 id="data-alerts-heading">{t('dataReadiness.alertsHeading')}</h3>
+          <div className="data-readiness__filters">
+            <label>
+              {t('dataReadiness.severityFilter')}
+              <select
+                value={severity}
+                onChange={(event) => setSeverity(event.target.value as typeof severity)}
+              >
+                <option value="all">{t('dataReadiness.all')}</option>
+                <option value="error">{t('dataReadiness.error')}</option>
+                <option value="warning">{t('dataReadiness.warning')}</option>
+              </select>
+            </label>
+            <label>
+              {t('dataReadiness.search')}
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={t('dataReadiness.searchPlaceholder')}
+              />
+            </label>
+          </div>
+        </div>
+        <ul className="data-readiness__alert-list">
+          {issues.map((issue) => (
+            <li key={issue.id}>
+              <span className={`data-readiness__severity is-${issue.severity}`}>
+                {t(issue.severity === 'error' ? 'dataReadiness.error' : 'dataReadiness.warning')}
+              </span>
+              <span>
+                {t(dataQualityRuleLabelKey(issue.rule))}: {issue.message}
+              </span>
+              <small>{issue.entityId}</small>
+            </li>
+          ))}
+        </ul>
+        {issues.length === 0 && <p role="status">{t('dataReadiness.filteredEmpty')}</p>}
+      </section>
+    </>
+  );
+}
+
 export function DataReadinessView({
   source,
   onBackToOverview,
@@ -201,6 +298,11 @@ export function DataReadinessView({
       <h2 id="data-readiness-heading" ref={headingRef} tabIndex={-1}>
         {t('dataReadiness.heading')}
       </h2>
+      {metadata.isIllustrative && (
+        <p className="project-portfolio__mock-badge" role="note">
+          {t('portfolio.illustrativeBadge')}
+        </p>
+      )}
       <p className="data-readiness__description">{t('dataReadiness.description')}</p>
 
       <DataReadinessSummaryPanel model={model} />
@@ -210,6 +312,8 @@ export function DataReadinessView({
           {t('dataReadiness.degradedBanner', { issues: state.sourceIssues.join('; ') })}
         </p>
       )}
+
+      <DataReadinessOperationalPanels model={model} />
 
       <section aria-labelledby="data-readiness-source-heading">
         <h3 id="data-readiness-source-heading">{t('dataReadiness.sourceHeading')}</h3>
