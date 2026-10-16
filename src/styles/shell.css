@@ -396,6 +396,9 @@
   .global-search__submit {
     display: none;
   }
+  .global-search {
+    flex: 1 1 96px;
+  }
   .global-search__field {
     border-right: 1px solid var(--shell-rule);
     border-radius: 10px;
@@ -1030,6 +1033,8 @@
   }
   .detail-map-viewport__sidebar {
     top: calc(var(--app-header-height) + var(--detail-intro-h));
+    /* Leave room for the floating "Ẩn danh sách" / "Lớp bản đồ" buttons above the heading. */
+    padding-top: 56px;
   }
   .detail-map-viewport__sidebar-toggle {
     left: 12px;
