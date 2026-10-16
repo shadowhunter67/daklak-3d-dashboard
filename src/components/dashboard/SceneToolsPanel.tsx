@@ -1,3 +1,4 @@
+import { LayersIcon, RotateIcon, TargetIcon, TextIcon } from '../layout/icons';
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 
@@ -54,11 +55,19 @@ export function SceneToolsPanel() {
             reducedMotion ? t('header.autoRotate.titleReducedMotion') : t('header.autoRotate.title')
           }
         >
-          {reducedMotion
-            ? t('header.autoRotate.labelReducedMotion')
-            : autoRotate
-              ? t('header.autoRotate.labelStop')
-              : t('header.autoRotate.labelStart')}
+          <span className="scene-tools__icon" aria-hidden="true">
+            <RotateIcon />
+          </span>
+          <span>
+            <b>
+              {reducedMotion
+                ? t('header.autoRotate.labelReducedMotion')
+                : autoRotate
+                  ? t('header.autoRotate.labelStop')
+                  : t('header.autoRotate.labelStart')}
+            </b>
+            <small>{t('sceneTools.rotateDescription')}</small>
+          </span>
         </button>
         <button
           type="button"
@@ -69,7 +78,13 @@ export function SceneToolsPanel() {
             roadsVisible ? t('header.roads.ariaLabelHide') : t('header.roads.ariaLabelShow')
           }
         >
-          {roadsVisible ? t('header.roads.labelHide') : t('header.roads.labelShow')}
+          <span className="scene-tools__icon" aria-hidden="true">
+            <LayersIcon />
+          </span>
+          <span>
+            <b>{roadsVisible ? t('header.roads.labelHide') : t('header.roads.labelShow')}</b>
+            <small>{t('sceneTools.roadsDescription')}</small>
+          </span>
         </button>
         <button
           type="button"
@@ -82,7 +97,17 @@ export function SceneToolsPanel() {
               : t('header.centerLabels.ariaLabelShow')
           }
         >
-          {labelsVisible ? t('header.centerLabels.labelHide') : t('header.centerLabels.labelShow')}
+          <span className="scene-tools__icon" aria-hidden="true">
+            <TextIcon />
+          </span>
+          <span>
+            <b>
+              {labelsVisible
+                ? t('header.centerLabels.labelHide')
+                : t('header.centerLabels.labelShow')}
+            </b>
+            <small>{t('sceneTools.labelsDescription')}</small>
+          </span>
         </button>
       </div>
       {/* An action, not a state — kept visually apart from the three toggles above it so the
@@ -94,7 +119,13 @@ export function SceneToolsPanel() {
         aria-label={t('header.resetCamera.ariaLabel')}
         title={t('header.resetCamera.title')}
       >
-        {t('header.resetCamera.label')}
+        <span className="scene-tools__icon" aria-hidden="true">
+          <TargetIcon />
+        </span>
+        <span>
+          <b>{t('header.resetCamera.label')}</b>
+          <small>{t('sceneTools.resetDescription')}</small>
+        </span>
       </button>
     </section>
   );

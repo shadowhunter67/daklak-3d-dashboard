@@ -190,3 +190,14 @@ export const ShareIcon = () => (
     <path d="m8.1 10.9 7.3-3.8M8.1 13.1l7.3 3.8" />
   </Icon>
 );
+export const RotateIcon = () => (
+  <Icon>
+    <path d="M20 12a8 8 0 1 1-2.6-5.9" />
+    <path d="M20 4v4.5h-4.5" />
+  </Icon>
+);
+export const TextIcon = () => (
+  <Icon>
+    <path d="M4 19 10 5l6 14M6.2 14h7.6M18 10h3m-1.5 0V19" />
+  </Icon>
+);

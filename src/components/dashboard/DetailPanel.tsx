@@ -15,7 +15,7 @@ export function DetailPanel() {
   const f = data.features.find((x) => x.properties.code === code);
   if (!f)
     return (
-      <aside className="detail-panel glass empty">
+      <aside className="detail-panel glass empty" tabIndex={0}>
         <span>◌</span>
         <h2>{t('detailPanel.emptyHeading')}</h2>
         <p>{t('detailPanel.emptyBody')}</p>
@@ -24,14 +24,14 @@ export function DetailPanel() {
   const m = metricMap[f.properties.code];
   if (!m)
     return (
-      <aside className="detail-panel glass empty" role="alert">
+      <aside className="detail-panel glass empty" role="alert" tabIndex={0}>
         <h2>{t('detailPanel.noDataHeading')}</h2>
         <p>{t('detailPanel.noDataBody')}</p>
       </aside>
     );
   const displayName = normalizeDisplayName(f.properties.name);
   return (
-    <aside className="detail-panel glass">
+    <aside className="detail-panel glass" tabIndex={0}>
       <p className="eyebrow">
         {selected ? t('detailPanel.eyebrowSelected') : t('detailPanel.eyebrowHovered')}
       </p>
