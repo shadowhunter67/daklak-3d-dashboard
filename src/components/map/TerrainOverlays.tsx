@@ -2,7 +2,7 @@ import { useTexture } from '@react-three/drei';
 import { CanvasTexture } from 'three';
 import { useEffect, useMemo } from 'react';
 import labels from '#province-assets/daklak-labels.json';
-import metrics from '#province-assets/daklak-metrics.json';
+import { unitMetrics } from '../../data/unitMetrics';
 import { useMapStore } from '../../stores/mapStore';
 import { projection } from '../../utils/geo';
 import { wardData } from './geometryHitTest';
@@ -21,7 +21,7 @@ import {
 } from './terrainConfig';
 
 type LabelMap = Record<string, { longitude: number; latitude: number }>;
-const heatPoints = Object.entries(metrics)
+const heatPoints = Object.entries(unitMetrics)
   .sort(([, first], [, second]) => second.population - first.population)
   .slice(0, 20)
   .map(([code, metric]) => {
