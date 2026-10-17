@@ -1,0 +1,39 @@
+{
+  "dataset": "daklak-unit-profile",
+  "description": "Quy mô dân số năm 2025 và số thôn/buôn/tổ dân phố/khu phố của 102 xã, phường Đắk Lắk.",
+  "status": "real",
+  "source": {
+    "title": "Danh sách đơn vị hành chính thuộc tỉnh Đắk Lắk",
+    "publisher": "Wikipedia tiếng Việt (CC BY-SA 4.0)",
+    "url": "https://vi.wikipedia.org/wiki/Danh_s%C3%A1ch_%C4%91%C6%A1n_v%E1%BB%8B_h%C3%A0nh_ch%C3%ADnh_thu%E1%BB%99c_t%E1%BB%89nh_%C4%90%E1%BA%AFk_L%E1%BA%AFk",
+    "permalink": "https://vi.wikipedia.org/w/index.php?title=Danh_s%C3%A1ch_%C4%91%C6%A1n_v%E1%BB%8B_h%C3%A0nh_ch%C3%ADnh_thu%E1%BB%99c_t%E1%BB%89nh_%C4%90%E1%BA%AFk_L%E1%BA%AFk&oldid=75567164",
+    "revisionId": "75567164",
+    "revisionTimestamp": "2026-09-19T16:33:56Z",
+    "sha256OfWikitext": "bbf0e9e62d79ce541f98e4487a9c0e68c2321e5f8a484bc44ed00f654bd3f055",
+    "retrievedAt": "2026-10-17T00:11:27Z"
+  },
+  "upstream": {
+    "areaAndPopulation": "Bộ Nội vụ, văn bản 2896/BNV-CQĐP ngày 27/5/2025 (như trang nguồn trích dẫn)",
+    "subUnits": "Cập nhật đến 15/3/2026 (như trang nguồn trích dẫn: UBND xã/phường, Bộ Dân tộc và Tôn giáo)"
+  },
+  "validation": {
+    "unitsMatchedToGeometry": 102,
+    "areaCrossCheckToleranceKm2": 0.02,
+    "sums": {
+      "areaKm2": 18096.4,
+      "population": 3345880,
+      "subUnits": 2795
+    },
+    "pageTotals": {
+      "areaKm2": 18096.4,
+      "population": 3346853,
+      "subUnits": 2795
+    }
+  },
+  "caveats": [
+    "Số liệu do cộng đồng Wikipedia tổng hợp từ văn bản hành chính; chưa đối chiếu bản gốc của Bộ Nội vụ.",
+    "Dân số là quy mô dự kiến năm 2025 khi sắp xếp, không phải số liệu điều tra mới nhất.",
+    "Tổng dân số cộng từ 102 dòng (3,345,880) lệch dòng 'Tổng cộng' của trang nguồn (3,346,853) 973 người (<0,1%); số liệu từng đơn vị được giữ nguyên như nguồn.",
+    "Trang nguồn ghi 45 đơn vị tự quản nhưng chỉ liệt kê 34 tổ dân phố + 10 buôn (= 44); dùng số liệt kê."
+  ]
+}

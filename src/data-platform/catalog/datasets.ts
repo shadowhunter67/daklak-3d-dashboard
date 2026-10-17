@@ -15,6 +15,7 @@ import buildingSourceRegistry from '#province-assets/building-source-registry.js
 import terrainMetadata from '#province-assets/daklak-terrain-metadata.json';
 import mapMetadata from '#province-assets/daklak-metadata.json';
 import sourceSummary from '#province-assets/daklak-source-summary.json';
+import unitProfileProvenance from '#province-assets/unit-profile-provenance.json';
 import type { DatasetDescriptor } from '../schemas/dataset';
 
 const roadRegistryEntry = roadSourceRegistry[0];
@@ -104,9 +105,9 @@ export const PROVINCE_OVERVIEW_INDICATORS_DATASET: DatasetDescriptor = {
 
 export const COMMUNE_DEMOGRAPHIC_ILLUSTRATIVE_DATASET: DatasetDescriptor = {
   id: 'commune-demographic-illustrative',
-  title: 'Dân số, độ phủ, tăng trưởng theo xã/phường (minh họa)',
+  title: 'Độ phủ dịch vụ và tăng trưởng theo xã/phường (minh họa)',
   description:
-    'Dữ liệu minh họa được sinh có seed cố định để trình diễn choropleth/heatmap cấp xã. Không phải số liệu dân số vận hành.',
+    'Độ phủ dịch vụ và tăng trưởng là dữ liệu minh họa có seed cố định để trình diễn choropleth/heatmap cấp xã. Dân số thật nằm ở dataset unit-population-profile-2025; cột dân số trong file này không còn được hiển thị.',
   domain: 'population',
   classification: 'public',
   authority: 'illustrative',
@@ -667,10 +668,46 @@ export const PROJECT_PORTFOLIO_PUBLIC_PROJECTED_DATASET: DatasetDescriptor = {
   access: { delivery: 'bundled-static', requiresAuthentication: false },
 };
 
+export const UNIT_POPULATION_PROFILE_DATASET: DatasetDescriptor = {
+  id: 'unit-population-profile-2025',
+  title: 'Dân số 2025 và số thôn/buôn/tổ dân phố theo xã/phường',
+  description:
+    'Quy mô dân số năm 2025 và số đơn vị tự quản (thôn, buôn, tổ dân phố, khu phố) của 102 xã/phường Đắk Lắk. Thay thế dân số minh họa khi hiển thị dân số; độ phủ/tăng trưởng vẫn là minh họa.',
+  domain: 'population',
+  classification: 'public',
+  authority: 'open-community',
+  authorityDetail: {
+    identityAuthority: 'official',
+    geometryAuthority: 'open-community',
+  },
+  publicationStatus: 'published',
+  administrativeLevel: 'commune',
+  temporalResolution: 'static',
+  spatialRepresentation: 'none',
+  source: {
+    organization: unitProfileProvenance.source.publisher,
+    documentNumber: unitProfileProvenance.upstream.areaAndPopulation,
+    sourceUrl: unitProfileProvenance.source.permalink,
+    retrievalDate: unitProfileProvenance.source.retrievedAt.slice(0, 10),
+    license: 'CC BY-SA 4.0',
+    repositoryPath: 'scripts/build_unit_profiles.py',
+  },
+  version: `wikipedia-rev-${unitProfileProvenance.source.revisionId}`,
+  period: { label: '2025 (quy mô dân số dự kiến); đơn vị tự quản cập nhật đến 15/3/2026' },
+  checksum: unitProfileProvenance.source.sha256OfWikitext,
+  refreshPolicy: { mode: 'manual', expectedInterval: 'P1Y' },
+  quality: {
+    status: 'partially-verified',
+    knownLimitations: [...unitProfileProvenance.caveats],
+  },
+  access: { delivery: 'bundled-static', requiresAuthentication: false },
+};
+
 export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   ADMINISTRATIVE_UNITS_DATASET,
   PROVINCE_OVERVIEW_INDICATORS_DATASET,
   COMMUNE_DEMOGRAPHIC_ILLUSTRATIVE_DATASET,
+  UNIT_POPULATION_PROFILE_DATASET,
   ENERGY_ILLUSTRATIVE_DATASET,
   HEATMAP_ILLUSTRATIVE_DATASET,
   ROAD_NETWORK_3D2D_DATASET,

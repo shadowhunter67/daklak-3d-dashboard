@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
-import metrics from '#province-assets/daklak-metrics.json';
+import { unitMetrics } from '../../data/unitMetrics';
 import wards from '#province-assets/daklak-wards-render.json';
 import { useMapStore } from '../../stores/mapStore';
-import type { Metric, WardCollection } from '../../types/map';
+import type { WardCollection } from '../../types/map';
 import { normalizeSearchText } from '../../utils/search';
 import { sortAdministrativeUnits } from '../../utils/administrativeUnits';
 import { useTranslation } from '../../i18n/useTranslation';
 import { formatNumber } from '../../i18n/formatters';
 
 const collection = wards as WardCollection;
-const metricMap = metrics as Record<string, Metric>;
+const metricMap = unitMetrics;
 const sortedUnits = sortAdministrativeUnits(
   collection.features.map(({ properties }) => properties),
 );
@@ -123,7 +123,7 @@ export function AccessibleDirectory() {
           <span role="columnheader">{t('directory.col.unit')}</span>
           <span role="columnheader">{t('directory.col.type')}</span>
           <span role="columnheader">{t('directory.col.area')}</span>
-          <span role="columnheader">{t('directory.col.illustrativePopulation')}</span>
+          <span role="columnheader">{t('directory.col.population2025')}</span>
           <span role="columnheader">{t('directory.col.serviceAccess')}</span>
         </div>
         {filtered.map((properties, index) => {

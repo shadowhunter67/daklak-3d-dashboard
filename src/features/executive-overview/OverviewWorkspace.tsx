@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react';
 import { geoMercator, geoPath } from 'd3-geo';
 import wards from '#province-assets/daklak-wards-render.json';
-import metrics from '#province-assets/daklak-metrics.json';
+import { unitMetrics } from '../../data/unitMetrics';
+import { formatSubUnits } from '../../data/formatSubUnits';
+import { getUnitProfile } from '../../data/unitProfiles';
 import labels from '#province-assets/daklak-labels.json';
 import { PinIcon } from '../../components/layout/icons';
 import type { Metric, WardCollection } from '../../types/map';
@@ -13,7 +15,7 @@ import { formatNumber } from '../../i18n/formatters';
 import type { ProjectAttentionItem } from './model/executiveOverviewTypes';
 
 const collection = wards as WardCollection;
-const metricMap = metrics as Partial<Record<string, Metric>>;
+const metricMap = unitMetrics as Partial<Record<string, Metric>>;
 const labelMap = labels as Record<
   string,
   { name: string; longitude: number; latitude: number; priority: number }
@@ -185,6 +187,7 @@ function QuickInfo({
   )?.properties;
   const label = selectedCode ? labelMap[selectedCode] : undefined;
   const metric = selectedCode ? metricMap[selectedCode] : undefined;
+  const profile = selectedCode ? getUnitProfile(selectedCode) : undefined;
   const related = selectedCode
     ? attention.filter((item) => item.administrativeAreaCodes.includes(selectedCode))
     : [];
@@ -225,6 +228,12 @@ function QuickInfo({
               <div>
                 <dt>{t('workspace.info.population')}</dt>
                 <dd>{formatNumber(metric.population, locale)}</dd>
+              </div>
+            )}
+            {profile && (
+              <div>
+                <dt>{t('workspace.info.subUnits')}</dt>
+                <dd>{formatSubUnits(profile, t)}</dd>
               </div>
             )}
           </dl>

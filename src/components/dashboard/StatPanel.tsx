@@ -1,5 +1,6 @@
 import metadata from '#province-assets/daklak-metadata.json';
-import metrics from '#province-assets/daklak-metrics.json';
+import { unitMetrics } from '../../data/unitMetrics';
+import { provinceProfileTotals } from '../../data/unitProfiles';
 import wards from '#province-assets/daklak-wards-render.json';
 import dashboardData from '../../assets/data/dashboard-sources.json';
 import { useMapStore } from '../../stores/mapStore';
@@ -69,8 +70,8 @@ function MiniBarChart({ bars }: { bars: { label: string; value: number }[] }) {
 export function StatPanel() {
   const { t, locale } = useTranslation();
   const dataMode = useMapStore((state) => state.dataMode);
-  const values = Object.values(metrics);
-  const population = values.reduce((s, v) => s + v.population, 0);
+  const values = Object.values(unitMetrics);
+  const population = provinceProfileTotals.population2025;
   const area = wards.features.reduce((s, ward) => s + ward.properties.areaKm2, 0);
   const average = (items: number[]) =>
     items.length ? Math.round(items.reduce((sum, value) => sum + value, 0) / items.length) : 0;
@@ -211,10 +212,16 @@ export function StatPanel() {
         </div>
       )}
       {dataMode === 'overview' && (
-        <div className="metric metric--mock">
-          <span>{t('statPanel.communePopulation')}</span>
-          <b>{formatNumber(population, locale)}</b>
-        </div>
+        <>
+          <div className="metric">
+            <span>{t('statPanel.communePopulation')}</span>
+            <b>{formatNumber(population, locale)}</b>
+          </div>
+          <div className="metric">
+            <span>{t('statPanel.subUnits')}</span>
+            <b>{formatNumber(provinceProfileTotals.subUnits, locale)}</b>
+          </div>
+        </>
       )}
       {dataMode === 'overview' && (
         <div className="metric">

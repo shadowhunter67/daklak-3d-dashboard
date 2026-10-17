@@ -32,7 +32,7 @@ describe('DataProvenancePanel', () => {
   it('marks illustrative datasets distinctly from official ones', () => {
     render(<DataProvenancePanel />);
     const illustrativeCard = screen
-      .getByText('Dân số, độ phủ, tăng trưởng theo xã/phường (minh họa)')
+      .getByText('Độ phủ dịch vụ và tăng trưởng theo xã/phường (minh họa)')
       .closest('li');
     const officialCard = screen
       .getByText('Chỉ tiêu kinh tế - xã hội tổng quan tỉnh Đắk Lắk 2025')
@@ -57,7 +57,7 @@ describe('DataProvenancePanel', () => {
   it('never renders a fake internal:// URI as a link — repository-path sources show as plain text', () => {
     render(<DataProvenancePanel />);
     const card = screen
-      .getByText('Dân số, độ phủ, tăng trưởng theo xã/phường (minh họa)')
+      .getByText('Độ phủ dịch vụ và tăng trưởng theo xã/phường (minh họa)')
       .closest('li');
     expect(card?.querySelector('a')).toBeNull();
     expect(card?.textContent).toContain('build_daklak_geojson.py');

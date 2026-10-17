@@ -5,7 +5,7 @@
  * status UI, per docs/data-platform-architecture.md.
  */
 import dashboardSources from '../../assets/data/dashboard-sources.json';
-import communeMetrics from '#province-assets/daklak-metrics.json';
+import { unitMetrics as communeMetrics } from '../../data/unitMetrics';
 import mapMetadata from '#province-assets/daklak-metadata.json';
 import type { IndicatorDefinition, IndicatorObservation } from '../schemas/indicator';
 
@@ -13,12 +13,12 @@ export const INDICATOR_DEFINITIONS: readonly IndicatorDefinition[] = [
   {
     code: 'commune-population',
     name: 'Dân số',
-    description: 'Dân số minh họa theo xã/phường.',
+    description: 'Dân số 2025 thật theo xã/phường.',
     domain: 'population',
     unit: 'người',
     valueType: 'integer',
     aggregation: 'sum',
-    sourceDatasetId: 'commune-demographic-illustrative',
+    sourceDatasetId: 'unit-population-profile-2025',
     allowedAdministrativeLevels: ['commune'],
   },
   {
@@ -93,7 +93,14 @@ function communeObservations(): IndicatorObservation[] {
       sourceDatasetId: 'commune-demographic-illustrative',
     };
     observations.push(
-      { ...shared, indicatorCode: 'commune-population', value: metrics.population },
+      {
+        ...shared,
+        indicatorCode: 'commune-population',
+        value: metrics.population,
+        status: 'provisional' as const,
+        sourceDatasetId: 'unit-population-profile-2025',
+        period: '2025',
+      },
       { ...shared, indicatorCode: 'commune-coverage', value: metrics.coverage },
       { ...shared, indicatorCode: 'commune-growth', value: metrics.growth },
     );
