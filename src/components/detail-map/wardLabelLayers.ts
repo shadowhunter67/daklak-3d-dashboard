@@ -4,7 +4,7 @@ import wardLabels from '#province-assets/daklak-labels.json';
 
 /**
  * Ward/commune NAME labels for the detail map — the MapLibre counterpart of the 2D SVG map's
- * `administrativeLabelLayout.ts`. The detail map previously rendered ward *boundaries*
+ * the 3D `screenLabelLayout.ts`. The detail map previously rendered ward *boundaries*
  * (`wardBoundaryLayers.ts`) but no ward names at all; only OSM road/place/hamlet names came
  * through (`roadLayers.ts`), so a selected ward showed a gold highlight with no label.
  *

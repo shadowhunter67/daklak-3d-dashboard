@@ -1290,3 +1290,165 @@
   flex-wrap: wrap;
   gap: 4px 16px;
 }
+
+/* ---- 3D map HUD (StatPanel, DetailPanel, SceneTools): token-driven cards, both themes ---- */
+.stat-panel.glass,
+.detail-panel.glass,
+.scene-tools.glass {
+  color: var(--ui-text);
+  background: var(--ui-card);
+  border: 1px solid var(--ui-border);
+  border-radius: 14px;
+  box-shadow: var(--ui-shadow);
+  backdrop-filter: none;
+}
+.stat-panel.glass {
+  top: calc(var(--app-header-height) + 16px);
+  width: 300px;
+  padding: 20px;
+}
+.scene-right-rail {
+  top: calc(var(--app-header-height) + 16px);
+  width: 320px;
+}
+.stat-panel .eyebrow,
+.detail-panel .eyebrow,
+.scene-tools__heading {
+  color: var(--ui-muted);
+  font-size: var(--ui-fs-small);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+.hero-stat strong {
+  font-family: var(--font-sans);
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--ui-text);
+}
+.hero-stat span,
+.stat-pair small,
+.metric,
+.metric span,
+.chart-title,
+.mock-note,
+.detail-panel dt,
+.detail-panel .unit-type {
+  color: var(--ui-muted);
+  font-size: var(--ui-fs-small);
+}
+.metric b,
+.stat-pair b,
+.detail-panel dd,
+.detail-panel .unit-name {
+  color: var(--ui-text);
+  font-size: var(--ui-fs-body);
+}
+.metric--mock span,
+.metric--mock b {
+  color: inherit;
+}
+.mock-note {
+  font-size: var(--ui-fs-small);
+  line-height: 1.5;
+}
+.detail-panel .positive {
+  color: #167a4b;
+}
+.detail-panel.empty h2 {
+  color: var(--ui-text);
+  font-size: calc(20px * var(--user-font-scale, 1));
+}
+.detail-panel.empty > span {
+  color: var(--ui-accent);
+}
+.detail-panel.empty p {
+  color: var(--ui-muted);
+  font-size: var(--ui-fs-body);
+}
+.scene-tools__toggle,
+.scene-tools__action {
+  min-height: 56px;
+  color: var(--ui-text);
+  background: var(--ui-card);
+  border: 1px solid var(--ui-border);
+}
+.scene-tools__toggle small,
+.scene-tools__action small {
+  color: var(--ui-muted);
+  font-size: var(--ui-fs-small);
+}
+.scene-tools__toggle b,
+.scene-tools__action b {
+  font-size: var(--ui-fs-label);
+}
+.scene-tools__toggle[aria-pressed='true'] {
+  background: #fdf3d6;
+  border-color: #e4bc5e;
+  color: #3d2e00;
+}
+:root:not([data-theme='light']) .scene-tools__toggle[aria-pressed='true'] {
+  background: #3a3017;
+  color: #f6dd9b;
+}
+
+/* Collapsible 3D HUD panels: a collapsed panel is a thin strip with only its toggle. */
+.hud-toggle {
+  position: absolute;
+  top: 10px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--ui-border);
+  border-radius: 10px;
+  background: var(--ui-card);
+  color: var(--ui-text);
+  font-size: 22px;
+  cursor: pointer;
+}
+.hud-toggle[data-side='left'] {
+  right: 10px;
+  transform: rotate(180deg);
+}
+.hud-toggle[data-side='right'] {
+  left: 10px;
+}
+.hud-toggle:focus-visible {
+  outline: 3px solid var(--ui-focus);
+  outline-offset: 2px;
+}
+[data-collapsed='true'] > .hud-toggle[data-side='left'] {
+  transform: none;
+  right: 6px;
+}
+[data-collapsed='true'] > .hud-toggle[data-side='right'] {
+  transform: rotate(180deg);
+  left: 6px;
+}
+.stat-panel[data-collapsed='true'] {
+  width: 56px;
+  min-height: 64px;
+  padding: 0;
+}
+.stat-panel[data-collapsed='true'] > :not(.hud-toggle) {
+  display: none;
+}
+.scene-right-rail[data-collapsed='true'] {
+  width: 56px;
+}
+.scene-right-rail[data-collapsed='true'] > :not(.hud-toggle) {
+  display: none;
+}
+.scene-right-rail {
+  position: absolute;
+}
+.scene-right-rail > .hud-toggle {
+  pointer-events: auto;
+}
+.stat-panel > .eyebrow {
+  padding-right: 52px;
+}
+.scene-right-rail > .hud-toggle {
+  z-index: 6;
+}

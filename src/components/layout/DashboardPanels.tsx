@@ -2,6 +2,9 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 import { useMapStore } from '../../stores/mapStore';
 import { DetailPanel } from '../dashboard/DetailPanel';
 import { SceneToolsPanel } from '../dashboard/SceneToolsPanel';
+import { HudToggle } from '../dashboard/HudToggle';
+import { useCollapsibleHud } from '../dashboard/useCollapsibleHud';
+import { useTranslation } from '../../i18n/useTranslation';
 import { MobileDashboardSheet } from './MobileDashboardSheet';
 
 const StatPanel = lazy(() =>
@@ -9,6 +12,8 @@ const StatPanel = lazy(() =>
 );
 
 export function DashboardPanels() {
+  const { t } = useTranslation();
+  const rail = useCollapsibleHud();
   const viewMode = useMapStore((state) => state.viewMode);
   const [mobilePortrait, setMobilePortrait] = useState(
     () => window.matchMedia?.('(max-width: 767px) and (orientation: portrait)').matches ?? false,
@@ -48,7 +53,17 @@ export function DashboardPanels() {
       {/* One column, not two free-floating panels: the detail card is pinned to the top of the
           rail and the tools to the bottom, so the tools keep one position instead of sliding up
           and down as the card grows and shrinks with the hovered ward. */}
-      <div className="scene-right-rail">
+      <div
+        className="scene-right-rail"
+        data-viewport-overlay="right"
+        data-collapsed={rail.collapsed || undefined}
+      >
+        <HudToggle
+          collapsed={rail.collapsed}
+          onToggle={rail.toggle}
+          label={t('sceneTools.panelName')}
+          side="right"
+        />
         <DetailPanel />
         <SceneToolsPanel />
       </div>

@@ -70,22 +70,27 @@ export function clampZoom(zoom: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, zoom));
 }
 
+/** Floating HUD panels sit a margin away from the stage edge (e.g. 3.3vw), not flush with it; an
+ * overlay within this distance of an edge still counts as anchored to that edge. */
+export const EDGE_ANCHOR_TOLERANCE_PX = 120;
+
 export function intersectionDepth(
   stageRect: DOMRect,
   overlayRect: DOMRect,
   side: keyof ViewportInsets,
+  edgeTolerance = 0,
 ): number {
   const overlapsX = overlayRect.right > stageRect.left && overlayRect.left < stageRect.right;
   const overlapsY = overlayRect.bottom > stageRect.top && overlayRect.top < stageRect.bottom;
   if ((side === 'top' || side === 'bottom') && !overlapsX) return 0;
   if ((side === 'left' || side === 'right') && !overlapsY) return 0;
-  if (side === 'top' && overlayRect.top <= stageRect.top)
+  if (side === 'top' && overlayRect.top <= stageRect.top + edgeTolerance)
     return Math.max(0, Math.min(stageRect.bottom, overlayRect.bottom) - stageRect.top);
-  if (side === 'bottom' && overlayRect.bottom >= stageRect.bottom)
+  if (side === 'bottom' && overlayRect.bottom >= stageRect.bottom - edgeTolerance)
     return Math.max(0, stageRect.bottom - Math.max(stageRect.top, overlayRect.top));
-  if (side === 'left' && overlayRect.left <= stageRect.left)
+  if (side === 'left' && overlayRect.left <= stageRect.left + edgeTolerance)
     return Math.max(0, Math.min(stageRect.right, overlayRect.right) - stageRect.left);
-  if (side === 'right' && overlayRect.right >= stageRect.right)
+  if (side === 'right' && overlayRect.right >= stageRect.right - edgeTolerance)
     return Math.max(0, stageRect.right - Math.max(stageRect.left, overlayRect.left));
   return 0;
 }
@@ -102,7 +107,10 @@ export function measureViewportInsets(stage: HTMLElement): ViewportInsets {
         ? [declaredSide as keyof ViewportInsets]
         : (Object.keys(insets) as Array<keyof ViewportInsets>);
     sides.forEach((side) => {
-      insets[side] = Math.max(insets[side], intersectionDepth(stageRect, rect, side));
+      insets[side] = Math.max(
+        insets[side],
+        intersectionDepth(stageRect, rect, side, EDGE_ANCHOR_TOLERANCE_PX),
+      );
     });
   });
   return insets;

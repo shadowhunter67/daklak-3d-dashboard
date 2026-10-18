@@ -223,7 +223,14 @@
 
 /* 3D HUD and mobile sheet */
 :root[data-theme='light']
-  :is(.stat-panel, .scene-tools-panel, .detail-panel, .mobile-sheet, .tourism-info-panel) {
+  :is(
+    .stat-panel,
+    .scene-tools,
+    .scene-tools-panel,
+    .detail-panel,
+    .mobile-sheet,
+    .tourism-info-panel
+  ) {
   color: var(--text-primary);
   background: #ffffff;
   border-color: var(--border-subtle);

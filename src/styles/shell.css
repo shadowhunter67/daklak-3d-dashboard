@@ -700,3 +700,55 @@
 .global-search__results {
   max-height: min(70vh, 460px);
 }
+
+/* ---- 3D map: screen-space ward labels (all 102, displaced with leader lines, never hidden) ---- */
+.screen-labels {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.screen-labels__leaders {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.screen-labels__leaders line {
+  stroke: #ffffffcc;
+  stroke-width: 1.2;
+  filter: drop-shadow(0 0 1px #041210);
+}
+.screen-labels__label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 2px 7px;
+  border: 1px solid #0f4a3f40;
+  border-radius: 7px;
+  background: #ffffffeb;
+  color: #14312b;
+  font-size: calc(14px * var(--user-font-scale, 1));
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px #04121055;
+  will-change: transform;
+}
+.screen-labels__label[data-selected='true'] {
+  z-index: 2;
+  border-color: #b88a1c;
+  background: #f6dd9b;
+  font-size: calc(16px * var(--user-font-scale, 1));
+  font-weight: 800;
+}
+:root:not([data-theme='light']) .screen-labels__label {
+  background: #0b2924eb;
+  color: #f3f0d8;
+  border-color: #f3f0d833;
+}
+:root:not([data-theme='light']) .screen-labels__label[data-selected='true'] {
+  background: #5a4a14;
+  color: #ffe49a;
+}
