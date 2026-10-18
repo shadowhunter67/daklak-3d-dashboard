@@ -27,7 +27,7 @@ Ngày: 2026-10-18 · Nhánh `feat/v2-investment-catalog` · PR #208
 
 ## Responsive Matrix / Overlap Testing
 
-Chỉ đo trang mới tại 1440, 500, 720 (A+). Chưa chạy ma trận 10 độ rộng × 3 mức zoom và chưa chạy Playwright cục bộ (theo quy ước tuần tự, để CI chạy). Ma trận e2e chồng lấn của các commit trước nằm trong CI; kết quả CI của PR này ghi ở cuối báo cáo khi có.
+Chỉ đo trang mới tại 1440, 500, 720 (A+). Chưa chạy ma trận 10 độ rộng × 3 mức zoom và chưa chạy Playwright cục bộ (theo quy ước tuần tự, để CI chạy). Ma trận e2e (chồng lấn, zoom, 102 nhãn) của các commit trước chạy trong CI: ở commit `e1cf5bb` của PR #208, toàn bộ job xanh, gồm 4 shard e2e (desktop-chromium, desktop-webkit, mobile-chromium), build-and-budget, unit-and-data, contract-and-modes, security, static-analysis, CodeQL/analyze. Lần chạy trước đó đỏ vì 7 spec của trang Chi tiết dự án còn dùng selector cũ (đã sửa).
 
 ## 102 Label Engine / GIS Changes
 
