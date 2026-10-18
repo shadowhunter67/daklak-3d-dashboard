@@ -2206,3 +2206,16 @@
     font-size: calc(15px * var(--user-font-scale, 1));
   }
 }
+
+/* The rail's collapse button sits in its own row above the cards instead of on top of them. */
+.scene-right-rail {
+  padding-top: 52px;
+}
+.scene-right-rail > .hud-toggle {
+  top: 0;
+  left: auto;
+  right: 0;
+}
+.scene-right-rail[data-collapsed='true'] {
+  padding-top: 0;
+}
