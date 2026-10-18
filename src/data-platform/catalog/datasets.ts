@@ -713,7 +713,7 @@ export const RESEARCHED_PROJECTS_QD1985_DATASET: DatasetDescriptor = {
   id: 'researched-projects-qd1985',
   title: 'Danh mục dự án thu hút đầu tư 2026–2030 (QĐ 1985/QĐ-UBND)',
   description:
-    '201 dự án trong danh mục thu hút đầu tư của UBND tỉnh Đắk Lắk (5/6 phụ lục), mỗi quan sát gắn nguồn và ngày văn bản. Vốn là số DỰ KIẾN, dự án chưa có chủ trương đầu tư. Vị trí chỉ là tâm đơn vị hành chính.',
+    '201 dự án thu hút đầu tư (5/6 phụ lục QĐ 1985/QĐ-UBND). Vốn là số dự kiến; vị trí chỉ là tâm đơn vị hành chính.',
   domain: 'economy',
   classification: 'public',
   authority: 'official',
@@ -727,7 +727,7 @@ export const RESEARCHED_PROJECTS_QD1985_DATASET: DatasetDescriptor = {
     sourceUrl: 'https://vpubnd.daklak.gov.vn/Documents/Detail/11262',
     retrievalDate: '2026-09-29',
     termsOfUse:
-      'Văn bản hành chính công khai; ghi rõ nguồn. Chính sách tái phân phối của tên miền vpubnd.daklak.gov.vn chưa được owner xác nhận.',
+      'Văn bản công khai; ghi rõ nguồn. Chính sách tái phân phối của vpubnd.daklak.gov.vn chưa xác nhận.',
   },
   version: '1.0.0',
   period: { start: '2026-06-24', label: 'Giai đoạn 2026–2030 (văn bản ký 24/06/2026)' },
@@ -738,10 +738,10 @@ export const RESEARCHED_PROJECTS_QD1985_DATASET: DatasetDescriptor = {
     status: 'partially-verified',
     geometryStatus: 'reference',
     knownLimitations: [
-      'Phụ lục 3 trên cổng UBND trùng byte với phụ lục 2 (đăng nhầm): một lĩnh vực chưa có trong bộ dữ liệu.',
-      'Trích xuất bảng PDF tự động; 12/17 nhóm khớp tổng vốn trên tiêu đề, 5 nhóm lệch — xem reports/research/data-conflicts.md.',
-      '45/201 dự án có địa danh chưa khớp tên đơn vị hành chính hiện hành (không gán mã, có ghi chú); 19 dự án chưa có đơn vị hành chính nào.',
-      'Không có tiến độ, giải ngân, nhà đầu tư hay toạ độ dự án; vị trí chỉ là tâm xã/phường.',
+      'Phụ lục 3 trùng phụ lục 2 ở nguồn: thiếu một lĩnh vực.',
+      'Trích bảng PDF tự động; 5/17 nhóm lệch tổng vốn tiêu đề (reports/research/data-conflicts.md).',
+      '45/201 dự án có địa danh chưa khớp đơn vị hành chính; 19 dự án chưa có đơn vị nào.',
+      'Không có tiến độ, giải ngân, nhà đầu tư hay toạ độ dự án.',
     ],
   },
   access: { delivery: 'bundled-static', requiresAuthentication: false },

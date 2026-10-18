@@ -109,7 +109,6 @@ export function ReportsView({ onBackToOverview }: { onBackToOverview: () => void
         breadcrumb={
           <>
             <span>{t('common.home')}</span>
-            <span aria-hidden="true">›</span>
             <strong>{t('common.reports')}</strong>
           </>
         }

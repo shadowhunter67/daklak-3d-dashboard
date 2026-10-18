@@ -627,9 +627,15 @@
 }
 .project-portfolio-card__heading {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 8px 16px;
+}
+/* Tiêu đề dài co lại/xuống dòng thay vì đẩy chip trạng thái ra ngoài thẻ (A+, màn hẹp). */
+.project-portfolio-card__heading > :first-child {
+  flex: 1 1 12ch;
+  min-width: 0;
 }
 .project-portfolio-card__title {
   display: block;
@@ -2572,4 +2578,17 @@
   .project-detail .ui-table {
     min-width: 680px;
   }
+}
+
+/* Tiêu đề trang và giá trị KPI phải xuống dòng được (màn hẹp, A+, zoom 200%): quy tắc `h1 { nowrap }` của
+   media mobile cũ trong global.css từng ép tiêu đề dài tràn ngang. Vùng bấm link nguồn ≥ 44px. */
+.ui-page-header h1,
+.ui-kpi-value {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.project-portfolio-card__grid dd a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }

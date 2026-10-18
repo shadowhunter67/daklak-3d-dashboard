@@ -47,7 +47,12 @@ const ITEMS: Item[] = [
 /** Which sidebar item is "current". Wards and Planning are shortcuts into the map view, so they
  * only count as current when the map is open with that intent (planning overlay on). */
 function activeItem(route: HashRoute, viewMode: string, planningOverlay: string): ItemId | null {
-  if (route.kind === 'portfolio' || route.kind === 'project-detail') return 'projects';
+  if (
+    route.kind === 'portfolio' ||
+    route.kind === 'project-detail' ||
+    route.kind === 'investment-catalog'
+  )
+    return 'projects';
   if (route.kind === 'data-readiness') return 'data';
   if (route.kind === 'reports') return 'reports';
   if (route.kind === 'diorama') return null;
