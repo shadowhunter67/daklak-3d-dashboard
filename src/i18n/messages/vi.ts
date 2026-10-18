@@ -26,15 +26,6 @@ export const vi = {
   'app.loading': 'Đang tải…',
 
   // Header
-  'header.eyebrow': 'BẢN ĐỒ HÀNH CHÍNH TƯƠNG TÁC',
-  'header.nav.ariaLabel': 'Điều hướng chính',
-  'header.nav.overview': 'Tổng quan điều hành',
-  'header.nav.overviewShort': 'Tổng quan',
-  'header.nav.3d': '3D',
-  'header.nav.map': 'Bản đồ & danh sách',
-  'header.nav.mapShort': 'Bản đồ',
-  'header.nav.world': 'Khám phá Đắk Lắk 3D',
-  'header.nav.worldShort': 'Khám phá',
   'statPanel.panelName': 'Tổng quan số liệu',
   'sceneTools.panelName': 'Hồ sơ nhanh và công cụ bản đồ',
   'hud.collapse': 'Thu gọn {name}',
@@ -69,7 +60,6 @@ export const vi = {
   'header.resetCamera.label': 'Toàn tỉnh',
   'header.share.ariaLabel': 'Sao chép liên kết trạng thái hiện tại',
   'header.share.title': 'Sao chép liên kết',
-  'header.share.label': 'Chia sẻ',
   'header.share.status': 'Đã sao chép liên kết',
   'header.share.prompt': 'Sao chép liên kết này:',
   'header.help.ariaLabel': 'Mở hướng dẫn sử dụng',
@@ -111,9 +101,6 @@ export const vi = {
   'workspace.info.viewOnMap': 'Xem trên bản đồ',
   'workspace.info.viewProjects': 'Xem danh sách dự án ({count})',
   'workspace.info.viewReports': 'Xem báo cáo',
-  'workspace.info.projectsHeading': 'Dự án cần chú ý tại đơn vị ({count})',
-  'workspace.info.noProjects': 'Không có dự án cần chú ý gắn với đơn vị này.',
-  'workspace.info.viewAllProjects': 'Xem tất cả',
   // Sidebar + topbar (UI redesign)
   'sidebar.brandTagline': 'Bản đồ hành chính 3D và dữ liệu dự án',
   'sidebar.ariaLabel': 'Điều hướng chính',
@@ -132,9 +119,7 @@ export const vi = {
   'settings.title': 'Cài đặt hiển thị',
   'settings.language': 'Ngôn ngữ',
   'settings.fontSize': 'Cỡ chữ',
-  'settings.theme': 'Giao diện',
   'settings.share': 'Chia sẻ liên kết',
-  'settings.close': 'Đóng cài đặt',
   'topbar.search.placeholder': 'Tìm xã, phường, dự án hoặc địa danh…',
   'topbar.search.group.ward': 'Xã, phường',
   'topbar.search.group.project': 'Dự án',
@@ -209,7 +194,6 @@ export const vi = {
   'executiveOverview.mockBadge':
     'DỮ LIỆU MINH HỌA — không phải số liệu vận hành chính thức, không dùng cho quyết định quản lý thực tế.',
   'executiveOverview.openPortfolio': 'Xem danh mục dự án →',
-  'executiveOverview.statusLabel': 'Trạng thái danh mục:',
   'executiveOverview.dataEffectiveLabel': 'Dữ liệu có hiệu lực:',
   'executiveOverview.degradedBanner':
     'Một phần dữ liệu hiện không tải được ({issues}) — các số liệu bên dưới chỉ tính trên phần dữ liệu đã tải thành công.',
@@ -217,7 +201,6 @@ export const vi = {
     'Chưa có dự án nào trong danh mục. Khi có dữ liệu, tổng quan sẽ hiển thị tại đây.',
   'executiveOverview.recentUpdates': 'Cập nhật gần đây',
   'overview.panelsAria': 'Các bảng điều hành chính',
-  'overview.bottomPanelsAria': 'Các bảng hỗ trợ điều hành',
   'executiveOverview.timeline.effectiveAt': 'Dữ liệu có hiệu lực',
   'executiveOverview.timeline.sourcePublishedAt': 'Nguồn công bố',
   'executiveOverview.timeline.retrievedAt': 'Hệ thống thu thập',
@@ -230,12 +213,6 @@ export const vi = {
 
   // Executive Status Hero — panel lớn đầu trang, trả lời trong 5 giây: tình hình chung, có bao
   // nhiêu vấn đề, loại vấn đề chính là gì (spec "5-second test").
-  'executiveStatusHero.eyebrow': 'Tình hình dự án trọng điểm',
-  'executiveStatusHero.summary': '{count}/{total} dự án cần xử lý',
-  'executiveStatusHero.summaryClean': 'Toàn bộ {total} dự án đang trong tầm kiểm soát',
-  'executiveStatusHero.breakdown.delayed': '{count} chậm tiến độ',
-  'executiveStatusHero.breakdown.atRisk': '{count} có nguy cơ',
-  'executiveStatusHero.breakdown.overdueIssues': '{count} vướng mắc quá hạn',
 
   // KPI grid
   'kpi.heading': 'Chỉ số tổng quan',
@@ -249,7 +226,6 @@ export const vi = {
   'kpi.attentionProjects': 'Dự án cần chú ý',
   'kpi.attentionProjectsOf': 'trên tổng {total} dự án',
   'kpi.unavailable': 'Chưa đủ dữ liệu',
-  'kpi.unavailableExplanation': 'Thiếu dữ liệu đầu vào cần thiết.',
   'kpi.daysValue': '{value} ngày',
   'kpi.totalProjects.explanation': 'Tổng số dự án trong danh mục.',
   'kpi.totalApprovedBudget.explanation': 'Tổng approvedBudget của các dự án hợp lệ.',
@@ -261,11 +237,6 @@ export const vi = {
     "Số dự án status='active' (không ở trạng thái rủi ro/chậm/tạm dừng).",
   'kpi.atRiskProjects.explanation': "Số dự án status='at-risk'.",
   'kpi.delayedProjects.explanation': "Số dự án status='delayed'.",
-  'kpi.trend.increase': 'Tăng {value} so với 30 ngày trước',
-  'kpi.trend.decrease': 'Giảm {value} so với 30 ngày trước',
-  'kpi.trend.flat': 'Không đổi so với 30 ngày trước',
-  'kpi.trend.tooltip':
-    'So sánh trên {comparable}/{total} dự án có dữ liệu tiến độ từ trước đó — không đủ dự án thì không hiển thị xu hướng.',
 
   // Alerts
   'alerts.heading': 'Cần xử lý',
@@ -281,8 +252,6 @@ export const vi = {
   'priorityProjects.heading': 'Dự án cần chú ý ({count})',
   'priorityProjects.empty': 'Không có dự án nào cần chú ý đặc biệt tại thời điểm này.',
   'priorityProjects.progress': 'Tiến độ {value}%',
-  'priorityProjects.reasonLabel': 'Lý do cần chú ý:',
-  'priorityProjects.viewSummary': 'Xem tóm tắt',
   'priorityProjects.viewAll': 'Xem tất cả →',
   'priorityProjects.tableCaption': 'Danh sách dự án cần chú ý',
   'priorityProjects.colName': 'Tên dự án',
@@ -314,26 +283,10 @@ export const vi = {
   'statusChart.empty': 'Chưa có dự án nào để hiển thị.',
   'statusChart.ariaLabelPrefix': 'Phân bố trạng thái:',
   'statusChart.segment': '{label} {count} dự án',
-  'statusChart.legendItem': '{label}: {count} dự án ({percent}%)',
   'statusChart.totalLabel': 'dự án',
 
   // Data health panel
   'dataHealth.heading': 'Mức độ đầy đủ dữ liệu',
-  'dataHealth.validRecords': 'Bản ghi hợp lệ',
-  'dataHealth.invalidRecords': 'Bản ghi không hợp lệ',
-  'dataHealth.staleRecords': 'Dữ liệu quá hạn cập nhật',
-  'dataHealth.duplicates': 'Trùng lặp phát hiện được',
-  'dataHealth.unmappedCodes': 'Mã hành chính không xác định',
-  'dataHealth.sourceStatus': 'Trạng thái nguồn dữ liệu',
-  'dataHealth.sourceReady': 'Sẵn sàng',
-  'dataHealth.sourceNotReady': 'Không sẵn sàng',
-  'dataHealth.effectiveAt': 'Dữ liệu có hiệu lực',
-  'dataHealth.sourcePublished': 'Nguồn công bố',
-  'dataHealth.retrieved': 'Hệ thống thu thập',
-  'dataHealth.confidenceHeading': 'Độ tin cậy dữ liệu',
-  'dataHealth.confidenceItem': '{label}: {count} dự án',
-  'dataHealth.viewProvenance': 'Xem chi tiết nguồn dữ liệu',
-  'dataHealth.viewDataReadiness': 'Xem Data Readiness',
   'dataHealth.scoreLabel': 'Điểm tổng',
   'dataHealth.level.good': 'Tốt',
   'dataHealth.level.attention': 'Cần chú ý',
@@ -670,9 +623,6 @@ export const vi = {
   'statPanel.bar.low': 'Thấp',
   'statPanel.bar.medium': 'Trung bình',
   'statPanel.bar.high': 'Cao',
-  'statPanel.bar.west': 'Tây',
-  'statPanel.bar.central': 'Trung tâm',
-  'statPanel.bar.east': 'Đông',
 
   // DetailPanel (3D dashboard hover/select panel)
   'detailPanel.emptyHeading': 'Chạm vào đại ngàn',
