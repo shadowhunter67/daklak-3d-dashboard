@@ -56,8 +56,15 @@ const dist = join(root, 'dist');
 // 22.6MB to 22.8MB. Measured, not guessed: origin/main was 22,602,328 bytes and this branch is
 // 22,625,270 bytes (+22,942 bytes; mainly the new shell CSS and UI modules). The 200KB rounded
 // headroom is intentionally small and keeps the existing JS/gzip/asset budgets unchanged.
+// totalJavaScriptBytes raised 3,400,000 -> 3,422,000 (investment-attraction catalog view + rebuilt
+// project detail page, 2026-10). Measured with node_modules synced to the lockfile (`npm ci`; an
+// earlier local figure was wrong because maplibre-gl 6.11.2 was installed instead of 6.14.0, which
+// is 12,225 bytes larger): origin/main = 3,398,958 (1,042 under the cap, so no new route could fit),
+// this branch = 3,419,091 (+20,133). That is the lazy catalog chunk (~8.8KB), the vi/en strings and
+// the project-detail rebuild, AFTER removing 40 dead i18n keys (-6.5KB) and reusing the existing
+// sector labels. Gzip 939,366 / 950,000 is untouched. The raise leaves ~2.9KB of headroom.
 const limits = {
-  totalJavaScriptBytes: 3_400_000,
+  totalJavaScriptBytes: 3_422_000,
   totalJavaScriptGzipBytes: 950_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,

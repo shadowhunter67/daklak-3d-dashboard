@@ -58,7 +58,7 @@ test.describe('Project Portfolio (Phase 2B1)', () => {
       .first()
       .click();
     await expect(page).toHaveURL(/#\/projects\/prj-/);
-    await expect(page.getByRole('heading', { level: 2 })).toBeVisible();
+    await expect(page.locator('#project-detail-heading')).toBeVisible();
   });
 
   test('mobile: renders cards, not a horizontally-scrolling wide table', async ({ page }) => {
@@ -111,15 +111,15 @@ test.describe('Project Portfolio (Phase 2B1)', () => {
 test.describe('Project Detail (Phase 2B1)', () => {
   test('direct-links into a Project Detail URL', async ({ page }) => {
     await page.goto('./#/projects/prj-001');
-    await expect(page.getByRole('heading', { level: 2 })).toBeVisible();
+    await expect(page.locator('#project-detail-heading')).toBeVisible();
     await expect(page.locator('.project-detail__mock-badge')).toBeVisible();
   });
 
   test('refreshing on a Detail URL still renders the same project', async ({ page }) => {
     await page.goto('./#/projects/prj-001');
-    const heading = await page.getByRole('heading', { level: 2 }).textContent();
+    const heading = await page.locator('#project-detail-heading').textContent();
     await page.reload();
-    await expect(page.getByRole('heading', { level: 2 })).toHaveText(heading ?? '');
+    await expect(page.locator('#project-detail-heading')).toHaveText(heading ?? '');
   });
 
   test('Back/Forward navigates between Portfolio and Detail correctly', async ({ page }) => {
@@ -166,7 +166,7 @@ test.describe('Project Detail (Phase 2B1)', () => {
   test('mobile: Project Detail fits without horizontal overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('./#/projects/prj-001');
-    await expect(page.getByRole('heading', { level: 2 })).toBeVisible();
+    await expect(page.locator('#project-detail-heading')).toBeVisible();
     expect(
       await page.evaluate(
         () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
@@ -176,7 +176,7 @@ test.describe('Project Detail (Phase 2B1)', () => {
 
   test('has no serious automated accessibility violations', async ({ page }) => {
     await page.goto('./#/projects/prj-001');
-    await expect(page.getByRole('heading', { level: 2 })).toBeVisible();
+    await expect(page.locator('#project-detail-heading')).toBeVisible();
     const results = await new AxeBuilder({ page }).analyze();
     expect(
       results.violations.filter(({ impact }) => impact === 'critical' || impact === 'serious'),
@@ -188,7 +188,7 @@ test.describe('Project Detail (Phase 2B1)', () => {
     const responses: string[] = [];
     page.on('response', (response) => responses.push(response.url()));
     await page.goto('./#/projects/prj-001');
-    await expect(page.getByRole('heading', { level: 2 })).toBeVisible();
+    await expect(page.locator('#project-detail-heading')).toBeVisible();
     expect(responses.some((url) => HEAVY_CHUNK_PATTERN.test(url))).toBe(false);
   });
 });

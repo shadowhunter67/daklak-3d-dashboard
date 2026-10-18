@@ -1,9 +1,10 @@
 {
-  "generatedAt": "2026-09-26T03:01:59.647Z",
+  "generatedAt": "2026-10-18T15:39:13.223Z",
   "allDatasetIds": [
     "administrative-units",
     "province-overview-indicators",
     "commune-demographic-illustrative",
+    "unit-population-profile-2025",
     "energy-illustrative",
     "heatmap-illustrative",
     "road-network-osm-3d2d",
@@ -18,12 +19,14 @@
     "project-portfolio-daklak-real-2026-09",
     "project-portfolio-generated-fixture-demo",
     "project-portfolio-generated-fixture-demo-public-projected",
-    "investment-opportunities-daklak-illustrative"
+    "investment-opportunities-daklak-illustrative",
+    "researched-projects-qd1985"
   ],
   "publicDatasetIds": [
     "administrative-units",
     "province-overview-indicators",
     "commune-demographic-illustrative",
+    "unit-population-profile-2025",
     "energy-illustrative",
     "heatmap-illustrative",
     "road-network-osm-3d2d",
@@ -38,13 +41,15 @@
     "project-portfolio-daklak-real-2026-09",
     "project-portfolio-generated-fixture-demo",
     "project-portfolio-generated-fixture-demo-public-projected",
-    "investment-opportunities-daklak-illustrative"
+    "investment-opportunities-daklak-illustrative",
+    "researched-projects-qd1985"
   ],
   "nonPublicDatasetIds": [],
   "expectedBundledDatasetIds": [
     "administrative-units",
     "province-overview-indicators",
     "commune-demographic-illustrative",
+    "unit-population-profile-2025",
     "energy-illustrative",
     "heatmap-illustrative",
     "road-network-osm-3d2d",
@@ -57,7 +62,8 @@
     "project-portfolio-daklak-real-2026-09",
     "project-portfolio-generated-fixture-demo",
     "project-portfolio-generated-fixture-demo-public-projected",
-    "investment-opportunities-daklak-illustrative"
+    "investment-opportunities-daklak-illustrative",
+    "researched-projects-qd1985"
   ],
   "datasets": [
     {
@@ -74,6 +80,12 @@
     },
     {
       "id": "commune-demographic-illustrative",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "unit-population-profile-2025",
       "classification": "public",
       "delivery": "bundled-static",
       "requiresAuthentication": false
@@ -164,6 +176,12 @@
     },
     {
       "id": "investment-opportunities-daklak-illustrative",
+      "classification": "public",
+      "delivery": "bundled-static",
+      "requiresAuthentication": false
+    },
+    {
+      "id": "researched-projects-qd1985",
       "classification": "public",
       "delivery": "bundled-static",
       "requiresAuthentication": false
@@ -283,6 +301,16 @@
       "classification": "public",
       "delivery": "bundled-static",
       "checksum": "6326a6ef22f02abe92b28714aea6dc538eec14322c04d7603bd10772f17fc015"
+    },
+    {
+      "path": "public/data/researched-projects.json.gz",
+      "datasetIds": [
+        "researched-projects-qd1985"
+      ],
+      "classification": "public",
+      "delivery": "public-static-asset",
+      "checksum": "aabfc6d65bd1edb6744d9ce5ff9359dba9b6ce6a0e14252adac611384c8629eb",
+      "note": "Gzip, ~10 KB; fetched lazily at runtime by src/data/loadResearchedProjects.ts (not bundled). Rebuilt by scripts/research/build_researched_projects.mjs — regenerate this checksum after rebuilding."
     },
     {
       "path": "public/data/daklak-roads.json.gz",

@@ -61,4 +61,10 @@ describe('AppSidebar', () => {
     renderSidebar({ kind: 'reports' });
     expect(screen.getByRole('button', { name: 'Báo cáo' })).toHaveAttribute('aria-current', 'page');
   });
+
+  it('highlights "Dự án" (not "Tổng quan") on the investment-attraction catalog route', () => {
+    renderSidebar({ kind: 'investment-catalog' });
+    expect(screen.getByRole('button', { name: 'Dự án' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('button', { name: 'Tổng quan' })).not.toHaveAttribute('aria-current');
+  });
 });

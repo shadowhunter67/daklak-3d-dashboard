@@ -1,32 +1,32 @@
 {
-  "generatedAt": "2026-08-23T08:40:32.118Z",
+  "generatedAt": "2026-10-18T15:39:15.512Z",
   "javascript": {
-    "rawBytes": 2922523,
-    "gzipBytes": 778980,
-    "chunkCount": 19
+    "rawBytes": 3406415,
+    "gzipBytes": 935266,
+    "chunkCount": 36
   },
   "css": {
-    "rawBytes": 48580,
-    "gzipBytes": 9651
+    "rawBytes": 232267,
+    "gzipBytes": 36862
   },
   "images": {
-    "transferBytes": 2813884,
-    "count": 4
+    "transferBytes": 4270081,
+    "count": 29
   },
   "largestAsset": {
-    "file": "assets/daklak-terrain-color-Dh7HDsa9.png",
-    "bytes": 1829459,
+    "file": "maps/daklak.pmtiles",
+    "bytes": 13424852,
     "gzipBytes": null
   },
   "threeChunk": {
-    "file": "assets/three-vendor-CQjBSN39.js",
-    "bytes": 724399,
-    "gzipBytes": 183245
+    "file": "assets/three-vendor-Dl21Ko0e.js",
+    "bytes": 759005,
+    "gzipBytes": 190786
   },
   "statPanelChunk": {
-    "file": "assets/StatPanel-6OmWnVfb.js",
-    "bytes": 3452,
-    "gzipBytes": 1160
+    "file": "assets/StatPanel-DBN_5YMQ.js",
+    "bytes": 4384,
+    "gzipBytes": 1421
   },
   "geometry": {
     "canonical": {
@@ -41,20 +41,20 @@
   "budget": {
     "status": "passed",
     "limits": {
-      "totalJavaScriptBytes": 3400000,
+      "totalJavaScriptBytes": 3410000,
       "totalJavaScriptGzipBytes": 950000,
       "largestJavaScriptGzipBytes": 300000,
       "totalTextureBytes": 3000000,
-      "largestAssetBytes": 1900000,
-      "totalBuildBytes": 6400000
+      "largestAssetBytes": 14000000,
+      "totalBuildBytes": 22800000
     },
     "actual": {
-      "totalJavaScriptBytes": 2922523,
-      "totalJavaScriptGzipBytes": 778980,
-      "largestJavaScriptGzipBytes": 248052,
+      "totalJavaScriptBytes": 3406415,
+      "totalJavaScriptGzipBytes": 935266,
+      "largestJavaScriptGzipBytes": 283135,
       "totalTextureBytes": 2813884,
-      "largestAssetBytes": 1829459,
-      "totalBuildBytes": 5898063
+      "largestAssetBytes": 13424852,
+      "totalBuildBytes": 22775322
     },
     "failures": []
   },

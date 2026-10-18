@@ -1,0 +1,112 @@
+{
+  "inputRows": 201,
+  "projects": 201,
+  "skipped": [],
+  "withAdminCode": 182,
+  "withCentroidLocation": 163,
+  "withUnresolvedLocationNotes": 45,
+  "reconcile": [
+    {
+      "nhom": "ĐIỆN GIÓ (16 DỰ ÁN; 37.022 TỶ)",
+      "extracted": 37022,
+      "stated": 37022,
+      "matches": true
+    },
+    {
+      "nhom": "ĐIỆN MẶT TRỜI ( 25 DỰ ÁN; 84.005 TỶ)",
+      "extracted": 84005,
+      "stated": 84005,
+      "matches": true
+    },
+    {
+      "nhom": "ĐIỆN SINH KHỐI ( 04 DỰ ÁN; 7.375 TỶ)",
+      "extracted": 7375,
+      "stated": 7375,
+      "matches": true
+    },
+    {
+      "nhom": "THỦY ĐIỆN ( 08 DỰ ÁN; 8.343 TỶ)",
+      "extracted": 8343.4,
+      "stated": 8343,
+      "matches": false
+    },
+    {
+      "nhom": "ĐIỆN RÁC (01 DỰ ÁN; 270 TỶ)",
+      "extracted": 270,
+      "stated": 270,
+      "matches": true
+    },
+    {
+      "nhom": "DỰ ÁN KHU ĐÔ THỊ (24 DỰ ÁN; 190.388 TỶ)",
+      "extracted": 190381,
+      "stated": 190388,
+      "matches": false
+    },
+    {
+      "nhom": "NHÀ Ở THƯƠNG MẠI (20 DA; 48.830 TỶ)",
+      "extracted": 48830,
+      "stated": 48830,
+      "matches": true
+    },
+    {
+      "nhom": "NHÀ Ở XÃ HỘI (12 DA; 25.264 TỶ)",
+      "extracted": 22944,
+      "stated": 25264,
+      "matches": false
+    },
+    {
+      "nhom": "LĨNH VỰC NÔNG NGHIỆP (20 DA; 94.855 TỶ)",
+      "extracted": 95505.62,
+      "stated": 94855,
+      "matches": false
+    },
+    {
+      "nhom": "LĨNH VỰC CÔNG NGHIỆP - CHẾ BIẾN (06 DA; 167.200 TỶ)",
+      "extracted": 167300,
+      "stated": 167200,
+      "matches": false
+    },
+    {
+      "nhom": "LĨNH VỰC THƯƠNG MẠI DỊCH VỤ (17 DA, 3.982 tỷ)",
+      "extracted": 3982,
+      "stated": 3982,
+      "matches": true
+    },
+    {
+      "nhom": "LĨNH VỰC Y TẾ (06 DA; 6.300 TỶ)",
+      "extracted": 6300,
+      "stated": 6300,
+      "matches": true
+    },
+    {
+      "nhom": "LĨNH VỰC GIÁO DỤC (05 DA; 1.495 TỶ)",
+      "extracted": 1495,
+      "stated": 1495,
+      "matches": true
+    },
+    {
+      "nhom": "LĨNH VỰC MÔI TRƯỜNG (04 DA; 888 TỶ)",
+      "extracted": 888,
+      "stated": 888,
+      "matches": true
+    },
+    {
+      "nhom": "LĨNH VỰC CÔNG NGHỆ THÔNG TIN (03 DA; 117.450TỶ)",
+      "extracted": 117450,
+      "stated": 117450,
+      "matches": true
+    },
+    {
+      "nhom": "LĨNH VỰC KHU DU LỊCH, NGHỈ DƯỠNG (25 DA; 115.633 TỶ)",
+      "extracted": 115633,
+      "stated": 115633,
+      "matches": true
+    },
+    {
+      "nhom": "LĨNH VỰC SÂN GOLF - THỂ THAO (7 DA; 11.273 TỶ)",
+      "extracted": 11273,
+      "stated": 11273,
+      "matches": true
+    }
+  ]
+}

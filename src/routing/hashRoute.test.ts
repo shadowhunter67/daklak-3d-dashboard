@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   parseHashRoute,
   serializeDataReadinessHash,
+  serializeInvestmentCatalogHash,
   serializeDioramaHash,
   serializePortfolioHash,
   serializeProjectDetailHash,
@@ -68,6 +69,14 @@ describe('parseHashRoute', () => {
   it('parses #/reports and rejects extra segments', () => {
     expect(parseHashRoute('#/reports')).toEqual({ kind: 'reports' });
     expect(parseHashRoute('#/reports/x')).toEqual({ kind: 'none' });
+  });
+
+  it('parses #/investment-catalog, rejects extra segments, and round-trips', () => {
+    expect(parseHashRoute('#/investment-catalog')).toEqual({ kind: 'investment-catalog' });
+    expect(parseHashRoute('#/investment-catalog/x')).toEqual({ kind: 'none' });
+    expect(parseHashRoute(serializeInvestmentCatalogHash())).toEqual({
+      kind: 'investment-catalog',
+    });
   });
 
   it('parses #/data-readiness', () => {

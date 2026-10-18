@@ -473,7 +473,6 @@ export function DataReadinessView({
         breadcrumb={
           <>
             <span>{t('common.home')}</span>
-            <span aria-hidden="true">›</span>
             <strong>{t('common.data')}</strong>
           </>
         }

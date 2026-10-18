@@ -703,6 +703,50 @@ export const UNIT_POPULATION_PROFILE_DATASET: DatasetDescriptor = {
   access: { delivery: 'bundled-static', requiresAuthentication: false },
 };
 
+/**
+ * Danh mục thu hút đầu tư 2026-2030 của tỉnh (Quyết định 1985/QĐ-UBND, 24/06/2026), dựng bởi
+ * `scripts/research/build_researched_projects.mjs` từ bằng chứng trích xuất trong
+ * `docs/data-sources/evidence/1985-qd-ubnd/`. Domain riêng `src/entities/researched-project/` —
+ * KHÔNG phải `Project` (không có tiến độ/giải ngân/nhà đầu tư) và KHÔNG trộn với dữ liệu minh hoạ.
+ */
+export const RESEARCHED_PROJECTS_QD1985_DATASET: DatasetDescriptor = {
+  id: 'researched-projects-qd1985',
+  title: 'Danh mục dự án thu hút đầu tư 2026–2030 (QĐ 1985/QĐ-UBND)',
+  description:
+    '201 dự án thu hút đầu tư (5/6 phụ lục QĐ 1985/QĐ-UBND). Vốn là số dự kiến; vị trí chỉ là tâm đơn vị hành chính.',
+  domain: 'economy',
+  classification: 'public',
+  authority: 'official',
+  publicationStatus: 'reviewed',
+  administrativeLevel: 'commune',
+  temporalResolution: 'static',
+  spatialRepresentation: 'point',
+  source: {
+    organization: 'UBND tỉnh Đắk Lắk',
+    documentNumber: '1985/QĐ-UBND',
+    sourceUrl: 'https://vpubnd.daklak.gov.vn/Documents/Detail/11262',
+    retrievalDate: '2026-09-29',
+    termsOfUse:
+      'Văn bản công khai; ghi rõ nguồn. Chính sách tái phân phối của vpubnd.daklak.gov.vn chưa xác nhận.',
+  },
+  version: '1.0.0',
+  period: { start: '2026-06-24', label: 'Giai đoạn 2026–2030 (văn bản ký 24/06/2026)' },
+  generatedAt: '2026-09-29T00:00:00.000Z',
+  checksum: 'aabfc6d65bd1edb6744d9ce5ff9359dba9b6ce6a0e14252adac611384c8629eb',
+  refreshPolicy: { mode: 'manual', expectedInterval: 'P1Y' },
+  quality: {
+    status: 'partially-verified',
+    geometryStatus: 'reference',
+    knownLimitations: [
+      'Phụ lục 3 trùng phụ lục 2 ở nguồn: thiếu một lĩnh vực.',
+      'Trích bảng PDF tự động; 5/17 nhóm lệch tổng vốn tiêu đề (reports/research/data-conflicts.md).',
+      '45/201 dự án có địa danh chưa khớp đơn vị hành chính; 19 dự án chưa có đơn vị nào.',
+      'Không có tiến độ, giải ngân, nhà đầu tư hay toạ độ dự án.',
+    ],
+  },
+  access: { delivery: 'bundled-static', requiresAuthentication: false },
+};
+
 export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   ADMINISTRATIVE_UNITS_DATASET,
   PROVINCE_OVERVIEW_INDICATORS_DATASET,
@@ -723,6 +767,7 @@ export const DATASET_CATALOG: readonly DatasetDescriptor[] = [
   PROJECT_PORTFOLIO_GENERATED_FIXTURE_DATASET,
   PROJECT_PORTFOLIO_PUBLIC_PROJECTED_DATASET,
   INVESTMENT_OPPORTUNITIES_ILLUSTRATIVE_DATASET,
+  RESEARCHED_PROJECTS_QD1985_DATASET,
 ];
 
 export function getDatasetById(id: string): DatasetDescriptor | undefined {

@@ -196,12 +196,15 @@ export function ProjectPortfolioView({
   filters,
   onFiltersChange,
   onOpenProject,
+  onOpenInvestmentCatalog,
   onBackToOverview,
 }: {
   source?: ProjectPortfolioSource;
   filters: PortfolioFilters;
   onFiltersChange: (filters: PortfolioFilters, opts?: { replace?: boolean }) => void;
   onOpenProject: (projectId: string) => void;
+  /** Mở danh mục thu hút đầu tư (dữ liệu nguồn chính thức, tách khỏi danh mục minh hoạ). */
+  onOpenInvestmentCatalog?: () => void;
   onBackToOverview: () => void;
 }) {
   const { t, locale } = useTranslation();
@@ -317,15 +320,25 @@ export function ProjectPortfolioView({
         breadcrumb={
           <>
             <span>{t('common.home')}</span>
-            <span aria-hidden="true">›</span>
             <strong>{t('common.projects')}</strong>
           </>
         }
         breadcrumbLabel={t('common.breadcrumb')}
         actions={
-          <button type="button" className="project-portfolio__back" onClick={onBackToOverview}>
-            {t('portfolio.backToOverview')}
-          </button>
+          <>
+            {onOpenInvestmentCatalog && (
+              <button
+                type="button"
+                className="project-portfolio__back"
+                onClick={onOpenInvestmentCatalog}
+              >
+                {t('catalog.openFromPortfolio')}
+              </button>
+            )}
+            <button type="button" className="project-portfolio__back" onClick={onBackToOverview}>
+              {t('portfolio.backToOverview')}
+            </button>
+          </>
         }
       />
       <ul className="ui-kpi-grid project-portfolio__kpis" aria-label={t('portfolio.kpiLabel')}>

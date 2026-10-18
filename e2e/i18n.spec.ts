@@ -167,7 +167,7 @@ test.describe('Internationalization (vi/en)', () => {
       .first()
       .click();
     await expect(page).toHaveURL(/#\/projects\/prj-/);
-    await expect(page.getByText('Budget and progress summary')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'General information' })).toBeVisible();
     await expect(page.locator('.project-detail__mock-badge')).toContainText('ILLUSTRATIVE DATA');
   });
 

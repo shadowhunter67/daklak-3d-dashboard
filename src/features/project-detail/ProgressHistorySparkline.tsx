@@ -40,6 +40,7 @@ export function ProgressHistorySparkline({
 
   return (
     <div className="progress-history">
+      <p className="progress-history__description">{t('progressHistory.description')}</p>
       <svg
         viewBox={`0 0 ${width} ${height}`}
         role="img"
