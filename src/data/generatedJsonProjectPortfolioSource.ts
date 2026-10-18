@@ -174,6 +174,12 @@ export class GeneratedJsonProjectPortfolioSource implements ProjectPortfolioSour
     // `generatedAt`, vì bundle generated-json không phân biệt hai cặp khái niệm này ở Phase 3.
     const data = {
       bundles,
+      referenceData: {
+        agencies: raw.datasets.agencies,
+        contractors: raw.datasets.contractors,
+        evidence: raw.datasets.evidence,
+        referenceDocuments: raw.datasets.referenceDocuments,
+      },
       validAdministrativeCodes,
       provenance: {
         effectiveAt: raw.metadata.asOf,

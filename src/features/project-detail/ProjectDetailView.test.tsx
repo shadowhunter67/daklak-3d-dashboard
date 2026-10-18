@@ -70,9 +70,7 @@ describe('ProjectDetailView', () => {
     await screen.findByRole('heading', { name: target.project.name });
     expect(screen.getByText(/DỮ LIỆU MINH HỌA/)).toBeInTheDocument();
     expect(screen.getByText(target.project.code)).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: 'Tóm tắt ngân sách và tiến độ' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Thông tin chung' })).toBeInTheDocument();
   });
 
   it('shows a not-found state with a way back to Portfolio for an unknown id', async () => {
@@ -163,7 +161,7 @@ describe('ProjectDetailView', () => {
       />,
     );
     await screen.findByRole('heading', { name: zeroBudgetProject.project.name });
-    const disbursementRow = screen.getByText('Tỷ lệ giải ngân').closest('div');
+    const disbursementRow = screen.getByText('Tỷ lệ giải ngân', { selector: 'dt' }).closest('div');
     expect(disbursementRow!.textContent).toContain('Chưa đủ dữ liệu');
   });
 

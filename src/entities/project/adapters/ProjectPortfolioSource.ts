@@ -5,7 +5,14 @@
  * để không khoá kiến trúc vào static fixture — khi có API thật (Phase 3), chỉ cần một implementation
  * mới cùng interface này, không đổi chữ ký gọi ở call site.
  */
-import type { ProjectBundle } from '../types';
+import type { Agency, Contractor, Evidence, ProjectBundle, ReferenceDocument } from '../types';
+
+export interface ProjectPortfolioReferenceData {
+  agencies: readonly Agency[];
+  contractors: readonly Contractor[];
+  evidence: readonly Evidence[];
+  referenceDocuments: readonly ReferenceDocument[];
+}
 
 /**
  * Năm mốc thời gian tách biệt của một portfolio snapshot — thay cho `loadedAt` cũ vốn bị dùng lẫn
@@ -94,6 +101,8 @@ export interface ProjectPortfolioSourceMetadata {
 
 export interface ProjectPortfolio {
   bundles: readonly ProjectBundle[];
+  /** Các bảng tham chiếu đi cùng canonical bundle; tùy chọn để giữ tương thích với test/source cũ. */
+  referenceData?: ProjectPortfolioReferenceData;
   /** Mã hành chính hợp lệ tại thời điểm load — cần cho `DataQualityContext`, nguồn từ
    * layer GIS/administrative-units, không phải thứ `ProjectPortfolioSource` tự biết cách tạo ra;
    * adapter cụ thể (ví dụ `IllustrativeProjectPortfolioSource`) chịu trách nhiệm cung cấp giá trị này. */

@@ -25,6 +25,9 @@ import {
   MOCK_PORTFOLIO_PROVENANCE,
   MOCK_PROJECT_BUNDLES,
   MOCK_REFERENCE_DATE,
+  MOCK_AGENCIES,
+  MOCK_CONTRACTORS,
+  MOCK_EVIDENCE,
 } from '../entities/project/illustrativeProjectPortfolio';
 import type {
   ProjectPortfolioLoadResult,
@@ -72,6 +75,12 @@ export class IllustrativeProjectPortfolioSource implements ProjectPortfolioSourc
       status: 'ok',
       data: {
         bundles: MOCK_PROJECT_BUNDLES,
+        referenceData: {
+          agencies: MOCK_AGENCIES,
+          contractors: MOCK_CONTRACTORS,
+          evidence: MOCK_EVIDENCE,
+          referenceDocuments: [],
+        },
         validAdministrativeCodes,
         // `loadedInBrowserAt` là mốc runtime hợp lệ DUY NHẤT ở đây — bốn mốc còn lại đến từ
         // snapshot deterministic, không phải giờ hệ thống (xem ProjectPortfolioProvenance).

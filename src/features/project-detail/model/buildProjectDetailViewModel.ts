@@ -19,6 +19,7 @@ import type { ProjectBundle, ProjectIssue } from '../../../entities/project/type
 import type { DataQualityContext } from '../../../entities/project/validation/dataQualityRules';
 import { explainLatestAuthoritativeSnapshot } from '../../../entities/project/validation/authoritativeSnapshotExplanation';
 import type { ProjectPortfolioProvenance } from '../../../entities/project/adapters/ProjectPortfolioSource';
+import type { ProjectPortfolioReferenceData } from '../../../entities/project/adapters/ProjectPortfolioSource';
 import type { ProjectDetailLookupResult, ProjectDetailModel } from './projectDetailTypes';
 
 const ISSUE_SEVERITIES: ProjectIssue['severity'][] = ['critical', 'high', 'medium', 'low'];
@@ -27,6 +28,7 @@ export interface LookupProjectDetailInput {
   bundles: readonly ProjectBundle[];
   context: DataQualityContext;
   provenance: ProjectPortfolioProvenance;
+  referenceData?: ProjectPortfolioReferenceData;
   projectId: string;
   /** From `ProjectPortfolioSourceMetadata.isIllustrative` — see `ProjectDetailModel`'s own field
    * doc. Optional with a `true` default so existing demo-mode call sites/test fixtures that
@@ -54,6 +56,7 @@ export function lookupProjectDetail({
   bundles,
   context,
   provenance,
+  referenceData,
   projectId,
   isIllustrative = true,
 }: LookupProjectDetailInput): ProjectDetailLookupResult {
@@ -94,6 +97,17 @@ export function lookupProjectDetail({
       priority: project.priority,
       dataUpdatedAt: project.dataUpdatedAt,
       confidence: project.confidence,
+      verificationStatus: project.verificationStatus,
+      dataOwner: project.dataOwner,
+      sourceDatasetId: project.sourceDatasetId,
+      managingAuthority:
+        referenceData?.agencies.find((agency) => agency.id === project.managingAuthorityId)?.name ??
+        null,
+      investor:
+        referenceData?.agencies.find((agency) => agency.id === project.investorId)?.name ?? null,
+      approvalDecision: project.approvalDecision ?? null,
+      startDate: project.startDate ?? null,
+      geometryMetadata: project.geometryMetadata,
     },
     summary: {
       approvedBudget: project.approvedBudget,
@@ -102,6 +116,7 @@ export function lookupProjectDetail({
       disbursementRate: disbursementRate(bundle, asOf),
       overallProgress: project.overallProgress,
       plannedProgress: project.plannedProgress,
+      financialProgress: project.financialProgress,
       scheduleVariance: scheduleVariance(bundle, asOf),
       budgetVariance: budgetVariance(bundle, asOf),
       plannedCompletionDate: project.plannedCompletionDate ?? null,
@@ -130,6 +145,12 @@ export function lookupProjectDetail({
       administrativeAreaCodes: project.administrativeAreaCodes,
       geometry: project.geometry ?? null,
       hasGeometry: Boolean(project.geometry),
+    },
+    referenceData: referenceData ?? {
+      agencies: [],
+      contractors: [],
+      evidence: [],
+      referenceDocuments: [],
     },
     provenance: [...sourceDatasetIds].map((id) => ({
       sourceDatasetId: id,

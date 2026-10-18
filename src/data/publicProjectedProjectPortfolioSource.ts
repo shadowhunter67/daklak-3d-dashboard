@@ -172,6 +172,12 @@ export class PublicProjectedProjectPortfolioSource implements ProjectPortfolioSo
     const metadata = buildMetadata(raw);
     const data = {
       bundles,
+      referenceData: {
+        agencies: raw.datasets.agencies,
+        contractors: raw.datasets.contractors,
+        evidence: raw.datasets.evidence,
+        referenceDocuments: raw.datasets.referenceDocuments,
+      },
       validAdministrativeCodes,
       provenance: {
         effectiveAt: raw.metadata.asOf,
