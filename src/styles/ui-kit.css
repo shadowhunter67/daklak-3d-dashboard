@@ -2188,3 +2188,21 @@
 :root:not([data-theme='light']) .ui-page-root .ui-primary-button {
   color: #10241f;
 }
+
+/* Phones: the 3D tools are a compact 2x2 strip, not a tall stack that hides the map. */
+@media (max-width: 767px) and (orientation: portrait),
+  (max-width: 932px) and (orientation: landscape) {
+  .scene-tools__toggle,
+  .scene-tools__action {
+    min-height: 44px;
+    padding: 6px 10px;
+  }
+  .scene-tools__toggle small,
+  .scene-tools__action small {
+    display: none;
+  }
+  .scene-tools__toggle b,
+  .scene-tools__action b {
+    font-size: calc(15px * var(--user-font-scale, 1));
+  }
+}

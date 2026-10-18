@@ -420,3 +420,11 @@
 :root[data-theme='light'] .detail-map-layer-panel__content [aria-disabled='true'] {
   color: #4d6b62;
 }
+
+/* The layer-panel wrapper is only a positioning frame (its button and its content are the cards);
+   painting it white left a tall white strip over the directory on phones. */
+:root[data-theme='light'] .detail-map-layer-panel {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
