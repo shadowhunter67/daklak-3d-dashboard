@@ -2143,3 +2143,28 @@
   margin-right: 6px;
   color: var(--ui-muted);
 }
+
+/* Dark theme: the pastel KPI tints are light-theme colours with dark text; in the dark theme the
+   tile text is light, so the tints must be dark too (axe color-contrast). */
+:root:not([data-theme='light']) .ui-kpi-blue {
+  background: #1b2a3f;
+}
+:root:not([data-theme='light']) .ui-kpi-gold {
+  background: #3a3017;
+}
+:root:not([data-theme='light']) .ui-kpi-green {
+  background: #17342a;
+}
+:root:not([data-theme='light']) .ui-kpi-red {
+  background: #3d1f22;
+}
+:root:not([data-theme='light']) .ui-kpi-orange {
+  background: #3d2a1a;
+}
+:root:not([data-theme='light']) .ui-kpi-purple {
+  background: #2c2442;
+}
+:root:not([data-theme='light']) .ui-kpi-label,
+:root:not([data-theme='light']) .ui-kpi-detail {
+  color: #d2e2db;
+}
