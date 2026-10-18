@@ -1452,3 +1452,20 @@
 .scene-right-rail > .hud-toggle {
   z-index: 6;
 }
+
+/* Detail map page title: sans-serif like the rest of the redesign (global h1 is the old wordmark). */
+.detail-map-viewport__intro h1 {
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  font-size: calc(clamp(26px, 2.6vw, 34px) * var(--user-font-scale, 1));
+  font-weight: 800;
+  color: var(--shell-ink, var(--ui-text));
+}
+.detail-map-viewport__intro p {
+  font-size: calc(17px * var(--user-font-scale, 1));
+  color: var(--shell-ink-2, var(--ui-muted));
+}
+.detail-map-layer-tabs button {
+  min-height: 44px;
+  font-size: calc(16px * var(--user-font-scale, 1));
+}

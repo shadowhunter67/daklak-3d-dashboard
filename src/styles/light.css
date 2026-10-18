@@ -257,3 +257,101 @@
   color: #155c87;
   text-decoration: underline;
 }
+
+/* Detail map directory + intro (legacy classes kept; light variants must win over their dark rules). */
+:root[data-theme='light'] .detail-map-viewport__sidebar .accessible-directory,
+:root[data-theme='light'] .detail-map-viewport__sidebar .directory-table,
+:root[data-theme='light'] .detail-map-viewport__sidebar {
+  background: #ffffff;
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar .directory-row {
+  color: #14312b;
+  border-color: #e2eae5;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar .directory-row > :first-child {
+  color: #0b241b;
+  font-weight: 700;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar .directory-header {
+  background: #f3f6f4;
+  color: #4d6b62;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar input[type='search'],
+:root[data-theme='light'] .detail-map-viewport__sidebar input {
+  color: #14312b;
+  background: #ffffff;
+  border: 1px solid #cbd8d1;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar h2,
+:root[data-theme='light'] .detail-map-viewport__sidebar .eyebrow,
+:root[data-theme='light'] .detail-map-viewport__sidebar label,
+:root[data-theme='light'] .detail-map-viewport__sidebar .directory-status {
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar .eyebrow {
+  color: #4d6b62;
+}
+
+/* Directory filter chips and the data-source notice on the light map page. */
+:root[data-theme='light'] .directory-filters button {
+  color: #14312b;
+  background: #ffffff;
+  border: 1px solid #cbd8d1;
+  min-height: 44px;
+  font-size: calc(16px * var(--user-font-scale, 1));
+}
+:root[data-theme='light'] .directory-filters button[aria-pressed='true'] {
+  background: #f6dd9b;
+  border-color: #e4bc5e;
+  color: #1b2a22;
+  font-weight: 700;
+}
+:root[data-theme='light'] .directory-filters span {
+  color: inherit;
+  opacity: 0.8;
+}
+:root[data-theme='light'] .detail-map-source-notice strong,
+:root[data-theme='light'] .detail-map-source-notice b {
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-source-notice p:not(.eyebrow) {
+  color: #34524a;
+  font-size: calc(16px * var(--user-font-scale, 1));
+}
+:root[data-theme='light'] .detail-map-source-notice .eyebrow {
+  color: #4d6b62;
+}
+
+/* The map HUD wrapper is only a positioning frame; its children (legend, scale, north) are the
+   cards. Painting the frame white hid a 180px strip of the map. */
+:root[data-theme='light'] .detail-map-map-hud {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+:root[data-theme='light'] .detail-map-north {
+  background: #ffffff;
+  border: 1px solid #cbd8d1;
+  border-radius: 999px;
+  color: #14312b;
+  width: 44px;
+  right: 0;
+  padding: 4px 0;
+}
+:root[data-theme='light'] .detail-map-scale {
+  background: #ffffff;
+  color: #14312b;
+  border: 1px solid #cbd8d1;
+  border-radius: 8px;
+}
+:root[data-theme='light'] .detail-map-legend {
+  font-size: calc(14px * var(--user-font-scale, 1));
+}
+:root[data-theme='light'] .detail-map-legend strong,
+:root[data-theme='light'] .detail-map-legend .legend-title {
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-layer-tabs button:not([aria-pressed='true']) {
+  color: #14312b;
+}
