@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import labels from '#province-assets/daklak-labels.json';
 import { AppSidebar } from './components/layout/AppSidebar';
 import { DashboardHeader } from './components/layout/DashboardHeader';
-import type { LocalSearchEntry } from './components/detail-map/localSearchIndex';
+import type { SearchEntry } from './features/search/globalSearchIndex';
 import { DashboardPanels } from './components/layout/DashboardPanels';
 import { DatasetFooter } from './components/layout/DatasetFooter';
 import { MapViewport } from './components/layout/MapViewport';
@@ -199,9 +199,17 @@ export default function App() {
   const goToPortfolio = (filters: PortfolioFilters = {}, opts?: { replace?: boolean }) =>
     navigate(serializePortfolioHash(filters), opts);
   const goToOverview = () => navigate('', { replace: false });
-  const selectPlace = (entry: LocalSearchEntry) => {
+  const selectPlace = (entry: SearchEntry) => {
+    if (entry.kind === 'project') {
+      navigate(serializeProjectDetailHash(entry.id));
+      return;
+    }
+    if (entry.kind === 'place') {
+      navigate(serializeDioramaHash(entry.id));
+      return;
+    }
     if (isProjectRoute) navigate('', { replace: false });
-    select(entry.code);
+    select(entry.id);
     if (viewMode === 'map') {
       setDetailMapCamera({
         latitude: entry.latitude,

@@ -53,9 +53,11 @@ describe('ExecutiveOverview', () => {
   it('renders KPI cards, priority projects and the illustrative-data disclaimer once loaded', async () => {
     renderWithI18n(<ExecutiveOverview source={FakeProjectPortfolioSource.ok(portfolio())} />);
     await screen.findByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' });
-    expect(screen.getByText(/DỮ LIỆU MINH HỌA/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/DỮ LIỆU MINH HỌA/, { selector: '.ui-page-header .ui-illustrative-badge' }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Chỉ số tổng quan' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: 'Dự án cần chú ý' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /Dự án cần chú ý \(\d+\)/ })).toBeInTheDocument();
   });
 
   it('shows an explicit empty state for a portfolio with zero projects, not a blank/zeroed KPI grid', async () => {

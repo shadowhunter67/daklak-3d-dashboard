@@ -39,11 +39,7 @@
   --font-size-body: calc(16px * var(--user-font-scale));
   --font-size-control: calc(15px * var(--user-font-scale));
 
-  /* Design tokens — Executive Overview + shared dashboard surfaces (2026-09 UI polish pass).
-     Consolidates literal colour/spacing values that were previously repeated across the
-     Executive Overview components (`.priority-project-list`, `.alert-list`,
-     `.portfolio-status-chart`, `.data-health-panel`, `.kpi-card`) into named tokens, without
-     touching the values themselves — same emerald/gold "provincial command center" palette. */
+  /* Design tokens — Executive Overview + shared dashboard surfaces (2026-09 UI polish pass). */
   /* Panels are a real, lifted surface rather than a 3%-white wash of the page. Measured against
      the reference app this was modelled on, whose dark ground-to-panel step is 1.48:1; this is
      1.20:1, the most lift the existing status colours and the scrollbar thumb tolerate before
@@ -3154,9 +3150,9 @@ footer a {
    width asserts overlap and overflow, neither of which notices two tidy columns on different
    edges. `layout-regression.spec.ts` now pins the shared edge at 1920px and 2560px. */
 .executive-overview > * {
-  max-width: 1600px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
 }
 .executive-overview h2 {
   margin-block: var(--space-1) var(--space-2);
@@ -3297,21 +3293,6 @@ footer a {
   background: var(--slab-foot);
   box-shadow: var(--lift-slab);
 }
-.executive-overview__mock-badge {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin: 0;
-  color: var(--gold-strong);
-  font-size: var(--font-size-body);
-  font-weight: 600;
-  line-height: 1.5;
-}
-.executive-overview__mock-badge::before {
-  content: 'ⓘ';
-  flex: 0 0 auto;
-  font-size: 16px;
-}
 .executive-overview__status {
   display: flex;
   flex-wrap: wrap;
@@ -3388,193 +3369,6 @@ footer a {
   cursor: pointer;
 }
 
-/* One divided panel, not seven floating cards. Seven separate bordered boxes read as seven
-   unrelated facts; a single ruled strip reads as one row of related indicators, which is what they
-   are. `gap: 1px` over a container painted in the rule colour draws the dividers — cheaper and
-   more robust than per-cell borders, which would need `:nth-child` arithmetic that changes with
-   the column count. A fixed 7-column track (not `auto-fill`) is what makes that safe: there is
-   never a trailing empty track left showing the rule colour as a stray block. */
-.kpi-card-grid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 1px;
-  margin: 0 0 var(--space-6);
-  padding: 0;
-  border: 1px solid var(--panel-rule);
-  border-radius: var(--radius-lg);
-  background: var(--panel-rule);
-  box-shadow: var(--lift);
-  list-style: none;
-  /* Clips the corner cells to the container's radius. */
-  overflow: hidden;
-}
-.kpi-card {
-  /* min-width: 0 overrides the grid-item default (min-width: auto), which otherwise lets a long
-     unbroken value (e.g. a large VND amount with no spaces) force the card wider than its grid
-     track and visually spill into the next card instead of wrapping. */
-  min-width: 0;
-  overflow: hidden;
-  padding: 16px 18px;
-  /* Same top-lit ramp as the panels, per cell. Identical in every cell, so the seven of them still
-     read as one continuous band rather than a row of separately shaded tiles. */
-  background: linear-gradient(180deg, var(--panel) 0%, #0d2523 100%);
-}
-.kpi-card[data-unavailable] {
-  color: #8fa39a;
-}
-/* Below this the seven cells get too narrow to hold a label and a figure, so the strip breaks back
-   into the independent wrapping cards it replaced. `auto-fill` may leave a trailing empty track
-   here, which is why the divider colour goes back to per-cell borders in this mode. */
-@media (max-width: 1199px) {
-  .kpi-card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: var(--space-3);
-    border: 0;
-    border-radius: 0;
-    background: none;
-    overflow: visible;
-  }
-  .kpi-card {
-    padding: 14px 16px;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    background: #ffffff08;
-  }
-  .kpi-card[data-unavailable] {
-    border-style: dashed;
-  }
-}
-.kpi-card__label {
-  margin: 0 0 6px;
-  color: #7fa39a;
-  font-size: var(--font-size-label);
-  font-weight: 600;
-  letter-spacing: 0.03em;
-}
-.kpi-card__value {
-  margin: 0;
-  color: #e9f2ed;
-  font-family: var(--font-mono);
-  font-size: calc(clamp(19px, 1.9vw, 25px) * var(--user-font-scale));
-  font-weight: 600;
-  /* Mono at display sizes sets loose; the reference dashboard pulls it back by the same ~0.03em. */
-  letter-spacing: -0.03em;
-  line-height: 1.3;
-  overflow-wrap: anywhere;
-}
-/* The money KPI is the one value that is not a bare number — `formatKpiValue` fuses a figure to a
-   unit word ("2.453 tỷ ₫"), roughly doubling the character count of its neighbours. At the shared
-   size mono wrapped it onto two lines in every viewport measured, so it gets its own smaller step
-   rather than dragging the other six figures down to fit it. */
-.kpi-card[data-kpi-group='money'] .kpi-card__value {
-  font-size: calc(clamp(16px, 1.45vw, 20px) * var(--user-font-scale));
-}
-.kpi-card[data-unavailable] .kpi-card__value {
-  color: #8fa39a;
-  font-size: calc(17px * var(--user-font-scale));
-  font-weight: 600;
-}
-.kpi-card__explanation {
-  margin: 6px 0 0;
-  color: #7fa39a;
-  font-size: var(--font-size-label);
-  line-height: 1.5;
-}
-/* Decorative colour swatch per KPI category (money/rate/count/warning) — purely visual grouping,
-   never the only signal for anything: the label text next to it always says what the number means. */
-.kpi-card__icon {
-  display: inline-grid;
-  place-items: center;
-  width: 42px;
-  height: 42px;
-  margin-bottom: 12px;
-  border-radius: 50%;
-  color: #082a25;
-}
-.kpi-card__icon svg {
-  width: 22px;
-  height: 22px;
-  stroke-width: 2;
-}
-.kpi-card[data-kpi-group='money'] .kpi-card__icon {
-  background: #f0c75e;
-}
-.kpi-card[data-kpi-group='rate'] .kpi-card__icon {
-  background: #69c9b2;
-}
-.kpi-card[data-kpi-group='count'] .kpi-card__icon {
-  background: #8db8e8;
-}
-.kpi-card[data-kpi-group='warning'] .kpi-card__icon {
-  background: #ed8a6b;
-}
-.kpi-card[data-unavailable] .kpi-card__icon {
-  background: #8fa39a54;
-}
-.kpi-card__trend {
-  margin: 6px 0 0;
-  font-size: var(--font-size-label);
-  font-weight: 600;
-}
-.kpi-card__trend[data-direction='increase'] {
-  color: #6fcf97;
-}
-.kpi-card__trend[data-direction='decrease'] {
-  color: #e57373;
-}
-.kpi-card__trend[data-direction='flat'] {
-  color: #8fa39a;
-}
-
-/* Main (~65%) / sidebar (~35%) split — main carries the two things a leader acts on (attention
-   list + status distribution), sidebar carries supporting context (alerts + data trust). Fixes
-   the earlier layout where the sidebar stacked three widgets against a single short list on the
-   left, leaving a large uneven blank area under the attention list on tall viewports. */
-.executive-overview__columns {
-  display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr);
-  gap: var(--space-6);
-  align-items: start;
-}
-.executive-overview__main-column,
-.executive-overview__side-column {
-  display: grid;
-  gap: var(--space-6);
-  align-content: start;
-}
-
-.priority-project-list,
-.alert-list,
-.portfolio-status-chart,
-.data-health-panel {
-  /* No top padding: the heading below is a full-bleed head band and supplies its own. */
-  padding: 0 var(--space-5) var(--space-5);
-  border: 1px solid var(--panel-rule);
-  border-radius: var(--radius-lg);
-  /* The top stop is exactly --panel and every stop below it only darkens, so the panel keeps the
-     lift it was measured at while gaining the depth a flat fill has none of. Nothing sitting on it
-     can lose contrast: the light text, the pills and the rules all improve as the surface falls
-     away beneath them. */
-  background: linear-gradient(180deg, var(--panel) 0%, #0e2724 52%, #0c2320 100%);
-  box-shadow: var(--lift);
-  overflow: hidden;
-}
-/* A titled band closed by a rule, not a heading floating in the panel's top padding. The negative
-   inline margin bleeds the rule to the panel edge while the text keeps the panel's own inset. */
-.priority-project-list h3,
-.alert-list h3,
-.portfolio-status-chart h3,
-.data-health-panel h3 {
-  margin: 0 calc(var(--space-5) * -1) var(--space-5);
-  padding: 14px var(--space-5);
-  border-bottom: 1px solid var(--panel-rule);
-  background: linear-gradient(180deg, #ffffff0f 0%, #ffffff03 100%);
-  color: var(--text-primary);
-  font-size: clamp(15px, 1.2vw, 17px);
-  font-weight: 700;
-  letter-spacing: 0.01em;
-}
-
 .data-sources-panel {
   position: fixed;
   right: 16px;
@@ -3643,137 +3437,6 @@ footer a {
   margin: 12px 0 0;
   color: #7fa39a;
   font-size: var(--font-size-label);
-}
-.priority-project-list ol {
-  display: grid;
-  /* Rules, not gaps: rows read as one continuous list of comparable records rather than a stack of
-     separate cards, matching how the portfolio table already presents the same kind of data. */
-  gap: 0;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.priority-project-item {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-4);
-  /* Negative inline margin lets the rule and the hover fill span the panel's full inner width
-     while the content keeps a comfortable inset from it. */
-  padding: var(--space-4) var(--space-5);
-  margin-inline: calc(var(--space-5) * -1);
-  border: 0;
-  border-top: 1px solid var(--border-subtle);
-  background: none;
-  transition: background 150ms ease;
-}
-.priority-project-item:first-child {
-  border-top: 0;
-}
-.priority-project-item:hover {
-  background: var(--surface-1);
-}
-.priority-project-item__main {
-  min-width: 0;
-}
-.priority-project-item__name {
-  margin: 0 0 6px;
-  color: var(--text-primary);
-  font-size: var(--font-size-body);
-  font-weight: 700;
-  line-height: 1.4;
-}
-.priority-project-item__code {
-  margin: 0 0 8px;
-  font-family: var(--font-mono);
-  color: var(--text-muted);
-  font-size: var(--font-size-label);
-  font-weight: 400;
-  line-height: 1.5;
-  /* An identifier is one token: let the line wrap around it, never through its hyphens. */
-  overflow-wrap: normal;
-  word-break: keep-all;
-}
-.priority-project-item__meta {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  margin: 0 0 6px;
-  color: var(--text-secondary);
-  font-size: var(--font-size-label);
-  line-height: 1.5;
-}
-/* A small status dot before the status word — the same "text + shape" pairing used elsewhere,
-   never colour alone. Neutral by default; specific statuses get a semantic colour below. */
-/* Status reads as a tinted pill carrying its own dot — the shape and the word both survive when
-   colour does not, so this never depends on hue alone. Tints are the accent at 12% over the panel;
-   at 15% the "delayed" pair drops under 4.5:1, so 12% is the ceiling, not a taste call. */
-.priority-project-item__status {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 10px;
-  border-radius: 999px;
-  background: #1f3a37;
-  color: var(--text-secondary);
-  font-weight: 600;
-}
-.priority-project-item__status::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: currentcolor;
-}
-.priority-project-item__status[data-status='at-risk'] {
-  background: #25392c;
-  color: var(--color-warning);
-}
-.priority-project-item__status[data-status='delayed'] {
-  background: #263732;
-  color: #efa287;
-}
-.priority-project-item__status[data-status='suspended'] {
-  background: #273734;
-  color: #f4a3a0;
-}
-.priority-project-item__status[data-status='active'] {
-  background: #1a3b33;
-  color: var(--color-success);
-}
-/* Wider than the 64px the portfolio table uses: this list has one row per project rather than a
-   dense grid, so the bar has room to be readable rather than merely indicative. */
-.priority-project-item__progress {
-  width: 120px;
-  margin: 2px 0 8px;
-}
-.priority-project-item__reason {
-  margin: 0;
-  color: var(--gold);
-  font-size: var(--font-size-label);
-  font-weight: 600;
-  line-height: 1.5;
-}
-.priority-project-item__action {
-  flex: 0 0 auto;
-  min-height: 38px;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  padding: 8px 16px;
-  color: var(--gold);
-  background: #d4a44612;
-  cursor: pointer;
-  font-size: var(--font-size-label);
-  font-weight: 600;
-  white-space: nowrap;
-  transition:
-    background 150ms ease,
-    border-color 150ms ease;
-}
-.priority-project-item__action:hover {
-  border-color: var(--gold);
-  background: #d4a4461f;
 }
 
 .alert-group {
@@ -3927,111 +3590,6 @@ footer a {
   white-space: nowrap;
 }
 
-/* "Bản ghi hợp lệ" is the single number a leader checks first to decide whether to trust the rest
-   of the dashboard — pulled out of the grid into its own headline (spec §12: "phải nhìn giống một
-   system health summary"), coloured positive when every record is valid. */
-.data-health-panel__headline {
-  display: flex;
-  align-items: baseline;
-  gap: var(--space-2);
-  margin: 0 0 var(--space-4);
-}
-.data-health-panel__headline-value {
-  font-family: var(--font-mono);
-  color: var(--text-secondary);
-  font-size: clamp(22px, 2vw, 26px);
-  font-weight: 700;
-}
-.data-health-panel__headline[data-positive] .data-health-panel__headline-value {
-  color: var(--color-success);
-}
-.data-health-panel__headline-label {
-  color: var(--text-muted);
-  font-size: var(--font-size-label);
-}
-.data-health-panel__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: var(--space-2) var(--space-4);
-  margin: 0;
-  font-size: var(--font-size-label);
-}
-.data-health-panel__grid dt {
-  margin: 0 0 2px;
-  color: var(--text-muted);
-}
-.data-health-panel__grid dd {
-  font-family: var(--font-mono);
-  margin: 0;
-  color: var(--text-primary);
-  font-weight: 600;
-}
-.data-health-panel__grid dd[data-positive] {
-  color: var(--color-success);
-}
-.data-health-panel__divider {
-  margin: var(--space-4) 0;
-  border-top: 1px solid var(--border-subtle);
-}
-.data-health-panel h4 {
-  margin: var(--space-5) 0 var(--space-2);
-  color: var(--text-secondary);
-  font-size: var(--font-size-label);
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-.confidence-breakdown {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin: 0 0 var(--space-4);
-  padding: 0;
-  list-style: none;
-  font-size: var(--font-size-label);
-  color: var(--text-secondary);
-}
-.confidence-breakdown li {
-  padding: 3px 10px;
-  border: 1px solid var(--border-subtle);
-  border-radius: 999px;
-}
-.confidence-breakdown li[data-confidence='verified'],
-.confidence-breakdown li[data-confidence='high'] {
-  border-color: #6fcf9755;
-  color: var(--color-success);
-}
-.confidence-breakdown li[data-confidence='low'],
-.confidence-breakdown li[data-confidence='unknown'] {
-  border-color: #e5737355;
-  color: var(--color-danger);
-}
-.data-health-panel__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-.data-health-panel__provenance-link,
-.data-health-panel__data-readiness-link {
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  padding: 8px 16px;
-  margin: 0;
-  color: var(--gold);
-  background: #d4a44612;
-  cursor: pointer;
-  font-size: var(--font-size-label);
-  font-weight: 600;
-  transition:
-    background 150ms ease,
-    border-color 150ms ease;
-}
-.data-health-panel__provenance-link:hover,
-.data-health-panel__data-readiness-link:hover {
-  border-color: var(--gold);
-  background: #d4a4461f;
-}
-
 .project-summary-backdrop {
   position: fixed;
   z-index: 30;
@@ -4098,40 +3656,6 @@ footer a {
   font-size: var(--font-size-label);
 }
 
-@media (max-width: 900px) {
-  .executive-overview__columns {
-    grid-template-columns: 1fr;
-  }
-  .status-legend {
-    grid-template-columns: 1fr;
-  }
-  .priority-project-list {
-    padding: var(--space-4);
-  }
-}
-@media (max-width: 767px) and (orientation: portrait) {
-  .executive-overview {
-    inset: calc(var(--mobile-header-height) + var(--mobile-tabs-height)) 0 0;
-    padding: 0 12px 32px;
-  }
-  .executive-overview h2 {
-    font-size: 19px;
-  }
-  .executive-overview__notice {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .kpi-card-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-  .priority-project-item {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .priority-project-item__action {
-    align-self: flex-start;
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .skip-link {
     transition: none;
@@ -5277,8 +4801,8 @@ footer a {
 }
 
 .reports-view {
-  max-width: 1600px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
 }
 .reports-view > h2 {
   font-family: var(--font-display, inherit);

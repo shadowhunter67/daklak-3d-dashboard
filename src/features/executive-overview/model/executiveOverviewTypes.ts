@@ -87,6 +87,8 @@ export interface ExecutiveOverviewModel {
    * Luôn có đủ mọi status key (giá trị 0 nếu không có dự án nào), để UI không phải tự suy luận
    * key nào tồn tại. */
   statusDistribution: Record<ProjectStatus, number>;
+  /** Số dự án hợp lệ gắn theo từng mã địa bàn, không bị giới hạn bởi danh sách top-5. */
+  projectCountByAdministrativeArea: Record<string, number>;
   priorityProjects: ProjectAttentionItem[];
   alerts: PortfolioAlert[];
   dataHealth: DataHealthSummary;

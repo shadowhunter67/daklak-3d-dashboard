@@ -1,18 +1,21 @@
 import { useMemo, useState } from 'react';
 import { geoMercator, geoPath } from 'd3-geo';
 import wards from '#province-assets/daklak-wards-render.json';
+import labels from '#province-assets/daklak-labels.json';
 import { unitMetrics } from '../../data/unitMetrics';
+import { layoutOverviewLabels, OVERVIEW_LABEL_FONT_SIZE } from './overviewMapLabels';
 import { formatSubUnits } from '../../data/formatSubUnits';
 import { getUnitProfile } from '../../data/unitProfiles';
-import labels from '#province-assets/daklak-labels.json';
-import { PinIcon } from '../../components/layout/icons';
 import type { Metric, WardCollection } from '../../types/map';
 import { sortAdministrativeUnits } from '../../utils/administrativeUnits';
 import { normalizeSearchText } from '../../utils/search';
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import { formatNumber } from '../../i18n/formatters';
-import type { ProjectAttentionItem } from './model/executiveOverviewTypes';
+import { serializePortfolioHash, serializeReportsHash } from '../../routing/hashRoute';
+import { useHashRoute } from '../../routing/useHashRoute';
+import { Card, PanelHeader, StatList } from '../../components/ui';
+import { BuildingIcon, ListIcon, MapIcon, PinIcon } from '../../components/layout/icons';
 
 const collection = wards as WardCollection;
 const metricMap = unitMetrics as Partial<Record<string, Metric>>;
@@ -24,7 +27,6 @@ const units = sortAdministrativeUnits(collection.features.map(({ properties }) =
 
 const MAP_WIDTH = 640;
 const MAP_HEIGHT = 560;
-// Projected once at module load: 102 polygons, no reason to redo it per render.
 const projection = geoMercator().fitExtent(
   [
     [14, 14],
@@ -38,12 +40,16 @@ const wardPaths = collection.features.map((feature) => ({
   type: feature.properties.type,
   d: toPath(feature) ?? '',
 }));
-const mapLabels = Object.entries(labelMap)
-  .filter(([, label]) => label.priority === 1)
-  .flatMap(([code, label]) => {
+// All 102 names are drawn (never filtered by priority); colliding ones are displaced with a leader
+// line back to their true position. See overviewMapLabels.ts.
+const mapLabels = layoutOverviewLabels(
+  Object.entries(labelMap).flatMap(([code, label]) => {
     const point = projection([label.longitude, label.latitude]);
-    return point ? [{ code, name: label.name, x: point[0], y: point[1] }] : [];
-  });
+    return point
+      ? [{ code, name: label.name, x: point[0], y: point[1], priority: label.priority }]
+      : [];
+  }),
+);
 
 type TypeFilter = 'all' | 'xa' | 'phuong';
 
@@ -68,20 +74,27 @@ function WardList() {
     ['xa', t('workspace.wards.communes', { count: String(communeCount) })],
     ['phuong', t('workspace.wards.wards', { count: String(wardCount) })],
   ];
+
   return (
-    <section className="workspace-card workspace-wards" aria-labelledby="workspace-wards-heading">
-      <h3 id="workspace-wards-heading">
-        {t('workspace.wards.heading', { count: String(units.length) })}
-      </h3>
+    <Card className="overview-workspace__directory" aria-labelledby="workspace-wards-heading">
+      <PanelHeader
+        title={t('workspace.wards.heading', { count: String(units.length) })}
+        icon={<ListIcon />}
+        headingId="workspace-wards-heading"
+      />
       <input
         type="search"
-        className="workspace-wards__search"
+        className="overview-workspace__search"
         aria-label={t('workspace.wards.search')}
         placeholder={t('workspace.wards.search')}
         value={query}
         onChange={(event) => setQuery(event.target.value)}
       />
-      <div className="workspace-chips" role="group" aria-label={t('workspace.wards.filterAria')}>
+      <div
+        className="overview-workspace__filters"
+        role="group"
+        aria-label={t('workspace.wards.filterAria')}
+      >
         {chips.map(([value, label]) => (
           <button
             key={value}
@@ -94,9 +107,9 @@ function WardList() {
         ))}
       </div>
       {rows.length === 0 ? (
-        <p className="workspace-empty">{t('workspace.wards.empty')}</p>
+        <p className="overview-workspace__empty">{t('workspace.wards.empty')}</p>
       ) : (
-        <ul className="workspace-wards__list">
+        <ul className="overview-workspace__directory-list">
           {rows.map((unit) => (
             <li key={unit.code}>
               <button
@@ -113,7 +126,7 @@ function WardList() {
           ))}
         </ul>
       )}
-    </section>
+    </Card>
   );
 }
 
@@ -123,62 +136,81 @@ function ProvinceMap() {
   const select = useMapStore((state) => state.select);
   const count = String(wardPaths.length);
   return (
-    <section className="workspace-card workspace-map" aria-labelledby="workspace-map-heading">
-      <header className="workspace-map__title">
-        <PinIcon />
-        <div>
-          <h3 id="workspace-map-heading">{t('workspace.map.heading')}</h3>
-          <p>{t('workspace.map.subheading', { count })}</p>
-        </div>
-      </header>
-      <svg
-        className="workspace-map__svg"
-        viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
-        role="img"
-        aria-label={t('workspace.map.aria', { count })}
-      >
-        {wardPaths.map((ward) => (
-          <path
-            key={ward.code}
-            d={ward.d}
-            data-type={ward.type}
-            data-selected={ward.code === selectedCode || undefined}
-            onClick={() => select(ward.code === selectedCode ? null : ward.code)}
-          />
-        ))}
-        {/* Raise the selected polygon above its neighbours so its gold outline isn't clipped. */}
-        {selectedCode && (
-          <path
-            className="workspace-map__selected"
-            d={wardPaths.find((ward) => ward.code === selectedCode)?.d}
-            pointerEvents="none"
-          />
-        )}
-        <g className="workspace-map__labels" aria-hidden="true">
-          {mapLabels.map((label) => (
-            <text key={label.code} x={label.x} y={label.y} textAnchor="middle">
-              {label.name}
-            </text>
+    <Card className="overview-workspace__map" aria-labelledby="workspace-map-heading">
+      <PanelHeader
+        title={t('workspace.map.heading')}
+        icon={<MapIcon />}
+        headingId="workspace-map-heading"
+      />
+      <p className="overview-workspace__map-subtitle">{t('workspace.map.subheading', { count })}</p>
+      <div className="overview-workspace__map-canvas">
+        <svg
+          className="overview-workspace__map-svg"
+          viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
+          role="img"
+          aria-label={t('workspace.map.aria', { count })}
+        >
+          {wardPaths.map((ward) => (
+            <path
+              key={ward.code}
+              d={ward.d}
+              data-type={ward.type}
+              data-selected={ward.code === selectedCode || undefined}
+              onClick={() => select(ward.code === selectedCode ? null : ward.code)}
+            />
           ))}
-        </g>
-      </svg>
-      <ul className="workspace-map__legend" aria-label={t('workspace.map.legend')}>
-        <li data-swatch="xa">{t('workspace.map.legendCommune')}</li>
-        <li data-swatch="phuong">{t('workspace.map.legendWard')}</li>
-        <li data-swatch="selected">{t('workspace.map.legendSelected')}</li>
-      </ul>
-    </section>
+          {selectedCode && (
+            <path
+              className="overview-workspace__map-selected"
+              d={wardPaths.find((ward) => ward.code === selectedCode)?.d}
+              pointerEvents="none"
+            />
+          )}
+          <g className="overview-workspace__map-labels" aria-hidden="true">
+            {mapLabels
+              .filter((label) => label.displaced)
+              .map((label) => (
+                <line
+                  key={`leader-${label.code}`}
+                  x1={label.anchorX}
+                  y1={label.anchorY}
+                  x2={label.x}
+                  y2={label.y}
+                  className="overview-workspace__map-leader"
+                />
+              ))}
+            {mapLabels.map((label) => (
+              <text
+                key={label.code}
+                x={label.x}
+                y={label.y}
+                textAnchor="middle"
+                dominantBaseline="central"
+                fontSize={OVERVIEW_LABEL_FONT_SIZE}
+                data-selected={label.code === selectedCode || undefined}
+              >
+                {label.name}
+              </text>
+            ))}
+          </g>
+        </svg>
+        <ul className="overview-workspace__legend" aria-label={t('workspace.map.legend')}>
+          <li data-swatch="xa">{t('workspace.map.legendCommune')}</li>
+          <li data-swatch="phuong">{t('workspace.map.legendWard')}</li>
+          <li data-swatch="selected">{t('workspace.map.legendSelected')}</li>
+        </ul>
+      </div>
+    </Card>
   );
 }
 
 function QuickInfo({
-  attention,
-  onOpenPortfolio,
+  projectCountByAdministrativeArea,
 }: {
-  attention: readonly ProjectAttentionItem[];
-  onOpenPortfolio?: () => void;
+  projectCountByAdministrativeArea: Record<string, number>;
 }) {
   const { t, locale } = useTranslation();
+  const { navigate } = useHashRoute();
   const selectedCode = useMapStore((state) => state.selectedCode);
   const setViewMode = useMapStore((state) => state.setViewMode);
   const setDetailMapCamera = useMapStore((state) => state.setDetailMapCamera);
@@ -188,9 +220,7 @@ function QuickInfo({
   const label = selectedCode ? labelMap[selectedCode] : undefined;
   const metric = selectedCode ? metricMap[selectedCode] : undefined;
   const profile = selectedCode ? getUnitProfile(selectedCode) : undefined;
-  const related = selectedCode
-    ? attention.filter((item) => item.administrativeAreaCodes.includes(selectedCode))
-    : [];
+  const projectCount = selectedCode ? (projectCountByAdministrativeArea[selectedCode] ?? 0) : 0;
 
   const viewOnMap = () => {
     if (label) {
@@ -206,83 +236,87 @@ function QuickInfo({
   };
 
   return (
-    <section className="workspace-card workspace-info" aria-labelledby="workspace-info-heading">
-      <h3 id="workspace-info-heading">{t('workspace.info.heading')}</h3>
+    <Card className="overview-workspace__info" aria-labelledby="workspace-info-heading">
+      <PanelHeader
+        title={t('workspace.info.heading')}
+        icon={<BuildingIcon />}
+        headingId="workspace-info-heading"
+      />
       {!unit ? (
-        <p className="workspace-empty">{t('workspace.info.empty')}</p>
+        <div className="overview-workspace__empty overview-workspace__empty--info">
+          <PinIcon />
+          <p>{t('workspace.info.empty')}</p>
+        </div>
       ) : (
         <>
-          <p className="workspace-info__name">
-            {t(unit.type === 'phuong' ? 'unitType.ward' : 'unitType.commune')} {unit.name}
+          <p className="overview-workspace__unit-name">
+            <PinIcon />
+            <span>
+              {t(unit.type === 'phuong' ? 'unitType.ward' : 'unitType.commune')} {unit.name}
+            </span>
           </p>
-          <dl className="workspace-info__facts">
-            <div>
-              <dt>{t('workspace.info.type')}</dt>
-              <dd>{t(unit.type === 'phuong' ? 'unitType.ward' : 'unitType.commune')}</dd>
-            </div>
-            <div>
-              <dt>{t('workspace.info.area')}</dt>
-              <dd>{formatNumber(unit.areaKm2, locale)} km²</dd>
-            </div>
-            {metric && (
-              <div>
-                <dt>{t('workspace.info.population')}</dt>
-                <dd>{formatNumber(metric.population, locale)}</dd>
-              </div>
-            )}
-            {profile && (
-              <div>
-                <dt>{t('workspace.info.subUnits')}</dt>
-                <dd>{formatSubUnits(profile, t)}</dd>
-              </div>
-            )}
-          </dl>
-          <button type="button" className="workspace-info__primary" onClick={viewOnMap}>
+          <StatList
+            items={[
+              {
+                label: t('workspace.info.type'),
+                value: t(unit.type === 'phuong' ? 'unitType.ward' : 'unitType.commune'),
+              },
+              {
+                label: t('workspace.info.area'),
+                value: `${formatNumber(unit.areaKm2, locale)} km²`,
+              },
+              ...(metric
+                ? [
+                    {
+                      label: t('workspace.info.population'),
+                      value: formatNumber(metric.population, locale),
+                    },
+                  ]
+                : []),
+              ...(profile
+                ? [{ label: t('workspace.info.subUnits'), value: formatSubUnits(profile, t) }]
+                : []),
+            ]}
+          />
+          <button type="button" className="overview-workspace__primary" onClick={viewOnMap}>
             <PinIcon />
             {t('workspace.info.viewOnMap')}
           </button>
-          <div className="workspace-info__projects">
-            <div className="workspace-info__projects-head">
-              <h4>{t('workspace.info.projectsHeading', { count: String(related.length) })}</h4>
-              {onOpenPortfolio && (
-                <button type="button" onClick={onOpenPortfolio}>
-                  {t('workspace.info.viewAllProjects')}
-                </button>
-              )}
-            </div>
-            {related.length === 0 ? (
-              <p className="workspace-empty">{t('workspace.info.noProjects')}</p>
-            ) : (
-              <ul>
-                {related.map((item) => (
-                  <li key={item.projectId}>
-                    <span>{item.projectName}</span>
-                    <small data-status={item.status}>{item.statusLabel}</small>
-                  </li>
-                ))}
-              </ul>
+          <div className="overview-workspace__actions">
+            {projectCount > 0 && selectedCode && (
+              <button
+                type="button"
+                className="overview-workspace__secondary"
+                onClick={() => navigate(serializePortfolioHash({ area: selectedCode }))}
+              >
+                {t('workspace.info.viewProjects', { count: String(projectCount) })}
+              </button>
             )}
+            <button
+              type="button"
+              className="overview-workspace__secondary"
+              onClick={() => navigate(serializeReportsHash())}
+            >
+              {t('workspace.info.viewReports')}
+            </button>
           </div>
         </>
       )}
-    </section>
+    </Card>
   );
 }
 
-/** Ward list + province map + quick info, laid out like the reference design. All three read and
- * write the shared `selectedCode`, so a pick in any of them updates the other two. */
+/** Danh sách địa bàn, bản đồ hành chính và thông tin nhanh dùng chung `selectedCode`. */
 export function OverviewWorkspace({
-  attention,
-  onOpenPortfolio,
+  projectCountByAdministrativeArea,
 }: {
-  attention: readonly ProjectAttentionItem[];
-  onOpenPortfolio?: () => void;
+  projectCountByAdministrativeArea: Record<string, number>;
 }) {
   return (
     <div className="overview-workspace">
       <WardList />
       <ProvinceMap />
-      <QuickInfo attention={attention} onOpenPortfolio={onOpenPortfolio} />
+      <QuickInfo projectCountByAdministrativeArea={projectCountByAdministrativeArea} />
     </div>
   );
 }

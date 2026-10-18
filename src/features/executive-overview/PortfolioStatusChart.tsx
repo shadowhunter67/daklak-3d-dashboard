@@ -1,6 +1,8 @@
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
 import type { ProjectStatus } from '../../entities/project/types';
+import { Card, DonutChart, PanelHeader } from '../../components/ui';
+import { ChartIcon } from '../../components/layout/icons';
 
 /** Mỗi trạng thái có một màu riêng — trước đây 4 trạng thái tiền thi công (proposed/preparing/
  * approved/procurement) đều rơi vào cùng `DEFAULT_COLOR`, và `suspended` dùng một xám-xanh gần như
@@ -34,56 +36,32 @@ export function PortfolioStatusChart({
   const total = entries.reduce((sum, [, count]) => sum + count, 0);
   const statusLabel = (status: ProjectStatus) => t(`status.${status}` as MessageKey);
 
+  const segments = entries.map(([status, value]) => ({
+    label: statusLabel(status),
+    value,
+    tone: STATUS_COLOR[status] ?? DEFAULT_COLOR,
+  }));
+
   return (
-    <section aria-labelledby="status-chart-heading" className="portfolio-status-chart">
-      <h3 id="status-chart-heading">{t('statusChart.heading')}</h3>
+    <Card aria-labelledby="status-chart-heading" className="status-distribution-card">
+      <PanelHeader
+        title={t('statusChart.heading')}
+        icon={<ChartIcon />}
+        headingId="status-chart-heading"
+      />
       {total === 0 ? (
         <p>{t('statusChart.empty')}</p>
       ) : (
-        <>
-          {/* Biểu đồ trực quan — thuần CSS, không dùng thư viện chart (giữ initial bundle nhẹ). */}
-          <div
-            className="status-stacked-bar"
-            role="img"
-            aria-label={`${t('statusChart.ariaLabelPrefix')} ${entries
-              .map(([status, count]) =>
-                t('statusChart.segment', { label: statusLabel(status), count }),
-              )
-              .join(', ')}.`}
-          >
-            {entries.map(([status, count]) => (
-              <span
-                key={status}
-                className="status-stacked-bar__segment"
-                style={{
-                  width: `${(count / total) * 100}%`,
-                  background: STATUS_COLOR[status] ?? DEFAULT_COLOR,
-                }}
-              />
-            ))}
-          </div>
-          {/* Tương đương văn bản đầy đủ cho trình đọc màn hình và cho người dùng không phân biệt
-              màu — trạng thái không bao giờ chỉ truyền đạt bằng màu sắc. */}
-          <ul className="status-legend">
-            {entries.map(([status, count]) => (
-              <li key={status}>
-                <span
-                  className="status-legend__swatch"
-                  style={{ background: STATUS_COLOR[status] ?? DEFAULT_COLOR }}
-                  aria-hidden="true"
-                />
-                <span>
-                  {t('statusChart.legendItem', {
-                    label: statusLabel(status),
-                    count,
-                    percent: Math.round((count / total) * 100),
-                  })}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </>
+        <DonutChart
+          segments={segments}
+          totalLabel={t('statusChart.totalLabel')}
+          ariaLabel={`${t('statusChart.ariaLabelPrefix')} ${entries
+            .map(([status, count]) =>
+              t('statusChart.segment', { label: statusLabel(status), count }),
+            )
+            .join(', ')}.`}
+        />
       )}
-    </section>
+    </Card>
   );
 }

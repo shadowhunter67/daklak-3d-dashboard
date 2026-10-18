@@ -168,7 +168,7 @@ describe('DataProvenancePanel', () => {
    * (a non-header, non-fallback-id button, so the old code's `document.getElementById` fallback
    * couldn't paper over it either). This exercises the full real flow — a distinct trigger button
    * capturing itself via `captureProvenanceFocusTrigger` at click time, then the dialog mounting
-   * and autoFocusing away from it — the way `DataHealthPanel`/`DashboardHeader` actually do it.
+   * and autoFocusing away from it — the way `DataHealthCard`/`DashboardHeader` actually do it.
    */
   it('restores focus to the real trigger button, not the dialog itself, after autoFocus fires', async () => {
     useMapStore.setState({ provenancePanelOpen: false });

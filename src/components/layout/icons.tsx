@@ -50,6 +50,17 @@ export const DocumentIcon = () => (
     <path d="M14 3v4h4M9 12h6M9 16h6" />
   </Icon>
 );
+export const ListIcon = () => (
+  <Icon>
+    <path d="M8 6h13M8 12h13M8 18h13" />
+    <path d="M3.5 6h.1M3.5 12h.1M3.5 18h.1" />
+  </Icon>
+);
+export const BuildingIcon = () => (
+  <Icon>
+    <path d="M4 21V5l8-2v18M12 21h8V9h-8M7 7h1M7 11h1M7 15h1M15 12h1M15 16h1M10 21v-4h2v4" />
+  </Icon>
+);
 export const UsersIcon = () => (
   <Icon>
     <circle cx="9" cy="8.5" r="3" />

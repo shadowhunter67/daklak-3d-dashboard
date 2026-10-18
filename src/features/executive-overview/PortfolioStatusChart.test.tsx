@@ -31,11 +31,12 @@ describe('PortfolioStatusChart', () => {
     expect(chart.getAttribute('aria-label')).toContain('Chậm tiến độ 1 dự án');
   });
 
-  it('renders a text legend entry per status, never relying on color alone', () => {
+  it('renders the kit donut legend with values and percentages', () => {
     renderWithI18n(
       <PortfolioStatusChart statusDistribution={distribution({ active: 3, delayed: 1 })} />,
     );
-    expect(screen.getByText(/Đang triển khai: 3 dự án/)).toBeInTheDocument();
-    expect(screen.getByText(/Chậm tiến độ: 1 dự án/)).toBeInTheDocument();
+    const legend = document.querySelector('.ui-legend');
+    expect(legend?.textContent).toContain('Đang triển khai375%');
+    expect(legend?.textContent).toContain('Chậm tiến độ125%');
   });
 });

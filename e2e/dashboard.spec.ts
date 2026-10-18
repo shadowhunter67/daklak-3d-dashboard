@@ -855,11 +855,10 @@ test.describe('Executive Overview (Phase 2A)', () => {
     await expect(
       page.getByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' }),
     ).toBeVisible();
-    // `.header-mock-badge` is desktop-only (hidden under ~1100px, see global.css) — assert on
-    // Executive Overview's own badge, which is always present regardless of viewport.
-    await expect(page.locator('.executive-overview__mock-badge')).toBeVisible();
+    // The PageHeader owns the illustrative-data badge and keeps it visible at every viewport.
+    await expect(page.locator('.ui-illustrative-badge').first()).toBeVisible();
     await expect(page.getByRole('heading', { name: 'Chỉ số tổng quan' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Dự án cần chú ý' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Dự án cần chú ý \(\d+\)/ })).toBeVisible();
     // The 3D/2D/detail-map experiences must not be pulled in just to render the landing page.
     await expect(page.locator('canvas')).toHaveCount(0);
     await expect(page.locator('#detail-map-viewport')).toHaveCount(0);
@@ -925,7 +924,7 @@ test.describe('Executive Overview (Phase 2A)', () => {
     page,
   }) => {
     await page.goto('./');
-    const trigger = page.getByRole('button', { name: 'Xem tóm tắt' }).first();
+    const trigger = page.locator('.priority-projects-card__project-link').first();
     await trigger.focus();
     await trigger.click();
     const dialog = page.getByRole('dialog');
@@ -937,10 +936,10 @@ test.describe('Executive Overview (Phase 2A)', () => {
 
   test('communicates stale data explicitly instead of hiding it', async ({ page }) => {
     await page.goto('./');
-    await expect(page.getByRole('heading', { name: 'Sức khỏe dữ liệu' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Mức độ đầy đủ dữ liệu' })).toBeVisible();
     // The fixture seeds exactly one project with data older than the freshness SLA (see
     // src/entities/project/mockPortfolio.ts, prj-007) — it must surface, not be silent.
-    await expect(page.getByText('Dữ liệu quá hạn cập nhật')).toBeVisible();
+    await expect(page.getByText(/Đã phát hiện \d+ vấn đề cần xử lý/)).toBeVisible();
   });
 
   test('has no serious automated accessibility violations on Executive Overview', async ({

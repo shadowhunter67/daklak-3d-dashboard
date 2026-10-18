@@ -87,9 +87,11 @@ function overlapArea(a: Box, b: Box): number {
   return width * height;
 }
 
-function candidateOffsets(): ReadonlyArray<readonly [number, number]> {
+function candidateOffsets(
+  radii: readonly number[] = RADII_PX,
+): ReadonlyArray<readonly [number, number]> {
   const offsets: Array<readonly [number, number]> = [[0, 0]];
-  for (const radius of RADII_PX) {
+  for (const radius of radii) {
     for (const [dirX, dirY] of COMPASS_DIRECTIONS) {
       offsets.push([dirX * radius, dirY * radius]);
     }
@@ -103,7 +105,9 @@ const CANDIDATE_OFFSETS = candidateOffsets();
  * input label (by `id`) — a label is displaced, never dropped. */
 export function resolveLabelCollisions(
   labels: readonly LabelPlacementInput[],
+  options?: { radiiPx?: readonly number[] },
 ): LabelPlacementResult[] {
+  const candidates = options?.radiiPx ? candidateOffsets(options.radiiPx) : CANDIDATE_OFFSETS;
   const ordered = [...labels].sort((a, b) => {
     if (a.priority !== b.priority) return a.priority - b.priority;
     if (a.y !== b.y) return a.y - b.y;
@@ -115,11 +119,11 @@ export function resolveLabelCollisions(
   const results = new Map<string, LabelPlacementResult>();
 
   for (const label of ordered) {
-    let chosen: readonly [number, number] = CANDIDATE_OFFSETS[0];
+    let chosen: readonly [number, number] = candidates[0];
     let chosenBox = boxAt(label.x, label.y, label.width, label.height);
     let bestOverlap = Infinity;
 
-    for (const [offsetX, offsetY] of CANDIDATE_OFFSETS) {
+    for (const [offsetX, offsetY] of candidates) {
       const box = boxAt(label.x + offsetX, label.y + offsetY, label.width, label.height);
       let totalOverlap = 0;
       for (const placed of placedBoxes) {

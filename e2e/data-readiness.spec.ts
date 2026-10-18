@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test';
 test.describe('Data Readiness (Phase 5 §C)', () => {
   test('opens from Executive Overview and lands on #/data-readiness', async ({ page }) => {
     await page.goto('./');
-    await page.getByRole('button', { name: 'Xem Data Readiness' }).click();
+    await page.getByRole('button', { name: 'Xem chi tiết →' }).click();
     await expect(page.getByRole('heading', { name: 'Mức độ sẵn sàng dữ liệu' })).toBeVisible();
     await expect(page).toHaveURL(/#\/data-readiness$/);
   });

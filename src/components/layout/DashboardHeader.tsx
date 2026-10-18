@@ -1,7 +1,7 @@
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import { DEFAULT_DETAIL_MAP_CAMERA } from '../detail-map/detailMapTypes';
-import type { LocalSearchEntry } from '../detail-map/localSearchIndex';
+import type { SearchEntry } from '../../features/search/globalSearchIndex';
 import { FontScaleControl } from './FontScaleControl';
 import { GlobalSearch } from './GlobalSearch';
 import { HelpIcon, HomeIcon, MenuIcon } from './icons';
@@ -24,7 +24,7 @@ export function DashboardHeader({
   onSelectPlace,
 }: {
   onOpenMenu: () => void;
-  onSelectPlace: (entry: LocalSearchEntry) => void;
+  onSelectPlace: (entry: SearchEntry) => void;
 }) {
   const { t } = useTranslation();
   const dataMode = useMapStore((state) => state.dataMode);

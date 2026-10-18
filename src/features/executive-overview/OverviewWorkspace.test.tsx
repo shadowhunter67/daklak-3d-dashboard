@@ -7,7 +7,7 @@ import { OverviewWorkspace } from './OverviewWorkspace';
 function renderWorkspace() {
   render(
     <I18nProvider>
-      <OverviewWorkspace attention={[]} />
+      <OverviewWorkspace projectCountByAdministrativeArea={{}} />
     </I18nProvider>,
   );
 }
@@ -21,14 +21,18 @@ describe('OverviewWorkspace', () => {
     const all = screen.getByRole('button', { name: /^Tất cả \(\d+\)$/ });
     const total = Number(/\((\d+)\)/.exec(all.textContent ?? '')?.[1]);
     expect(total).toBeGreaterThan(0);
-    const list = document.querySelector('.workspace-wards__list') as HTMLElement;
+    const list = document.querySelector('.overview-workspace__directory-list') as HTMLElement;
     expect(within(list).getAllByRole('button')).toHaveLength(total);
     fireEvent.click(screen.getByRole('button', { name: /^Phường \(\d+\)$/ }));
     expect(within(list).getAllByRole('button').length).toBeLessThan(total);
   });
 
   it('selecting a unit fills the quick-info panel and enables "Xem trên bản đồ"', () => {
-    renderWorkspace();
+    render(
+      <I18nProvider>
+        <OverviewWorkspace projectCountByAdministrativeArea={{}} />
+      </I18nProvider>,
+    );
     expect(screen.getByText(/Chọn một xã, phường trong danh sách/)).toBeInTheDocument();
     fireEvent.change(screen.getByRole('searchbox', { name: 'Tìm xã, phường…' }), {
       target: { value: 'Buôn Ma Thuột' },

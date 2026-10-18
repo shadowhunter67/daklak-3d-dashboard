@@ -9,6 +9,7 @@ import {
   serializePortfolioHash,
   serializeReportsHash,
 } from '../../routing/hashRoute';
+import { BrandLogo } from './BrandLogo';
 import { DisplaySettings } from './DisplaySettings';
 import {
   ChartIcon,
@@ -121,7 +122,7 @@ export function AppSidebar({
       {mobileOpen && <div className="sidebar-backdrop" onClick={onClose} aria-hidden="true" />}
       <aside className="app-sidebar" data-open={mobileOpen || undefined}>
         <div className="sidebar-brand">
-          <div className="brand-mark">ĐL</div>
+          <BrandLogo />
           <div>
             <h1>
               ĐẮK LẮK <i>3D</i>
