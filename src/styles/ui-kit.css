@@ -2168,3 +2168,23 @@
 :root:not([data-theme='light']) .ui-kpi-detail {
   color: #d2e2db;
 }
+
+/* Inside the phone bottom sheet the panel is always shown in full: no collapse toggle there. */
+.mobile-sheet .hud-toggle {
+  display: none;
+}
+.mobile-sheet .stat-panel[data-collapsed='true'] {
+  width: auto;
+  min-height: 0;
+  padding: initial;
+}
+.mobile-sheet .stat-panel[data-collapsed='true'] > :not(.hud-toggle) {
+  display: revert;
+}
+
+/* Primary buttons: white on green in light, dark on gold in dark (white-on-gold fails 4.5:1). */
+:root:not([data-theme='light']) .reports-view__reset,
+:root:not([data-theme='light']) .project-portfolio__filter-reset,
+:root:not([data-theme='light']) .ui-page-root .ui-primary-button {
+  color: #10241f;
+}
