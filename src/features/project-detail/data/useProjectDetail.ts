@@ -39,6 +39,7 @@ export function useProjectDetail(
           bundles: result.data.bundles,
           context: { validAdministrativeCodes: result.data.validAdministrativeCodes, asOf },
           provenance: result.data.provenance,
+          referenceData: result.data.referenceData,
           projectId,
           isIllustrative: result.data.metadata.isIllustrative,
         });

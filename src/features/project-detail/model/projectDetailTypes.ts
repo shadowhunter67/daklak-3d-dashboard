@@ -5,12 +5,16 @@ import type {
   ProjectPriority,
   ProjectSector,
   ProjectStatus,
+  ProjectBundle,
   WorkPackage,
 } from '../../../entities/project/types';
 import type { KpiResult } from '../../../entities/project/kpi/types';
 import type { AttentionReasonCategory } from '../../../entities/project/attentionReason';
 import type { DatasetDescriptor } from '../../../data-platform/schemas/dataset';
-import type { ProjectPortfolioProvenance } from '../../../entities/project/adapters/ProjectPortfolioSource';
+import type {
+  ProjectPortfolioProvenance,
+  ProjectPortfolioReferenceData,
+} from '../../../entities/project/adapters/ProjectPortfolioSource';
 import type { AuthoritativeSnapshotExplanation } from '../../../entities/project/validation/authoritativeSnapshotExplanation';
 
 export interface ProjectDetailProvenanceEntry {
@@ -47,6 +51,14 @@ export interface ProjectDetailModel {
     priority: ProjectPriority;
     dataUpdatedAt: string;
     confidence: string;
+    verificationStatus: string;
+    dataOwner: string;
+    sourceDatasetId: string;
+    managingAuthority: string | null;
+    investor: string | null;
+    approvalDecision: string | null;
+    startDate: string | null;
+    geometryMetadata: ProjectBundle['project']['geometryMetadata'];
   };
   summary: {
     approvedBudget: number;
@@ -55,6 +67,7 @@ export interface ProjectDetailModel {
     disbursementRate: KpiResult;
     overallProgress: number;
     plannedProgress: number;
+    financialProgress: number;
     scheduleVariance: KpiResult;
     budgetVariance: KpiResult;
     plannedCompletionDate: string | null;
@@ -75,6 +88,7 @@ export interface ProjectDetailModel {
     geometry: ProjectGeometry | null;
     hasGeometry: boolean;
   };
+  referenceData: ProjectPortfolioReferenceData;
   provenance: ProjectDetailProvenanceEntry[];
   dataQualityIssueCount: number;
   /** Phase 6 (C1-C2) — giải thích authoritative snapshot cho lần quan sát tiến độ gần nhất. Xem
