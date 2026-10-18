@@ -15,6 +15,7 @@ import { useMapStore } from './stores/mapStore';
 import { useHashRoute } from './routing/useHashRoute';
 import {
   serializeDioramaHash,
+  serializeInvestmentCatalogHash,
   serializePortfolioHash,
   serializeProjectDetailHash,
 } from './routing/hashRoute';
@@ -32,6 +33,11 @@ const ProjectPortfolioView = lazy(() =>
 const ProjectDetailView = lazy(() =>
   import('./features/project-detail/ProjectDetailView').then((module) => ({
     default: module.ProjectDetailView,
+  })),
+);
+const InvestmentCatalogView = lazy(() =>
+  import('./features/investment-catalog/InvestmentCatalogView').then((module) => ({
+    default: module.InvestmentCatalogView,
   })),
 );
 const ReportsView = lazy(() =>
@@ -177,6 +183,7 @@ export default function App() {
     route.kind === 'project-detail' ||
     route.kind === 'data-readiness' ||
     route.kind === 'reports' ||
+    route.kind === 'investment-catalog' ||
     route.kind === 'diorama';
   const skipLinkTargetId = isProjectRoute
     ? route.kind === 'portfolio'
@@ -187,7 +194,9 @@ export default function App() {
           ? 'destination-diorama'
           : route.kind === 'reports'
             ? 'reports'
-            : 'data-readiness'
+            : route.kind === 'investment-catalog'
+              ? 'investment-catalog'
+              : 'data-readiness'
     : viewMode === 'map'
       ? 'detail-map-viewport'
       : viewMode === 'overview'
@@ -241,6 +250,7 @@ export default function App() {
                 filters={route.filters}
                 onFiltersChange={goToPortfolio}
                 onOpenProject={(projectId) => navigate(serializeProjectDetailHash(projectId))}
+                onOpenInvestmentCatalog={() => navigate(serializeInvestmentCatalogHash())}
                 onBackToOverview={goToOverview}
               />
             )}
@@ -265,6 +275,9 @@ export default function App() {
               />
             )}
             {route.kind === 'reports' && <ReportsView onBackToOverview={goToOverview} />}
+            {route.kind === 'investment-catalog' && (
+              <InvestmentCatalogView onBackToPortfolio={() => goToPortfolio()} />
+            )}
             {route.kind === 'data-readiness' && (
               <DataReadinessView
                 onBackToOverview={goToOverview}
@@ -318,7 +331,9 @@ export default function App() {
                 ? t('app.live.openedDiorama')
                 : route.kind === 'reports'
                   ? t('reports.title')
-                  : t('app.live.openedDataReadiness')
+                  : route.kind === 'investment-catalog'
+                    ? t('catalog.heading')
+                    : t('app.live.openedDataReadiness')
           : viewMode === 'map'
             ? t('app.live.openedMap')
             : viewMode === 'overview'

@@ -56,8 +56,13 @@ const dist = join(root, 'dist');
 // 22.6MB to 22.8MB. Measured, not guessed: origin/main was 22,602,328 bytes and this branch is
 // 22,625,270 bytes (+22,942 bytes; mainly the new shell CSS and UI modules). The 200KB rounded
 // headroom is intentionally small and keeps the existing JS/gzip/asset budgets unchanged.
+// totalJavaScriptBytes raised 3,400,000 -> 3,410,000 (investment-attraction catalog view, 2026-10).
+// Measured, not guessed: the branch head before the view was 3,399,731 bytes (269 under the cap),
+// so any new route could not fit. After first removing 40 dead i18n keys (-6.5KB) and reusing the
+// existing sector labels, the view still costs +6.9KB (lazy view chunk ~8.5KB + its vi/en strings),
+// giving 3,406,646. The gzip budget (935,303 / 950,000) is untouched. The 10KB raise leaves ~3KB.
 const limits = {
-  totalJavaScriptBytes: 3_400_000,
+  totalJavaScriptBytes: 3_410_000,
   totalJavaScriptGzipBytes: 950_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
