@@ -91,6 +91,14 @@
       "checksum": "6326a6ef22f02abe92b28714aea6dc538eec14322c04d7603bd10772f17fc015"
     },
     {
+      "path": "public/data/researched-projects.json.gz",
+      "datasetIds": ["researched-projects-qd1985"],
+      "classification": "public",
+      "delivery": "public-static-asset",
+      "checksum": "aabfc6d65bd1edb6744d9ce5ff9359dba9b6ce6a0e14252adac611384c8629eb",
+      "note": "Gzip, ~10 KB; fetched lazily at runtime by src/data/loadResearchedProjects.ts (not bundled). Rebuilt by scripts/research/build_researched_projects.mjs — regenerate this checksum after rebuilding."
+    },
+    {
       "path": "public/data/daklak-roads.json.gz",
       "datasetIds": ["road-network-osm-3d2d"],
       "classification": "public",

@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "description": "Manifest ảnh: chỉ ảnh usage=production mới được có localAsset. Chưa có ảnh nào được dùng production — UI dùng minh hoạ trung tính có nhãn cho tới khi có ảnh được kiểm license và dựng đúng chủ thể.",
+  "items": [
+    {
+      "id": "commons-bmt-city-square-2008",
+      "subject": "Quảng trường trung tâm Buôn Ma Thuột (chụp 2008)",
+      "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_city_square.jpg",
+      "provider": "Wikimedia Commons",
+      "author": "Rdavout (gốc: Renaud d'Avout d'Auerstaedt)",
+      "license": "CC BY-SA 3.0 (hoặc GFDL 1.2+, người dùng chọn)",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+      "retrievedAt": "2026-10-18T00:00:00.000Z",
+      "usage": "reference-only",
+      "notes": "License dùng lại được nếu ghi tác giả và chia sẻ tương tự, nhưng ảnh chụp 2008 nên không phản ánh hiện trạng; chưa có chỗ dùng đúng chủ thể (chỉ hợp cho thẻ đơn vị hành chính, không phải thẻ dự án). Chưa tải về, chưa thêm vào dist."
+    }
+  ]
+}
