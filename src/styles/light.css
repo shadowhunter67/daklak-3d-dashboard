@@ -399,3 +399,24 @@
 :root[data-theme='light'] .mobile-sheet :is(h2, h3, p, span, small, button, dt, dd) {
   color: #14312b;
 }
+
+/* Everything inside the layer panel (mode switch, tools, radios, summaries) is dark-on-white. */
+:root[data-theme='light']
+  .detail-map-layer-panel__content
+  :is(button, summary, legend, strong, small, h2, h3, h4, dt, dd, li, option) {
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-layer-panel__content button {
+  background: #ffffff;
+  border-color: #cbd8d1;
+}
+:root[data-theme='light'] .detail-map-layer-panel__content button[aria-pressed='true'] {
+  background: #f6dd9b;
+  border-color: #e4bc5e;
+  color: #1b2a22;
+  font-weight: 700;
+}
+:root[data-theme='light'] .detail-map-layer-panel__content input:disabled + *,
+:root[data-theme='light'] .detail-map-layer-panel__content [aria-disabled='true'] {
+  color: #4d6b62;
+}
