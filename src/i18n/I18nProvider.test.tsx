@@ -11,10 +11,10 @@ function Probe() {
     <div>
       <p data-testid="locale">{locale}</p>
       <p data-testid="greeting">{t('header.lang.vi')}</p>
-      {/* Differs between dictionaries ("Tổng quan điều hành" vs "Executive Overview") — unlike
+      {/* Differs between dictionaries ("Tổng quan" vs "Overview") — unlike
           header.lang.vi above (literally "VI" in both), this actually proves translated text
           tracks `locale`, not just that the locale string itself updated. */}
-      <p data-testid="translated-text">{t('header.nav.overview')}</p>
+      <p data-testid="translated-text">{t('sidebar.overview')}</p>
       <button onClick={() => setLocale('en')}>to-en</button>
       <button onClick={() => setLocale('vi')}>to-vi</button>
     </div>
@@ -154,14 +154,14 @@ describe('I18nProvider', () => {
         <Probe />
       </I18nProvider>,
     );
-    expect(screen.getByTestId('translated-text')).toHaveTextContent('Tổng quan điều hành');
+    expect(screen.getByTestId('translated-text')).toHaveTextContent('Tổng quan');
 
     fireEvent.click(screen.getByText('to-en'));
-    await screen.findByText('Executive Overview');
-    expect(screen.getByTestId('translated-text')).toHaveTextContent('Executive Overview');
+    await screen.findByText('Overview');
+    expect(screen.getByTestId('translated-text')).toHaveTextContent('Overview');
 
     fireEvent.click(screen.getByText('to-vi'));
-    expect(screen.getByTestId('translated-text')).toHaveTextContent('Tổng quan điều hành');
+    expect(screen.getByTestId('translated-text')).toHaveTextContent('Tổng quan');
   });
 });
 

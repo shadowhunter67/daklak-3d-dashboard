@@ -4,7 +4,7 @@ import wardLabels from '#province-assets/daklak-labels.json';
 
 /**
  * Ward/commune NAME labels for the detail map — the MapLibre counterpart of the 2D SVG map's
- * `administrativeLabelLayout.ts`. The detail map previously rendered ward *boundaries*
+ * the 3D `screenLabelLayout.ts`. The detail map previously rendered ward *boundaries*
  * (`wardBoundaryLayers.ts`) but no ward names at all; only OSM road/place/hamlet names came
  * through (`roadLayers.ts`), so a selected ward showed a gold highlight with no label.
  *
@@ -105,9 +105,11 @@ export const WARD_LABEL_TEXT_SIZE_STOPS: ReadonlyArray<{
   priority1: number;
   priority2: number;
 }> = [
-  { zoom: 7, priority1: 10, priority2: 8 },
-  { zoom: 11, priority1: 13, priority2: 11 },
-  { zoom: 14, priority1: 15, priority2: 13 },
+  // Large enough to read at arm's length (pack requirement: comfortable for older users); the
+  // placement pass resolves the extra collisions by displacement + leader lines, never by hiding.
+  { zoom: 7, priority1: 13, priority2: 12 },
+  { zoom: 11, priority1: 16, priority2: 14 },
+  { zoom: 14, priority1: 18, priority2: 16 },
 ];
 
 /** Plain-JS mirror of the `text-size` MapLibre expression below, linearly interpolated the same
@@ -194,7 +196,7 @@ export function buildWardLabelLayers(): LayerSpecification[] {
       layout: {
         'text-field': ['get', 'name'],
         'text-font': TEXT_FONT,
-        'text-size': ['interpolate', ['linear'], ['zoom'], 7, 12, 11, 15, 14, 17],
+        'text-size': ['interpolate', ['linear'], ['zoom'], 7, 15, 11, 18, 14, 20],
         'text-allow-overlap': true,
         'text-ignore-placement': true,
         'text-max-width': 10,

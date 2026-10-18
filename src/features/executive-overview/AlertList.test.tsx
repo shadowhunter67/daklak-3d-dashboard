@@ -67,4 +67,17 @@ describe('AlertList', () => {
     expect(document.querySelector('.alert-item__severity')?.textContent).toBe('Chất lượng dữ liệu');
     expect(screen.queryByRole('heading', { name: /Nghiêm trọng/ })).not.toBeInTheDocument();
   });
+
+  it('shows one row with a repeat count when the same alert applies to many projects', () => {
+    const alerts: PortfolioAlert[] = Array.from({ length: 3 }, (_, index) => ({
+      id: `stale-${index}`,
+      kind: 'data-quality' as const,
+      severity: 'warning' as const,
+      category: 'stale-data',
+      message: 'Dữ liệu dự án đã lâu chưa được cập nhật',
+    }));
+    renderWithI18n(<AlertList alerts={alerts} />);
+    expect(screen.getAllByText('Dữ liệu dự án đã lâu chưa được cập nhật')).toHaveLength(1);
+    expect(screen.getByLabelText('Lặp lại 3 lần')).toHaveTextContent('×3');
+  });
 });

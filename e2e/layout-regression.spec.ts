@@ -46,11 +46,11 @@ test.describe('Executive Overview — no card/panel overlap, no horizontal overf
       // The header brand/nav/meta bar must never overlap each other, and the KPI cards must
       // never overlap each other — both are flex/grid layouts that reflow, not fixed-position
       // panels, so any overlap here is a genuine layout bug, not an intentional overlay.
-      const kpiValues = page.locator('.kpi-card__value');
+      const kpiValues = page.locator('.ui-kpi-value');
       const kpiCount = await kpiValues.count();
       const kpiEntries = await Promise.all(
         Array.from({ length: kpiCount }, async (_, i) => ({
-          label: `kpi-card-${i}`,
+          label: `kpi-tile-${i}`,
           locator: kpiValues.nth(i),
         })),
       );
@@ -141,11 +141,11 @@ test.describe('Font-scale control at its largest step — no new overlap on Exec
 
       await expectNoHorizontalOverflow(page);
 
-      const kpiValues = page.locator('.kpi-card__value');
+      const kpiValues = page.locator('.ui-kpi-value');
       const kpiCount = await kpiValues.count();
       const kpiEntries = await Promise.all(
         Array.from({ length: kpiCount }, async (_, i) => ({
-          label: `kpi-card-${i}`,
+          label: `kpi-tile-${i}`,
           locator: kpiValues.nth(i),
         })),
       );

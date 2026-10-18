@@ -1,3 +1,4 @@
+import { DETAIL_MAP_THEME_PAINT, type DetailMapTheme } from './detailMapTheme';
 import type {
   ErrorEvent as MapLibreErrorEvent,
   FilterSpecification,
@@ -24,6 +25,7 @@ import {
 import {
   getWardLabelEntries,
   WARD_LABEL_LAYER_ID,
+  WARD_LABEL_LEADER_LAYER_ID,
   WARD_LABEL_LEADER_SOURCE_ID,
   WARD_LABEL_SOURCE_ID,
   WARD_SELECTED_LABEL_LAYER_ID,
@@ -97,6 +99,8 @@ let pmtilesProtocolRegistered = false;
  */
 export class MapLibreProvider implements DetailedMapProvider {
   private map: MapLibreMap | null = null;
+  /** Last theme requested; re-applied once the style finishes loading. */
+  private theme: DetailMapTheme = 'dark';
   private layers: DetailMapLayerState | null = null;
   private sourceAvailability: DetailMapInitOptions['sourceAvailability'] | null = null;
   private readonly wardClickHandlers = new Set<(code: string | null) => void>();
@@ -198,6 +202,8 @@ export class MapLibreProvider implements DetailedMapProvider {
     // style built in buildDetailMapStyle() only reflects sourceAvailability, never the caller's
     // requested visibility (e.g. a shared URL with roads=0&heatmap=1&basemap=terrain).
     this.setLayers(options.layers);
+    // The style is authored dark; apply whichever theme was requested before the style finished loading.
+    this.setTheme(this.theme);
     // First label-placement pass — without this, all 102 labels sit at their raw anchor (still
     // fully visible, just not yet decluttered) until the user's first pan/zoom fires `moveend`.
     this.recomputeWardLabelPlacement();
@@ -618,6 +624,32 @@ export class MapLibreProvider implements DetailedMapProvider {
   setHeatmapVisible(visible: boolean): void {
     if (!this.sourceAvailability?.dashboardOverlays) return;
     this.setLayerVisibility('dashboard-heatmap', visible);
+  }
+
+  resize(): void {
+    this.map?.resize();
+  }
+
+  setTheme(theme: DetailMapTheme): void {
+    this.theme = theme;
+    const map = this.map;
+    if (!map) return;
+    const paint = DETAIL_MAP_THEME_PAINT[theme];
+    const set = (layer: string, property: string, value: unknown) => {
+      // Paint property names are plain strings here (one helper for background/fill/line/symbol
+      // layers), which MapLibre's per-layer-type key union cannot express.
+      if (map.getLayer(layer)) map.setPaintProperty(layer, property as never, value as never);
+    };
+    set('background', 'background-color', paint.background);
+    set(WARD_BOUNDARY_FILL_LAYER_ID, 'fill-color', paint.wardFill);
+    set(WARD_BOUNDARY_FILL_LAYER_ID, 'fill-opacity', paint.wardFillOpacity);
+    set(WARD_BOUNDARY_LINE_LAYER_ID, 'line-color', paint.wardLine);
+    set(WARD_BOUNDARY_LINE_LAYER_ID, 'line-width', paint.wardLineWidth);
+    set(WARD_BOUNDARY_LINE_LAYER_ID, 'line-opacity', paint.wardLineOpacity);
+    set(WARD_LABEL_LAYER_ID, 'text-color', paint.labelColor);
+    set(WARD_LABEL_LAYER_ID, 'text-halo-color', paint.labelHalo);
+    set(WARD_LABEL_LAYER_ID, 'text-halo-width', paint.labelHaloWidth);
+    set(WARD_LABEL_LEADER_LAYER_ID, 'line-color', paint.leaderColor);
   }
 
   private applyHighlightFrame(frame: WardHighlightFrame): void {

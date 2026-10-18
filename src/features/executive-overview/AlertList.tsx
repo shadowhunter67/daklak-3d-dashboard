@@ -1,6 +1,12 @@
-import { groupAlerts, severityMessageKey } from './model/executiveOverviewSelectors';
+import {
+  collapseDuplicateAlerts,
+  groupAlerts,
+  severityMessageKey,
+} from './model/executiveOverviewSelectors';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { PortfolioAlert } from './model/executiveOverviewTypes';
+import { Card, PanelHeader } from '../../components/ui';
+import { AlertIcon } from '../../components/layout/icons';
 
 function AlertGroup({
   title,
@@ -23,7 +29,7 @@ function AlertGroup({
         {title} <span className="alert-group__count">({alerts.length})</span>
       </h4>
       <ul>
-        {alerts.map((alert) => (
+        {collapseDuplicateAlerts(alerts).map(({ alert, count }) => (
           <li key={alert.id} className="alert-item">
             {/* Status is never colour-only: the level is named in words by this group's heading,
                 which sits directly above the row and carries the same colour. This label repeats
@@ -35,6 +41,14 @@ function AlertGroup({
                 : t(severityMessageKey(alert.severity))}
             </span>
             <span className="alert-item__message">{alert.message}</span>
+            {count > 1 && (
+              <span
+                className="alert-item__count"
+                aria-label={t('alerts.repeated', { count: String(count) })}
+              >
+                ×{count}
+              </span>
+            )}
           </li>
         ))}
       </ul>
@@ -48,8 +62,12 @@ export function AlertList({ alerts }: { alerts: readonly PortfolioAlert[] }) {
   const total = alerts.length;
 
   return (
-    <section aria-labelledby="alert-list-heading" className="alert-list">
-      <h3 id="alert-list-heading">{t('alerts.heading')}</h3>
+    <Card aria-labelledby="alert-list-heading" className="alert-list-card">
+      <PanelHeader
+        title={t('alerts.heading')}
+        icon={<AlertIcon />}
+        headingId="alert-list-heading"
+      />
       {total === 0 ? (
         <p className="alert-list__empty">{t('alerts.empty')}</p>
       ) : (
@@ -71,6 +89,6 @@ export function AlertList({ alerts }: { alerts: readonly PortfolioAlert[] }) {
           />
         </>
       )}
-    </section>
+    </Card>
   );
 }

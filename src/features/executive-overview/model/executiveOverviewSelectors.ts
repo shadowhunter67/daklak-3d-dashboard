@@ -89,6 +89,27 @@ export function groupAlerts(alerts: readonly PortfolioAlert[]): GroupedAlerts {
   };
 }
 
+/** An alert row after identical messages are merged ("same problem" shown once with a count). */
+export interface CollapsedAlert {
+  id: string;
+  message: string;
+  count: number;
+  alert: PortfolioAlert;
+}
+
+/** Merge alerts that say exactly the same thing so a single problem affecting many projects is one
+ * row ("× 11"), not eleven copies — first occurrence keeps its position and id. */
+export function collapseDuplicateAlerts(alerts: readonly PortfolioAlert[]): CollapsedAlert[] {
+  const rows = new Map<string, CollapsedAlert>();
+  for (const alert of alerts) {
+    const key = `${alert.kind}|${alert.severity}|${alert.message}`;
+    const existing = rows.get(key);
+    if (existing) existing.count += 1;
+    else rows.set(key, { id: alert.id, message: alert.message, count: 1, alert });
+  }
+  return [...rows.values()];
+}
+
 export function severityMessageKey(severity: PortfolioAlertSeverity): MessageKey {
   return severity === 'critical' ? 'severity.critical' : 'severity.warning';
 }

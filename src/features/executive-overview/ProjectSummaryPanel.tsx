@@ -38,7 +38,7 @@ export function ProjectSummaryPanel({
   const canViewOnMap = item.geometry?.type === 'Point';
 
   useEffect(() => {
-    // Captured by the caller (PriorityProjectList), not via `document.activeElement` here: by the
+    // Captured by the caller (PriorityProjectsTable), not via `document.activeElement` here: by the
     // time this effect runs, the close button's `autoFocus` has already moved focus away from
     // whatever triggered the open (React applies autoFocus during the commit/layout phase, before
     // this passive effect fires) — reading `document.activeElement` at this point would capture

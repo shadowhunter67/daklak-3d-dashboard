@@ -31,6 +31,10 @@ interface CameraSnapshot {
 type LabelMap = Record<string, { longitude: number; latitude: number }>;
 
 const BASE_ZOOM = 246;
+const REFERENCE_STAGE_WIDTH = 1100;
+// Floor for the narrow-stage factor: below this the 102 labels would collide into an unreadable
+// clump; the province may slightly overflow a phone and is explored by pinch-zoom/pan instead.
+const MIN_STAGE_ZOOM_FACTOR = 0.6;
 const MIN_ZOOM = 60;
 const MAX_ZOOM = 340;
 const EMPTY_INSETS: ViewportInsets = { top: 0, right: 0, bottom: 0, left: 0 };
@@ -124,7 +128,11 @@ export function CameraControls() {
 
       if (reason === 'initial-fit' || reason === 'manual-reset') {
         camera.zoom = clampZoom(
-          BASE_ZOOM * Math.min(nextSafe.width / width, nextSafe.height / height),
+          // BASE_ZOOM frames the province on a ~1200px-wide stage; narrower stages (phones) must
+          // zoom out in proportion or the province overflows the screen sideways.
+          BASE_ZOOM *
+            Math.min(nextSafe.width / width, nextSafe.height / height) *
+            Math.min(1, Math.max(MIN_STAGE_ZOOM_FACTOR, nextSafe.width / REFERENCE_STAGE_WIDTH)),
           MIN_ZOOM,
           MAX_ZOOM,
         );

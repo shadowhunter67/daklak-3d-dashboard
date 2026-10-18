@@ -59,7 +59,7 @@ describe('DashboardHeader (topbar)', () => {
   it('searches wards locally and reports the chosen place', () => {
     const onSelectPlace = vi.fn();
     renderHeader({ onSelectPlace });
-    const input = screen.getByRole('combobox', { name: 'Tìm kiếm xã, phường, địa danh' });
+    const input = screen.getByRole('combobox', { name: 'Tìm kiếm xã, phường, dự án và địa danh' });
     fireEvent.change(input, { target: { value: 'Buôn Ma Thuột' } });
     fireEvent.keyDown(input, { key: 'Enter' });
     expect(onSelectPlace).toHaveBeenCalledWith(expect.objectContaining({ name: 'Buôn Ma Thuột' }));
@@ -78,6 +78,20 @@ describe('DashboardHeader (topbar)', () => {
     expect(screen.getByRole('button', { name: 'Chuyển sang giao diện sáng' })).toHaveAttribute(
       'aria-pressed',
       'true',
+    );
+  });
+
+  it('searches projects and places as well and reports the chosen entry', async () => {
+    const onSelectPlace = vi.fn();
+    renderHeader({ onSelectPlace });
+    const input = screen.getByRole('combobox');
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: 'Hồ Lắk' } });
+    const option = await screen.findByRole('option', { name: /Hồ Lắk/ }, { timeout: 5000 });
+    expect(screen.getByRole('group', { name: 'Địa danh' })).toBeInTheDocument();
+    fireEvent.mouseDown(option);
+    expect(onSelectPlace).toHaveBeenCalledWith(
+      expect.objectContaining({ kind: 'place', id: 'ho-lak' }),
     );
   });
 });

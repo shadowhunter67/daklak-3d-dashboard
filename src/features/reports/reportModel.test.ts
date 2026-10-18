@@ -42,5 +42,7 @@ describe('buildReportSummary', () => {
     expect(result.completed).toBe(1);
     expect(result.disbursementRate).toBe(25);
     expect(result.byArea[0]?.area).toBe('A');
+    expect(result.highlights.delayed).toBe(0);
+    expect(result.unitAttention[0]?.openIssues).toBe(0);
   });
 });

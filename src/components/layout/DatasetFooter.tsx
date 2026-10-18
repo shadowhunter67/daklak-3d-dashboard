@@ -8,7 +8,7 @@ export function DatasetFooter() {
   const dataMode = useMapStore((state) => state.dataMode);
   const openAboutPanel = useMapStore((state) => state.openAboutPanel);
   return (
-    <footer>
+    <footer className="dataset-footer">
       <span title="Contains modified Copernicus Sentinel data 2016">SENTINEL-2 · EOX</span>
       <p>
         {dataMode === 'overview' ? (

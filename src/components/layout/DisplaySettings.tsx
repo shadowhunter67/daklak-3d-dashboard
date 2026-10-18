@@ -111,6 +111,7 @@ export function DisplaySettings({ onAfterAction }: { onAfterAction?: () => void 
           </button>
           <button
             id="open-data-provenance-panel"
+            data-provenance-trigger="true"
             type="button"
             className="display-settings__action"
             aria-haspopup="dialog"

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -6,89 +6,44 @@ import type { MessageKey } from '../../i18n/messages';
 import { formatDateTime } from '../../i18n/formatters';
 import { dataQualityRuleLabelKey } from '../../entities/project/dataQualityMessages';
 import { useDataReadiness } from './data/useDataReadiness';
-import { buildDataReadinessSummary } from './model/dataReadinessSummary';
 import type {
   DataReadinessIssueWithProjectLink,
   DataReadinessModel,
 } from './model/dataReadinessTypes';
+import { calculateDataHealthScore } from '../executive-overview/model/dataHealthScore';
+import { buildDataReadinessSummary } from './model/dataReadinessSummary';
+import {
+  AlertIcon,
+  CheckCircleIcon,
+  ClockIcon,
+  DatabaseIcon,
+  DocumentIcon,
+  TargetIcon,
+} from '../../components/layout/icons';
+import {
+  Card,
+  DataTable,
+  DonutChart,
+  GaugeChart,
+  KpiTile,
+  PageHeader,
+  PanelHeader,
+  ProgressBar,
+  SearchField,
+  SelectField,
+  StatusChip,
+} from '../../components/ui';
 
-function DataReadinessSummaryPanel({ model }: { model: DataReadinessModel }) {
-  const { t } = useTranslation();
-  const summary = buildDataReadinessSummary(model);
-  return (
-    <section
-      className="data-readiness-summary"
-      data-status={summary.status}
-      aria-labelledby="data-readiness-summary-heading"
-    >
-      <h3 id="data-readiness-summary-heading">{t('dataReadiness.summary.heading')}</h3>
-      <p className="data-readiness-summary__status">
-        <span className="data-readiness-summary__status-badge" aria-hidden="true">
-          {summary.status === 'good' ? '✓' : summary.status === 'attention' ? '!' : '✕'}
-        </span>
-        {t(`dataReadiness.summary.status.${summary.status}` as const)}
-      </p>
-      <p className="data-readiness-summary__line">
-        {t('dataReadiness.summary.line', {
-          errors: String(summary.structuralErrorCount),
-          alerts: String(summary.businessAlertCount),
-          stale: String(summary.staleProjectCount),
-          datasets: String(summary.activeDatasetCount),
-        })}
-      </p>
-      <div className="data-readiness-summary__cards">
-        <div className="data-readiness-summary__card">
-          <h4>{t('dataReadiness.summary.completeness')}</h4>
-          <p>
-            {t('dataReadiness.summary.completeness.value', {
-              errors: String(summary.completeness.structuralErrorCount),
-              total: String(summary.completeness.totalRecordCount),
-            })}
-          </p>
-        </div>
-        <div className="data-readiness-summary__card">
-          <h4>{t('dataReadiness.summary.freshness')}</h4>
-          <p>
-            {t('dataReadiness.summary.freshness.value', {
-              stale: String(summary.freshness.staleCount),
-              total: String(summary.freshness.totalCount),
-            })}
-          </p>
-        </div>
-        <div className="data-readiness-summary__card">
-          <h4>{t('dataReadiness.summary.consistency')}</h4>
-          <p>
-            {t('dataReadiness.summary.consistency.value', {
-              duplicates: String(summary.consistency.duplicateCount),
-              unmapped: String(summary.consistency.unmappedCount),
-            })}
-          </p>
-        </div>
-        <div className="data-readiness-summary__card">
-          <h4>{t('dataReadiness.summary.provenance')}</h4>
-          <p>
-            {t('dataReadiness.summary.provenance.value', {
-              missing: String(summary.provenance.missingCount),
-              lowConfidence: String(summary.provenance.lowConfidenceCount),
-              unverified: String(summary.provenance.unverifiedCount),
-            })}
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function IssueList({
+function IssueDetails({
   issues,
-  emptyKey,
   headingKey,
+  emptyKey,
   idSuffix,
   onOpenProject,
 }: {
   issues: readonly DataReadinessIssueWithProjectLink[];
-  emptyKey: MessageKey;
   headingKey: MessageKey;
+  emptyKey: MessageKey;
   idSuffix: string;
   onOpenProject: (projectId: string) => void;
 }) {
@@ -105,25 +60,18 @@ function IssueList({
         <ul className="data-readiness__issue-list">
           {issues.map((issue) => (
             <li key={issue.id}>
-              {/* Nhãn dễ hiểu thay cho slug kỹ thuật (issue.rule) — chi tiết đầy đủ (thường có
-                  entity id cụ thể) vẫn giữ nguyên ngay sau đó cho người cần đào sâu hơn. */}
               <span className="data-readiness__issue-rule">
                 {t(dataQualityRuleLabelKey(issue.rule))}
               </span>{' '}
               — {issue.message}
-              {/* C6: chỉ hiển thị nút điều hướng khi projectId đã resolve được thật — không tạo
-                  dead link cho issue không gắn project (workPackage/milestone mồ côi, v.v.). */}
               {issue.linkedProjectId && (
-                <>
-                  {' '}
-                  <button
-                    type="button"
-                    className="data-readiness__issue-link"
-                    onClick={() => onOpenProject(issue.linkedProjectId!)}
-                  >
-                    {t('dataReadiness.issue.openProject')}
-                  </button>
-                </>
+                <button
+                  type="button"
+                  className="data-readiness__issue-link"
+                  onClick={() => onOpenProject(issue.linkedProjectId!)}
+                >
+                  {t('dataReadiness.issue.openProject')}
+                </button>
               )}
             </li>
           ))}
@@ -133,99 +81,326 @@ function IssueList({
   );
 }
 
-function DataReadinessOperationalPanels({ model }: { model: DataReadinessModel }) {
-  const { t } = useTranslation();
+function ReadinessPanels({
+  model,
+  onOpenProject,
+}: {
+  model: DataReadinessModel;
+  onOpenProject: (projectId: string) => void;
+}) {
+  const { t, locale } = useTranslation();
   const [severity, setSeverity] = useState<'all' | 'error' | 'warning'>('all');
   const [query, setQuery] = useState('');
+  const issues = useMemo(
+    () =>
+      [...model.dataQualityIssues, ...model.businessAlerts].filter((issue) => {
+        const matchesSeverity = severity === 'all' || issue.severity === severity;
+        return (
+          matchesSeverity &&
+          `${issue.message} ${issue.rule} ${issue.entityId}`
+            .toLocaleLowerCase()
+            .includes(query.toLocaleLowerCase())
+        );
+      }),
+    [model, query, severity],
+  );
+  const totalRecords = Object.values(model.counts).reduce((sum, value) => sum + value, 0);
   const records = [
-    { key: 'projects', count: model.counts.projects, tone: 'valid' },
-    { key: 'workPackages', count: model.counts.workPackages, tone: 'review' },
-    { key: 'milestones', count: model.counts.milestones, tone: 'error' },
-    { key: 'progressSnapshots', count: model.counts.progressSnapshots, tone: 'pending' },
-  ] as const;
-  const issues = [...model.dataQualityIssues, ...model.businessAlerts].filter((issue) => {
-    const matchesSeverity = severity === 'all' || issue.severity === severity;
-    const haystack = `${issue.message} ${issue.rule} ${issue.entityId}`.toLocaleLowerCase();
-    return matchesSeverity && haystack.includes(query.toLocaleLowerCase());
-  });
-  const total = records.reduce((sum, item) => sum + item.count, 0);
+    {
+      key: 'valid',
+      count: Math.max(
+        0,
+        totalRecords - model.validationErrors.length - model.dataQualityIssues.length,
+      ),
+      tone: 'green' as const,
+    },
+    { key: 'review', count: model.businessAlerts.length, tone: 'gold' as const },
+    {
+      key: 'error',
+      count: model.validationErrors.length + model.dataQualityIssues.length,
+      tone: 'red' as const,
+    },
+    { key: 'pending', count: 0, tone: 'blue' as const },
+  ];
+  const issueSegments = [
+    {
+      label: t('dataReadiness.distribution.validation'),
+      value: model.validationErrors.length,
+      tone: '#e5484d',
+    },
+    {
+      label: t('dataReadiness.distribution.quality'),
+      value: model.dataQualityIssues.length,
+      tone: '#f0b429',
+    },
+    {
+      label: t('dataReadiness.distribution.business'),
+      value: model.businessAlerts.length,
+      tone: '#3b82f6',
+    },
+    {
+      label: t('dataReadiness.distribution.provenance'),
+      value: model.missingProvenanceChildCount,
+      tone: '#8b5cf6',
+    },
+  ].filter((segment) => segment.value > 0);
 
   return (
     <>
       <div className="data-readiness__operations-grid">
-        <section className="data-readiness__operation-card" aria-labelledby="data-sources-heading">
-          <h3 id="data-sources-heading">{t('dataReadiness.sourcesHeading')}</h3>
+        <Card className="data-readiness__operation-card">
+          <PanelHeader
+            title={t('dataReadiness.sourcesHeading')}
+            icon={<DatabaseIcon />}
+            headingId="data-sources-heading"
+          />
           <ul className="data-readiness__source-list">
             {model.metadata.datasetIds.map((datasetId) => (
               <li key={datasetId}>
                 <span aria-hidden="true">●</span>
                 <span>{datasetId}</span>
-                <strong>{t('dataReadiness.sourceActive')}</strong>
+                <StatusChip label={t('dataReadiness.sourceActive')} tone="success" dot />
               </li>
             ))}
           </ul>
-        </section>
-        <section className="data-readiness__operation-card" aria-labelledby="record-status-heading">
-          <h3 id="record-status-heading">{t('dataReadiness.recordStatusHeading')}</h3>
+        </Card>
+        <Card className="data-readiness__operation-card">
+          <PanelHeader
+            title={t('dataReadiness.recordStatusHeading')}
+            icon={<DocumentIcon />}
+            headingId="record-status-heading"
+          />
           <p className="data-readiness__record-total">
-            {total.toLocaleString()} {t('dataReadiness.records')}
+            {totalRecords.toLocaleString()} {t('dataReadiness.records')}
           </p>
           <ul className="data-readiness__record-bars">
-            {records.map((item) => {
-              const percent = total ? (item.count / total) * 100 : 0;
-              return (
-                <li key={item.key}>
-                  <span>{t(`dataReadiness.count.${item.key}` as MessageKey)}</span>
-                  <strong>{item.count.toLocaleString()}</strong>
-                  <span className="data-readiness__bar">
-                    <i className={`is-${item.tone}`} style={{ width: `${percent}%` }} />
-                  </span>
-                </li>
-              );
-            })}
+            {records.map((item) => (
+              <li key={item.key}>
+                <span>{t(`dataReadiness.recordStatus.${item.key}` as MessageKey)}</span>
+                <strong>{item.count.toLocaleString()}</strong>
+                <ProgressBar
+                  value={totalRecords ? (item.count / totalRecords) * 100 : 0}
+                  tone={item.tone}
+                  valueText={`${totalRecords ? Math.round((item.count / totalRecords) * 100) : 0}%`}
+                />
+              </li>
+            ))}
           </ul>
-        </section>
+          <p className="data-readiness__method-note">{t('dataReadiness.recordStatusNote')}</p>
+        </Card>
+        <Card className="data-readiness__operation-card">
+          <PanelHeader
+            title={t('dataReadiness.distributionHeading')}
+            icon={<AlertIcon />}
+            headingId="data-distribution-heading"
+          />
+          <DonutChart
+            segments={issueSegments}
+            totalLabel={t('dataReadiness.issuesTotal')}
+            ariaLabel={t('dataReadiness.distributionAria')}
+          />
+        </Card>
       </div>
-      <section className="data-readiness__alerts" aria-labelledby="data-alerts-heading">
-        <div className="data-readiness__alerts-header">
-          <h3 id="data-alerts-heading">{t('dataReadiness.alertsHeading')}</h3>
-          <div className="data-readiness__filters">
-            <label>
-              {t('dataReadiness.severityFilter')}
-              <select
-                value={severity}
-                onChange={(event) => setSeverity(event.target.value as typeof severity)}
-              >
-                <option value="all">{t('dataReadiness.all')}</option>
-                <option value="error">{t('dataReadiness.error')}</option>
-                <option value="warning">{t('dataReadiness.warning')}</option>
-              </select>
-            </label>
-            <label>
-              {t('dataReadiness.search')}
-              <input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={t('dataReadiness.searchPlaceholder')}
-              />
-            </label>
-          </div>
+      <Card className="data-readiness__alerts" aria-labelledby="data-alerts-heading">
+        <PanelHeader
+          title={t('dataReadiness.alertsHeading')}
+          icon={<AlertIcon />}
+          headingId="data-alerts-heading"
+        />
+        <div className="data-readiness__filters">
+          <SelectField
+            id="data-readiness-severity"
+            label={t('dataReadiness.severityFilter')}
+            value={severity}
+            onChange={(event) => setSeverity(event.target.value as typeof severity)}
+            options={[
+              { value: 'all', label: t('dataReadiness.all') },
+              { value: 'error', label: t('dataReadiness.error') },
+              { value: 'warning', label: t('dataReadiness.warning') },
+            ]}
+          />
+          <SearchField
+            id="data-readiness-search"
+            label={t('dataReadiness.search')}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={t('dataReadiness.searchPlaceholder')}
+          />
         </div>
-        <ul className="data-readiness__alert-list">
-          {issues.map((issue) => (
-            <li key={issue.id}>
-              <span className={`data-readiness__severity is-${issue.severity}`}>
-                {t(issue.severity === 'error' ? 'dataReadiness.error' : 'dataReadiness.warning')}
-              </span>
-              <span>
-                {t(dataQualityRuleLabelKey(issue.rule))}: {issue.message}
-              </span>
-              <small>{issue.entityId}</small>
-            </li>
-          ))}
-        </ul>
-        {issues.length === 0 && <p role="status">{t('dataReadiness.filteredEmpty')}</p>}
-      </section>
+        {issues.length > 0 ? (
+          <DataTable
+            caption={t('dataReadiness.alertsHeading')}
+            rows={issues}
+            getRowKey={(row) => row.id}
+            columns={[
+              {
+                key: 'rule',
+                header: t('dataReadiness.alertColumn'),
+                render: (row) => (
+                  <>
+                    <strong>{t(dataQualityRuleLabelKey(row.rule))}</strong>
+                    <span className="data-readiness__table-message">{row.message}</span>
+                  </>
+                ),
+              },
+              {
+                key: 'severity',
+                header: t('dataReadiness.severityFilter'),
+                render: (row) => (
+                  <StatusChip
+                    label={
+                      row.severity === 'error'
+                        ? t('dataReadiness.error')
+                        : t('dataReadiness.warning')
+                    }
+                    tone={row.severity === 'error' ? 'danger' : 'warning'}
+                    dot
+                  />
+                ),
+              },
+              {
+                key: 'entity',
+                header: t('dataReadiness.entityColumn'),
+                render: (row) => row.entityId,
+              },
+              {
+                key: 'action',
+                header: t('portfolio.col.action'),
+                render: (row) =>
+                  row.linkedProjectId ? (
+                    <button
+                      type="button"
+                      className="data-readiness__issue-link"
+                      onClick={() => onOpenProject(row.linkedProjectId!)}
+                    >
+                      {t('dataReadiness.issue.openProject')}
+                    </button>
+                  ) : (
+                    '—'
+                  ),
+              },
+            ]}
+          />
+        ) : (
+          <p role="status">{t('dataReadiness.filteredEmpty')}</p>
+        )}
+      </Card>
+      <details className="data-readiness__technical">
+        <summary>{t('dataReadiness.technicalDetails')}</summary>
+        <div className="data-readiness__technical-body">
+          <section aria-labelledby="data-readiness-source-heading">
+            <h3 id="data-readiness-source-heading">{t('dataReadiness.sourceHeading')}</h3>
+            <dl className="data-readiness__grid">
+              <div>
+                <dt>{t('dataReadiness.sourceKind')}</dt>
+                <dd>{t(`dataReadiness.sourceKind.${model.metadata.sourceKind}` as MessageKey)}</dd>
+              </div>
+              <div>
+                <dt>{t('dataReadiness.isIllustrative')}</dt>
+                <dd>
+                  {model.metadata.isIllustrative
+                    ? t('dataReadiness.isIllustrative.yes')
+                    : t('dataReadiness.isIllustrative.no')}
+                </dd>
+              </div>
+              <div>
+                <dt>{t('dataReadiness.schemaVersion')}</dt>
+                <dd>{model.metadata.schemaVersion ?? t('dataReadiness.notAvailable')}</dd>
+              </div>
+              <div>
+                <dt>{t('dataReadiness.bundleVersion')}</dt>
+                <dd>{model.metadata.bundleVersion ?? t('dataReadiness.notAvailable')}</dd>
+              </div>
+              <div>
+                <dt>{t('dataReadiness.asOf')}</dt>
+                <dd>
+                  {model.metadata.asOf
+                    ? formatDateTime(model.metadata.asOf, locale)
+                    : t('dataReadiness.notAvailable')}
+                </dd>
+              </div>
+              <div>
+                <dt>{t('dataReadiness.generatedAt')}</dt>
+                <dd>
+                  {model.metadata.generatedAt
+                    ? formatDateTime(model.metadata.generatedAt, locale)
+                    : t('dataReadiness.notAvailable')}
+                </dd>
+              </div>
+              <div>
+                <dt>{t('dataReadiness.datasetCount')}</dt>
+                <dd>{model.metadata.datasetIds.length}</dd>
+              </div>
+            </dl>
+          </section>
+          <section aria-labelledby="data-readiness-counts-heading">
+            <h3 id="data-readiness-counts-heading">{t('dataReadiness.countsHeading')}</h3>
+            <dl className="data-readiness__grid">
+              {Object.entries(model.counts).map(([key, value]) => (
+                <div key={key}>
+                  <dt>{t(`dataReadiness.count.${key}` as MessageKey)}</dt>
+                  <dd>{value}</dd>
+                </div>
+              ))}
+              <div>
+                <dt>{t('dataReadiness.staleCount')}</dt>
+                <dd>{model.staleProjectCount}</dd>
+              </div>
+              <div>
+                <dt>{t('dataReadiness.duplicateCount')}</dt>
+                <dd>{model.duplicateRecordCount}</dd>
+              </div>
+              <div>
+                <dt>{t('dataReadiness.unmappedAdministrativeCodeCount')}</dt>
+                <dd>{model.unmappedAdministrativeCodeCount}</dd>
+              </div>
+              <div>
+                <dt>{t('dataReadiness.lowConfidenceCount')}</dt>
+                <dd>{model.lowConfidenceProjectCount}</dd>
+              </div>
+              <div>
+                <dt>{t('dataReadiness.unverifiedCount')}</dt>
+                <dd>{model.unverifiedProjectCount}</dd>
+              </div>
+              <div>
+                <dt>{t('dataReadiness.missingProvenanceCount')}</dt>
+                <dd>{model.missingProvenanceChildCount}</dd>
+              </div>
+            </dl>
+          </section>
+          <p className="data-readiness__note" role="note">
+            {t('dataReadiness.classificationNote')}
+          </p>
+          <section aria-labelledby="data-readiness-validation-heading">
+            <h3 id="data-readiness-validation-heading">
+              {t('dataReadiness.validationHeading')} ({model.validationErrors.length})
+            </h3>
+            {model.validationErrors.length === 0 ? (
+              <p role="status">{t('dataReadiness.validationEmpty')}</p>
+            ) : (
+              <ul className="data-readiness__issue-list">
+                {model.validationErrors.map((message) => (
+                  <li key={message}>{message}</li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <IssueDetails
+            issues={model.dataQualityIssues}
+            headingKey="dataReadiness.qualityHeading"
+            emptyKey="dataReadiness.qualityEmpty"
+            idSuffix="quality"
+            onOpenProject={onOpenProject}
+          />
+          <IssueDetails
+            issues={model.businessAlerts}
+            headingKey="dataReadiness.businessHeading"
+            emptyKey="dataReadiness.businessEmpty"
+            idSuffix="business"
+            onOpenProject={onOpenProject}
+          />
+        </div>
+      </details>
     </>
   );
 }
@@ -239,17 +414,11 @@ export function DataReadinessView({
   onBackToOverview: () => void;
   onOpenProject: (projectId: string) => void;
 }) {
-  const { t, locale } = useTranslation();
+  const { t } = useTranslation();
   const [retryToken, setRetryToken] = useState(0);
   const effectiveSource = useMemo(() => source ?? defaultProjectPortfolioSource, [source]);
   const state = useDataReadiness(effectiveSource, retryToken);
-  const headingRef = useRef<HTMLHeadingElement | null>(null);
-
-  useEffect(() => {
-    headingRef.current?.focus();
-  }, []);
-
-  if (state.status === 'loading') {
+  if (state.status === 'loading')
     return (
       <section
         id="data-readiness"
@@ -262,9 +431,7 @@ export function DataReadinessView({
         <p>{t('dataReadiness.loading')}</p>
       </section>
     );
-  }
-
-  if (state.status === 'error') {
+  if (state.status === 'error')
     return (
       <section id="data-readiness" className="data-readiness" tabIndex={-1}>
         <div className="data-readiness__error" role="alert">
@@ -280,170 +447,94 @@ export function DataReadinessView({
         </div>
       </section>
     );
-  }
 
   const { model } = state;
-  const { metadata } = model;
-
+  const health = calculateDataHealthScore(model.dataHealth);
+  const summary = buildDataReadinessSummary(model);
+  const icons = {
+    completeness: DocumentIcon,
+    freshness: ClockIcon,
+    consistency: CheckCircleIcon,
+    traceability: TargetIcon,
+  } as const;
   return (
     <section
       id="data-readiness"
-      className="data-readiness"
-      aria-labelledby="data-readiness-heading"
+      className="data-readiness ui-page-root"
+      aria-label={t('dataReadiness.heading')}
       tabIndex={-1}
     >
-      <button type="button" className="data-readiness__back" onClick={onBackToOverview}>
-        {t('dataReadiness.backToOverview')}
-      </button>
-      <h2 id="data-readiness-heading" ref={headingRef} tabIndex={-1}>
-        {t('dataReadiness.heading')}
-      </h2>
-      {metadata.isIllustrative && (
-        <p className="project-portfolio__mock-badge" role="note">
-          {t('portfolio.illustrativeBadge')}
-        </p>
-      )}
-      <p className="data-readiness__description">{t('dataReadiness.description')}</p>
-
-      <DataReadinessSummaryPanel model={model} />
-
+      <PageHeader
+        headingId="data-readiness-heading"
+        title={t('dataReadiness.heading')}
+        description={t('dataReadiness.description')}
+        badge={model.metadata.isIllustrative ? t('portfolio.illustrativeBadge') : undefined}
+        badgeClassName="project-portfolio__mock-badge"
+        breadcrumb={
+          <>
+            <span>{t('common.home')}</span>
+            <span aria-hidden="true">›</span>
+            <strong>{t('common.data')}</strong>
+          </>
+        }
+        breadcrumbLabel={t('common.breadcrumb')}
+        actions={
+          <button type="button" className="data-readiness__back" onClick={onBackToOverview}>
+            {t('dataReadiness.backToOverview')}
+          </button>
+        }
+      />
+      <Card className="data-readiness__health-hero">
+        <div>
+          <PanelHeader
+            title={t('dataReadiness.healthHeading')}
+            icon={<DatabaseIcon />}
+            headingId="data-readiness-health-heading"
+          />
+          <p>{t(`dataReadiness.summary.status.${summary.status}` as MessageKey)}</p>
+          <p>
+            {t('dataReadiness.healthIssues', { count: model.dataHealth.totalDataQualityIssues })}
+          </p>
+          <p className="data-readiness__formula">{t('dataHealth.formula')}</p>
+        </div>
+        <GaugeChart
+          value={health.score}
+          label={t('dataHealth.scoreLabel')}
+          thresholds={[
+            { at: 0, color: '#e5484d' },
+            { at: 70, color: '#e4b94a' },
+            { at: 90, color: '#22a06b' },
+          ]}
+          ariaLabel={`${t('dataHealth.scoreLabel')}: ${health.score}%`}
+        />
+      </Card>
+      <ul className="ui-kpi-grid data-readiness__kpis">
+        {health.metrics.map((metric) => {
+          const Icon = icons[metric.key];
+          return (
+            <KpiTile
+              key={metric.key}
+              label={t(`dataHealth.metric.${metric.key}` as MessageKey)}
+              value={`${Math.round(metric.value * 100)}%`}
+              tone={
+                metric.key === 'freshness'
+                  ? 'gold'
+                  : metric.key === 'consistency'
+                    ? 'green'
+                    : 'blue'
+              }
+              icon={<Icon />}
+              detail={t('dataReadiness.metricDetail')}
+            />
+          );
+        })}
+      </ul>
       {state.status === 'degraded' && (
         <p role="alert" className="data-readiness__degraded-banner">
           {t('dataReadiness.degradedBanner', { issues: state.sourceIssues.join('; ') })}
         </p>
       )}
-
-      <DataReadinessOperationalPanels model={model} />
-
-      <section aria-labelledby="data-readiness-source-heading">
-        <h3 id="data-readiness-source-heading">{t('dataReadiness.sourceHeading')}</h3>
-        <dl className="data-readiness__grid">
-          <div>
-            <dt>{t('dataReadiness.sourceKind')}</dt>
-            <dd>{t(`dataReadiness.sourceKind.${metadata.sourceKind}` as MessageKey)}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.isIllustrative')}</dt>
-            <dd>
-              {metadata.isIllustrative
-                ? t('dataReadiness.isIllustrative.yes')
-                : t('dataReadiness.isIllustrative.no')}
-            </dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.schemaVersion')}</dt>
-            <dd>{metadata.schemaVersion ?? t('dataReadiness.notAvailable')}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.bundleVersion')}</dt>
-            <dd>{metadata.bundleVersion ?? t('dataReadiness.notAvailable')}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.asOf')}</dt>
-            <dd>
-              {metadata.asOf
-                ? formatDateTime(metadata.asOf, locale)
-                : t('dataReadiness.notAvailable')}
-            </dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.generatedAt')}</dt>
-            <dd>
-              {metadata.generatedAt
-                ? formatDateTime(metadata.generatedAt, locale)
-                : t('dataReadiness.notAvailable')}
-            </dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.datasetCount')}</dt>
-            <dd>{metadata.datasetIds.length}</dd>
-          </div>
-        </dl>
-      </section>
-
-      <section aria-labelledby="data-readiness-counts-heading">
-        <h3 id="data-readiness-counts-heading">{t('dataReadiness.countsHeading')}</h3>
-        <dl className="data-readiness__grid">
-          <div>
-            <dt>{t('dataReadiness.count.projects')}</dt>
-            <dd>{model.counts.projects}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.count.workPackages')}</dt>
-            <dd>{model.counts.workPackages}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.count.milestones')}</dt>
-            <dd>{model.counts.milestones}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.count.issues')}</dt>
-            <dd>{model.counts.issues}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.count.progressSnapshots')}</dt>
-            <dd>{model.counts.progressSnapshots}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.staleCount')}</dt>
-            <dd>{model.staleProjectCount}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.duplicateCount')}</dt>
-            <dd>{model.duplicateRecordCount}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.unmappedAdministrativeCodeCount')}</dt>
-            <dd>{model.unmappedAdministrativeCodeCount}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.lowConfidenceCount')}</dt>
-            <dd>{model.lowConfidenceProjectCount}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.unverifiedCount')}</dt>
-            <dd>{model.unverifiedProjectCount}</dd>
-          </div>
-          <div>
-            <dt>{t('dataReadiness.missingProvenanceCount')}</dt>
-            <dd>{model.missingProvenanceChildCount}</dd>
-          </div>
-        </dl>
-      </section>
-
-      <p className="data-readiness__note" role="note">
-        {t('dataReadiness.classificationNote')}
-      </p>
-
-      <section aria-labelledby="data-readiness-validation-heading">
-        <h3 id="data-readiness-validation-heading">
-          {t('dataReadiness.validationHeading')} ({model.validationErrors.length})
-        </h3>
-        {model.validationErrors.length === 0 ? (
-          <p role="status">{t('dataReadiness.validationEmpty')}</p>
-        ) : (
-          <ul className="data-readiness__issue-list">
-            {model.validationErrors.map((message) => (
-              <li key={message}>{message}</li>
-            ))}
-          </ul>
-        )}
-      </section>
-
-      <IssueList
-        issues={model.dataQualityIssues}
-        headingKey="dataReadiness.qualityHeading"
-        emptyKey="dataReadiness.qualityEmpty"
-        idSuffix="quality"
-        onOpenProject={onOpenProject}
-      />
-      <IssueList
-        issues={model.businessAlerts}
-        headingKey="dataReadiness.businessHeading"
-        emptyKey="dataReadiness.businessEmpty"
-        idSuffix="business"
-        onOpenProject={onOpenProject}
-      />
+      <ReadinessPanels model={model} onOpenProject={onOpenProject} />
     </section>
   );
 }

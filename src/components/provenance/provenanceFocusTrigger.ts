@@ -6,7 +6,7 @@
  * clicked to open it. Reading `document.activeElement` inside the dialog's own mount effect is
  * the same root-cause bug that was fixed in `ProjectSummaryPanel` (see that file's comment).
  *
- * The dialog has two independent trigger sites (`DashboardHeader` and `DataHealthPanel`), so a
+ * The dialog has two independent trigger sites (`DashboardHeader` and `DataHealthCard`), so a
  * single hardcoded fallback id isn't enough to restore focus to the right place. Each trigger
  * calls `captureProvenanceFocusTrigger(event.currentTarget)` synchronously in its own click
  * handler — before the store update that mounts the dialog — and `DataProvenancePanel` reads it

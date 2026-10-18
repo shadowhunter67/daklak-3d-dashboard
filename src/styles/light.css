@@ -1,0 +1,430 @@
+/* Light theme parity layer.
+   Keep this file scoped to the light root so the dark command-centre palette remains intact. */
+:root[data-theme='light'] {
+  color-scheme: light;
+  --panel: #ffffff;
+  --panel-rule: #d5e1db;
+  --lift: 0 4px 14px rgb(20 49 43 / 0.08);
+  --slab: #ffffff;
+  --slab-2: #f5f8f6;
+  --slab-ink: #14312b;
+  --slab-ink-2: #4d6b62;
+  --slab-rule: #d5e1db;
+  --slab-foot: #ffffff;
+  --lift-slab: 0 8px 24px rgb(20 49 43 / 0.1);
+  --view-ground: #f1f5f2;
+  --surface-1: #ffffff;
+  --surface-2: #f7faf8;
+  --surface-3: #eef4f0;
+  --border-subtle: #d5e1db;
+  --border-strong: #b9cfc4;
+  --text-primary: #14312b;
+  --text-secondary: #4d6b62;
+  --text-muted: #607a70;
+  --gold: #a87916;
+  --gold-strong: #8c650f;
+  --color-success: #176b45;
+  --color-warning: #805900;
+  --color-danger: #a52e3a;
+  --color-info: #155c87;
+}
+
+:root[data-theme='light'] body,
+:root[data-theme='light'] #root {
+  color: var(--text-primary);
+  background: var(--view-ground);
+}
+
+/* App shell and forms */
+:root[data-theme='light'] .app-shell,
+:root[data-theme='light'] .app-main,
+:root[data-theme='light'] .dashboard-header {
+  background: var(--shell-ground);
+  color: var(--shell-ink);
+}
+:root[data-theme='light'] header {
+  background: linear-gradient(#f1f5f2f2, #f1f5f2cc, transparent);
+  border-color: var(--shell-rule);
+}
+:root[data-theme='light'] .eyebrow,
+:root[data-theme='light'] .header-meta,
+:root[data-theme='light'] .directory-status,
+:root[data-theme='light'] label,
+:root[data-theme='light'] small {
+  color: var(--text-secondary);
+}
+:root[data-theme='light'] input,
+:root[data-theme='light'] select,
+:root[data-theme='light'] textarea {
+  color: var(--text-primary);
+  background: #ffffff;
+  border-color: var(--border-strong);
+}
+:root[data-theme='light'] input::placeholder,
+:root[data-theme='light'] textarea::placeholder {
+  color: var(--text-muted);
+}
+:root[data-theme='light'] :is(button, input, select, textarea, a):focus-visible {
+  outline: 2px solid #8c650f;
+  outline-offset: 2px;
+}
+
+/* Portfolio, detail, readiness and reports */
+:root[data-theme='light'] :is(.project-portfolio, .project-detail, .data-readiness, .reports-view) {
+  color: var(--text-primary);
+  background: var(--view-ground);
+}
+:root[data-theme='light']
+  :is(
+    .project-portfolio article,
+    .project-portfolio-card,
+    .project-detail__header,
+    .project-detail__attention,
+    .project-detail__summary,
+    .project-detail__work-packages,
+    .project-detail__milestones,
+    .project-detail__progress-history,
+    .project-detail__snapshot-explanation,
+    .project-detail__issues,
+    .project-detail__geography,
+    .project-detail__provenance,
+    .project-detail__card,
+    .data-readiness-summary,
+    .data-readiness__operation-card,
+    .data-readiness__alerts,
+    .reports-kpis article,
+    .reports-grid > section
+  ) {
+  color: var(--text-primary);
+  background: #ffffff;
+  border-color: var(--border-subtle);
+  box-shadow: var(--lift);
+}
+:root[data-theme='light']
+  :is(
+    .project-portfolio h2,
+    .project-portfolio h3,
+    .project-detail h2,
+    .project-detail h3,
+    .data-readiness h2,
+    .data-readiness h3,
+    .reports-view h2,
+    .reports-grid h3,
+    .project-detail__card-title
+  ) {
+  color: var(--text-primary);
+}
+:root[data-theme='light']
+  :is(
+    .project-portfolio p,
+    .project-portfolio dt,
+    .project-detail p,
+    .project-detail dt,
+    .data-readiness p,
+    .reports-view__description,
+    .reports-filters label,
+    .project-portfolio-table th,
+    .project-detail__header-grid dt,
+    .project-detail__summary-grid dt,
+    .data-readiness__grid dt
+  ) {
+  color: var(--text-secondary);
+}
+:root[data-theme='light']
+  :is(
+    .project-portfolio-table td,
+    .project-portfolio-card__grid dd,
+    .project-detail__header-grid dd,
+    .project-detail__summary-grid dd,
+    .data-readiness__grid dd,
+    .reports-kpis strong
+  ) {
+  color: var(--text-primary);
+}
+:root[data-theme='light']
+  :is(
+    .project-portfolio__row-link,
+    .project-portfolio-card__title,
+    .data-readiness__issue-link,
+    .executive-overview__portfolio-link
+  ) {
+  color: #765400;
+}
+
+/* Dialogs, provenance, sources and status chrome */
+:root[data-theme='light'] :is(.provenance-panel-backdrop, .project-summary-backdrop) {
+  background: rgb(20 49 43 / 0.32);
+}
+:root[data-theme='light']
+  :is(
+    .provenance-panel-card,
+    .project-summary-card,
+    .data-sources-panel,
+    .provenance-dataset-card,
+    .about-panel-card
+  ) {
+  color: var(--text-primary);
+  background: #ffffff;
+  border-color: var(--border-subtle);
+  box-shadow: 0 16px 40px rgb(20 49 43 / 0.18);
+}
+:root[data-theme='light']
+  :is(
+    .dialog-close,
+    .toast,
+    .data-badge,
+    .status-badge,
+    .chip,
+    .badge,
+    [class*='__badge'],
+    [class*='__status']
+  ) {
+  color: var(--text-primary);
+}
+
+/* Detail map: scene stays dark; surrounding chrome becomes a light card. */
+:root[data-theme='light']
+  :is(
+    .detail-map-viewport__intro,
+    .detail-map-viewport__sidebar,
+    .detail-map-layer-tabs,
+    .detail-map-layer-panel,
+    .detail-map-source-notice,
+    .detail-map-map-hud,
+    .detail-map-legend,
+    .accessible-directory,
+    .directory-table,
+    .detail-panel,
+    .local-search,
+    .distance-measure-tool__panel
+  ) {
+  color: var(--text-primary);
+  background: #ffffff;
+  border-color: var(--border-subtle);
+  box-shadow: var(--lift);
+}
+:root[data-theme='light']
+  :is(
+    .directory-row,
+    .directory-header,
+    .detail-map-layer-tabs button,
+    .detail-map-legend span,
+    .detail-map-scale,
+    .detail-map-north,
+    .detail-map-source-notice p
+  ) {
+  color: var(--text-secondary);
+}
+:root[data-theme='light']
+  :is(.detail-map-layer-tabs button[aria-pressed='true'], .directory-row.selected) {
+  color: #1b2a22;
+  background: #f6dd9b;
+}
+
+/* 3D HUD and mobile sheet */
+:root[data-theme='light']
+  :is(
+    .stat-panel,
+    .scene-tools,
+    .scene-tools-panel,
+    .detail-panel,
+    .mobile-sheet,
+    .tourism-info-panel
+  ) {
+  color: var(--text-primary);
+  background: #ffffff;
+  border-color: var(--border-subtle);
+  box-shadow: var(--lift);
+}
+:root[data-theme='light']
+  :is(
+    .stat-panel p,
+    .scene-tools-panel p,
+    .detail-panel p,
+    .mobile-sheet__bar,
+    .tourism-info-panel__description
+  ) {
+  color: var(--text-secondary);
+}
+
+/* Dataset footer */
+:root[data-theme='light'] .dataset-footer {
+  color: var(--text-secondary);
+  background: #ffffff;
+  border-color: var(--border-subtle);
+}
+:root[data-theme='light'] .dataset-footer a {
+  color: #155c87;
+  text-decoration: underline;
+}
+
+/* Detail map directory + intro (legacy classes kept; light variants must win over their dark rules). */
+:root[data-theme='light'] .detail-map-viewport__sidebar .accessible-directory,
+:root[data-theme='light'] .detail-map-viewport__sidebar .directory-table,
+:root[data-theme='light'] .detail-map-viewport__sidebar {
+  background: #ffffff;
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar .directory-row {
+  color: #14312b;
+  border-color: #e2eae5;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar .directory-row > :first-child {
+  color: #0b241b;
+  font-weight: 700;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar .directory-header {
+  background: #f3f6f4;
+  color: #4d6b62;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar input[type='search'],
+:root[data-theme='light'] .detail-map-viewport__sidebar input {
+  color: #14312b;
+  background: #ffffff;
+  border: 1px solid #cbd8d1;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar h2,
+:root[data-theme='light'] .detail-map-viewport__sidebar .eyebrow,
+:root[data-theme='light'] .detail-map-viewport__sidebar label,
+:root[data-theme='light'] .detail-map-viewport__sidebar .directory-status {
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-viewport__sidebar .eyebrow {
+  color: #4d6b62;
+}
+
+/* Directory filter chips and the data-source notice on the light map page. */
+:root[data-theme='light'] .directory-filters button {
+  color: #14312b;
+  background: #ffffff;
+  border: 1px solid #cbd8d1;
+  min-height: 44px;
+  font-size: calc(16px * var(--user-font-scale, 1));
+}
+:root[data-theme='light'] .directory-filters button[aria-pressed='true'] {
+  background: #f6dd9b;
+  border-color: #e4bc5e;
+  color: #1b2a22;
+  font-weight: 700;
+}
+:root[data-theme='light'] .directory-filters span {
+  color: inherit;
+  opacity: 0.8;
+}
+:root[data-theme='light'] .detail-map-source-notice strong,
+:root[data-theme='light'] .detail-map-source-notice b {
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-source-notice p:not(.eyebrow) {
+  color: #34524a;
+  font-size: calc(16px * var(--user-font-scale, 1));
+}
+:root[data-theme='light'] .detail-map-source-notice .eyebrow {
+  color: #4d6b62;
+}
+
+/* The map HUD wrapper is only a positioning frame; its children (legend, scale, north) are the
+   cards. Painting the frame white hid a 180px strip of the map. */
+:root[data-theme='light'] .detail-map-map-hud {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+:root[data-theme='light'] .detail-map-north {
+  background: #ffffff;
+  border: 1px solid #cbd8d1;
+  border-radius: 999px;
+  color: #14312b;
+  width: 44px;
+  right: 0;
+  padding: 4px 0;
+}
+:root[data-theme='light'] .detail-map-scale {
+  background: #ffffff;
+  color: #14312b;
+  border: 1px solid #cbd8d1;
+  border-radius: 8px;
+}
+:root[data-theme='light'] .detail-map-legend {
+  font-size: calc(14px * var(--user-font-scale, 1));
+}
+:root[data-theme='light'] .detail-map-legend strong,
+:root[data-theme='light'] .detail-map-legend .legend-title {
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-layer-tabs button:not([aria-pressed='true']) {
+  color: #14312b;
+}
+
+/* ---- Contrast fixes found by the CI axe matrix ---- */
+/* Layer panel body kept its dark legacy background while the text turned dark. */
+:root[data-theme='light'] .detail-map-layer-panel__content,
+:root[data-theme='light'] .detail-map-layer-panel__content :is(label, summary, legend, p, span) {
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-layer-panel__content {
+  background: #ffffff;
+  border: 1px solid #cbd8d1;
+  box-shadow: var(--lift);
+}
+:root[data-theme='light'] .detail-map-layer-panel > button {
+  color: #ffffff;
+  background: #0f4a3f;
+  border-color: #0f4a3f;
+}
+/* 3D data-mode tabs in the topbar. */
+:root[data-theme='light'] .mode-tabs {
+  background: #ffffff;
+  border: 1px solid #cbd8d1;
+}
+:root[data-theme='light'] .mode-tabs button {
+  color: #14312b;
+}
+:root[data-theme='light'] .mode-tabs button.active {
+  color: #1b2a22;
+  background: #f6dd9b;
+  box-shadow: none;
+}
+/* Coordinates caption sits on the dark 3D canvas: give it its own dark pill so its contrast does
+   not depend on what is behind the canvas. */
+.map-caption {
+  padding: 6px 16px;
+  border-radius: 12px;
+  background: #071918d9;
+}
+:root[data-theme='light'] .mobile-sheet,
+:root[data-theme='light'] .mobile-sheet * {
+  --sheet-ink: #14312b;
+}
+:root[data-theme='light'] .mobile-sheet :is(h2, h3, p, span, small, button, dt, dd) {
+  color: #14312b;
+}
+
+/* Everything inside the layer panel (mode switch, tools, radios, summaries) is dark-on-white. */
+:root[data-theme='light']
+  .detail-map-layer-panel__content
+  :is(button, summary, legend, strong, small, h2, h3, h4, dt, dd, li, option) {
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-layer-panel__content button {
+  background: #ffffff;
+  border-color: #cbd8d1;
+}
+:root[data-theme='light'] .detail-map-layer-panel__content button[aria-pressed='true'] {
+  background: #f6dd9b;
+  border-color: #e4bc5e;
+  color: #1b2a22;
+  font-weight: 700;
+}
+:root[data-theme='light'] .detail-map-layer-panel__content input:disabled + *,
+:root[data-theme='light'] .detail-map-layer-panel__content [aria-disabled='true'] {
+  color: #4d6b62;
+}
+
+/* The layer-panel wrapper is only a positioning frame (its button and its content are the cards);
+   painting it white left a tall white strip over the directory on phones. */
+:root[data-theme='light'] .detail-map-layer-panel {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}

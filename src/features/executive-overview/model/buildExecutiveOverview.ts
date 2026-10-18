@@ -150,6 +150,18 @@ function buildStatusDistribution(bundles: readonly ProjectBundle[]): Record<Proj
   return distribution;
 }
 
+function buildProjectCountByAdministrativeArea(
+  bundles: readonly ProjectBundle[],
+): Record<string, number> {
+  const counts: Record<string, number> = {};
+  for (const { project } of bundles) {
+    for (const code of project.administrativeAreaCodes) {
+      counts[code] = (counts[code] ?? 0) + 1;
+    }
+  }
+  return counts;
+}
+
 function buildDataHealth(
   bundles: readonly ProjectBundle[],
   context: DataQualityContext,
@@ -258,6 +270,7 @@ export function buildExecutiveOverview({
       overdueIssues: overdueIssueCount(allIssues, asOf),
     },
     statusDistribution: buildStatusDistribution(validBundles),
+    projectCountByAdministrativeArea: buildProjectCountByAdministrativeArea(validBundles),
     priorityProjects: priorityProjects.items,
     alerts,
     dataHealth: buildDataHealth(bundles, context),

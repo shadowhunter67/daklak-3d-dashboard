@@ -19,15 +19,15 @@ function memoryStorage(initial: Record<string, string> = {}) {
 }
 
 describe('theme preference', () => {
-  it('defaults to dark when nothing is stored', () => {
-    expect(resolveInitialTheme(memoryStorage())).toBe('dark');
+  it('defaults to light when nothing is stored', () => {
+    expect(resolveInitialTheme(memoryStorage())).toBe('light');
   });
 
   it('round-trips a persisted choice', () => {
     const storage = memoryStorage();
-    persistTheme('light', storage);
-    expect(storage.data[THEME_STORAGE_KEY]).toBe('light');
-    expect(resolveInitialTheme(storage)).toBe('light');
+    persistTheme('dark', storage);
+    expect(storage.data[THEME_STORAGE_KEY]).toBe('dark');
+    expect(resolveInitialTheme(storage)).toBe('dark');
   });
 
   it('ignores an unknown stored value', () => {
@@ -43,7 +43,7 @@ describe('theme preference', () => {
         throw new Error('blocked');
       },
     };
-    expect(resolveInitialTheme(blocked)).toBe('dark');
+    expect(resolveInitialTheme(blocked)).toBe('light');
     expect(() => persistTheme('dark', blocked)).not.toThrow();
   });
 

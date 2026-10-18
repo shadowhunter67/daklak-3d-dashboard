@@ -5,6 +5,8 @@ import wards from '#province-assets/daklak-wards-render.json';
 import dashboardData from '../../assets/data/dashboard-sources.json';
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
+import { HudToggle } from './HudToggle';
+import { useCollapsibleHud } from './useCollapsibleHud';
 import { formatNumber } from '../../i18n/formatters';
 
 const CHART_HEIGHT = 105;
@@ -70,6 +72,7 @@ function MiniBarChart({ bars }: { bars: { label: string; value: number }[] }) {
 export function StatPanel() {
   const { t, locale } = useTranslation();
   const dataMode = useMapStore((state) => state.dataMode);
+  const { collapsed, toggle } = useCollapsibleHud();
   const values = Object.values(unitMetrics);
   const population = provinceProfileTotals.population2025;
   const area = wards.features.reduce((s, ward) => s + ward.properties.areaKm2, 0);
@@ -147,7 +150,12 @@ export function StatPanel() {
     summary: bars.map((bar) => `${bar.label} ${bar.value}`).join(', '),
   });
   return (
-    <aside className="stat-panel glass">
+    <aside
+      className="stat-panel glass"
+      data-viewport-overlay="left"
+      data-collapsed={collapsed || undefined}
+    >
+      <HudToggle collapsed={collapsed} onToggle={toggle} label={t('statPanel.panelName')} />
       <p className="eyebrow">
         {dataMode === 'energy'
           ? t('statPanel.eyebrow.energy')

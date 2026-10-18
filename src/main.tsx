@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { applyTheme, resolveInitialTheme } from './a11y/theme';
 import App from './App';
 import { AppErrorBoundary } from './components/map/MapFallback';
 import { I18nProvider } from './i18n/I18nProvider';
@@ -7,6 +8,9 @@ import { I18nProvider } from './i18n/I18nProvider';
 import './styles/fonts.css';
 import './styles/global.css';
 import './styles/shell.css';
+import './styles/light.css';
+import './styles/ui-kit.css';
+applyTheme(resolveInitialTheme());
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <I18nProvider>

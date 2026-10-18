@@ -1,5 +1,6 @@
 import type { ProjectPortfolioSourceMetadata } from '../../../entities/project/adapters/ProjectPortfolioSource';
 import type { DataQualityIssue } from '../../../entities/project/types';
+import type { DataHealthSummary } from '../../executive-overview/model/executiveOverviewTypes';
 
 export interface DataReadinessCounts {
   projects: number;
@@ -19,6 +20,7 @@ export interface DataReadinessIssueWithProjectLink extends DataQualityIssue {
 export interface DataReadinessModel {
   metadata: ProjectPortfolioSourceMetadata;
   asOf: string;
+  dataHealth: DataHealthSummary;
   counts: DataReadinessCounts;
   validationErrors: string[];
   dataQualityIssues: DataReadinessIssueWithProjectLink[];

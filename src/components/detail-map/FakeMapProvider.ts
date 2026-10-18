@@ -1,3 +1,4 @@
+import type { DetailMapTheme } from './detailMapTheme';
 import type {
   DetailBaseMap,
   DetailBounds,
@@ -150,6 +151,14 @@ export class FakeMapProvider implements DetailedMapProvider {
 
   setHeatmapVisible(visible: boolean): void {
     this.setLayerFlag('heatmapVisible', visible);
+  }
+
+  resize(): void {
+    // Nothing to re-measure: the placeholder is plain DOM.
+  }
+
+  setTheme(theme: DetailMapTheme): void {
+    if (this.placeholder) this.placeholder.dataset.theme = theme;
   }
 
   private setLayerFlag(key: keyof DetailMapLayerState, value: boolean) {

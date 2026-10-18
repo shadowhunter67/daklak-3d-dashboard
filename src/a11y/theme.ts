@@ -1,6 +1,6 @@
 /**
  * Theme preference (Sáng / Tối) — pure logic, same best-effort localStorage pattern as
- * `fontScale.ts`. Dark is the default because most existing views were designed dark; the redesigned shell and Executive Overview are token-driven and also support light. The preference lives on `<html data-theme>`; `shell.css` reads it.
+ * `fontScale.ts`. Light is the default (the look of the approved design); dark stays available. The preference lives on `<html data-theme>`; `shell.css` and `light.css` read it.
  */
 export type ThemeMode = 'light' | 'dark';
 
@@ -37,7 +37,7 @@ export function persistTheme(
 export function resolveInitialTheme(
   storage: Pick<Storage, 'getItem'> = window.localStorage,
 ): ThemeMode {
-  return readPersistedTheme(storage) ?? 'dark';
+  return readPersistedTheme(storage) ?? 'light';
 }
 
 export function applyTheme(mode: ThemeMode, root: HTMLElement = document.documentElement): void {

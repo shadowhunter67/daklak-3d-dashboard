@@ -11,12 +11,26 @@ export interface ReportSummary {
   bySector: { sector: string; count: number }[];
   byArea: { area: string; count: number }[];
   attention: { id: string; name: string; status: string; area: string }[];
+  highlights: {
+    disbursementRate: number | null;
+    delayed: number;
+    completed: number;
+    dataWarnings: number;
+  };
+  unitAttention: {
+    area: string;
+    total: number;
+    delayed: number;
+    openIssues: number;
+  }[];
 }
 
 export function buildReportSummary(bundles: readonly ProjectBundle[]): ReportSummary {
   const byStatus = new Map<string, number>();
   const bySector = new Map<string, number>();
   const byArea = new Map<string, number>();
+  const delayedByArea = new Map<string, number>();
+  const issuesByArea = new Map<string, number>();
   let budget = 0;
   let disbursed = 0;
   let dataWarnings = 0;
@@ -25,6 +39,13 @@ export function buildReportSummary(bundles: readonly ProjectBundle[]): ReportSum
     byStatus.set(p.status, (byStatus.get(p.status) ?? 0) + 1);
     bySector.set(p.sector, (bySector.get(p.sector) ?? 0) + 1);
     for (const area of p.administrativeAreaCodes) byArea.set(area, (byArea.get(area) ?? 0) + 1);
+    for (const area of p.administrativeAreaCodes) {
+      if (p.status === 'delayed') delayedByArea.set(area, (delayedByArea.get(area) ?? 0) + 1);
+      const openIssues = bundle.issues.filter(
+        (issue) => !['resolved', 'closed'].includes(issue.status),
+      ).length;
+      issuesByArea.set(area, (issuesByArea.get(area) ?? 0) + openIssues);
+    }
     budget += p.approvedBudget;
     disbursed += p.disbursedAmount;
     dataWarnings += bundle.issues.filter(
@@ -67,5 +88,25 @@ export function buildReportSummary(bundles: readonly ProjectBundle[]): ReportSum
       .map(([area, count]) => ({ area, count }))
       .sort((a, b) => b.count - a.count),
     attention,
+    highlights: {
+      disbursementRate: budget ? (disbursed / budget) * 100 : null,
+      delayed: byStatus.get('delayed') ?? 0,
+      completed: byStatus.get('completed') ?? 0,
+      dataWarnings,
+    },
+    unitAttention: [...byArea.entries()]
+      .map(([area, total]) => ({
+        area,
+        total,
+        delayed: delayedByArea.get(area) ?? 0,
+        openIssues: issuesByArea.get(area) ?? 0,
+      }))
+      .sort(
+        (a, b) =>
+          b.delayed - a.delayed ||
+          b.openIssues - a.openIssues ||
+          b.total - a.total ||
+          a.area.localeCompare(b.area),
+      ),
   };
 }

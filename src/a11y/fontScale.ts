@@ -54,7 +54,7 @@ export function resolveInitialFontScale(
 }
 
 /** Applies the step as the `--user-font-scale` CSS custom property `global.css`'s typography
- * tokens read (`--font-size-label`, `.kpi-card__value`, etc.) — see that file's `:root` comment
+ * tokens read (`--font-size-label`, `.ui-kpi-value`, etc.) — see that file's `:root` comment
  * for exactly which selectors respect this and which don't (the compact header toolbar chrome
  * deliberately doesn't, to avoid re-introducing header/panel overlap at fixed breakpoint heights). */
 export function applyFontScale(step: FontScaleStep, root: HTMLElement = document.documentElement) {

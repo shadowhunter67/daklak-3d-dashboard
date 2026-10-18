@@ -29,6 +29,7 @@ import { useTranslation } from '../../i18n/useTranslation';
 import { MapIcon, LayersIcon, TrendIcon, FolderIcon } from '../layout/icons';
 import { DetailPanel } from '../dashboard/DetailPanel';
 import { pickScaleBar } from './mapScale';
+import { useAppTheme } from '../../a11y/useAppTheme';
 
 type LoadStatus = 'loading' | 'ready' | 'error';
 
@@ -206,6 +207,23 @@ export function DetailMapViewport() {
     const bounds = getWardBounds(selectedCode);
     if (bounds) provider.fitBounds(bounds, { animate, durationMs: WARD_FLY_DURATION_MS });
   }, [selectedCode, status]);
+
+  // The map canvas is sized once by MapLibre; the stage resizes when the directory opens/closes or
+  // the window changes, so tell the provider to re-measure (otherwise a strip of the stage stays
+  // empty).
+  useEffect(() => {
+    const stage = containerRef.current?.parentElement;
+    if (!stage || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver(() => providerRef.current?.resize());
+    observer.observe(stage);
+    return () => observer.disconnect();
+  }, [generation]);
+
+  // Re-colours the map when the app theme changes (and once the map is ready).
+  const theme = useAppTheme();
+  useEffect(() => {
+    if (status === 'ready') providerRef.current?.setTheme(theme);
+  }, [theme, status]);
 
   // Keeps the mounted provider in sync with every layer-panel change (base map, roads, labels,
   // boundaries, metrics, heatmap). `detailMapLayers` in the store is always replaced as a whole

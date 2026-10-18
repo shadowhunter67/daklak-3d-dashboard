@@ -251,7 +251,9 @@ export function DataProvenancePanel() {
   useEffect(() => {
     const previouslyFocused = consumeProvenanceFocusTrigger();
     return () => {
-      const headerFallback = document.getElementById('open-data-provenance-panel');
+      const headerFallback = document.querySelector<HTMLElement>(
+        '[data-provenance-trigger], #open-data-provenance-panel',
+      );
       const target = isFocusable(previouslyFocused)
         ? previouslyFocused
         : isFocusable(headerFallback)

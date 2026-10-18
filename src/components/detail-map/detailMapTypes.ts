@@ -3,6 +3,7 @@
  * sources). See docs/detail-map-integration.md for the architecture this backs.
  */
 
+import type { DetailMapTheme } from './detailMapTheme';
 import type { PlanningThemeId } from './planningThemes';
 
 export type MapExperience = 'overview-3d' | 'detail-map';
@@ -151,6 +152,10 @@ export interface DetailedMapProvider {
   setServicesVisible(visible: boolean): void;
   setDashboardMetricsVisible(visible: boolean): void;
   setHeatmapVisible(visible: boolean): void;
+  /** Re-colours the base layers (ground, wards, ward names) for the app theme without reloading the style. */
+  setTheme(theme: DetailMapTheme): void;
+  /** Re-measures the container (call when the stage size changes). */
+  resize(): void;
 
   /** Highlights a ward polygon by administrative code without necessarily moving the camera.
    * `options.animate` (default `true`) plays the glow-reveal transition; `false` (used when
@@ -170,6 +175,8 @@ export interface DetailedMapProvider {
 
   destroy(): void;
 }
+
+export type { DetailMapTheme } from './detailMapTheme';
 
 export const DEFAULT_DETAIL_MAP_LAYER_STATE: DetailMapLayerState = {
   baseMap: 'default',

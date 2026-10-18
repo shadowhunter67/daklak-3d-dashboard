@@ -1,42 +1,29 @@
 import { useMemo, useState } from 'react';
 import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
-import { formatAbsoluteDateTime } from './model/executiveOverviewSelectors';
+import {
+  formatAbsoluteDateTime,
+  formatKpiValueLocalized,
+} from './model/executiveOverviewSelectors';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
+import { formatPercentagePointsDelta } from '../../i18n/formatters';
 import { AlertList } from './AlertList';
-import { DataHealthPanel } from './DataHealthPanel';
-import { KpiCardGrid } from './KpiCardGrid';
+import { DataHealthCard } from './DataHealthCard';
 import { OverviewWorkspace } from './OverviewWorkspace';
-import { PriorityProjectList } from './PriorityProjectList';
+import { PriorityProjectsTable } from './PriorityProjectsTable';
+import { RecentUpdatesCard } from './RecentUpdatesCard';
+import { PortfolioStatusChart } from './PortfolioStatusChart';
 import { useExecutiveOverview } from './data/useExecutiveOverview';
-import type { ExecutiveOverviewModel } from './model/executiveOverviewTypes';
-
-function RecentUpdates({ timeline }: { timeline: ExecutiveOverviewModel['dataTimeline'] }) {
-  const { t, locale } = useTranslation();
-  const entries = [
-    ['effectiveAt', 'executiveOverview.timeline.effectiveAt'],
-    ['sourcePublishedAt', 'executiveOverview.timeline.sourcePublishedAt'],
-    ['retrievedAt', 'executiveOverview.timeline.retrievedAt'],
-    ['publishedToDashboardAt', 'executiveOverview.timeline.publishedToDashboardAt'],
-    ['loadedInBrowserAt', 'executiveOverview.timeline.loadedInBrowserAt'],
-  ] as const;
-  return (
-    <section className="recent-updates" aria-labelledby="recent-updates-heading">
-      <h3 id="recent-updates-heading">{t('executiveOverview.recentUpdates')}</h3>
-      <ol>
-        {entries.map(([field, label]) => (
-          <li key={field}>
-            <span>{t(label)}</span>
-            <time dateTime={timeline[field]}>
-              {formatAbsoluteDateTime(timeline[field], locale)}
-            </time>
-          </li>
-        ))}
-      </ol>
-    </section>
-  );
-}
+import { PageHeader, KpiTile, StatusChip } from '../../components/ui';
+import {
+  AlertIcon,
+  ClockIcon,
+  CoinsIcon,
+  DocumentIcon,
+  TargetIcon,
+  TrendIcon,
+} from '../../components/layout/icons';
 
 const ERROR_KIND_MESSAGE_KEY: Record<string, MessageKey> = {
   unauthorized: 'executiveOverview.error.kind.unauthorized',
@@ -113,39 +100,33 @@ export function ExecutiveOverview({
       aria-labelledby="executive-overview-heading"
       tabIndex={-1}
     >
-      <h2 id="executive-overview-heading">{t('executiveOverview.heading')}</h2>
-      {(model.isIllustrative || onOpenPortfolio) && (
-        <div className="executive-overview__notice">
-          {model.isIllustrative && (
-            <p className="executive-overview__mock-badge" role="note">
-              {t('executiveOverview.mockBadge')}
-            </p>
-          )}
-          {onOpenPortfolio && (
-            <button
-              type="button"
-              className="executive-overview__portfolio-link"
-              style={{ color: '#765400' }}
-              onClick={onOpenPortfolio}
-            >
-              {t('executiveOverview.openPortfolio')}
-            </button>
-          )}
-        </div>
-      )}
-      {/* Chữ "Trạng thái danh mục: X" trước đây lặp lại đúng thông tin Executive Status Hero ở
-          trên đã nói to và rõ hơn nhiều — chỉ còn giữ lại mốc "dữ liệu có hiệu lực" (vẫn cần cho
-          minh bạch nguồn dữ liệu), tránh nói hai lần cùng một điều theo hai cách khác nhau. */}
-      <p className="executive-overview__status" data-status={model.portfolioStatus}>
-        {t('executiveOverview.description')}{' '}
-        <strong>
-          {t('executiveOverview.statusLabel')}{' '}
-          {t(`portfolioStatus.${model.portfolioStatus}` as MessageKey)}
-        </strong>
-        {' · '}
-        {t('executiveOverview.dataEffectiveLabel')}{' '}
-        {formatAbsoluteDateTime(model.dataTimeline.effectiveAt, locale)}
-      </p>
+      <PageHeader
+        title={t('executiveOverview.heading')}
+        description={t('executiveOverview.description')}
+        badge={model.isIllustrative ? t('executiveOverview.mockBadge') : undefined}
+        actions={
+          <div className="executive-overview__header-meta">
+            <span>{t('executiveOverview.dataEffectiveLabel')}</span>
+            <strong>{formatAbsoluteDateTime(model.dataTimeline.effectiveAt, locale)}</strong>
+            <StatusChip
+              label={t(`portfolioStatus.${model.portfolioStatus}` as MessageKey)}
+              tone={
+                model.portfolioStatus === 'healthy'
+                  ? 'success'
+                  : model.portfolioStatus === 'critical'
+                    ? 'danger'
+                    : 'warning'
+              }
+              dot
+            />
+            {onOpenPortfolio && (
+              <button type="button" onClick={onOpenPortfolio}>
+                {t('executiveOverview.openPortfolio')} →
+              </button>
+            )}
+          </div>
+        }
+      />
       {state.status === 'degraded' && (
         <p role="alert" className="executive-overview__degraded-banner">
           {t('executiveOverview.degradedBanner', { issues: state.sourceIssues.join('; ') })}
@@ -155,22 +136,67 @@ export function ExecutiveOverview({
         <p className="executive-overview__empty">{t('executiveOverview.empty')}</p>
       ) : (
         <>
-          <KpiCardGrid kpis={model.kpis} disbursementRateTrend={model.disbursementRateTrend} />
-          <OverviewWorkspace attention={model.priorityProjects} onOpenPortfolio={onOpenPortfolio} />
-          <div className="executive-overview__columns">
-            {/* Main column (~65%): the two things a leader acts on — which projects need
-                attention, and how the whole portfolio is distributed across the pipeline. */}
-            <div className="executive-overview__main-column">
-              <PriorityProjectList items={model.priorityProjects} asOf={asOf} />
-              <RecentUpdates timeline={model.dataTimeline} />
-            </div>
-            {/* Sidebar (~35%): supporting context — active alerts and whether the underlying data
-                can be trusted. */}
-            <div className="executive-overview__side-column">
-              <AlertList alerts={model.alerts} />
-              <DataHealthPanel dataHealth={model.dataHealth} dataTimeline={model.dataTimeline} />
-            </div>
-          </div>
+          <section aria-labelledby="kpi-grid-heading" className="executive-overview__kit-kpis">
+            <h2 id="kpi-grid-heading" className="ui-visually-hidden">
+              {t('kpi.heading')}
+            </h2>
+            <ul className="ui-kpi-grid">
+              {(
+                [
+                  ['totalProjects', 'kpi.totalProjects', 'blue', DocumentIcon],
+                  ['totalApprovedBudget', 'kpi.totalApprovedBudget', 'gold', CoinsIcon],
+                  ['disbursementRate', 'kpi.disbursementRate', 'green', TrendIcon],
+                  ['onTrackProjects', 'kpi.onTrackProjects', 'blue', TargetIcon],
+                  ['atRiskProjects', 'kpi.atRiskProjects', 'orange', AlertIcon],
+                  ['delayedProjects', 'kpi.delayedProjects', 'red', ClockIcon],
+                  ['overdueIssues', 'kpi.overdueIssues', 'red', AlertIcon],
+                ] as const
+              ).map(([key, labelKey, tone, Icon]) => {
+                const formatted = formatKpiValueLocalized(model.kpis[key], locale, t);
+                const trend =
+                  key === 'disbursementRate' && model.disbursementRateTrend.status === 'ok'
+                    ? formatPercentagePointsDelta(
+                        model.disbursementRateTrend.deltaPercentagePoints ?? 0,
+                        locale,
+                      )
+                    : undefined;
+                return (
+                  <KpiTile
+                    key={key}
+                    label={t(labelKey)}
+                    value={formatted.text}
+                    tone={tone}
+                    icon={<Icon />}
+                    detail={trend}
+                  />
+                );
+              })}
+              <KpiTile
+                label={t('kpi.attentionProjects')}
+                value={model.attentionProjectCount}
+                tone="purple"
+                icon={<TargetIcon />}
+                detail={t('kpi.attentionProjectsOf', {
+                  total: String(model.kpis.totalProjects.value ?? 0),
+                })}
+              />
+            </ul>
+          </section>
+          <OverviewWorkspace
+            projectCountByAdministrativeArea={model.projectCountByAdministrativeArea}
+          />
+          <section className="executive-overview__panel-grid" aria-label={t('overview.panelsAria')}>
+            <PriorityProjectsTable
+              items={model.priorityProjects}
+              attentionProjectCount={model.attentionProjectCount}
+              asOf={asOf}
+              onOpenPortfolio={onOpenPortfolio}
+            />
+            <DataHealthCard dataHealth={model.dataHealth} isIllustrative={model.isIllustrative} />
+            <RecentUpdatesCard timeline={model.dataTimeline} />
+            <AlertList alerts={model.alerts} />
+            <PortfolioStatusChart statusDistribution={model.statusDistribution} />
+          </section>
         </>
       )}
     </section>
