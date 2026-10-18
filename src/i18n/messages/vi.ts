@@ -164,6 +164,25 @@ export const vi = {
   'reports.attention': 'Đơn vị cần chú ý',
   'reports.noAttention': 'Không có đơn vị cần chú ý.',
   'reports.backToOverview': 'Về Tổng quan',
+  'reports.resetFilters': 'Đặt lại bộ lọc',
+  'reports.kpiLabel': 'Các chỉ số báo cáo',
+  'reports.projectsUnit': 'dự án',
+  'reports.statusSummary': '{total} dự án; {delayed} chậm tiến độ, {completed} hoàn thành.',
+  'reports.sectorSummary': 'Lĩnh vực có nhiều dự án nhất: {sector}.',
+  'reports.areaSummary': '{area} có {count} dự án trong bộ lọc.',
+  'reports.attentionSignals': '{delayed} chậm · {issues} cảnh báo',
+  'reports.highlights': 'Điểm nổi bật',
+  'reports.highlightDisbursement': 'Tỷ lệ giải ngân',
+  'reports.highlightDelayed': 'Dự án chậm tiến độ',
+  'reports.highlightCompleted': 'Dự án hoàn thành',
+  'reports.highlightWarnings': 'Cảnh báo dữ liệu',
+  'reports.unitSignals': '{delayed} chậm · {issues} vấn đề · {projects} dự án',
+  'reports.noData': 'Chưa có dữ liệu',
+  'common.home': 'Trang chủ',
+  'common.projects': 'Dự án',
+  'common.data': 'Dữ liệu & nguồn',
+  'common.reports': 'Báo cáo',
+  'common.breadcrumb': 'Điều hướng vị trí',
 
   // FontScaleControl ("A- / A / A+")
   'fontScale.groupAriaLabel': 'Cỡ chữ',
@@ -482,6 +501,25 @@ export const vi = {
   'portfolio.export.col.dataFreshnessDays': 'Độ mới dữ liệu (ngày)',
   'portfolio.export.col.reasonCategory': 'Lý do cần chú ý',
   'portfolio.export.col.administrativeAreaCodes': 'Mã xã/phường liên quan',
+  'portfolio.totalProjects': 'Tổng số dự án',
+  'portfolio.kpiLabel': 'Các chỉ số danh mục dự án',
+  'portfolio.filtersHeading': 'Tìm kiếm và lọc dự án',
+  'portfolio.viewMode': 'Chế độ xem danh mục dự án',
+  'portfolio.viewCards': 'Thẻ',
+  'portfolio.viewTable': 'Bảng',
+  'portfolio.viewDetail': 'Xem chi tiết',
+  'portfolio.updatedDaysAgo': 'Cập nhật {value} trước',
+  'portfolio.asideLabel': 'Thông tin hỗ trợ danh mục dự án',
+  'portfolio.todayHeading': 'Cần xử lý hôm nay',
+  'portfolio.quickInfoHeading': 'Thông tin nhanh',
+  'portfolio.topSectorsHeading': 'Lĩnh vực có nhiều dự án nhất',
+  'portfolio.statusGroup.inProgress': 'Đang triển khai',
+  'portfolio.statusGroup.attention': 'Cần chú ý',
+  'portfolio.statusGroup.suspended': 'Tạm dừng',
+  'portfolio.statusGroup.completed': 'Hoàn thành',
+  'portfolio.statusGroup.other': 'Khác',
+  'portfolio.col.area': 'Địa bàn',
+  'portfolio.col.action': 'Thao tác',
 
   // Project Detail (Phase 2B1)
   'detail.loading': 'Đang tải chi tiết dự án…',
@@ -1018,9 +1056,9 @@ export const vi = {
   'provenance.referenceDocumentsHeading': 'Văn bản quy hoạch tham chiếu',
 
   // Data Readiness (Phase 5 §C) — docs/adr/0008-*.md.
-  'dataReadiness.heading': 'Mức độ sẵn sàng dữ liệu',
+  'dataReadiness.heading': 'Nguồn và độ tin cậy dữ liệu',
   'dataReadiness.description':
-    'Nguồn dữ liệu hiện tại đến từ đâu, đã được kiểm tra thế nào, và những gì còn thiếu/cũ/chưa xác minh.',
+    'Theo dõi độ đầy đủ, độ mới, tính nhất quán và khả năng truy nguyên của dữ liệu dự án.',
   // Health summary (spec §XVI) — trạng thái 3 mức (Tốt/Cần chú ý/Nghiêm trọng), KHÔNG phải điểm
   // số tổng hợp kiểu "92/100" — không có phương pháp tính điểm nào đủ căn cứ để không bị coi là
   // bịa độ chính xác giả. 4 card dùng đúng số đã tính sẵn ở nơi khác trong pipeline.
@@ -1093,6 +1131,24 @@ export const vi = {
   'dataReadiness.error': 'Lỗi',
   'dataReadiness.warning': 'Cảnh báo',
   'dataReadiness.filteredEmpty': 'Không có cảnh báo phù hợp.',
+  'dataReadiness.healthHeading': 'Chỉ số sức khỏe dữ liệu',
+  'dataReadiness.healthIssues': 'Đã phát hiện {count} vấn đề cần xử lý.',
+  'dataReadiness.metricDetail': 'Tính từ dữ liệu đã nạp',
+  'dataReadiness.distributionHeading': 'Phân bố vấn đề dữ liệu',
+  'dataReadiness.distributionAria': 'Phân bố các vấn đề dữ liệu theo nhóm',
+  'dataReadiness.distribution.validation': 'Lỗi cấu trúc',
+  'dataReadiness.distribution.quality': 'Chất lượng dữ liệu',
+  'dataReadiness.distribution.business': 'Cảnh báo nghiệp vụ',
+  'dataReadiness.distribution.provenance': 'Thiếu nguồn gốc',
+  'dataReadiness.issuesTotal': 'vấn đề',
+  'dataReadiness.recordStatus.valid': 'Hợp lệ',
+  'dataReadiness.recordStatus.review': 'Cần kiểm tra',
+  'dataReadiness.recordStatus.error': 'Có lỗi',
+  'dataReadiness.recordStatus.pending': 'Chờ xử lý',
+  'dataReadiness.recordStatusNote': 'Phân loại từ kết quả xác thực và quy tắc chất lượng dữ liệu.',
+  'dataReadiness.alertColumn': 'Nội dung cảnh báo',
+  'dataReadiness.entityColumn': 'Bản ghi liên quan',
+  'dataReadiness.technicalDetails': 'Xem chi tiết kỹ thuật',
 
   // Nhãn tiếng Việt dễ hiểu cho từng `DataQualityIssue.rule` — dùng thay cho slug kỹ thuật
   // ("multiple-verification-stage-records", "unknown-managing-authority"...) ở mọi nơi hiển thị

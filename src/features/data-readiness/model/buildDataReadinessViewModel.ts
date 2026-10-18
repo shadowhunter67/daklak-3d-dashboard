@@ -123,6 +123,14 @@ export function buildDataReadinessViewModel(params: {
   );
   const summary = summarizeDataQuality(bundles, context);
 
+  const confidenceBreakdown = bundles.reduce(
+    (counts, bundle) => {
+      counts[bundle.project.confidence] += 1;
+      return counts;
+    },
+    { verified: 0, high: 0, medium: 0, low: 0, unknown: 0 },
+  );
+
   const lowConfidenceProjectCount = bundles.filter((b) => b.project.confidence === 'low').length;
   const unverifiedProjectCount = bundles.filter((b) =>
     UNVERIFIED_STATUSES.has(b.project.verificationStatus),
@@ -131,6 +139,7 @@ export function buildDataReadinessViewModel(params: {
   return {
     metadata,
     asOf: context.asOf.toISOString(),
+    dataHealth: { ...summary, confidenceBreakdown },
     counts: {
       projects: bundles.length,
       workPackages: workPackageCount,

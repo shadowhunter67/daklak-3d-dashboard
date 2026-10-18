@@ -4832,27 +4832,11 @@ footer a {
   background: var(--surface, #102b29);
   color: inherit;
 }
-.reports-kpis {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-.reports-kpis article,
 .reports-grid > section {
   border: 1px solid var(--border, #49645d);
   border-radius: 0.8rem;
   background: color-mix(in srgb, var(--surface, #102b29) 92%, white);
   padding: 1rem;
-}
-.reports-kpis span {
-  display: block;
-  color: var(--text-muted, #9bb3ad);
-  font-size: 0.85rem;
-}
-.reports-kpis strong {
-  display: block;
-  margin-top: 0.35rem;
-  font-size: 1.6rem;
 }
 .reports-grid {
   display: grid;
