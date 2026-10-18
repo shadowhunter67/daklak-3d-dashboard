@@ -355,3 +355,47 @@
 :root[data-theme='light'] .detail-map-layer-tabs button:not([aria-pressed='true']) {
   color: #14312b;
 }
+
+/* ---- Contrast fixes found by the CI axe matrix ---- */
+/* Layer panel body kept its dark legacy background while the text turned dark. */
+:root[data-theme='light'] .detail-map-layer-panel__content,
+:root[data-theme='light'] .detail-map-layer-panel__content :is(label, summary, legend, p, span) {
+  color: #14312b;
+}
+:root[data-theme='light'] .detail-map-layer-panel__content {
+  background: #ffffff;
+  border: 1px solid #cbd8d1;
+  box-shadow: var(--lift);
+}
+:root[data-theme='light'] .detail-map-layer-panel > button {
+  color: #ffffff;
+  background: #0f4a3f;
+  border-color: #0f4a3f;
+}
+/* 3D data-mode tabs in the topbar. */
+:root[data-theme='light'] .mode-tabs {
+  background: #ffffff;
+  border: 1px solid #cbd8d1;
+}
+:root[data-theme='light'] .mode-tabs button {
+  color: #14312b;
+}
+:root[data-theme='light'] .mode-tabs button.active {
+  color: #1b2a22;
+  background: #f6dd9b;
+  box-shadow: none;
+}
+/* Coordinates caption sits on the dark 3D canvas: give it its own dark pill so its contrast does
+   not depend on what is behind the canvas. */
+.map-caption {
+  padding: 6px 16px;
+  border-radius: 12px;
+  background: #071918d9;
+}
+:root[data-theme='light'] .mobile-sheet,
+:root[data-theme='light'] .mobile-sheet * {
+  --sheet-ink: #14312b;
+}
+:root[data-theme='light'] .mobile-sheet :is(h2, h3, p, span, small, button, dt, dd) {
+  color: #14312b;
+}

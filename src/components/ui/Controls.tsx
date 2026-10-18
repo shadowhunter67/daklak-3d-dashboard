@@ -70,8 +70,10 @@ export function SelectField({
   onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
 }) {
   return (
-    <label className="ui-field" htmlFor={id}>
-      {label}
+    <div className="ui-field">
+      {/* Sibling (not wrapping) label: a wrapping label would fold the selected option's text into
+          the control's accessible name ("Trạng thái Tất cả trạng thái"). */}
+      <label htmlFor={id}>{label}</label>
       <select id={id} value={value} onChange={onChange}>
         {options.map((o) => (
           <option key={o.value} value={o.value}>
@@ -79,7 +81,7 @@ export function SelectField({
           </option>
         ))}
       </select>
-    </label>
+    </div>
   );
 }
 export function SearchField({
@@ -96,9 +98,9 @@ export function SearchField({
   placeholder?: string;
 }) {
   return (
-    <label className="ui-field" htmlFor={id}>
-      {label}
+    <div className="ui-field">
+      <label htmlFor={id}>{label}</label>
       <input id={id} type="search" value={value} onChange={onChange} placeholder={placeholder} />
-    </label>
+    </div>
   );
 }

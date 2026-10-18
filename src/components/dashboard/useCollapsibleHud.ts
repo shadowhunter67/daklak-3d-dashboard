@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useMapStore } from '../../stores/mapStore';
 
-/** Panels start collapsed unless the window is wide enough (2000px) to leave the 102-label map real room. */
-const OPEN_BY_DEFAULT_MIN_WIDTH = 2000;
+/** Panels start collapsed unless the window is wide enough (1280px) to leave the 102-label map real room. */
+const OPEN_BY_DEFAULT_MIN_WIDTH = 1280;
 
 /**
  * Open/collapsed state of a floating 3D HUD panel. Collapsing narrows the panel to a thin strip, so

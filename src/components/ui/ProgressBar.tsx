@@ -17,7 +17,7 @@ export function ProgressBar({ value, tone = 'green', label, valueText }: Progres
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={safe}
-        aria-label={label}
+        aria-label={label ?? `${safe}%`}
       >
         <span className={`ui-progress-fill ui-progress-${tone}`} style={{ width: `${safe}%` }} />
       </div>

@@ -83,7 +83,7 @@ test.describe('Project Portfolio (Phase 2B1)', () => {
       'Keyboard/Enter emulation is unreliable on touch-emulated mobile browsers',
     );
     await page.goto('./#/projects');
-    const firstRowLink = page.locator('.project-portfolio__row-link').first();
+    const firstRowLink = page.locator('.project-portfolio__row-link:visible').first();
     await firstRowLink.focus();
     await page.keyboard.press('Enter');
     await expect(page).toHaveURL(/#\/projects\/prj-/);
