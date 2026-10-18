@@ -177,4 +177,58 @@ describe('validateResearchedDataset', () => {
       'verified-without-evidence',
     );
   });
+
+  it('bắt ngày không hợp lệ (30/02, chuỗi rác) thay vì để Date.parse tự chuẩn hoá', () => {
+    const bad = project({
+      fields: { totalInvestment: [obs(1, 'src-official', '2026-02-30', 'official')] },
+    });
+    const worse = project({
+      id: 'rp-2',
+      fields: { totalInvestment: [obs(1, 'src-official', 'bad', 'official')] },
+    });
+    expect(rules(dataset([bad]))).toContain('invalid-observation-date');
+    expect(rules(dataset([worse]))).toContain('invalid-observation-date');
+  });
+
+  it('cảnh báo quan sát có ngày ở tương lai', () => {
+    const p = project({
+      fields: { totalInvestment: [obs(1, 'src-official', '2099-01-01T00:00:00.000Z', 'official')] },
+    });
+    expect(rules(dataset([p]))).toContain('future-observation');
+  });
+
+  it('"verified" hợp lệ khi có ≥2 phương pháp độc lập, dù liệt kê thêm tâm hành chính', () => {
+    const p = project({
+      location: {
+        coordinates: [108.0, 12.7],
+        accuracy: 'verified',
+        sourceId: 'src-official',
+        verificationMethods: ['administrative-centroid', 'official-document', 'osm-nominatim'],
+      },
+    });
+    expect(rules(dataset([p]))).not.toContain('location-accuracy-overclaimed');
+  });
+
+  it('cảnh báo dự án trùng khả nghi: cùng tên, cùng đơn vị hành chính, cùng vốn', () => {
+    const a = project({
+      id: 'a',
+      name: 'Bệnh viện đa khoa',
+      fields: { totalInvestment: [obs(5, 'src-official', '2026-06-24T00:00:00.000Z', 'official')] },
+    });
+    const b = { ...a, id: 'b', name: 'BENH VIEN DA KHOA ' };
+    const c = { ...a, id: 'c', administrativeAreaCodes: [] };
+    expect(rules(dataset([a, b]))).toContain('possible-duplicate');
+    expect(rules(dataset([a, c]))).not.toContain('possible-duplicate');
+  });
+});
+
+describe('resolveField với ngày hỏng', () => {
+  it('quan sát có ngày NaN xếp sau quan sát có ngày hợp lệ (không làm sort bất định)', () => {
+    const history = [
+      obs(1, 'src-official', 'bad', 'official'),
+      obs(2, 'src-official', '2026-01-01T00:00:00.000Z', 'official'),
+    ];
+    expect(resolveField(history).resolved?.value).toBe(2);
+    expect(resolveField([...history].reverse()).resolved?.value).toBe(2);
+  });
 });

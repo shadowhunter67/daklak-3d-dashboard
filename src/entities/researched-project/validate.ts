@@ -1,3 +1,4 @@
+import { parseIsoDate } from './isoDate';
 import { resolveField } from './resolveField';
 import {
   OFFICIAL_SOURCE_TYPES,
@@ -9,9 +10,20 @@ import {
   type SourceRecord,
 } from './types';
 
+const DAY_MS = 24 * 3600 * 1000;
 const STALE_MS = 18 * 30.44 * 24 * 3600 * 1000;
 /** Số trường có bằng chứng chính thống tối thiểu để bản ghi được gọi là "verified". */
 const VERIFIED_MIN_OFFICIAL_FIELDS = 3;
+
+/** Chuẩn hoá tên để so trùng: bỏ dấu, hoa thường, gộp khoảng trắng. */
+const fold = (s: string) =>
+  s
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/đ/gi, 'd')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+    .trim();
 
 function observationsOf(p: ResearchedProject): FieldObservation<unknown>[] {
   const histories = Object.values(p.fields) as (FieldObservation<unknown>[] | undefined)[];
@@ -38,11 +50,25 @@ export function validateResearchedDataset(
   }
 
   const seen = new Set<string>();
+  const seenFingerprints = new Map<string, string>();
   const now = Date.parse(ctx.now);
 
   for (const p of ds.projects) {
     if (seen.has(p.id)) add('duplicate-project-id', 'error', `ID trùng: ${p.id}`, p.id);
     seen.add(p.id);
+
+    // Cùng tên (bỏ dấu/hoa thường) + cùng đơn vị hành chính + cùng vốn → nhiều khả năng là một dự án.
+    const capital = p.fields.totalInvestment?.[0]?.value;
+    if (p.administrativeAreaCodes.length > 0) {
+      const fingerprint = [
+        fold(p.name),
+        [...p.administrativeAreaCodes].sort().join(','),
+        capital ?? '',
+      ].join('|');
+      const first = seenFingerprints.get(fingerprint);
+      if (first) add('possible-duplicate', 'warning', `Có thể trùng với dự án ${first}`, p.id);
+      else seenFingerprints.set(fingerprint, p.id);
+    }
 
     for (const code of p.administrativeAreaCodes) {
       if (!ctx.validAdministrativeCodes.has(code))
@@ -62,7 +88,22 @@ export function validateResearchedDataset(
           `Quan sát "official" nhưng nguồn ${src.id} là ${src.sourceType}`,
           p.id,
         );
-      if (now - Date.parse(o.observedAt) > STALE_MS)
+      const observed = parseIsoDate(o.observedAt);
+      if (observed === undefined)
+        add(
+          'invalid-observation-date',
+          'error',
+          `Ngày quan sát không hợp lệ: "${o.observedAt}"`,
+          p.id,
+        );
+      else if (observed > now + DAY_MS)
+        add(
+          'future-observation',
+          'warning',
+          `Quan sát có ngày ở tương lai (${o.observedAt})`,
+          p.id,
+        );
+      else if (now - observed > STALE_MS)
         add('stale-observation', 'warning', `Quan sát cũ (${o.observedAt}) từ ${src.id}`, p.id);
     }
 
@@ -82,8 +123,7 @@ export function validateResearchedDataset(
         loc.verificationMethods.filter((m) => m !== 'administrative-centroid'),
       );
       const overclaimed =
-        (loc.accuracy === 'verified' &&
-          (independent.size < 2 || loc.verificationMethods.includes('administrative-centroid'))) ||
+        (loc.accuracy === 'verified' && independent.size < 2) ||
         (loc.accuracy === 'official-coordinate' &&
           !(src && OFFICIAL_SOURCE_TYPES.includes(src.sourceType)));
       if (overclaimed)
