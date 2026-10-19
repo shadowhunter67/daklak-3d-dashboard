@@ -32,7 +32,7 @@ import type {
 } from '../../entities/project/types';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
-import { formatDate, formatDateTime, formatVnd } from '../../i18n/formatters';
+import { formatDate, formatDateTime, formatVnd, formatVndInBillions } from '../../i18n/formatters';
 import {
   formatAbsoluteDateTime,
   formatKpiValueLocalized,
@@ -442,7 +442,7 @@ export function ProjectDetailView({
         />
         <KpiTile
           label={t('detail.summary.approvedBudget')}
-          value={formatVnd(model.summary.approvedBudget, locale)}
+          value={formatVndInBillions(model.summary.approvedBudget, locale)}
           tone="gold"
           icon={<DocumentIcon />}
         />

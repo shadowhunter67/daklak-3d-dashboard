@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { DEFAULT_DETAIL_MAP_CAMERA } from './detailMapTypes';
+import { wardLabelFontSizePx } from './wardLabelLayers';
 import {
   estimateLabelBoxPx,
   LEADER_LINE_MIN_DISPLACEMENT_PX,
@@ -190,5 +192,54 @@ describe('estimateLabelBoxPx', () => {
 describe('LEADER_LINE_MIN_DISPLACEMENT_PX', () => {
   it('is a positive threshold', () => {
     expect(LEADER_LINE_MIN_DISPLACEMENT_PX).toBeGreaterThan(0);
+  });
+});
+
+describe('102 nhãn thật ở khung nhìn mặc định (zoom 8, canvas 864×736)', () => {
+  const real = wardLabels as Record<
+    string,
+    { name: string; longitude: number; latitude: number; priority: number }
+  >;
+  const WIDTH = 864;
+  const HEIGHT = 736;
+  const ZOOM = 8;
+  // Web Mercator, ô 512 px — cùng cách MapLibre chiếu; tâm = DEFAULT_DETAIL_MAP_CAMERA.
+  const worldSize = 512 * 2 ** ZOOM;
+  const px = (lng: number) => ((lng + 180) / 360) * worldSize;
+  const py = (lat: number) =>
+    (0.5 - Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360)) / (2 * Math.PI)) * worldSize;
+
+  it('không có cặp nhãn nào chồng nhau và không nhãn nào tràn ra ngoài canvas', () => {
+    const inputs = Object.entries(real).map(([id, e]) => {
+      const box = estimateLabelBoxPx(e.name, wardLabelFontSizePx(ZOOM, e.priority));
+      return {
+        id,
+        x: WIDTH / 2 + px(e.longitude) - px(DEFAULT_DETAIL_MAP_CAMERA.longitude),
+        y: HEIGHT / 2 + py(e.latitude) - py(DEFAULT_DETAIL_MAP_CAMERA.latitude),
+        width: box.width,
+        height: box.height,
+        priority: e.priority,
+      };
+    });
+    expect(inputs).toHaveLength(102);
+    const results = resolveLabelCollisions(inputs);
+    const boxes = inputs.map((i, k) => ({
+      left: i.x + results[k].dx - i.width / 2,
+      right: i.x + results[k].dx + i.width / 2,
+      top: i.y + results[k].dy - i.height / 2,
+      bottom: i.y + results[k].dy + i.height / 2,
+    }));
+    let overlapping = 0;
+    for (let a = 0; a < boxes.length; a += 1)
+      for (let b = a + 1; b < boxes.length; b += 1) {
+        const A = boxes[a];
+        const B = boxes[b];
+        if (A.left < B.right && B.left < A.right && A.top < B.bottom && B.top < A.bottom)
+          overlapping += 1;
+      }
+    expect(overlapping).toBe(0);
+    expect(
+      boxes.filter((b) => b.left < 0 || b.top < 0 || b.right > WIDTH || b.bottom > HEIGHT),
+    ).toHaveLength(0);
   });
 });

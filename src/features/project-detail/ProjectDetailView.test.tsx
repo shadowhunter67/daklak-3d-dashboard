@@ -178,4 +178,27 @@ describe('ProjectDetailView', () => {
     expect(screen.getByText('Không thể kết nối tới nguồn dữ liệu.')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Thử lại' })).toBeInTheDocument();
   });
+
+  it('hiển thị ngân sách KPI theo "tỷ" (không bẻ nhiều dòng giữa các chữ số)', async () => {
+    const base = MOCK_PROJECT_BUNDLES.find((b) => b.project.id === 'prj-004')!;
+    const big = {
+      ...base,
+      project: {
+        ...base.project,
+        approvedBudget: 180_000_000_000,
+        disbursedAmount: 90_000_000_000,
+      },
+    };
+    renderWithI18n(
+      <ProjectDetailView
+        source={FakeProjectPortfolioSource.ok(portfolio([big]))}
+        projectId={big.project.id}
+        onBackToPortfolio={vi.fn()}
+        onViewOnMap={vi.fn()}
+      />,
+    );
+    await screen.findByRole('heading', { name: big.project.name });
+    expect(screen.getByText('180 tỷ ₫')).toBeInTheDocument();
+    expect(screen.queryByText('180.000.000.000 ₫', { selector: '.ui-kpi-value' })).toBeNull();
+  });
 });

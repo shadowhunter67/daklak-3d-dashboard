@@ -2,6 +2,21 @@
 
 Ngày: 2026-10-18 · Nhánh `feat/v2-investment-catalog` · PR #208
 
+## Rà soát UI sau merge (2026-10-19)
+
+Rà soát trên bản production (chrome-devtools, ảnh trong `reports/ui-review/v2/audit/`). Đã sửa:
+
+- **Mục điều hướng lặp:** "Xã, phường" chỉ là lối tắt vào đúng màn "Bản đồ" (và khi bấm lại thì "Bản đồ" sáng) → nay có lối vào riêng (`mapEntry`): mở danh sách 102 đơn vị, đặt con trỏ vào ô tìm, và chỉ một trong ba mục bản đồ sáng. Bốn chip lớp bản đồ trùng nhãn với sidebar ("Dự án", "Quy hoạch") → đổi thành "Lớp ranh giới / giao thông / quy hoạch / dự án".
+- **Lỗi do mình gây ra trước đó:** `overflow-wrap: anywhere` cho giá trị KPI làm số tiền bị bẻ giữa các chữ số ("180.00 / 0.000. / 000 đ") → dùng `break-word` và định dạng "180 tỷ ₫" bằng hàm có sẵn `formatVndInBillions`.
+- Mũi tên "→ →" ở nút "Xem danh mục dự án" (khóa i18n đã có mũi tên, mã lại thêm một cái).
+- **Bản đồ 2D:** tâm mặc định lệch ~0,2° về phía tây nên bờ biển phía đông bị cắt ở canvas 864 px → tâm đặt theo khung biên thật của tỉnh. Nhãn: engine chỉ thử bán kính đến 42 px nên còn 17 cặp chồng nhau với 102 nhãn thật ở zoom 8; mở rộng đến 104 px thì mô hình cho 0 cặp, 0 nhãn ra ngoài canvas (có test hồi quy dùng dữ liệu thật).
+
+**Còn mở (chưa sửa, cần kiểm trên máy có GPU):**
+
+- Bản đồ 3D trong trình duyệt tự động chỉ vẽ lưới, không thấy địa hình, và 102 nhãn dồn thành cụm chồng nhau (tỉnh được vẽ rất nhỏ giữa hai panel). Chưa xác định là lỗi thật hay do WebGL phần mềm.
+- Bản vẽ 2D thật vẫn còn vài nhãn chạm nhau ở vùng đông dù mô hình tính là không: chênh lệch giữa ước lượng kích thước chữ của engine và bộ vẽ MapLibre chưa được điều tra.
+- Header (nút mở menu, liên kết "bỏ qua") vẫn cao 40 px.
+
 ## Final Status
 
 **NOT READY.** Đợt này hoàn thành nền dữ liệu có bằng chứng và một màn hình dùng dữ liệu đó, nhưng nhiều hạng mục trong Definition of Done chưa làm hoặc chưa được kiểm chứng (xem "Remaining Work"). Không hạng mục nào dưới đây được báo "xong" nếu chưa có bằng chứng đi kèm.

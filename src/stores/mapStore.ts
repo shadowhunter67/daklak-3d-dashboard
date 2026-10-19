@@ -63,6 +63,8 @@ type ToggleableDetailMapLayer = Exclude<
 export interface MapState {
   dataMode: 'overview' | 'energy' | 'heatmap';
   viewMode: DashboardView;
+  /** Lối vào bản đồ 2D từ sidebar: 'wards' mở danh sách 102 đơn vị (không đổi URL). */
+  mapEntry: 'map' | 'wards';
   hoveredCode: string | null;
   selectedCode: string | null;
   labelsVisible: boolean;
@@ -97,6 +99,7 @@ export interface MapState {
   setReducedMotion: (reduced: boolean) => void;
   changeDataMode: (mode: MapState['dataMode']) => void;
   setViewMode: (mode: MapState['viewMode']) => void;
+  setMapEntry: (entry: MapState['mapEntry']) => void;
   applyUrlState: (state: DashboardUrlState) => void;
   requestCameraReset: () => void;
   requestHelp: () => void;
@@ -129,6 +132,7 @@ export function createMapStore(
   return create<MapState>((set, get) => ({
     dataMode: initialUrlState.dataMode,
     viewMode: initialUrlState.viewMode,
+    mapEntry: 'map',
     hoveredCode: null,
     selectedCode: initialUrlState.selectedCode,
     labelsVisible: true,
@@ -157,6 +161,7 @@ export function createMapStore(
       set((state) => ({ reducedMotion, autoRotate: reducedMotion ? false : state.autoRotate })),
     changeDataMode: (dataMode) => set({ dataMode, hoveredCode: null }),
     setViewMode: (viewMode) => set({ viewMode, hoveredCode: null, autoRotate: false }),
+    setMapEntry: (mapEntry) => set({ mapEntry }),
     applyUrlState: ({ viewMode, dataMode, selectedCode }) =>
       set({ viewMode, dataMode, selectedCode, hoveredCode: null, autoRotate: false }),
     // Bộ đếm tăng dần thay cho window.dispatchEvent: component chỉ cần biết "vừa có yêu cầu mới",

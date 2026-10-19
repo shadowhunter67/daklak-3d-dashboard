@@ -44,9 +44,14 @@ const ITEMS: Item[] = [
   { id: 'reports', labelKey: 'sidebar.reports', icon: <ChartIcon /> },
 ];
 
-/** Which sidebar item is "current". Wards and Planning are shortcuts into the map view, so they
- * only count as current when the map is open with that intent (planning overlay on). */
-function activeItem(route: HashRoute, viewMode: string, planningOverlay: string): ItemId | null {
+/** Which sidebar item is "current". Wards and Planning are entries into the map view with their own
+ * intent (ward directory open / planning overlay on), so exactly one of the three map items is lit. */
+function activeItem(
+  route: HashRoute,
+  viewMode: string,
+  planningOverlay: string,
+  mapEntry: string,
+): ItemId | null {
   if (
     route.kind === 'portfolio' ||
     route.kind === 'project-detail' ||
@@ -58,7 +63,8 @@ function activeItem(route: HashRoute, viewMode: string, planningOverlay: string)
   if (route.kind === 'diorama') return null;
   if (viewMode === 'overview') return 'overview';
   if (viewMode === '3d') return '3d';
-  if (viewMode === 'map') return planningOverlay !== 'none' ? 'planning' : 'map';
+  if (viewMode === 'map')
+    return planningOverlay !== 'none' ? 'planning' : mapEntry === 'wards' ? 'wards' : 'map';
   return null;
 }
 
@@ -78,7 +84,9 @@ export function AppSidebar({
   const setViewMode = useMapStore((state) => state.setViewMode);
   const planningOverlay = useMapStore((state) => state.detailMapLayers.planningOverlay);
   const setPlanningOverlay = useMapStore((state) => state.setDetailMapPlanningOverlay);
-  const current = activeItem(route, viewMode, planningOverlay);
+  const mapEntry = useMapStore((state) => state.mapEntry);
+  const setMapEntry = useMapStore((state) => state.setMapEntry);
+  const current = activeItem(route, viewMode, planningOverlay, mapEntry);
 
   const go = (id: ItemId) => {
     // Hash routes sit on top of the query-based view; leave them first, then switch view.
@@ -94,15 +102,19 @@ export function AppSidebar({
       case 'map':
         leaveHash();
         setPlanningOverlay('none');
+        setMapEntry('map');
         setViewMode('map');
         break;
       case 'wards':
         leaveHash();
+        setPlanningOverlay('none');
+        setMapEntry('wards');
         setViewMode('map');
         break;
       case 'planning':
         leaveHash();
         if (planningOverlay === 'none') setPlanningOverlay('land-use');
+        setMapEntry('map');
         setViewMode('map');
         break;
       case '3d':

@@ -135,4 +135,15 @@ describe('ExecutiveOverview', () => {
     // No crash, no dialog-of-death — the page rendered a complete, if slightly reduced, model.
     expect(screen.getByRole('heading', { name: 'Chỉ số tổng quan' })).toBeInTheDocument();
   });
+
+  it('nút mở danh mục dự án chỉ có một mũi tên (khóa i18n đã chứa sẵn "→")', async () => {
+    renderWithI18n(
+      <ExecutiveOverview
+        source={FakeProjectPortfolioSource.ok(portfolio())}
+        onOpenPortfolio={() => {}}
+      />,
+    );
+    const button = await screen.findByRole('button', { name: /Xem danh mục dự án/ });
+    expect(button.textContent?.match(/→/g)).toHaveLength(1);
+  });
 });

@@ -121,7 +121,7 @@ export function ExecutiveOverview({
             />
             {onOpenPortfolio && (
               <button type="button" onClick={onOpenPortfolio}>
-                {t('executiveOverview.openPortfolio')} →
+                {t('executiveOverview.openPortfolio')}
               </button>
             )}
           </div>

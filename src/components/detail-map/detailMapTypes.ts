@@ -196,10 +196,12 @@ export const DEFAULT_DETAIL_MAP_LAYER_STATE: DetailMapLayerState = {
   planningZonesVisible: false,
 };
 
-/** Centered roughly over Đắk Lắk province; matches the 3D overview's default framing. */
+/** Centered on the province's real bounding box (lng 107.484–109.459, lat 12.161–13.695). The old
+ * centre sat ~0.2° west of it, which pushed the eastern coast (Hòa Hiệp, Đông Hòa) off the right
+ * edge of an 864 px canvas at zoom 8. Zoom stays 8: road layers have `minzoom: 8`. */
 export const DEFAULT_DETAIL_MAP_CAMERA: DetailMapCameraState = {
-  latitude: 12.9063239,
-  longitude: 108.2686205,
+  latitude: 12.9279,
+  longitude: 108.4715,
   zoom: 8,
   bearing: 0,
   pitch: 0,
