@@ -11,7 +11,7 @@ import { DistanceMeasureTool } from './DistanceMeasureTool';
 import { RadiusQueryTool } from './RadiusQueryTool';
 import { LocalSearch } from './LocalSearch';
 import { useDetailMapCameraSync } from './useDetailMapCameraSync';
-import { getWardBounds } from './wardBounds';
+import { getProvinceBounds, getWardBounds } from './wardBounds';
 import { WARD_FLY_DURATION_MS } from './wardHighlightAnimation';
 import {
   addMeasurementPoint,
@@ -19,6 +19,7 @@ import {
   type MeasurementPoint,
 } from './distanceMeasurement';
 import { RADIUS_PRESETS_METERS, type RadiusQueryPoint } from './radiusQuery';
+import { isDefaultDetailMapCamera } from './detailMapTypes';
 import type {
   DetailedMapProvider,
   DetailMapSourceAvailability,
@@ -183,6 +184,15 @@ export function DetailMapViewport() {
       .initialize(container, { camera, layers, sourceAvailability, sourceUrl, servicesSourceUrl })
       .then(() => {
         if (cancelled) return;
+        // Camera mặc định cố định (zoom 8) chỉ vừa một số cỡ màn hình — khớp vào toàn tỉnh theo kích
+        // thước khung thật. Camera người dùng/URL đã chọn thì giữ nguyên; ward đã chọn có hiệu ứng riêng.
+        if (!selectedCode && isDefaultDetailMapCamera(camera)) {
+          // Chừa chỗ cho thanh chân trang cố định (~44 px), nút "Lớp bản đồ" và chú giải nổi.
+          provider.fitBounds(getProvinceBounds(), {
+            animate: false,
+            paddingPx: { top: 56, right: 56, bottom: 96, left: 48 },
+          });
+        }
         provider.setSelectedWard(selectedCode);
         // Interaction priority: measurement/radius modes own clicks (add a measurement point, or
         // set the radius-query centre) and never select a ward; browse mode selects a ward. Read

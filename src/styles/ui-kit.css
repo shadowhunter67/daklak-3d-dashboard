@@ -2596,3 +2596,15 @@
   align-items: center;
   min-height: 44px;
 }
+
+/* Vùng bấm tối thiểu 44px cho người dùng điện thoại/lớn tuổi: nút cỡ chữ A-/A/A+, nút trên thanh đầu
+   và liên kết mở danh mục dự án (từng chỉ cao 19–40px). */
+.font-scale-control__button,
+.dashboard-header button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.executive-overview__open-portfolio {
+  min-height: 44px;
+  padding-block: 10px;
+}

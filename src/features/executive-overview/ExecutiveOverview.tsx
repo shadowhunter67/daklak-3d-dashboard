@@ -120,7 +120,11 @@ export function ExecutiveOverview({
               dot
             />
             {onOpenPortfolio && (
-              <button type="button" onClick={onOpenPortfolio}>
+              <button
+                type="button"
+                className="executive-overview__open-portfolio"
+                onClick={onOpenPortfolio}
+              >
                 {t('executiveOverview.openPortfolio')}
               </button>
             )}

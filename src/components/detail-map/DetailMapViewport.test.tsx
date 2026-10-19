@@ -168,4 +168,40 @@ describe('DetailMapViewport', () => {
       expect(debug.lastFitBounds).toBeTruthy();
     });
   });
+
+  it('với camera mặc định, tự khớp khung nhìn vào toàn tỉnh (không animation) để vừa mọi cỡ màn hình', async () => {
+    const fitSpy = vi.spyOn(FakeMapProvider.prototype, 'fitBounds');
+    const initializeSpy = vi.spyOn(FakeMapProvider.prototype, 'initialize');
+    render(<DetailMapViewport />);
+    await waitFor(() => expect(initializeSpy).toHaveBeenCalled());
+    const instance = initializeSpy.mock.instances[0] as InstanceType<typeof FakeMapProvider>;
+    await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
+
+    await waitFor(() => {
+      const debug = instance.getDebugState();
+      // south,west,north,east của toàn tỉnh (làm tròn): 12.16,107.48,13.70,109.46
+      const [south, west, north, east] = String(debug.lastFitBounds).split(',').map(Number);
+      expect(south).toBeCloseTo(12.16, 1);
+      expect(west).toBeCloseTo(107.48, 1);
+      expect(north).toBeCloseTo(13.7, 1);
+      expect(east).toBeCloseTo(109.46, 1);
+      expect(debug.lastFitBoundsAnimated).toBe(false);
+    });
+    // Chừa chỗ cho thanh chân trang cố định (~44 px) và các nút nổi trên bản đồ.
+    const padding = fitSpy.mock.calls[0][1]?.paddingPx;
+    expect(padding?.bottom).toBeGreaterThanOrEqual(80);
+    expect(padding?.top).toBeGreaterThanOrEqual(48);
+  });
+
+  it('không ghi đè camera người dùng đã chọn (ví dụ từ URL)', async () => {
+    useMapStore.setState({
+      detailMapCamera: { latitude: 12.7, longitude: 108.0, zoom: 11, bearing: 0, pitch: 0 },
+    });
+    const initializeSpy = vi.spyOn(FakeMapProvider.prototype, 'initialize');
+    render(<DetailMapViewport />);
+    await waitFor(() => expect(initializeSpy).toHaveBeenCalled());
+    const instance = initializeSpy.mock.instances[0] as InstanceType<typeof FakeMapProvider>;
+    await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
+    expect(instance.getDebugState().lastFitBounds).toBeFalsy();
+  });
 });

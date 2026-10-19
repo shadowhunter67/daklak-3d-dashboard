@@ -37,7 +37,7 @@ describe('DisplaySettings', () => {
   it('opens the data provenance panel without changing selection', () => {
     useMapStore.setState({ selectedCode: '24580' });
     open();
-    fireEvent.click(screen.getByRole('button', { name: 'Xem nguồn và chất lượng dữ liệu' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Xem danh mục bộ dữ liệu' }));
     expect(useMapStore.getState().provenancePanelOpen).toBe(true);
     expect(useMapStore.getState().selectedCode).toBe('24580');
   });

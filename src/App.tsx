@@ -213,6 +213,10 @@ export default function App() {
       navigate(serializeProjectDetailHash(entry.id));
       return;
     }
+    if (entry.kind === 'opportunity') {
+      navigate(serializeInvestmentCatalogHash(entry.name));
+      return;
+    }
     if (entry.kind === 'place') {
       navigate(serializeDioramaHash(entry.id));
       return;
@@ -276,7 +280,10 @@ export default function App() {
             )}
             {route.kind === 'reports' && <ReportsView onBackToOverview={goToOverview} />}
             {route.kind === 'investment-catalog' && (
-              <InvestmentCatalogView onBackToPortfolio={() => goToPortfolio()} />
+              <InvestmentCatalogView
+                onBackToPortfolio={() => goToPortfolio()}
+                initialQuery={route.query}
+              />
             )}
             {route.kind === 'data-readiness' && (
               <DataReadinessView

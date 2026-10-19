@@ -39,7 +39,7 @@ export type HashRoute =
   | { kind: 'project-detail'; projectId: string }
   | { kind: 'data-readiness' }
   | { kind: 'reports' }
-  | { kind: 'investment-catalog' }
+  | { kind: 'investment-catalog'; query?: string }
   | { kind: 'diorama'; destinationId: string };
 
 function isPortfolioSortKey(value: string): value is PortfolioSortKey {
@@ -90,7 +90,9 @@ export function parseHashRoute(rawHash: string): HashRoute {
     return segments.length === 1 ? { kind: 'reports' } : { kind: 'none' };
   }
   if (segments[0] === 'investment-catalog') {
-    return segments.length === 1 ? { kind: 'investment-catalog' } : { kind: 'none' };
+    if (segments.length !== 1) return { kind: 'none' };
+    const query = new URLSearchParams(searchPart).get('q')?.trim();
+    return query ? { kind: 'investment-catalog', query } : { kind: 'investment-catalog' };
   }
   if (segments[0] === 'diorama') {
     if (segments.length !== 2) return { kind: 'none' };
@@ -128,8 +130,9 @@ export function serializeReportsHash(): string {
   return '#/reports';
 }
 
-export function serializeInvestmentCatalogHash(): string {
-  return '#/investment-catalog';
+export function serializeInvestmentCatalogHash(query?: string): string {
+  const q = query?.trim();
+  return q ? `#/investment-catalog?q=${encodeURIComponent(q)}` : '#/investment-catalog';
 }
 
 export function serializeDioramaHash(destinationId: string): string {

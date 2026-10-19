@@ -47,6 +47,14 @@ export interface DetailMapCameraState {
   pitch: number;
 }
 
+/** Options for `fitBounds`. `paddingPx` reserves room for UI that overlays the canvas (footer bar,
+ * floating buttons); default is 48 px on every side. */
+export interface DetailFitOptions {
+  animate?: boolean;
+  durationMs?: number;
+  paddingPx?: { top: number; right: number; bottom: number; left: number };
+}
+
 export interface DetailBounds {
   north: number;
   south: number;
@@ -123,7 +131,7 @@ export interface DetailedMapProvider {
   setCamera(camera: DetailMapCameraState): void;
   /** `animate: false` (default `true`) jumps instantly instead of easing/flying — used when
    * `state.reducedMotion` is set. `durationMs` only applies when animating. */
-  fitBounds(bounds: DetailBounds, options?: { animate?: boolean; durationMs?: number }): void;
+  fitBounds(bounds: DetailBounds, options?: DetailFitOptions): void;
 
   /**
    * Applies a full layer state at once. `detailMapLayers` in the store is always replaced as a
@@ -206,6 +214,18 @@ export const DEFAULT_DETAIL_MAP_CAMERA: DetailMapCameraState = {
   bearing: 0,
   pitch: 0,
 };
+
+/** True while the camera is still the untouched default (nobody panned/zoomed or deep-linked). */
+export function isDefaultDetailMapCamera(camera: DetailMapCameraState): boolean {
+  const d = DEFAULT_DETAIL_MAP_CAMERA;
+  return (
+    Math.abs(camera.latitude - d.latitude) < 1e-4 &&
+    Math.abs(camera.longitude - d.longitude) < 1e-4 &&
+    Math.abs(camera.zoom - d.zoom) < 1e-2 &&
+    camera.bearing === d.bearing &&
+    camera.pitch === d.pitch
+  );
+}
 
 export const mapExperienceFromViewMode = (viewMode: '3d' | 'map'): MapExperience =>
   viewMode === 'map' ? 'detail-map' : 'overview-3d';

@@ -732,7 +732,7 @@ export const RESEARCHED_PROJECTS_QD1985_DATASET: DatasetDescriptor = {
   version: '1.0.0',
   period: { start: '2026-06-24', label: 'Giai đoạn 2026–2030 (văn bản ký 24/06/2026)' },
   generatedAt: '2026-09-29T00:00:00.000Z',
-  checksum: 'aabfc6d65bd1edb6744d9ce5ff9359dba9b6ce6a0e14252adac611384c8629eb',
+  checksum: '30a88779097da118b18062c2657490321aba03b5d45cf19eac0261ecc64a188b',
   refreshPolicy: { mode: 'manual', expectedInterval: 'P1Y' },
   quality: {
     status: 'partially-verified',

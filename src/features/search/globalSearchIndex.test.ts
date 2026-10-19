@@ -11,6 +11,7 @@ const entries: SearchEntry[] = [
     code: 'DL-2026-YT-001',
   },
   { kind: 'place', id: 'ho-lak', name: 'Hồ Lắk' },
+  { kind: 'opportunity', id: 'qd1985-pl1-001', name: 'Nhà máy điện gió Thuận Phong 2, GĐ 1' },
 ];
 const index = buildSearchIndex(entries);
 
@@ -34,6 +35,18 @@ describe('global search index', () => {
       ),
     );
     expect(searchAll(index, 'ho lak').place[0]?.id).toBe('ho-lak');
+  });
+
+  it('finds an investment-attraction opportunity without diacritics, ranked after projects', () => {
+    const grouped = searchAll(index, 'dien gio');
+    expect(grouped.opportunity.map((e) => e.id)).toEqual(['qd1985-pl1-001']);
+    expect(flattenResults(searchAll(index, 'a')).map((e) => e.kind)).toEqual(
+      [...flattenResults(searchAll(index, 'a')).map((e) => e.kind)].sort(
+        (a, b) =>
+          ['ward', 'project', 'opportunity', 'place'].indexOf(a) -
+          ['ward', 'project', 'opportunity', 'place'].indexOf(b),
+      ),
+    );
   });
 
   it('ranks prefix matches before substring matches', () => {

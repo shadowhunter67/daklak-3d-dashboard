@@ -22,7 +22,7 @@ describe('DataProvenancePanel', () => {
 
   it('lists the catalog datasets with their classification/source', () => {
     render(<DataProvenancePanel />);
-    expect(screen.getByRole('dialog', { name: 'Nguồn và chất lượng dữ liệu' })).toBeInTheDocument();
+    expect(screen.getByRole('dialog', { name: 'Danh mục bộ dữ liệu' })).toBeInTheDocument();
     expect(screen.getByText('Đơn vị hành chính cấp xã Đắk Lắk 2025')).toBeInTheDocument();
     expect(
       screen.getByText('Chỉ tiêu kinh tế - xã hội tổng quan tỉnh Đắk Lắk 2025'),

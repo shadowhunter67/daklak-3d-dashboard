@@ -55,21 +55,15 @@ describe('App', () => {
 
   it('does not render the data provenance dialog on initial mount', () => {
     renderApp();
-    expect(
-      screen.queryByRole('dialog', { name: 'Nguồn và chất lượng dữ liệu' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog', { name: 'Danh mục bộ dữ liệu' })).not.toBeInTheDocument();
   });
 
   it('opens the data provenance panel after its lazy chunk resolves, once the header button is clicked', async () => {
     renderApp();
     fireEvent.click(screen.getByRole('button', { name: 'Cài đặt hiển thị' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Xem nguồn và chất lượng dữ liệu' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Xem danh mục bộ dữ liệu' }));
     expect(
-      await screen.findByRole(
-        'dialog',
-        { name: 'Nguồn và chất lượng dữ liệu' },
-        LAZY_CHUNK_TIMEOUT,
-      ),
+      await screen.findByRole('dialog', { name: 'Danh mục bộ dữ liệu' }, LAZY_CHUNK_TIMEOUT),
     ).toBeInTheDocument();
   });
 
@@ -77,8 +71,8 @@ describe('App', () => {
     renderApp();
     act(() => useMapStore.getState().openProvenancePanel());
     act(() => useMapStore.getState().openProvenancePanel());
-    await screen.findByRole('dialog', { name: 'Nguồn và chất lượng dữ liệu' }, LAZY_CHUNK_TIMEOUT);
-    expect(screen.getAllByRole('dialog', { name: 'Nguồn và chất lượng dữ liệu' })).toHaveLength(1);
+    await screen.findByRole('dialog', { name: 'Danh mục bộ dữ liệu' }, LAZY_CHUNK_TIMEOUT);
+    expect(screen.getAllByRole('dialog', { name: 'Danh mục bộ dữ liệu' })).toHaveLength(1);
   });
 
   it('lazily mounts the data-sources panel when its store flag is set, distinct from the provenance panel', async () => {
@@ -91,9 +85,7 @@ describe('App', () => {
         LAZY_CHUNK_TIMEOUT,
       ),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByRole('dialog', { name: 'Nguồn và chất lượng dữ liệu' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog', { name: 'Danh mục bộ dữ liệu' })).not.toBeInTheDocument();
   });
 
   it('does not open the provenance panel on a Back/Forward (popstate) navigation', async () => {
@@ -103,9 +95,7 @@ describe('App', () => {
     });
     // Give any (incorrect) async open a chance to happen before asserting it didn't.
     await Promise.resolve();
-    expect(
-      screen.queryByRole('dialog', { name: 'Nguồn và chất lượng dữ liệu' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('dialog', { name: 'Danh mục bộ dữ liệu' })).not.toBeInTheDocument();
     expect(useMapStore.getState().provenancePanelOpen).toBe(false);
   });
 
