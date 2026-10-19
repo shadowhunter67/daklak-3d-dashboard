@@ -17,8 +17,8 @@
  *  1. Sort labels by priority ascending (1 = ward/urban centre wins ties), then by anchor position
  *     for determinism.
  *  2. For each label in that order, try candidate offsets in a fixed order: the anchor itself
- *     (no displacement) first, then 8 compass directions (N, NE, E, SE, S, SW, W, NW) at 3
- *     increasing radii — 25 candidates total.
+ *     (no displacement) first, then 8 compass directions (N, NE, E, SE, S, SW, W, NW) at 6
+ *     increasing radii — 49 candidates total.
  *  3. Pick the first candidate whose bounding box doesn't overlap any box already placed. If every
  *     candidate collides, pick the one with the smallest total overlap area (ties broken by
  *     candidate order) — a label is always placed somewhere, never dropped.
@@ -65,7 +65,10 @@ const COMPASS_DIRECTIONS: ReadonlyArray<readonly [number, number]> = [
   [-0.7071, -0.7071], // NW
 ];
 
-const RADII_PX = [16, 28, 42];
+// Up to 104 px: with the old [16, 28, 42] the dense eastern coast (Phú Yên) still left 17 colliding
+// pairs at the default zoom-8 framing; measured with the real 102 labels, 104 px resolves all of
+// them inside the canvas (a leader line is drawn for every displaced label).
+const RADII_PX = [16, 28, 42, 60, 80, 104];
 
 /** Leader-line threshold: a displacement at or beyond the first radius step is far enough from the
  * true point that a reader benefits from a visual line back to it. */

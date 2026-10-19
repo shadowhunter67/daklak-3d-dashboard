@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
+import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
 import { formatDateTime } from '../../i18n/formatters';
@@ -415,6 +416,7 @@ export function DataReadinessView({
   onOpenProject: (projectId: string) => void;
 }) {
   const { t } = useTranslation();
+  const openProvenancePanel = useMapStore((state) => state.openProvenancePanel);
   const [retryToken, setRetryToken] = useState(0);
   const effectiveSource = useMemo(() => source ?? defaultProjectPortfolioSource, [source]);
   const state = useDataReadiness(effectiveSource, retryToken);
@@ -478,9 +480,14 @@ export function DataReadinessView({
         }
         breadcrumbLabel={t('common.breadcrumb')}
         actions={
-          <button type="button" className="data-readiness__back" onClick={onBackToOverview}>
-            {t('dataReadiness.backToOverview')}
-          </button>
+          <>
+            <button type="button" className="data-readiness__back" onClick={openProvenancePanel}>
+              {t('dataReadiness.openCatalog')}
+            </button>
+            <button type="button" className="data-readiness__back" onClick={onBackToOverview}>
+              {t('dataReadiness.backToOverview')}
+            </button>
+          </>
         }
       />
       <Card className="data-readiness__health-hero">

@@ -5,6 +5,18 @@ import type { DetailBounds } from './detailMapTypes';
 
 const collection = wards as WardCollection;
 const cache = new Map<string, DetailBounds | null>();
+let provinceBounds: DetailBounds | null = null;
+
+/** Real lon/lat bounds of the whole province (union of every ward), memoized. */
+export function getProvinceBounds(): DetailBounds {
+  if (provinceBounds) return provinceBounds;
+  const [[west, south], [east, north]] = geoBounds({
+    type: 'FeatureCollection',
+    features: collection.features,
+  } as never);
+  provinceBounds = { north, south, east, west };
+  return provinceBounds;
+}
 
 /**
  * Real lon/lat bounds for a ward, for `MapLibreProvider.fitBounds` to frame on selection —

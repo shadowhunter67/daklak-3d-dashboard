@@ -2,6 +2,44 @@
 
 Ngày: 2026-10-18 · Nhánh `feat/v2-investment-catalog` · PR #208
 
+## Rà soát UI sau merge (2026-10-19)
+
+Rà soát trên bản production (chrome-devtools, ảnh trong `reports/ui-review/v2/audit/`). Đã sửa:
+
+- **Mục điều hướng lặp:** "Xã, phường" chỉ là lối tắt vào đúng màn "Bản đồ" (và khi bấm lại thì "Bản đồ" sáng) → nay có lối vào riêng (`mapEntry`): mở danh sách 102 đơn vị, đặt con trỏ vào ô tìm, và chỉ một trong ba mục bản đồ sáng. Bốn chip lớp bản đồ trùng nhãn với sidebar ("Dự án", "Quy hoạch") → đổi thành "Lớp ranh giới / giao thông / quy hoạch / dự án".
+- **Lỗi do mình gây ra trước đó:** `overflow-wrap: anywhere` cho giá trị KPI làm số tiền bị bẻ giữa các chữ số ("180.00 / 0.000. / 000 đ") → dùng `break-word` và định dạng "180 tỷ ₫" bằng hàm có sẵn `formatVndInBillions`.
+- Mũi tên "→ →" ở nút "Xem danh mục dự án" (khóa i18n đã có mũi tên, mã lại thêm một cái).
+- **Bản đồ 2D:** tâm mặc định lệch ~0,2° về phía tây nên bờ biển phía đông bị cắt ở canvas 864 px → tâm đặt theo khung biên thật của tỉnh. Nhãn: engine chỉ thử bán kính đến 42 px nên còn 17 cặp chồng nhau với 102 nhãn thật ở zoom 8; mở rộng đến 104 px thì mô hình cho 0 cặp, 0 nhãn ra ngoài canvas (có test hồi quy dùng dữ liệu thật).
+
+**Còn mở (chưa sửa, cần kiểm trên máy có GPU):**
+
+- Bản đồ 3D trong trình duyệt tự động chỉ vẽ lưới, không thấy địa hình, và 102 nhãn dồn thành cụm chồng nhau (tỉnh được vẽ rất nhỏ giữa hai panel). Chưa xác định là lỗi thật hay do WebGL phần mềm.
+- Bản vẽ 2D thật vẫn còn vài nhãn chạm nhau ở vùng đông dù mô hình tính là không: chênh lệch giữa ước lượng kích thước chữ của engine và bộ vẽ MapLibre chưa được điều tra.
+- Header (nút mở menu, liên kết "bỏ qua") vẫn cao 40 px.
+
+## Phiên kiểm thử như người dùng mới (2026-10-19)
+
+Trình duyệt sạch (ngữ cảnh cô lập), laptop 1366×768 và điện thoại ~500 px; ảnh trong `reports/ui-review/v2/newuser/`. Việc đã thử: mở app, tìm kiếm, đi qua từng mục menu, đổi chế độ tối, đổi tiếng Anh, mở Trợ giúp, mở hộp cài đặt trên điện thoại.
+
+Đã sửa:
+
+- **Tìm kiếm không thấy dữ liệu thật:** gõ "điện gió"/"sân golf" báo "Không có kết quả" dù 201 dự án thật có từ đó → thêm nhóm "Thu hút đầu tư" (tải lười khi focus); chọn kết quả mở `#/investment-catalog?q=…` đã lọc sẵn.
+- **Bản đồ 2D trên laptop vẫn bị cắt:** khung bản đồ thấp hơn mô hình (thanh chân trang 44 px che phần dưới) → tự khớp toàn tỉnh theo kích thước khung thật, có chừa chỗ cho chân trang và nút nổi.
+- **Hai nơi "nguồn dữ liệu" nghe như một:** trang "Dữ liệu & nguồn" (độ tin cậy dữ liệu dự án) và hộp "Nguồn dữ liệu" trong cài đặt (danh mục 20 bộ dữ liệu, trong đó có QĐ 1985) → hộp đổi tên "Danh mục bộ dữ liệu", trang dữ liệu có nút mở thẳng danh mục.
+- Vùng bấm < 44 px: nút A-/A/A+ (34 px), nút trên thanh đầu (40 px), liên kết "Xem danh mục dự án →" (19 px).
+- 3 tên dự án thật còn dấu `;`/`,` thừa do trích PDF (làm sạch trong script dựng dữ liệu; checksum đã cập nhật).
+
+**Còn mở (chưa sửa):**
+
+- Trên Tổng quan, bản đồ nằm dưới màn đầu tiên ở 1366×768 (8 ô KPI chiếm hết); trên điện thoại 8 ô KPI xếp một cột gần 4 màn hình.
+- Lớp "Quy hoạch" hiện mảng màu nhưng chú giải chỉ nói về xã/phường; người mới không biết mảng đó là gì.
+- Chip đỏ "Nghiêm trọng" cạnh "Dữ liệu có hiệu lực" không nói rõ nghĩa là gì.
+- Hộp "Trợ giúp" luôn hiện hướng dẫn bản đồ 3D ("Kéo để xoay…") dù đang ở Tổng quan.
+- Tiếng Anh: thông báo chất lượng dữ liệu ("Dữ liệu dự án chưa cập nhật quá 90 ngày…") vẫn tiếng Việt cố định.
+- Cỡ chữ và ngôn ngữ chỉ có trong "Cài đặt hiển thị" trên điện thoại (hai lần bấm).
+- Liên kết "Xem dự án liên quan" ở trang dữ liệu cao 20 px.
+- Test ảnh chuẩn Windows `dashboard-detail-name-24580-desktop` đã cũ (241×327 so với giao diện hiện tại); không do thay đổi này, CI (Linux) qua.
+
 ## Final Status
 
 **NOT READY.** Đợt này hoàn thành nền dữ liệu có bằng chứng và một màn hình dùng dữ liệu đó, nhưng nhiều hạng mục trong Definition of Done chưa làm hoặc chưa được kiểm chứng (xem "Remaining Work"). Không hạng mục nào dưới đây được báo "xong" nếu chưa có bằng chứng đi kèm.

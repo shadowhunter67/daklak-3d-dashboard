@@ -37,7 +37,7 @@ describe('DataHealthCard', () => {
 
   it('keeps the provenance trigger distinct and opens the store panel', () => {
     renderWithI18n(<DataHealthCard dataHealth={dataHealth} isIllustrative={false} />);
-    const trigger = screen.getByRole('button', { name: 'Nguồn dữ liệu' });
+    const trigger = screen.getByRole('button', { name: 'Danh mục bộ dữ liệu' });
     expect(trigger.id).toBe('open-overview-data-provenance-panel');
     expect(document.getElementById('open-data-provenance-panel')).toBeNull();
     fireEvent.click(trigger);

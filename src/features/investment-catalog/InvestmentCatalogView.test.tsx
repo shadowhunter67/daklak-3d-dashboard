@@ -63,9 +63,9 @@ import { InvestmentCatalogView } from './InvestmentCatalogView';
 
 afterEach(cleanup);
 
-async function renderView() {
+async function renderView(initialQuery?: string) {
   const onBack = vi.fn();
-  renderWithI18n(<InvestmentCatalogView onBackToPortfolio={onBack} />);
+  renderWithI18n(<InvestmentCatalogView onBackToPortfolio={onBack} initialQuery={initialQuery} />);
   await screen.findByRole('heading', { level: 1 });
   return onBack;
 }
@@ -110,6 +110,15 @@ describe('InvestmentCatalogView', () => {
     await renderView();
     const crumb = screen.getByRole('navigation', { name: 'Điều hướng vị trí' });
     expect(crumb.textContent).not.toContain('›');
+  });
+
+  it('mở sẵn với từ khóa từ tìm kiếm toàn cục và chỉ hiện dự án khớp', async () => {
+    await renderView('điện gió');
+    expect((screen.getByLabelText('Tìm theo tên dự án') as HTMLInputElement).value).toBe(
+      'điện gió',
+    );
+    await waitFor(() => expect(screen.getByText('Hiển thị 1 / 1 dự án')).toBeTruthy());
+    expect(screen.queryByText('Khu du lịch thử nghiệm')).toBeNull();
   });
 
   it('nút quay lại gọi callback', async () => {

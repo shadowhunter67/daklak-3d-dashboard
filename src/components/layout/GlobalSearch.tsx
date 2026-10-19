@@ -6,6 +6,7 @@ import {
   flattenResults,
   searchAll,
   SEARCH_KIND_ORDER,
+  type OpportunitySearchEntry,
   type PlaceSearchEntry,
   type ProjectSearchEntry,
   type SearchEntry,
@@ -27,6 +28,7 @@ const wardEntries: WardSearchEntry[] = Object.entries(labels).map(([code, label]
 const GROUP_LABEL_KEY: Record<SearchResultKind, MessageKey> = {
   ward: 'topbar.search.group.ward',
   project: 'topbar.search.group.project',
+  opportunity: 'topbar.search.group.opportunity',
   place: 'topbar.search.group.place',
 };
 
@@ -41,8 +43,9 @@ export function GlobalSearch({ onSelect }: { onSelect: (entry: SearchEntry) => v
   const listId = useId();
   const [extra, setExtra] = useState<{
     projects: ProjectSearchEntry[];
+    opportunities: OpportunitySearchEntry[];
     places: PlaceSearchEntry[];
-  }>({ projects: [], places: [] });
+  }>({ projects: [], opportunities: [], places: [] });
   const loadStarted = useRef(false);
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -63,6 +66,18 @@ export function GlobalSearch({ onSelect }: { onSelect: (entry: SearchEntry) => v
         }));
         setExtra((current) => ({ ...current, projects }));
       });
+    // ~10 KB gzip, tải một lần; lỗi mạng thì bỏ qua (tìm kiếm vẫn dùng được với dữ liệu còn lại).
+    void import('../../data/loadResearchedProjects')
+      .then((module) => module.loadResearchedProjects())
+      .then((dataset) => {
+        const opportunities = dataset.projects.map(({ id, name }) => ({
+          kind: 'opportunity' as const,
+          id,
+          name,
+        }));
+        setExtra((current) => ({ ...current, opportunities }));
+      })
+      .catch(() => undefined);
     void import('../../entities/tourism/verifiedTourismDestinations').then((module) => {
       const places = module.verifiedTourismDestinations.map(({ id, name }) => ({
         kind: 'place' as const,
@@ -74,7 +89,13 @@ export function GlobalSearch({ onSelect }: { onSelect: (entry: SearchEntry) => v
   };
 
   const index = useMemo(
-    () => buildSearchIndex([...wardEntries, ...extra.projects, ...extra.places]),
+    () =>
+      buildSearchIndex([
+        ...wardEntries,
+        ...extra.projects,
+        ...extra.opportunities,
+        ...extra.places,
+      ]),
     [extra],
   );
   const grouped = useMemo(() => searchAll(index, query), [index, query]);

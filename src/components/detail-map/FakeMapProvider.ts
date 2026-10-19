@@ -2,6 +2,7 @@ import type { DetailMapTheme } from './detailMapTheme';
 import type {
   DetailBaseMap,
   DetailBounds,
+  DetailFitOptions,
   DetailMapCameraState,
   DetailMapInitOptions,
   DetailMapLayerState,
@@ -79,7 +80,7 @@ export class FakeMapProvider implements DetailedMapProvider {
     this.updatePlaceholderDataset();
   }
 
-  fitBounds(bounds: DetailBounds, options?: { animate?: boolean; durationMs?: number }): void {
+  fitBounds(bounds: DetailBounds, options?: DetailFitOptions): void {
     if (!this.placeholder) return;
     this.lastFitBoundsAnimated = options?.animate !== false;
     // Assertable via the dataset in tests, e.g. "12.1,108.2,13.7,109.5" (south,west,north,east).

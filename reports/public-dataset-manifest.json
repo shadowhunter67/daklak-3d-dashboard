@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-18T15:39:13.223Z",
+  "generatedAt": "2026-10-19T13:18:22.855Z",
   "allDatasetIds": [
     "administrative-units",
     "province-overview-indicators",
@@ -309,7 +309,7 @@
       ],
       "classification": "public",
       "delivery": "public-static-asset",
-      "checksum": "aabfc6d65bd1edb6744d9ce5ff9359dba9b6ce6a0e14252adac611384c8629eb",
+      "checksum": "30a88779097da118b18062c2657490321aba03b5d45cf19eac0261ecc64a188b",
       "note": "Gzip, ~10 KB; fetched lazily at runtime by src/data/loadResearchedProjects.ts (not bundled). Rebuilt by scripts/research/build_researched_projects.mjs — regenerate this checksum after rebuilding."
     },
     {

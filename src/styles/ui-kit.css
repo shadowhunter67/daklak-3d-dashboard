@@ -2582,13 +2582,29 @@
 
 /* Tiêu đề trang và giá trị KPI phải xuống dòng được (màn hẹp, A+, zoom 200%): quy tắc `h1 { nowrap }` của
    media mobile cũ trong global.css từng ép tiêu đề dài tràn ngang. Vùng bấm link nguồn ≥ 44px. */
-.ui-page-header h1,
-.ui-kpi-value {
+.ui-page-header h1 {
   white-space: normal;
   overflow-wrap: anywhere;
+}
+/* Giá trị KPI chỉ xuống dòng ở khoảng trắng; `anywhere` từng bẻ "180.000.000.000" giữa các chữ số. */
+.ui-kpi-value {
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 .project-portfolio-card__grid dd a {
   display: inline-flex;
   align-items: center;
   min-height: 44px;
+}
+
+/* Vùng bấm tối thiểu 44px cho người dùng điện thoại/lớn tuổi: nút cỡ chữ A-/A/A+, nút trên thanh đầu
+   và liên kết mở danh mục dự án (từng chỉ cao 19–40px). */
+.font-scale-control__button,
+.dashboard-header button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.executive-overview__open-portfolio {
+  min-height: 44px;
+  padding-block: 10px;
 }

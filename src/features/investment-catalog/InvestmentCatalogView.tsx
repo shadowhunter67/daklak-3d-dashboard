@@ -122,11 +122,18 @@ function CatalogCard({ row }: { row: CatalogRow }) {
   );
 }
 
-export function InvestmentCatalogView({ onBackToPortfolio }: { onBackToPortfolio: () => void }) {
+export function InvestmentCatalogView({
+  onBackToPortfolio,
+  initialQuery = '',
+}: {
+  onBackToPortfolio: () => void;
+  /** Từ khóa mang từ tìm kiếm toàn cục (`#/investment-catalog?q=…`). */
+  initialQuery?: string;
+}) {
   const { t, locale } = useTranslation();
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [retry, setRetry] = useState(0);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(initialQuery);
   const [sector, setSector] = useState('');
   const [area, setArea] = useState('');
   const [sort, setSort] = useState<CatalogSortKey>('capital-desc');
@@ -148,6 +155,12 @@ export function InvestmentCatalogView({ onBackToPortfolio }: { onBackToPortfolio
   useEffect(() => {
     headingRef.current?.focus();
   }, []);
+  useEffect(() => {
+    // Chọn một kết quả khác từ ô tìm kiếm toàn cục khi đang ở trang này.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setQuery(initialQuery);
+    setLimit(PAGE_SIZE);
+  }, [initialQuery]);
 
   const rows = useMemo(
     () => (state.status === 'ok' ? buildCatalogRows(state.dataset) : []),

@@ -47,6 +47,14 @@ export interface DetailMapCameraState {
   pitch: number;
 }
 
+/** Options for `fitBounds`. `paddingPx` reserves room for UI that overlays the canvas (footer bar,
+ * floating buttons); default is 48 px on every side. */
+export interface DetailFitOptions {
+  animate?: boolean;
+  durationMs?: number;
+  paddingPx?: { top: number; right: number; bottom: number; left: number };
+}
+
 export interface DetailBounds {
   north: number;
   south: number;
@@ -123,7 +131,7 @@ export interface DetailedMapProvider {
   setCamera(camera: DetailMapCameraState): void;
   /** `animate: false` (default `true`) jumps instantly instead of easing/flying — used when
    * `state.reducedMotion` is set. `durationMs` only applies when animating. */
-  fitBounds(bounds: DetailBounds, options?: { animate?: boolean; durationMs?: number }): void;
+  fitBounds(bounds: DetailBounds, options?: DetailFitOptions): void;
 
   /**
    * Applies a full layer state at once. `detailMapLayers` in the store is always replaced as a
@@ -196,14 +204,28 @@ export const DEFAULT_DETAIL_MAP_LAYER_STATE: DetailMapLayerState = {
   planningZonesVisible: false,
 };
 
-/** Centered roughly over Đắk Lắk province; matches the 3D overview's default framing. */
+/** Centered on the province's real bounding box (lng 107.484–109.459, lat 12.161–13.695). The old
+ * centre sat ~0.2° west of it, which pushed the eastern coast (Hòa Hiệp, Đông Hòa) off the right
+ * edge of an 864 px canvas at zoom 8. Zoom stays 8: road layers have `minzoom: 8`. */
 export const DEFAULT_DETAIL_MAP_CAMERA: DetailMapCameraState = {
-  latitude: 12.9063239,
-  longitude: 108.2686205,
+  latitude: 12.9279,
+  longitude: 108.4715,
   zoom: 8,
   bearing: 0,
   pitch: 0,
 };
+
+/** True while the camera is still the untouched default (nobody panned/zoomed or deep-linked). */
+export function isDefaultDetailMapCamera(camera: DetailMapCameraState): boolean {
+  const d = DEFAULT_DETAIL_MAP_CAMERA;
+  return (
+    Math.abs(camera.latitude - d.latitude) < 1e-4 &&
+    Math.abs(camera.longitude - d.longitude) < 1e-4 &&
+    Math.abs(camera.zoom - d.zoom) < 1e-2 &&
+    camera.bearing === d.bearing &&
+    camera.pitch === d.pitch
+  );
+}
 
 export const mapExperienceFromViewMode = (viewMode: '3d' | 'map'): MapExperience =>
   viewMode === 'map' ? 'detail-map' : 'overview-3d';

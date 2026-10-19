@@ -110,7 +110,11 @@ const projects = [];
 const skipped = [];
 const sums = new Map();
 for (const r of rows) {
-  const name = r.ten_du_an.trim().replace(/\s+/g, ' ');
+  // Bỏ dấu ; , thừa ở cuối tên do trích bảng PDF (3 dòng); không đổi nội dung.
+  const name = r.ten_du_an
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/[;,\s]+$/, '');
   const capital = parseViNumber(r.tong_von_ty);
   const id = `qd1985-${r.phu_luc.toLowerCase()}-${String(r.stt).padStart(3, '0')}`;
   const sourceId = `src-qd1985-${r.phu_luc.toLowerCase()}`;

@@ -11,7 +11,7 @@ import { DistanceMeasureTool } from './DistanceMeasureTool';
 import { RadiusQueryTool } from './RadiusQueryTool';
 import { LocalSearch } from './LocalSearch';
 import { useDetailMapCameraSync } from './useDetailMapCameraSync';
-import { getWardBounds } from './wardBounds';
+import { getProvinceBounds, getWardBounds } from './wardBounds';
 import { WARD_FLY_DURATION_MS } from './wardHighlightAnimation';
 import {
   addMeasurementPoint,
@@ -19,6 +19,7 @@ import {
   type MeasurementPoint,
 } from './distanceMeasurement';
 import { RADIUS_PRESETS_METERS, type RadiusQueryPoint } from './radiusQuery';
+import { isDefaultDetailMapCamera } from './detailMapTypes';
 import type {
   DetailedMapProvider,
   DetailMapSourceAvailability,
@@ -117,6 +118,7 @@ export function DetailMapViewport() {
   const [directoryOpen, setDirectoryOpen] = useState(
     () => !(window.matchMedia?.('(max-width: 767px)').matches ?? false),
   );
+  const mapEntry = useMapStore((state) => state.mapEntry);
   const [status, setStatus] = useState<LoadStatus>('loading');
   const [generation, setGeneration] = useState(0);
   const [interactionMode, setInteractionMode] = useState<MapInteractionMode>('browse');
@@ -133,6 +135,25 @@ export function DetailMapViewport() {
   useEffect(() => {
     interactionModeRef.current = interactionMode;
   }, [interactionMode]);
+  // Vào từ mục "Xã, phường" ở sidebar: mở danh sách 102 đơn vị và đưa con trỏ vào ô tìm kiếm — đây là
+  // điểm khác với mục "Bản đồ" (cùng màn nhưng không mở/focus danh sách).
+  useEffect(() => {
+    if (mapEntry !== 'wards') return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setDirectoryOpen(true);
+    // Hai khung hình: hiệu ứng mount bên dưới đưa focus về khung bản đồ ở khung đầu tiên, và danh
+    // sách chỉ có trong DOM sau khi `directoryOpen` được áp dụng.
+    let inner = 0;
+    const outer = window.requestAnimationFrame(() => {
+      inner = window.requestAnimationFrame(() =>
+        document.getElementById('directory-search')?.focus(),
+      );
+    });
+    return () => {
+      window.cancelAnimationFrame(outer);
+      window.cancelAnimationFrame(inner);
+    };
+  }, [mapEntry]);
   // Đọc reducedMotion qua ref (không subscribe trực tiếp trong effect chọn ward bên dưới) để
   // việc bật/tắt hiệu ứng chuyển động của hệ điều hành giữa chừng không tự kích hoạt lại
   // animation trên ward đang được chọn — cùng nguyên tắc với AdministrativeMap2D.tsx.
@@ -163,6 +184,15 @@ export function DetailMapViewport() {
       .initialize(container, { camera, layers, sourceAvailability, sourceUrl, servicesSourceUrl })
       .then(() => {
         if (cancelled) return;
+        // Camera mặc định cố định (zoom 8) chỉ vừa một số cỡ màn hình — khớp vào toàn tỉnh theo kích
+        // thước khung thật. Camera người dùng/URL đã chọn thì giữ nguyên; ward đã chọn có hiệu ứng riêng.
+        if (!selectedCode && isDefaultDetailMapCamera(camera)) {
+          // Chừa chỗ cho thanh chân trang cố định (~44 px), nút "Lớp bản đồ" và chú giải nổi.
+          provider.fitBounds(getProvinceBounds(), {
+            animate: false,
+            paddingPx: { top: 56, right: 56, bottom: 96, left: 48 },
+          });
+        }
         provider.setSelectedWard(selectedCode);
         // Interaction priority: measurement/radius modes own clicks (add a measurement point, or
         // set the radius-query centre) and never select a ward; browse mode selects a ward. Read

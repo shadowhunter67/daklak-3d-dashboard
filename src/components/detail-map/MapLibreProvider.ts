@@ -10,6 +10,7 @@ import { buildDetailMapStyle } from './detailMapStyle';
 import type {
   DetailBaseMap,
   DetailBounds,
+  DetailFitOptions,
   DetailMapCameraState,
   DetailMapInitOptions,
   DetailMapLayerState,
@@ -330,14 +331,14 @@ export class MapLibreProvider implements DetailedMapProvider {
     });
   }
 
-  fitBounds(bounds: DetailBounds, options?: { animate?: boolean; durationMs?: number }): void {
+  fitBounds(bounds: DetailBounds, options?: DetailFitOptions): void {
     if (!this.map) return;
     const camera = this.map.cameraForBounds(
       [
         [bounds.west, bounds.south],
         [bounds.east, bounds.north],
       ],
-      { padding: 48, maxZoom: 13 },
+      { padding: options?.paddingPx ?? 48, maxZoom: 13 },
     );
     if (!camera) return;
     if (options?.animate === false) {

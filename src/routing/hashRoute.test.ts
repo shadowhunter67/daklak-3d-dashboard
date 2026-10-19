@@ -79,6 +79,21 @@ describe('parseHashRoute', () => {
     });
   });
 
+  it('carries an optional ?q= search into the investment catalog route', () => {
+    expect(parseHashRoute('#/investment-catalog?q=%C4%91i%E1%BB%87n%20gi%C3%B3')).toEqual({
+      kind: 'investment-catalog',
+      query: 'điện gió',
+    });
+    expect(serializeInvestmentCatalogHash('điện gió')).toBe(
+      '#/investment-catalog?q=%C4%91i%E1%BB%87n%20gi%C3%B3',
+    );
+    expect(parseHashRoute(serializeInvestmentCatalogHash('điện gió'))).toEqual({
+      kind: 'investment-catalog',
+      query: 'điện gió',
+    });
+    expect(parseHashRoute('#/investment-catalog?q=')).toEqual({ kind: 'investment-catalog' });
+  });
+
   it('parses #/data-readiness', () => {
     expect(parseHashRoute('#/data-readiness')).toEqual({ kind: 'data-readiness' });
   });
