@@ -108,17 +108,20 @@ export function ExecutiveOverview({
           <div className="executive-overview__header-meta">
             <span>{t('executiveOverview.dataEffectiveLabel')}</span>
             <strong>{formatAbsoluteDateTime(model.dataTimeline.effectiveAt, locale)}</strong>
-            <StatusChip
-              label={t(`portfolioStatus.${model.portfolioStatus}` as MessageKey)}
-              tone={
-                model.portfolioStatus === 'healthy'
-                  ? 'success'
-                  : model.portfolioStatus === 'critical'
-                    ? 'danger'
-                    : 'warning'
-              }
-              dot
-            />
+            <span className="executive-overview__status">
+              <span>{t('executiveOverview.portfolioStatusLabel')}</span>
+              <StatusChip
+                label={t(`portfolioStatus.${model.portfolioStatus}` as MessageKey)}
+                tone={
+                  model.portfolioStatus === 'healthy'
+                    ? 'success'
+                    : model.portfolioStatus === 'critical'
+                      ? 'danger'
+                      : 'warning'
+                }
+                dot
+              />
+            </span>
             {onOpenPortfolio && (
               <button
                 type="button"

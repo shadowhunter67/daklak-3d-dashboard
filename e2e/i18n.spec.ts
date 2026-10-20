@@ -14,7 +14,16 @@ async function openSettings(page: import('@playwright/test').Page) {
     name: /^(Mở|Open) (menu điều hướng|navigation menu)$/,
   });
   if (await menuButton.isVisible()) await menuButton.click();
-  await page.getByRole('button', { name: /^(Cài đặt hiển thị|Display settings)$/ }).click();
+  // On narrow screens the drawer opens the settings panel by itself; only press the trigger when
+  // it is still closed (pressing it again would toggle the panel shut).
+  const panel = page.getByRole('dialog', { name: /^(Cài đặt hiển thị|Display settings)$/ });
+  const openedItself = await panel
+    .waitFor({ state: 'visible', timeout: 1500 })
+    .then(() => true)
+    .catch(() => false);
+  if (!openedItself) {
+    await page.getByRole('button', { name: /^(Cài đặt hiển thị|Display settings)$/ }).click();
+  }
 }
 
 async function switchToEnglish(page: import('@playwright/test').Page) {

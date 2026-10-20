@@ -176,7 +176,7 @@ export function AppSidebar({
             </button>
           ))}
         </nav>
-        <DisplaySettings onAfterAction={onClose} />
+        <DisplaySettings onAfterAction={onClose} autoOpen={mobileOpen} />
       </aside>
     </>
   );

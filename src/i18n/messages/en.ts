@@ -188,6 +188,7 @@ export const en: Partial<Record<MessageKey, string>> = {
     'Track delivery, disbursement and blockers for key projects across Đắk Lắk.',
   'executiveOverview.mockBadge':
     'ILLUSTRATIVE DATA — not official operational figures, not for real management decisions.',
+  'executiveOverview.portfolioStatusLabel': 'Portfolio status',
   'executiveOverview.openPortfolio': 'View project portfolio →',
   'executiveOverview.dataEffectiveLabel': 'Data effective as of:',
   'executiveOverview.degradedBanner':
@@ -932,6 +933,7 @@ export const en: Partial<Record<MessageKey, string>> = {
     'Explore boundaries, administrative units, and real data layers for Đắk Lắk.',
   'detailMapViewport.hideDirectory': 'Hide directory',
   'detailMapViewport.showDirectory': 'Show directory',
+  'detailMapViewport.legendPlanning': 'Planning legend: {theme}',
   'detailMapViewport.layerTabs': 'Quick map layers',
   'detailMapViewport.boundaries': 'Boundaries layer',
   'detailMapViewport.roads': 'Transport layer',
@@ -978,6 +980,17 @@ export const en: Partial<Record<MessageKey, string>> = {
   'onboarding.headingInteractiveMap': '102 communes/wards in one interactive map',
   'onboarding.body':
     'Select an area to see a quick profile, or open the 2D list to search by name or code.',
+  'onboarding.headingOverview': 'How to use the dashboard',
+  'onboarding.bodyOverview':
+    'Each item in the sidebar opens one part of the dashboard. The 2D and 3D maps have their own guide when you open them.',
+  'onboarding.sidebarAction': 'Left sidebar',
+  'onboarding.sidebarUse':
+    'switch between Overview, Map, Projects, Data and Reports (on a phone: the menu button).',
+  'onboarding.searchAction': 'Search box',
+  'onboarding.searchUse':
+    'find a commune or ward, a project, an investment-attraction entry or a place.',
+  'onboarding.textSizeAction': 'A- / A / A+',
+  'onboarding.textSizeUse': 'change text size; the Light/Dark buttons change the theme.',
   'onboarding.dragAction': 'Drag',
   'onboarding.dragToPan': 'to pan the map',
   'onboarding.scrollAction': 'Scroll or pinch',
