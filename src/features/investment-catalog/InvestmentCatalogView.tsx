@@ -20,6 +20,8 @@ import {
   formatCapitalBillions,
   sortCatalogRows,
   type CatalogRow,
+  type EvidenceField,
+  type EvidenceObservation,
   type CatalogSortKey,
 } from './model/catalogModel';
 
@@ -43,11 +45,78 @@ const SECTOR_KEY: Record<ResearchedSector, MessageKey> = {
 const labelMap = labels as Record<string, { name: string }>;
 const areaName = (code: string) => labelMap[code]?.name ?? code;
 
+function formatDay(iso: string, locale: string): string {
+  return new Date(iso).toLocaleDateString(locale === 'en' ? 'en-GB' : 'vi-VN', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+/** Bằng chứng theo từng trường: nguồn, ngày văn bản, mức bằng chứng, độ tin cậy, và các quan sát cũ
+ * (không bị ghi đè) trong "Lịch sử thay đổi". Chỉ hiện trường thật sự có quan sát. */
+function EvidencePanel({ row, id }: { row: CatalogRow; id: string }) {
+  const { t, locale } = useTranslation();
+  const valueText = (e: EvidenceObservation & { field?: EvidenceField }, field: EvidenceField) =>
+    field === 'lifecycle'
+      ? t('catalog.lifecycle')
+      : t('catalog.capitalValue', {
+          value: formatCapitalBillions(Number(e.value), locale),
+        });
+  const sourceNode = (o: EvidenceObservation) =>
+    o.sourceUrl && o.documentNumber ? (
+      <a href={o.sourceUrl} target="_blank" rel="noopener noreferrer">
+        {o.documentNumber}
+      </a>
+    ) : (
+      (o.documentNumber ?? t('catalog.capitalMissing'))
+    );
+  return (
+    <div
+      id={id}
+      className="project-portfolio__code"
+      role="region"
+      aria-label={t('catalog.evidence.heading')}
+    >
+      {row.evidence.map((e) => (
+        <section key={e.field}>
+          <h4>{t(`catalog.evidence.field.${e.field}` as MessageKey)}</h4>
+          <p>
+            <strong>{valueText(e, e.field)}</strong> ·{' '}
+            {t(`catalogEvidence.status.${e.status}` as MessageKey)} ·{' '}
+            {t('catalog.evidence.confidence')}: {t(`confidence.${e.confidence}` as MessageKey)}
+          </p>
+          <p>
+            {t('catalog.evidence.observed')}: {formatDay(e.observedAt, locale)} ·{' '}
+            {t('catalog.source')}: {sourceNode(e)}
+          </p>
+          {e.history.length > 0 && (
+            <>
+              <h5>{t('catalog.evidence.history')}</h5>
+              <ul>
+                {e.history.map((h) => (
+                  <li key={`${h.observedAt}-${h.value}`}>
+                    {valueText(h, e.field)} · {formatDay(h.observedAt, locale)} ·{' '}
+                    {t(`catalogEvidence.status.${h.status}` as MessageKey)} · {sourceNode(h)}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </section>
+      ))}
+    </div>
+  );
+}
+
 type LoadState =
   { status: 'loading' } | { status: 'error' } | { status: 'ok'; dataset: ResearchedDataset };
 
 function CatalogCard({ row }: { row: CatalogRow }) {
   const { t, locale } = useTranslation();
+  const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const evidenceId = `catalog-evidence-${row.id}`;
   const date = row.publishedAt
     ? new Date(row.publishedAt).toLocaleDateString(locale === 'en' ? 'en-GB' : 'vi-VN', {
         day: '2-digit',
@@ -117,6 +186,17 @@ function CatalogCard({ row }: { row: CatalogRow }) {
             {t('catalog.note')}: {row.notes[0]}
           </p>
         )}
+        <button
+          type="button"
+          className="project-portfolio-card__open"
+          aria-expanded={evidenceOpen}
+          aria-controls={evidenceId}
+          aria-label={`${evidenceOpen ? t('catalog.evidence.hide') : t('catalog.evidence.show')} — ${row.name}`}
+          onClick={() => setEvidenceOpen((open) => !open)}
+        >
+          {evidenceOpen ? t('catalog.evidence.hide') : t('catalog.evidence.show')}
+        </button>
+        {evidenceOpen && <EvidencePanel row={row} id={evidenceId} />}
       </Card>
     </li>
   );
