@@ -5,7 +5,10 @@ import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { MessageKey } from '../../i18n/messages';
 import { formatDateTime } from '../../i18n/formatters';
-import { dataQualityRuleLabelKey } from '../../entities/project/dataQualityMessages';
+import {
+  dataQualityIssueDetail,
+  dataQualityRuleLabelKey,
+} from '../../entities/project/dataQualityMessages';
 import { useDataReadiness } from './data/useDataReadiness';
 import type {
   DataReadinessIssueWithProjectLink,
@@ -48,7 +51,7 @@ function IssueDetails({
   idSuffix: string;
   onOpenProject: (projectId: string) => void;
 }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const headingId = `data-readiness-${idSuffix}-heading`;
   return (
     <section aria-labelledby={headingId} className="data-readiness__issue-group">
@@ -64,7 +67,7 @@ function IssueDetails({
               <span className="data-readiness__issue-rule">
                 {t(dataQualityRuleLabelKey(issue.rule))}
               </span>{' '}
-              — {issue.message}
+              — {dataQualityIssueDetail(issue, locale)}
               {issue.linkedProjectId && (
                 <button
                   type="button"
@@ -240,7 +243,9 @@ function ReadinessPanels({
                 render: (row) => (
                   <>
                     <strong>{t(dataQualityRuleLabelKey(row.rule))}</strong>
-                    <span className="data-readiness__table-message">{row.message}</span>
+                    <span className="data-readiness__table-message">
+                      {dataQualityIssueDetail(row, locale)}
+                    </span>
                   </>
                 ),
               },

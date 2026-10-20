@@ -25,6 +25,16 @@ const DATA_QUALITY_RULE_LABEL_KEY: Record<string, MessageKey> = {
 /** Trả về message key cho nhãn dễ hiểu của một `rule` — key generic khi gặp rule mới/lạ không có
  * trong bảng trên, để không lộ slug kỹ thuật ra UI ngay cả khi ai đó thêm rule mới mà quên cập
  * nhật bảng này. */
+/** Chi tiết đứng sau nhãn ngắn của một issue. `message` gốc do tầng quy tắc sinh ra bằng tiếng Việt
+ * cố định (kèm số liệu/ID) nên chỉ hiện ở locale `vi`; ở locale khác dùng mã đối tượng để vẫn truy
+ * vết được mà không lẫn chuỗi tiếng Việt vào giao diện tiếng Anh. */
+export function dataQualityIssueDetail(
+  issue: { message: string; entityId: string },
+  locale: string,
+): string {
+  return locale === 'vi' ? issue.message : issue.entityId;
+}
+
 export function dataQualityRuleLabelKey(rule: string): MessageKey {
   return DATA_QUALITY_RULE_LABEL_KEY[rule] ?? 'dataQuality.rule.generic';
 }

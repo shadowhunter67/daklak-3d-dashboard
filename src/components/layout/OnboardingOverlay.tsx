@@ -43,6 +43,9 @@ export function OnboardingOverlay() {
   const helpSignal = useMapStore((state) => state.helpSignal);
   const viewMode = useMapStore((state) => state.viewMode);
   const isDetailMap = viewMode === 'map';
+  // Tổng quan (và các trang hash chạy trên nó) không có thao tác bản đồ để hướng dẫn: giải thích
+  // cách dùng ứng dụng thay vì cử chỉ kéo/xoay 3D.
+  const isOverview = viewMode === 'overview';
   const previousHelpSignal = useRef(helpSignal);
 
   const dismiss = () => {
@@ -97,10 +100,26 @@ export function OnboardingOverlay() {
       >
         <p className="eyebrow">{t('onboarding.eyebrow')}</p>
         <h2 id="onboarding-title">
-          {isDetailMap ? t('onboarding.headingDetailMap') : t('onboarding.headingInteractiveMap')}
+          {isOverview
+            ? t('onboarding.headingOverview')
+            : isDetailMap
+              ? t('onboarding.headingDetailMap')
+              : t('onboarding.headingInteractiveMap')}
         </h2>
-        <p>{t('onboarding.body')}</p>
-        {isDetailMap ? (
+        <p>{isOverview ? t('onboarding.bodyOverview') : t('onboarding.body')}</p>
+        {isOverview ? (
+          <ul>
+            <li>
+              <strong>{t('onboarding.sidebarAction')}</strong> {t('onboarding.sidebarUse')}
+            </li>
+            <li>
+              <strong>{t('onboarding.searchAction')}</strong> {t('onboarding.searchUse')}
+            </li>
+            <li>
+              <strong>{t('onboarding.textSizeAction')}</strong> {t('onboarding.textSizeUse')}
+            </li>
+          </ul>
+        ) : isDetailMap ? (
           <ul>
             <li>
               <strong>{t('onboarding.dragAction')}</strong> {t('onboarding.dragToPan')}

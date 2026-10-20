@@ -11,6 +11,7 @@ import { useMapStore } from '../../stores/mapStore';
 import { DetailMapViewport } from './DetailMapViewport';
 import { FakeMapProvider } from './FakeMapProvider';
 import { DEFAULT_DETAIL_MAP_CAMERA, DEFAULT_DETAIL_MAP_LAYER_STATE } from './detailMapTypes';
+import { PLANNING_THEMES } from './planningThemes';
 
 describe('DetailMapViewport', () => {
   beforeEach(() => {
@@ -203,5 +204,23 @@ describe('DetailMapViewport', () => {
     const instance = initializeSpy.mock.instances[0] as InstanceType<typeof FakeMapProvider>;
     await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
     expect(instance.getDebugState().lastFitBounds).toBeFalsy();
+  });
+
+  it('khi bật lớp quy hoạch, chú giải giải thích các màu và ghi rõ là sơ đồ minh họa', async () => {
+    useMapStore.setState({
+      detailMapLayers: { ...DEFAULT_DETAIL_MAP_LAYER_STATE, planningOverlay: 'land-use' },
+    });
+    render(<DetailMapViewport />);
+    await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
+    const theme = PLANNING_THEMES['land-use'];
+    const legend = screen.getByRole('group', { name: `Chú giải quy hoạch: ${theme.name}` });
+    for (const category of theme.categories) expect(legend).toHaveTextContent(category.label);
+    expect(legend).toHaveTextContent(/không có giá trị pháp lý/);
+  });
+
+  it('không có chú giải quy hoạch khi lớp quy hoạch đang tắt', async () => {
+    render(<DetailMapViewport />);
+    await waitFor(() => expect(screen.getByTestId('fake-map-provider')).toBeInTheDocument());
+    expect(screen.queryByRole('group', { name: /Chú giải quy hoạch/ })).toBeNull();
   });
 });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dataQualityRuleLabelKey } from './dataQualityMessages';
+import { dataQualityIssueDetail, dataQualityRuleLabelKey } from './dataQualityMessages';
 
 describe('dataQualityRuleLabelKey', () => {
   it('maps every known DataQualityIssue rule to a human-facing message key', () => {
@@ -26,5 +26,15 @@ describe('dataQualityRuleLabelKey', () => {
     expect(dataQualityRuleLabelKey('some-future-rule-nobody-mapped-yet')).toBe(
       'dataQuality.rule.generic',
     );
+  });
+});
+
+describe('dataQualityIssueDetail', () => {
+  const issue = { message: 'Dữ liệu dự án chưa cập nhật quá 90 ngày', entityId: 'prj-013' };
+  it('tiếng Việt giữ nguyên thông điệp gốc', () => {
+    expect(dataQualityIssueDetail(issue, 'vi')).toBe('Dữ liệu dự án chưa cập nhật quá 90 ngày');
+  });
+  it('tiếng Anh không hiện chuỗi tiếng Việt cố định mà dùng mã đối tượng để truy vết', () => {
+    expect(dataQualityIssueDetail(issue, 'en')).toBe('prj-013');
   });
 });

@@ -15,7 +15,7 @@ Rà soát trên bản production (chrome-devtools, ảnh trong `reports/ui-revie
 
 - Bản đồ 3D trong trình duyệt tự động chỉ vẽ lưới, không thấy địa hình, và 102 nhãn dồn thành cụm chồng nhau (tỉnh được vẽ rất nhỏ giữa hai panel). Chưa xác định là lỗi thật hay do WebGL phần mềm.
 - Bản vẽ 2D thật vẫn còn vài nhãn chạm nhau ở vùng đông dù mô hình tính là không: chênh lệch giữa ước lượng kích thước chữ của engine và bộ vẽ MapLibre chưa được điều tra.
-- Header (nút mở menu, liên kết "bỏ qua") vẫn cao 40 px.
+- Header 40 px: đã xử lý ở lượt sau (xem "Đã sửa tiếp").
 
 ## Phiên kiểm thử như người dùng mới (2026-10-19)
 
@@ -29,15 +29,22 @@ Trình duyệt sạch (ngữ cảnh cô lập), laptop 1366×768 và điện tho
 - Vùng bấm < 44 px: nút A-/A/A+ (34 px), nút trên thanh đầu (40 px), liên kết "Xem danh mục dự án →" (19 px).
 - 3 tên dự án thật còn dấu `;`/`,` thừa do trích PDF (làm sạch trong script dựng dữ liệu; checksum đã cập nhật).
 
+Đã sửa tiếp (lượt "làm hết"):
+
+- **KPI:** trên điện thoại xếp 2 cột (từng 1 cột chiếm gần 4 màn hình), ô gọn hơn nên bản đồ ở Tổng quan lọt vào màn đầu tiên của laptop 1366×768 (thẻ bắt đầu ở y=561 thay vì nằm hẳn dưới màn).
+- **Chú giải quy hoạch:** khi bật lớp "Quy hoạch" hiện màu từng loại và ghi rõ "sơ đồ minh họa, không có giá trị pháp lý"; xếp trên chú giải xã/phường, không đè nhau.
+- **Chip "Nghiêm trọng"** nay có nhãn "Tình trạng danh mục".
+- **Trợ giúp ở Tổng quan** giải thích cách dùng ứng dụng (thanh bên, ô tìm kiếm, cỡ chữ) thay vì hướng dẫn kéo/xoay 3D.
+- **Tiếng Anh:** chi tiết thông báo chất lượng dữ liệu không còn là chuỗi tiếng Việt cố định (hiện mã đối tượng).
+- **Điện thoại:** mở menu là thấy ngay Cỡ chữ và Ngôn ngữ (khung cài đặt tự mở); nút A-/A/A+ 44×44.
+- Vùng bấm 44 px cho liên kết "Xem dự án liên quan", liên kết bỏ qua, nút đóng menu.
+- Trần JS nâng 3.422.000 → 3.428.000 (đo 3.424.049; đã quét khóa i18n chết, không còn gì bỏ được).
+
 **Còn mở (chưa sửa):**
 
-- Trên Tổng quan, bản đồ nằm dưới màn đầu tiên ở 1366×768 (8 ô KPI chiếm hết); trên điện thoại 8 ô KPI xếp một cột gần 4 màn hình.
-- Lớp "Quy hoạch" hiện mảng màu nhưng chú giải chỉ nói về xã/phường; người mới không biết mảng đó là gì.
-- Chip đỏ "Nghiêm trọng" cạnh "Dữ liệu có hiệu lực" không nói rõ nghĩa là gì.
-- Hộp "Trợ giúp" luôn hiện hướng dẫn bản đồ 3D ("Kéo để xoay…") dù đang ở Tổng quan.
-- Tiếng Anh: thông báo chất lượng dữ liệu ("Dữ liệu dự án chưa cập nhật quá 90 ngày…") vẫn tiếng Việt cố định.
-- Cỡ chữ và ngôn ngữ chỉ có trong "Cài đặt hiển thị" trên điện thoại (hai lần bấm).
-- Liên kết "Xem dự án liên quan" ở trang dữ liệu cao 20 px.
+- Bản đồ 3D: trong trình duyệt tự động chỉ vẽ lưới (không thấy địa hình) và 102 nhãn dồn thành cụm; cần kiểm trên máy có GPU thật, mình không thể xác nhận từ đây.
+- Bản vẽ 2D thật vẫn còn vài nhãn chạm nhau dù mô hình tính là không chồng (chênh lệch giữa ước lượng kích thước chữ và bộ vẽ MapLibre).
+- Chú giải quy hoạch che một phần bờ biển phía đông ở laptop.
 - Test ảnh chuẩn Windows `dashboard-detail-name-24580-desktop` đã cũ (241×327 so với giao diện hiện tại); không do thay đổi này, CI (Linux) qua.
 
 ## Final Status

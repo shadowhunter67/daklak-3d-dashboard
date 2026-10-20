@@ -64,4 +64,21 @@ describe('DisplaySettings', () => {
       await screen.findByRole('button', { name: 'Display settings' }, LAZY_CHUNK_TIMEOUT),
     ).toBeInTheDocument();
   });
+
+  it('opens by itself when asked (mobile drawer), so text size and language are one tap away', () => {
+    const { rerender } = render(
+      <I18nProvider>
+        <DisplaySettings autoOpen={false} />
+      </I18nProvider>,
+    );
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    rerender(
+      <I18nProvider>
+        <DisplaySettings autoOpen />
+      </I18nProvider>,
+    );
+    // Không gắn với ngôn ngữ: test trước có thể đã đổi locale được lưu.
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(document.querySelectorAll('.font-scale-control__button')).toHaveLength(3);
+  });
 });

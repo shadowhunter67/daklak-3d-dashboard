@@ -131,7 +131,15 @@ test.describe('Font-scale control at its largest step — no new overlap on Exec
       const menuButton = page.getByRole('button', { name: 'Mở menu điều hướng' });
       if (await menuButton.isVisible()) {
         await menuButton.click();
-        await page.getByRole('button', { name: 'Cài đặt hiển thị' }).click();
+        // The drawer opens the settings panel by itself; press the trigger only if still closed.
+        const panel = page.getByRole('dialog', { name: 'Cài đặt hiển thị' });
+        const openedItself = await panel
+          .waitFor({ state: 'visible', timeout: 1500 })
+          .then(() => true)
+          .catch(() => false);
+        if (!openedItself) {
+          await page.getByRole('button', { name: 'Cài đặt hiển thị' }).click();
+        }
       }
       await page.getByRole('button', { name: 'Chữ lớn hơn' }).click();
       await expect(page.getByRole('button', { name: 'Chữ lớn hơn' })).toHaveAttribute(
