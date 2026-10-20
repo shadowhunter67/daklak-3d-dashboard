@@ -81,7 +81,7 @@ Không thay đổi trong lượt này. Engine nhãn theo không gian màn hình 
 ## Project Portfolio / Project Detail / Context Lens
 
 - Danh mục dự án minh họa (thẻ/bảng): không đổi. Trang Chi tiết dự án dựng theo UI kit (`326fa75`) được đưa vào PR này vì là commit cục bộ chưa từng vào `main`.
-- **Context Lens dùng chung: chưa làm.** **Hiển thị provenance theo trường và "Lịch sử thay đổi" trên trang chi tiết: chưa làm** (mới có ở tầng domain và validator).
+- **Provenance theo trường và "Lịch sử thay đổi": đã có** trên thẻ dự án thu hút đầu tư (nút "Xem bằng chứng": giá trị hiện hành, mức bằng chứng, độ tin cậy, ngày văn bản, nguồn; quan sát cũ được giữ lại). **Chưa có** trên trang Chi tiết dự án minh họa (dữ liệu minh họa không có nguồn theo trường). **Context Lens dùng chung: chưa làm.**
 
 ## Data Trust / Data Model
 
@@ -168,7 +168,7 @@ Secrets scan sạch (979 file); `npm ci` 0 lỗ hổng. Không thêm origin ngo�
 ## Remaining Work
 
 1. Checkpoint 2 và 4 của Codex (cần cầu nối ổn định hoặc review thủ công).
-2. Hiển thị provenance theo trường và lịch sử quan sát trên trang Chi tiết dự án; Context Lens dùng chung.
+2. Context Lens dùng chung (panel ngữ cảnh theo lựa chọn cho xã/phường và dự án); provenance theo trường cho trang Chi tiết dự án nếu có dữ liệu có nguồn.
 3. Ảnh production có license (cần tìm đúng chủ thể) hoặc minh họa trung tính có nhãn.
 4. Header 40 px → 44 px; cỡ chữ nền 17–18 px; axe + kiểm tra bàn phím; ma trận 10 độ rộng × zoom 125/150/200%.
 5. Đọc chính văn quyết định trên `daklak.gov.vn` (cần truy cập từ máy người dùng) để thêm dự án đang triển khai có nguồn chính thức; đối chiếu 4 nhóm lệch tổng vốn với PDF.
