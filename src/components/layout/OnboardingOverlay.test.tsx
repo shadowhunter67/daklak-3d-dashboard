@@ -40,6 +40,17 @@ describe('OnboardingOverlay', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
   });
 
+  it('on Executive Overview the help explains the app (sidebar, search, text size), not 3D gestures', () => {
+    useMapStore.setState({ viewMode: 'overview' });
+    render(<OnboardingOverlay />);
+    act(() => useMapStore.getState().requestHelp());
+    expect(screen.getByRole('dialog', { name: 'Cách dùng bảng điều hành' })).toBeInTheDocument();
+    expect(screen.getByText('Thanh bên trái')).toBeInTheDocument();
+    expect(screen.getByText('Ô tìm kiếm')).toBeInTheDocument();
+    expect(screen.queryByText('xoay góc nhìn')).not.toBeInTheDocument();
+    expect(screen.queryByText('để xoay góc nhìn')).not.toBeInTheDocument();
+  });
+
   // Phase T1 bugfix (reports/tourism-digital-twin/phase-status.md, "Post-merge fix"): a real
   // production bug where a first-time visitor to `?view=world` got this dialog's admin-boundary
   // "102 xã, phường" copy auto-popped on top of the illustrative world scene, because `world` fell

@@ -194,6 +194,7 @@ export const vi = {
     'Theo dõi tiến độ thực hiện, giải ngân và các vướng mắc của dự án trọng điểm trên địa bàn tỉnh Đắk Lắk.',
   'executiveOverview.mockBadge':
     'DỮ LIỆU MINH HỌA — không phải số liệu vận hành chính thức, không dùng cho quyết định quản lý thực tế.',
+  'executiveOverview.portfolioStatusLabel': 'Tình trạng danh mục',
   'executiveOverview.openPortfolio': 'Xem danh mục dự án →',
   'executiveOverview.dataEffectiveLabel': 'Dữ liệu có hiệu lực:',
   'executiveOverview.degradedBanner':
@@ -947,6 +948,7 @@ export const vi = {
     'Khám phá ranh giới, đơn vị hành chính và các lớp dữ liệu thật của tỉnh Đắk Lắk.',
   'detailMapViewport.hideDirectory': 'Ẩn danh sách',
   'detailMapViewport.showDirectory': 'Hiện danh sách',
+  'detailMapViewport.legendPlanning': 'Chú giải quy hoạch: {theme}',
   'detailMapViewport.layerTabs': 'Lớp bản đồ nhanh',
   'detailMapViewport.boundaries': 'Lớp ranh giới',
   'detailMapViewport.roads': 'Lớp giao thông',
@@ -992,6 +994,16 @@ export const vi = {
   'onboarding.headingInteractiveMap': '102 xã, phường trong một bản đồ tương tác',
   'onboarding.body':
     'Chọn một khu vực để xem hồ sơ nhanh, hoặc mở danh sách 2D để tìm bằng tên và mã.',
+  'onboarding.headingOverview': 'Cách dùng bảng điều hành',
+  'onboarding.bodyOverview':
+    'Mỗi mục ở thanh bên mở một phần của bảng điều hành. Bản đồ 2D và 3D có hướng dẫn riêng khi bạn mở chúng.',
+  'onboarding.sidebarAction': 'Thanh bên trái',
+  'onboarding.sidebarUse':
+    'chuyển giữa Tổng quan, Bản đồ, Dự án, Dữ liệu & nguồn và Báo cáo (trên điện thoại: nút menu).',
+  'onboarding.searchAction': 'Ô tìm kiếm',
+  'onboarding.searchUse': 'tìm xã, phường, dự án, danh mục thu hút đầu tư hoặc địa danh.',
+  'onboarding.textSizeAction': 'A- / A / A+',
+  'onboarding.textSizeUse': 'chỉnh cỡ chữ; nút Sáng/Tối đổi giao diện.',
   'onboarding.dragAction': 'Kéo',
   'onboarding.dragToPan': 'để di chuyển bản đồ',
   'onboarding.scrollAction': 'Cuộn hoặc chụm',

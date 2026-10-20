@@ -10,7 +10,14 @@ import { SettingsIcon, ShareIcon } from './icons';
  * (language, share link, data provenance, auto-update sources). Opens a popover above the button;
  * Escape or an outside click closes it and focus returns to the button.
  */
-export function DisplaySettings({ onAfterAction }: { onAfterAction?: () => void }) {
+export function DisplaySettings({
+  onAfterAction,
+  autoOpen = false,
+}: {
+  onAfterAction?: () => void;
+  /** Mở sẵn khung cài đặt (ngăn kéo menu trên điện thoại, nơi thanh đầu không còn chỗ cho cỡ chữ/ngôn ngữ). */
+  autoOpen?: boolean;
+}) {
   const { t, locale, setLocale } = useTranslation();
   const [open, setOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState('');
@@ -19,6 +26,11 @@ export function DisplaySettings({ onAfterAction }: { onAfterAction?: () => void 
   const buttonRef = useRef<HTMLButtonElement>(null);
   const openProvenancePanel = useMapStore((state) => state.openProvenancePanel);
   const openDataSourcesPanel = useMapStore((state) => state.openDataSourcesPanel);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (autoOpen) setOpen(true);
+  }, [autoOpen]);
 
   useEffect(() => {
     if (!open) return;

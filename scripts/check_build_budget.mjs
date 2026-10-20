@@ -63,8 +63,12 @@ const dist = join(root, 'dist');
 // this branch = 3,419,091 (+20,133). That is the lazy catalog chunk (~8.8KB), the vi/en strings and
 // the project-detail rebuild, AFTER removing 40 dead i18n keys (-6.5KB) and reusing the existing
 // sector labels. Gzip 939,366 / 950,000 is untouched. The raise leaves ~2.9KB of headroom.
+// totalJavaScriptBytes raised 3,422,000 -> 3,428,000 (new-user UX pass, 2026-10): measured 3,424,049
+// (+2.8KB over the previous 3,421,287 after dead-key scan found nothing left to drop) for the
+// planning-layer legend, the Overview-specific help, the "Tình trạng danh mục" label, locale-aware
+// data-quality details and the auto-opened settings in the phone drawer. Gzip is untouched.
 const limits = {
-  totalJavaScriptBytes: 3_422_000,
+  totalJavaScriptBytes: 3_428_000,
   totalJavaScriptGzipBytes: 950_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,

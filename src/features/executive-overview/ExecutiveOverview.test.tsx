@@ -146,4 +146,10 @@ describe('ExecutiveOverview', () => {
     const button = await screen.findByRole('button', { name: /Xem danh mục dự án/ });
     expect(button.textContent?.match(/→/g)).toHaveLength(1);
   });
+
+  it('chip trạng thái có nhãn nói rõ nó đo gì ("Tình trạng danh mục")', async () => {
+    renderWithI18n(<ExecutiveOverview source={FakeProjectPortfolioSource.ok(portfolio())} />);
+    await screen.findByRole('heading', { name: 'Tổng quan điều hành dự án trọng điểm' });
+    expect(screen.getByText('Tình trạng danh mục')).toBeInTheDocument();
+  });
 });

@@ -11,6 +11,7 @@ import { DistanceMeasureTool } from './DistanceMeasureTool';
 import { RadiusQueryTool } from './RadiusQueryTool';
 import { LocalSearch } from './LocalSearch';
 import { useDetailMapCameraSync } from './useDetailMapCameraSync';
+import { PLANNING_THEMES, type PlanningThemeId } from './planningThemes';
 import { getProvinceBounds, getWardBounds } from './wardBounds';
 import { WARD_FLY_DURATION_MS } from './wardHighlightAnimation';
 import {
@@ -443,6 +444,26 @@ export function DetailMapViewport() {
           <div className="detail-map-scale" style={{ width: scaleBar.widthPx + 16 }}>
             {scaleBar.label}
           </div>
+          {planningActive && (
+            <div
+              className="detail-map-legend detail-map-legend--planning"
+              role="group"
+              aria-label={t('detailMapViewport.legendPlanning', {
+                theme: PLANNING_THEMES[layers.planningOverlay as PlanningThemeId].name,
+              })}
+            >
+              <strong>{PLANNING_THEMES[layers.planningOverlay as PlanningThemeId].name}</strong>
+              {PLANNING_THEMES[layers.planningOverlay as PlanningThemeId].categories.map(
+                (category) => (
+                  <span key={category.id}>
+                    <i className="legend-dot" style={{ background: category.color }} />
+                    {category.label}
+                  </span>
+                ),
+              )}
+              <small>{t('layerPanel.planningDisclaimer')}</small>
+            </div>
+          )}
           <div className="detail-map-legend">
             <strong>{t('detailMapViewport.legend')}</strong>
             <span>
