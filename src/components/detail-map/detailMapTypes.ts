@@ -222,8 +222,8 @@ export function isDefaultDetailMapCamera(camera: DetailMapCameraState): boolean 
     Math.abs(camera.latitude - d.latitude) < 1e-4 &&
     Math.abs(camera.longitude - d.longitude) < 1e-4 &&
     Math.abs(camera.zoom - d.zoom) < 1e-2 &&
-    camera.bearing === d.bearing &&
-    camera.pitch === d.pitch
+    Math.abs(camera.bearing - d.bearing) < 1e-2 &&
+    Math.abs(camera.pitch - d.pitch) < 1e-2
   );
 }
 

@@ -81,4 +81,19 @@ describe('DisplaySettings', () => {
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(document.querySelectorAll('.font-scale-control__button')).toHaveLength(3);
   });
+
+  it('đóng lại khi ngăn kéo đóng (autoOpen true → false), không để panel mở ngầm', () => {
+    const { rerender } = render(
+      <I18nProvider>
+        <DisplaySettings autoOpen />
+      </I18nProvider>,
+    );
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    rerender(
+      <I18nProvider>
+        <DisplaySettings autoOpen={false} />
+      </I18nProvider>,
+    );
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
 });

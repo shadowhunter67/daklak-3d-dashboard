@@ -86,6 +86,19 @@ describe('buildCatalogRows', () => {
   });
 });
 
+describe('chỉ danh mục thu hút đầu tư', () => {
+  it('bỏ các bản ghi không ở giai đoạn thu hút đầu tư (không gọi nhầm là "Thu hút đầu tư")', () => {
+    const mixed: ResearchedDataset = {
+      ...dataset,
+      projects: [
+        ...dataset.projects,
+        { ...dataset.projects[0], id: 'x', lifecycle: obs('construction' as const) },
+      ],
+    };
+    expect(buildCatalogRows(mixed).map((r) => r.id)).toEqual(['a', 'b', 'c']);
+  });
+});
+
 describe('evidence theo từng trường', () => {
   const rows = buildCatalogRows(dataset);
   it('mỗi trường có nguồn, ngày văn bản, mức bằng chứng và độ tin cậy', () => {
