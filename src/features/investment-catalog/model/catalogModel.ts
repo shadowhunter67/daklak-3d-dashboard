@@ -1,9 +1,31 @@
 import { resolveField } from '../../../entities/researched-project/resolveField';
 import type {
+  EvidenceLevel,
+  FieldObservation,
   LocationAccuracy,
   ResearchedDataset,
   ResearchedSector,
+  SourceRecord,
 } from '../../../entities/researched-project/types';
+import type { DataConfidence } from '../../../entities/project/types';
+
+export type EvidenceField = 'lifecycle' | 'totalInvestment';
+
+/** Một quan sát (giá trị + nguồn + ngày + mức bằng chứng) của một trường. */
+export interface EvidenceObservation {
+  value: string | number;
+  status: EvidenceLevel;
+  confidence: DataConfidence;
+  observedAt: string;
+  documentNumber: string | undefined;
+  sourceUrl: string | undefined;
+}
+
+/** Bằng chứng của một trường: giá trị hiện hành + các quan sát cũ/khác (không bị ghi đè). */
+export interface CatalogEvidence extends EvidenceObservation {
+  field: EvidenceField;
+  history: EvidenceObservation[];
+}
 
 export interface CatalogRow {
   id: string;
@@ -18,6 +40,8 @@ export interface CatalogRow {
   documentNumber: string | undefined;
   publishedAt: string | undefined;
   sourceUrl: string | undefined;
+  /** Chỉ gồm các trường thật sự có quan sát — thiếu dữ liệu thì không có dòng. */
+  evidence: CatalogEvidence[];
 }
 
 export interface CatalogFilters {
@@ -27,6 +51,38 @@ export interface CatalogFilters {
 }
 
 export type CatalogSortKey = 'capital-desc' | 'name-asc';
+
+function toObservation(
+  o: FieldObservation<string | number>,
+  sources: ReadonlyMap<string, SourceRecord>,
+): EvidenceObservation {
+  const source = sources.get(o.sourceId);
+  return {
+    value: o.value,
+    status: o.status,
+    confidence: o.confidence,
+    observedAt: o.observedAt,
+    documentNumber: source?.documentNumber,
+    sourceUrl: source?.url,
+  };
+}
+
+function buildEvidence(
+  field: EvidenceField,
+  history: readonly FieldObservation<string | number>[],
+  sources: ReadonlyMap<string, SourceRecord>,
+): CatalogEvidence[] {
+  const { resolved } = resolveField(history);
+  if (!resolved) return [];
+  const others = history.filter((o) => o !== resolved);
+  return [
+    {
+      field,
+      ...toObservation(resolved, sources),
+      history: others.map((o) => toObservation(o, sources)),
+    },
+  ];
+}
 
 export function buildCatalogRows(dataset: ResearchedDataset): CatalogRow[] {
   const sources = new Map(dataset.sources.map((s) => [s.id, s]));
@@ -45,6 +101,10 @@ export function buildCatalogRows(dataset: ResearchedDataset): CatalogRow[] {
       documentNumber: source?.documentNumber,
       publishedAt: source?.publishedAt,
       sourceUrl: source?.url,
+      evidence: [
+        ...buildEvidence('lifecycle', [p.lifecycle], sources),
+        ...buildEvidence('totalInvestment', p.fields.totalInvestment ?? [], sources),
+      ],
     };
   });
 }

@@ -37,7 +37,12 @@ const dataset: ResearchedDataset = {
       lifecycle: obs('investment-attraction' as const),
       sector: 'energy',
       administrativeAreaCodes: ['24133'],
-      fields: { totalInvestment: [obs(3_400_000_000_000)] },
+      fields: {
+        totalInvestment: [
+          { ...obs(3_000_000_000_000), observedAt: '2026-01-10T00:00:00.000Z' },
+          obs(3_400_000_000_000),
+        ],
+      },
       verification: 'partial',
       location: {
         coordinates: [108, 12.7],
@@ -78,6 +83,33 @@ describe('buildCatalogRows', () => {
     });
     expect(rows.find((r) => r.id === 'b')?.capitalVnd).toBeUndefined();
     expect(rows.find((r) => r.id === 'b')?.hasLocation).toBe(false);
+  });
+});
+
+describe('evidence theo từng trường', () => {
+  const rows = buildCatalogRows(dataset);
+  it('mỗi trường có nguồn, ngày văn bản, mức bằng chứng và độ tin cậy', () => {
+    const a = rows.find((r) => r.id === 'a')!;
+    const invest = a.evidence.find((e) => e.field === 'totalInvestment')!;
+    expect(invest).toMatchObject({
+      value: 3_400_000_000_000,
+      status: 'official',
+      confidence: 'high',
+      documentNumber: '1985/QĐ-UBND',
+      observedAt: '2026-06-24T00:00:00.000Z',
+      sourceUrl: 'https://example.vn/x',
+    });
+    expect(a.evidence.map((e) => e.field)).toEqual(['lifecycle', 'totalInvestment']);
+  });
+  it('giữ lịch sử quan sát cũ (không ghi đè) cho trường có nhiều quan sát', () => {
+    const invest = rows
+      .find((r) => r.id === 'a')!
+      .evidence.find((e) => e.field === 'totalInvestment')!;
+    expect(invest.history.map((h) => h.value)).toEqual([3_000_000_000_000]);
+  });
+  it('trường không có dữ liệu thì không bịa dòng bằng chứng', () => {
+    const b = rows.find((r) => r.id === 'b')!;
+    expect(b.evidence.map((e) => e.field)).toEqual(['lifecycle']);
   });
 });
 

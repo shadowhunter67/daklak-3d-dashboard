@@ -33,7 +33,12 @@ const dataset: ResearchedDataset = {
       lifecycle: obs('investment-attraction' as const),
       sector: 'energy',
       administrativeAreaCodes: ['24211'],
-      fields: { totalInvestment: [obs(3_400_000_000_000)] },
+      fields: {
+        totalInvestment: [
+          { ...obs(3_000_000_000_000), observedAt: '2026-01-10T00:00:00.000Z' },
+          obs(3_400_000_000_000),
+        ],
+      },
       verification: 'partial',
       location: {
         coordinates: [107.891268, 13.061861],
@@ -119,6 +124,18 @@ describe('InvestmentCatalogView', () => {
     );
     await waitFor(() => expect(screen.getByText('Hiển thị 1 / 1 dự án')).toBeTruthy());
     expect(screen.queryByText('Khu du lịch thử nghiệm')).toBeNull();
+  });
+
+  it('bấm "Xem bằng chứng" hiện nguồn, mức bằng chứng và lịch sử thay đổi của từng trường', async () => {
+    await renderView();
+    const buttons = screen.getAllByRole('button', { name: /Xem bằng chứng/ });
+    expect(screen.queryByText('Lịch sử thay đổi')).toBeNull();
+    fireEvent.click(buttons[0]);
+    expect(screen.getAllByText(/· Chính thức ·/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Độ tin cậy: Cao/).length).toBeGreaterThan(0);
+    expect(screen.getByText('Lịch sử thay đổi')).toBeTruthy();
+    expect(screen.getByText(/3\.000 tỷ đồng/)).toBeTruthy();
+    expect(buttons[0].getAttribute('aria-expanded')).toBe('true');
   });
 
   it('nút quay lại gọi callback', async () => {
