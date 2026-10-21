@@ -153,7 +153,7 @@ Cầu nối Codex không ổn định (đã ghi nhận từ trước): hai lần
 - **Checkpoint 1 (trước khi làm):** Codex không trả nội dung. Mình tự audit: `Project` có 4 điểm đồng bộ schema; `InvestmentOpportunity` đã tách riêng → quyết định tạo domain riêng. Trạng thái: thay bằng tự audit.
 - **Checkpoint 2 (shell/overview/bản đồ):** **chưa thực hiện.**
 - **Checkpoint 3 (domain dữ liệu), một phần:** Codex review logic dưới dạng văn bản thuần (8 ý). Đã xử lý: ngày không tồn tại bị `Date.parse` chuẩn hoá (sửa), ngày tương lai (sửa), sắp xếp bất định khi ngày NaN (sửa), thiếu phát hiện dự án trùng (sửa), `verified` bị coi quá mức chỉ vì có liệt kê tâm hành chính (sửa một phần). Từ chối: yêu cầu ≥ 2 phương pháp độc lập là chủ đích của đặc tả; "nhãn evidence" là suy đoán; so sánh object không xảy ra vì giá trị trong schema là số hoặc chuỗi. Chưa review script build và view.
-- **Checkpoint 4 (diff cuối):** **chưa thực hiện.**
+- **Checkpoint 4 (diff cuối), một phần:** Codex review logic của 4 tính năng mới (tìm kiếm thu hút đầu tư, khớp khung 2D, tự mở cài đặt, bằng chứng theo trường) bằng mô tả văn bản thuần (cầu nối cắt khối mã). Đã xử lý (có test viết trước): danh mục và tìm kiếm không lọc theo vòng đời → chỉ lấy `investment-attraction`; lời gọi tải danh mục dự án thiếu `catch`; panel cài đặt không đóng khi ngăn kéo đóng; `bearing`/`pitch` so sánh chưa dùng sai số. Không áp dụng: "lịch sử mất quan sát cùng giá trị" (Codex nhầm `conflicts` với `history` — giao diện dùng toàn bộ quan sát khác); `Number(value)` thành NaN (giá trị vốn theo kiểu dữ liệu luôn là số). Chưa review: toàn bộ diff thực tế (Codex không đọc được file qua cầu nối).
 
 ## Security
 

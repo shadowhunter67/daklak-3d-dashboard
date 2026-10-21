@@ -86,27 +86,30 @@ function buildEvidence(
 
 export function buildCatalogRows(dataset: ResearchedDataset): CatalogRow[] {
   const sources = new Map(dataset.sources.map((s) => [s.id, s]));
-  return dataset.projects.map((p) => {
-    const capital = resolveField(p.fields.totalInvestment ?? []).resolved;
-    const source = sources.get(capital?.sourceId ?? p.lifecycle.sourceId);
-    return {
-      id: p.id,
-      name: p.name,
-      sector: p.sector,
-      areaCodes: p.administrativeAreaCodes,
-      capitalVnd: capital?.value,
-      locationAccuracy: p.location?.accuracy,
-      hasLocation: p.location !== undefined,
-      notes: p.notes ?? [],
-      documentNumber: source?.documentNumber,
-      publishedAt: source?.publishedAt,
-      sourceUrl: source?.url,
-      evidence: [
-        ...buildEvidence('lifecycle', [p.lifecycle], sources),
-        ...buildEvidence('totalInvestment', p.fields.totalInvestment ?? [], sources),
-      ],
-    };
-  });
+  // Danh mục này chỉ gồm dự án ở giai đoạn thu hút đầu tư — nhãn/tiêu đề của trang nói đúng điều đó.
+  return dataset.projects
+    .filter((p) => p.lifecycle.value === 'investment-attraction')
+    .map((p) => {
+      const capital = resolveField(p.fields.totalInvestment ?? []).resolved;
+      const source = sources.get(capital?.sourceId ?? p.lifecycle.sourceId);
+      return {
+        id: p.id,
+        name: p.name,
+        sector: p.sector,
+        areaCodes: p.administrativeAreaCodes,
+        capitalVnd: capital?.value,
+        locationAccuracy: p.location?.accuracy,
+        hasLocation: p.location !== undefined,
+        notes: p.notes ?? [],
+        documentNumber: source?.documentNumber,
+        publishedAt: source?.publishedAt,
+        sourceUrl: source?.url,
+        evidence: [
+          ...buildEvidence('lifecycle', [p.lifecycle], sources),
+          ...buildEvidence('totalInvestment', p.fields.totalInvestment ?? [], sources),
+        ],
+      };
+    });
 }
 
 const fold = (s: string) =>

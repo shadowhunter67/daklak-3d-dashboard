@@ -28,8 +28,9 @@ export function DisplaySettings({
   const openDataSourcesPanel = useMapStore((state) => state.openDataSourcesPanel);
 
   useEffect(() => {
+    // Mở khi ngăn kéo mở, đóng khi ngăn kéo đóng (không để khung cài đặt mở ngầm).
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (autoOpen) setOpen(true);
+    setOpen(autoOpen);
   }, [autoOpen]);
 
   useEffect(() => {

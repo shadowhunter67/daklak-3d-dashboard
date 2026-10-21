@@ -65,16 +65,19 @@ export function GlobalSearch({ onSelect }: { onSelect: (entry: SearchEntry) => v
           code: project.code,
         }));
         setExtra((current) => ({ ...current, projects }));
-      });
+      })
+      .catch(() => undefined);
     // ~10 KB gzip, tải một lần; lỗi mạng thì bỏ qua (tìm kiếm vẫn dùng được với dữ liệu còn lại).
     void import('../../data/loadResearchedProjects')
       .then((module) => module.loadResearchedProjects())
       .then((dataset) => {
-        const opportunities = dataset.projects.map(({ id, name }) => ({
-          kind: 'opportunity' as const,
-          id,
-          name,
-        }));
+        const opportunities = dataset.projects
+          .filter((p) => p.lifecycle.value === 'investment-attraction')
+          .map(({ id, name }) => ({
+            kind: 'opportunity' as const,
+            id,
+            name,
+          }));
         setExtra((current) => ({ ...current, opportunities }));
       })
       .catch(() => undefined);
