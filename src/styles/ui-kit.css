@@ -2674,3 +2674,94 @@
   gap: 8px;
   white-space: nowrap;
 }
+
+/* ---- Rà soát thị giác (Codex + tự xem ảnh thật, 2026-10-21) ---- */
+
+/* Nút mở/ẩn bằng chứng và "Xem chi tiết": quy tắc theme sáng `:root[data-theme="light"]
+   .project-portfolio button` ép chữ tối đè lên nền xanh đậm → tương phản kém. */
+:root[data-theme='light'] .project-portfolio .project-portfolio-card .project-portfolio-card__open {
+  color: #ffffff;
+}
+
+/* Thẻ cạnh nhau không bị kéo dãn theo thẻ đang mở rộng (khoảng trống lớn khi mở bằng chứng). */
+.project-portfolio-cards {
+  align-items: start;
+}
+
+/* Tiêu đề thẻ chiếm cả chiều ngang; chip trạng thái ở hàng riêng phía trên (trước đây chip bóp
+   tiêu đề xuống 4–6 dòng). Mã dự án nằm dòng riêng, không bị bẻ giữa "DL-/2026-…". */
+.project-portfolio-card__heading {
+  flex-direction: column-reverse;
+  align-items: flex-start;
+}
+.project-portfolio-card__heading > :first-child {
+  flex: 0 0 auto;
+  width: 100%;
+}
+.project-portfolio-card__title .project-portfolio__code {
+  display: block;
+  white-space: nowrap;
+  font-size: var(--ui-fs-small);
+}
+
+/* Liên kết trong thẻ theo màu giao diện (trước là xanh/tím mặc định của trình duyệt). */
+.project-portfolio-card a {
+  color: var(--ui-accent);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Bảng bằng chứng: tiêu đề trường đủ lớn và khoảng cách đều. */
+.project-portfolio-card [role='region'] h4 {
+  margin: 14px 0 4px;
+  color: var(--ui-text);
+  font-size: var(--ui-fs-small);
+}
+.project-portfolio-card [role='region'] p {
+  margin: 0 0 6px;
+  line-height: 1.5;
+}
+
+/* Dòng meta của Tổng quan: cùng cỡ chữ (trước 13px lẫn 16px). */
+.executive-overview__header-meta {
+  font-size: 0.95rem;
+}
+.executive-overview__header-meta button {
+  font-size: 1rem;
+}
+
+/* Bảng "Dự án cần chú ý": cột tên đủ rộng (trước 5–8 dòng), cuộn ngang trong thẻ thay vì cắt chip. */
+.priority-projects-card .ui-table {
+  min-width: 700px;
+}
+.priority-projects-card .ui-table td:first-child,
+.priority-projects-card .ui-table th:first-child {
+  min-width: 200px;
+}
+/* Dưới 1500px bỏ cột "Lĩnh vực" (xem ở trang chi tiết) để bảng vừa thẻ, không phải cuộn ngang. */
+@media (max-width: 1499px) {
+  .priority-projects-card .ui-table {
+    min-width: 560px;
+  }
+  .priority-projects-card .ui-table th:nth-child(3),
+  .priority-projects-card .ui-table td:nth-child(3) {
+    display: none;
+  }
+}
+
+/* Báo cáo: 5 thẻ KPI trên một hàng thay vì 4 + 1 lẻ. */
+.reports-kpis {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+/* Liên kết hành động ở đầu thẻ ("Xem chi tiết →", "Xem tất cả →") không ngắt mũi tên xuống dòng. */
+.ui-panel-header button,
+.ui-panel-header a {
+  white-space: nowrap;
+}
+
+/* Thanh chân trang cố định (~44px) không che nội dung cuối của bất kỳ trang nào. */
+.ui-page-root {
+  padding-bottom: max(64px, env(safe-area-inset-bottom));
+}
