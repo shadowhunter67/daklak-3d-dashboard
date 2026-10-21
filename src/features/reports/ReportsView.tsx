@@ -4,6 +4,7 @@ import { useProjectPortfolio } from '../project-portfolio/data/useProjectPortfol
 import labels from '#province-assets/daklak-labels.json';
 import { buildReportSummary } from './reportModel';
 import { useTranslation } from '../../i18n/useTranslation';
+import { formatPercent } from '../../i18n/formatters';
 import type { MessageKey } from '../../i18n/messages';
 import {
   AlertIcon,
@@ -42,7 +43,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export function ReportsView({ onBackToOverview }: { onBackToOverview: () => void }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const state = useProjectPortfolio(defaultProjectPortfolioSource);
   const [sector, setSector] = useState('');
   const [status, setStatus] = useState('');
@@ -179,7 +180,9 @@ export function ReportsView({ onBackToOverview }: { onBackToOverview: () => void
         />
         <KpiTile
           label={t('reports.disbursement')}
-          value={summary.disbursementRate == null ? '—' : `${summary.disbursementRate.toFixed(1)}%`}
+          value={
+            summary.disbursementRate == null ? '—' : formatPercent(summary.disbursementRate, locale)
+          }
           tone="green"
           icon={<ChartIcon />}
         />
@@ -306,7 +309,7 @@ export function ReportsView({ onBackToOverview }: { onBackToOverview: () => void
               <span>
                 {summary.highlights.disbursementRate == null
                   ? t('reports.noData')
-                  : `${summary.highlights.disbursementRate.toFixed(1)}%`}
+                  : formatPercent(summary.highlights.disbursementRate, locale)}
               </span>
             </li>
             <li>
