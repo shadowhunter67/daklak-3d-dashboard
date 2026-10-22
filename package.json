@@ -56,7 +56,7 @@
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",
-    "@react-three/fiber": "^9.8.1",
+    "@react-three/fiber": "^9.8.2",
     "d3-geo": "^3.1.1",
     "maplibre-gl": "^6.14.0",
     "pmtiles": "^4.5.0",
