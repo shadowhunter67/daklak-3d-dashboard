@@ -1,4 +1,7 @@
 import { useMemo, useState } from 'react';
+import labels from '#province-assets/daklak-labels.json';
+import { ADMIN_UNIT_MEDIA } from '../../data/adminUnitMedia';
+import { imageCoverage } from '../unit-profile/model/unitProfileModel';
 import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
 import { useMapStore } from '../../stores/mapStore';
@@ -411,6 +414,8 @@ function ReadinessPanels({
   );
 }
 
+const ALL_UNIT_CODES = Object.keys(labels);
+
 export function DataReadinessView({
   source,
   onBackToOverview,
@@ -422,6 +427,7 @@ export function DataReadinessView({
 }) {
   const { t } = useTranslation();
   const openProvenancePanel = useMapStore((state) => state.openProvenancePanel);
+  const coverage = useMemo(() => imageCoverage(ALL_UNIT_CODES, ADMIN_UNIT_MEDIA), []);
   const [retryToken, setRetryToken] = useState(0);
   const effectiveSource = useMemo(() => source ?? defaultProjectPortfolioSource, [source]);
   const state = useDataReadiness(effectiveSource, retryToken);
@@ -539,6 +545,13 @@ export function DataReadinessView({
             />
           );
         })}
+        <KpiTile
+          label={t('dataReadiness.imageCoverage')}
+          value={`${coverage.verified}/${coverage.total}`}
+          tone="purple"
+          icon={<DocumentIcon />}
+          detail={t('dataReadiness.imageCoverageDetail', { fallback: String(coverage.fallback) })}
+        />
       </ul>
       {state.status === 'degraded' && (
         <p role="alert" className="data-readiness__degraded-banner">

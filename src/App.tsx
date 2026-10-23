@@ -40,6 +40,11 @@ const InvestmentCatalogView = lazy(() =>
     default: module.InvestmentCatalogView,
   })),
 );
+const UnitProfileView = lazy(() =>
+  import('./features/unit-profile/UnitProfileView').then((module) => ({
+    default: module.UnitProfileView,
+  })),
+);
 const ReportsView = lazy(() =>
   import('./features/reports/ReportsView').then((module) => ({ default: module.ReportsView })),
 );
@@ -184,6 +189,7 @@ export default function App() {
     route.kind === 'data-readiness' ||
     route.kind === 'reports' ||
     route.kind === 'investment-catalog' ||
+    route.kind === 'unit' ||
     route.kind === 'diorama';
   const skipLinkTargetId = isProjectRoute
     ? route.kind === 'portfolio'
@@ -196,7 +202,9 @@ export default function App() {
             ? 'reports'
             : route.kind === 'investment-catalog'
               ? 'investment-catalog'
-              : 'data-readiness'
+              : route.kind === 'unit'
+                ? 'unit-profile'
+                : 'data-readiness'
     : viewMode === 'map'
       ? 'detail-map-viewport'
       : viewMode === 'overview'
@@ -279,10 +287,24 @@ export default function App() {
               />
             )}
             {route.kind === 'reports' && <ReportsView onBackToOverview={goToOverview} />}
+            {route.kind === 'unit' && (
+              <UnitProfileView
+                code={route.code}
+                onBack={goToOverview}
+                onViewOnMap={(code) => {
+                  select(code);
+                  setViewMode('map');
+                  navigate('', { replace: false });
+                }}
+                onOpenCatalog={(code) => navigate(serializeInvestmentCatalogHash(undefined, code))}
+                onOpenDestination={(id) => navigate(serializeDioramaHash(id))}
+              />
+            )}
             {route.kind === 'investment-catalog' && (
               <InvestmentCatalogView
                 onBackToPortfolio={() => goToPortfolio()}
                 initialQuery={route.query}
+                initialArea={route.area}
               />
             )}
             {route.kind === 'data-readiness' && (
@@ -340,7 +362,9 @@ export default function App() {
                   ? t('reports.title')
                   : route.kind === 'investment-catalog'
                     ? t('catalog.heading')
-                    : t('app.live.openedDataReadiness')
+                    : route.kind === 'unit'
+                      ? t('unit.crumb')
+                      : t('app.live.openedDataReadiness')
           : viewMode === 'map'
             ? t('app.live.openedMap')
             : viewMode === 'overview'

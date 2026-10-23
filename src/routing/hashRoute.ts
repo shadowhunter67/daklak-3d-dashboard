@@ -39,7 +39,8 @@ export type HashRoute =
   | { kind: 'project-detail'; projectId: string }
   | { kind: 'data-readiness' }
   | { kind: 'reports' }
-  | { kind: 'investment-catalog'; query?: string }
+  | { kind: 'investment-catalog'; query?: string; area?: string }
+  | { kind: 'unit'; code: string }
   | { kind: 'diorama'; destinationId: string };
 
 function isPortfolioSortKey(value: string): value is PortfolioSortKey {
@@ -91,8 +92,19 @@ export function parseHashRoute(rawHash: string): HashRoute {
   }
   if (segments[0] === 'investment-catalog') {
     if (segments.length !== 1) return { kind: 'none' };
-    const query = new URLSearchParams(searchPart).get('q')?.trim();
-    return query ? { kind: 'investment-catalog', query } : { kind: 'investment-catalog' };
+    const params = new URLSearchParams(searchPart);
+    const query = params.get('q')?.trim();
+    const area = params.get('area')?.trim();
+    return {
+      kind: 'investment-catalog',
+      ...(query ? { query } : {}),
+      ...(area ? { area } : {}),
+    };
+  }
+  if (segments[0] === 'unit') {
+    if (segments.length !== 2) return { kind: 'none' };
+    const code = decodeURIComponent(segments[1]).trim();
+    return code ? { kind: 'unit', code } : { kind: 'none' };
   }
   if (segments[0] === 'diorama') {
     if (segments.length !== 2) return { kind: 'none' };
@@ -130,9 +142,15 @@ export function serializeReportsHash(): string {
   return '#/reports';
 }
 
-export function serializeInvestmentCatalogHash(query?: string): string {
-  const q = query?.trim();
-  return q ? `#/investment-catalog?q=${encodeURIComponent(q)}` : '#/investment-catalog';
+export function serializeInvestmentCatalogHash(query?: string, area?: string): string {
+  const parts: string[] = [];
+  if (query?.trim()) parts.push(`q=${encodeURIComponent(query.trim())}`);
+  if (area?.trim()) parts.push(`area=${encodeURIComponent(area.trim())}`);
+  return parts.length ? `#/investment-catalog?${parts.join('&')}` : '#/investment-catalog';
+}
+
+export function serializeUnitHash(code: string): string {
+  return `#/unit/${encodeURIComponent(code)}`;
 }
 
 export function serializeDioramaHash(destinationId: string): string {

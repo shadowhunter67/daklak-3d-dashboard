@@ -3,6 +3,7 @@ import {
   parseHashRoute,
   serializeDataReadinessHash,
   serializeInvestmentCatalogHash,
+  serializeUnitHash,
   serializeDioramaHash,
   serializePortfolioHash,
   serializeProjectDetailHash,
@@ -92,6 +93,28 @@ describe('parseHashRoute', () => {
       query: 'điện gió',
     });
     expect(parseHashRoute('#/investment-catalog?q=')).toEqual({ kind: 'investment-catalog' });
+  });
+
+  it('parses #/unit/<code>, rejects extra or empty segments, and round-trips', () => {
+    expect(parseHashRoute('#/unit/24133')).toEqual({ kind: 'unit', code: '24133' });
+    expect(parseHashRoute('#/unit/')).toEqual({ kind: 'none' });
+    expect(parseHashRoute('#/unit/24133/x')).toEqual({ kind: 'none' });
+    expect(parseHashRoute(serializeUnitHash('24133'))).toEqual({ kind: 'unit', code: '24133' });
+  });
+
+  it('carries an optional ?area= filter into the investment catalog route', () => {
+    expect(parseHashRoute('#/investment-catalog?area=24133')).toEqual({
+      kind: 'investment-catalog',
+      area: '24133',
+    });
+    expect(serializeInvestmentCatalogHash(undefined, '24133')).toBe(
+      '#/investment-catalog?area=24133',
+    );
+    expect(parseHashRoute(serializeInvestmentCatalogHash('điện gió', '24133'))).toEqual({
+      kind: 'investment-catalog',
+      query: 'điện gió',
+      area: '24133',
+    });
   });
 
   it('parses #/data-readiness', () => {

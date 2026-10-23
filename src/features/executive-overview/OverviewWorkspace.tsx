@@ -12,7 +12,11 @@ import { normalizeSearchText } from '../../utils/search';
 import { useMapStore } from '../../stores/mapStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import { formatNumber } from '../../i18n/formatters';
-import { serializePortfolioHash, serializeReportsHash } from '../../routing/hashRoute';
+import {
+  serializePortfolioHash,
+  serializeReportsHash,
+  serializeUnitHash,
+} from '../../routing/hashRoute';
 import { useHashRoute } from '../../routing/useHashRoute';
 import { Card, PanelHeader, StatList } from '../../components/ui';
 import { BuildingIcon, ListIcon, MapIcon, PinIcon } from '../../components/layout/icons';
@@ -290,6 +294,15 @@ function QuickInfo({
                 onClick={() => navigate(serializePortfolioHash({ area: selectedCode }))}
               >
                 {t('workspace.info.viewProjects', { count: String(projectCount) })}
+              </button>
+            )}
+            {selectedCode && (
+              <button
+                type="button"
+                className="overview-workspace__secondary"
+                onClick={() => navigate(serializeUnitHash(selectedCode))}
+              >
+                {t('workspace.info.viewProfile')}
               </button>
             )}
             <button
