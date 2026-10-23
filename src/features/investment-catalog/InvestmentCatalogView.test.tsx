@@ -68,9 +68,15 @@ import { InvestmentCatalogView } from './InvestmentCatalogView';
 
 afterEach(cleanup);
 
-async function renderView(initialQuery?: string) {
+async function renderView(initialQuery?: string, initialArea?: string) {
   const onBack = vi.fn();
-  renderWithI18n(<InvestmentCatalogView onBackToPortfolio={onBack} initialQuery={initialQuery} />);
+  renderWithI18n(
+    <InvestmentCatalogView
+      onBackToPortfolio={onBack}
+      initialQuery={initialQuery}
+      initialArea={initialArea}
+    />,
+  );
   await screen.findByRole('heading', { level: 1 });
   return onBack;
 }
@@ -136,6 +142,13 @@ describe('InvestmentCatalogView', () => {
     expect(screen.getByText('Lịch sử thay đổi')).toBeTruthy();
     expect(screen.getByText(/3\.000 tỷ đồng/)).toBeTruthy();
     expect(buttons[0].getAttribute('aria-expanded')).toBe('true');
+  });
+
+  it('mở sẵn với bộ lọc địa bàn từ hồ sơ xã/phường (?area=)', async () => {
+    await renderView(undefined, '24211');
+    await waitFor(() => expect(screen.getByText('Hiển thị 1 / 1 dự án')).toBeTruthy());
+    expect(screen.getByText('Nhà máy điện gió thử nghiệm')).toBeTruthy();
+    expect(screen.queryByText('Khu du lịch thử nghiệm')).toBeNull();
   });
 
   it('nút quay lại gọi callback', async () => {

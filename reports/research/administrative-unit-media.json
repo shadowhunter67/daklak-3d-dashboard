@@ -1,0 +1,1207 @@
+{
+  "retrievedAt": "2026-10-23T15:12:08.679Z",
+  "method": "Commons API generator=search, tên đơn vị phải có trong tiêu đề/mô tả/danh mục và có gợi ý tỉnh",
+  "note": "Ứng viên chỉ-tham-chiếu: chưa tải ảnh, chưa xác minh chủ thể bằng mắt, KHÔNG dùng production.",
+  "rows": [
+    {
+      "code": "22015",
+      "unit": "Tuy Hoà",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:AP0617-Sogny-Marien Annam, Darlac, 1933 – Les Rhadé de Ban Me Thuot.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:AP0617-Sogny-Marien_Annam,_Darlac,_1933_%E2%80%93_Les_Rhad%C3%A9_de_Ban_Me_Thuot.jpg",
+          "license": "Public domain",
+          "licenseFree": true,
+          "author": "Le Grauclaude",
+          "description": "Titre : Annam, Darlac, 1933 – Les Rhadé de Ban Me Thuot Notice : Photo de M. Le Grauclaude. Les Rhadé accroupis, aux côtés de leur chef traditionnel, attendent ",
+          "assessment": "rejected-noise",
+          "usage": "rejected"
+        }
+      ]
+    },
+    {
+      "code": "22045",
+      "unit": "Bình Kiến",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22051",
+      "unit": "Sông Cầu",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22057",
+      "unit": "Xuân Lộc",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22060",
+      "unit": "Xuân Cảnh",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22075",
+      "unit": "Xuân Thọ",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22076",
+      "unit": "Xuân Đài",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22081",
+      "unit": "Đồng Xuân",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22090",
+      "unit": "Xuân Lãnh",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22096",
+      "unit": "Phú Mỡ",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22111",
+      "unit": "Xuân Phước",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22114",
+      "unit": "Tuy An Bắc",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22120",
+      "unit": "Tuy An Đông",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22132",
+      "unit": "Tuy An Tây",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22147",
+      "unit": "Ô Loan",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22153",
+      "unit": "Tuy An Nam",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22165",
+      "unit": "Sơn Hoà",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22171",
+      "unit": "Tây Sơn",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22177",
+      "unit": "Vân Hoà",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Taynguyen01.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Taynguyen01.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đỗ Tuấn Hưng",
+          "description": "Hiện vật văn hóa Tây nguyên trong Biệt điện Bảo Đại",
+          "assessment": "rejected-noise",
+          "usage": "rejected"
+        },
+        {
+          "title": "File:Taynguyen02.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Taynguyen02.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đỗ Tuấn Hưng",
+          "description": "Hiện vật văn hóa Tây nguyên trong Biệt điện Bảo Đại",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Taynguyen03.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Taynguyen03.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đỗ Tuấn Hưng",
+          "description": "Hiện vật văn hóa Tây nguyên trong Biệt điện Bảo Đại",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Baotang06.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Baotang06.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đỗ Tuấn Hưng",
+          "description": "Tổ hợp trưng bày lễ hội của các dân tộc Tây Nguyên của Bảo tàng Văn hoá các dân tộc Việt Nam (đường Đội Cấn - TP Thái Nguyên) tham gia trưng bày triển lãm tại f",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "22192",
+      "unit": "Suối Trai",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22207",
+      "unit": "Sông Hinh",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22222",
+      "unit": "Đức Bình",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22225",
+      "unit": "Ea Bá",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22237",
+      "unit": "Ea Ly",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22240",
+      "unit": "Phú Yên",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Location of Phu Yen within Vietnam.png",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Location_of_Phu_Yen_within_Vietnam.png",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "",
+          "description": "",
+          "assessment": "rejected-noise",
+          "usage": "rejected"
+        },
+        {
+          "title": "File:Vịnh Vũng Rô.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:V%E1%BB%8Bnh_V%C5%A9ng_R%C3%B4.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Bùi Thụy Đào Nguyên",
+          "description": "Vũng Rô là một vịnh nhỏ nhưng xinh đẹp thuộc xã Hòa Xuân Nam, huyện Đông Hòa, tỉnh Phú Yên (Việt Nam); nằm ngay sát rìa dãy núi Đèo Cả.",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Phu Yen Museum.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Phu_Yen_Museum.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Odessey",
+          "description": "Краеведческий музей провинции Фуйен (Туихоа, Вьетнам)",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Ủy ban nhơn dân phường Phú Yên, tỉnh Đắk Lắk.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E1%BB%A6y_ban_nh%C6%A1n_d%C3%A2n_ph%C6%B0%E1%BB%9Dng_Ph%C3%BA_Y%C3%AAn,_t%E1%BB%89nh_%C4%90%E1%BA%AFk_L%E1%BA%AFk.jpg",
+          "license": "CC0",
+          "licenseFree": true,
+          "author": "TruongVienNinh",
+          "description": "UBND phường Phú Yên",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "22250",
+      "unit": "Sơn Thành",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22255",
+      "unit": "Tây Hoà",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:LocationVietnamPhuYenTayHoa.png",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:LocationVietnamPhuYenTayHoa.png",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Kimkha",
+          "description": "Location of Tay Hoa in Phu Yen Province",
+          "assessment": "rejected-noise",
+          "usage": "rejected"
+        }
+      ]
+    },
+    {
+      "code": "22258",
+      "unit": "Đông Hoà",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22261",
+      "unit": "Hoà Hiệp",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Hòa Hiệp.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:H%C3%B2a_Hi%E1%BB%87p.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "[Tycho] talk , http://shansov.net",
+          "description": "Hòa Hiệp commune of Cư Kuin district, Đắk Lắk province, Vietnam.",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "22276",
+      "unit": "Hoà Thịnh",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22285",
+      "unit": "Hoà Mỹ",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22291",
+      "unit": "Hoà Xuân",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22303",
+      "unit": "Phú Hoà 2",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "22319",
+      "unit": "Phú Hoà 1",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24121",
+      "unit": "Tân Lập",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24133",
+      "unit": "Buôn Ma Thuột",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Rừng ở Buôn Ma Thuột - Đắk Lắk.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:R%E1%BB%ABng_%E1%BB%9F_Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_%C4%90%E1%BA%AFk_L%E1%BA%AFk.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "vi:User:Dotuanhungdaklak",
+          "description": "Rừng ở Buôn Ma Thuột.",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 03.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_03.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "Dominic Nelson",
+          "description": "Small outbuilding at the Buôn Ma Thuột Exile House, a former prison dating to the French colonial era in the city of Buôn Ma Thuột, Đắk Lắk, Vietnam, as seen in",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 02.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_02.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "Dominic Nelson",
+          "description": "Footpath and building at the Buôn Ma Thuột Exile House, a former prison dating to the French colonial era in the city of Buôn Ma Thuột, Đắk Lắk, Vietnam, as see",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 05.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_05.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "Dominic Nelson",
+          "description": "Cell block at the Buôn Ma Thuột Exile House, a former prison dating to the French colonial era in the city of Buôn Ma Thuột, Đắk Lắk, Vietnam, as seen in April ",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 04.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_04.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "Dominic Nelson",
+          "description": "View towards the gate at the Buôn Ma Thuột Exile House, a former prison dating to the French colonial era in the city of Buôn Ma Thuột, Đắk Lắk, Vietnam, as see",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 06.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_06.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "Dominic Nelson",
+          "description": "Small temple shrine at the Buôn Ma Thuột Exile House, a former prison dating to the French colonial era in the city of Buôn Ma Thuột, Đắk Lắk, Vietnam, as seen ",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24154",
+      "unit": "Thành Nhất",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Ban Mê.png",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ban_M%C3%AA.png",
+          "license": "CC0",
+          "licenseFree": true,
+          "author": "Xahoa",
+          "description": "Thành phố Buôn Ma Thuột có 19 đơn vị hành chính cấp xã trực thuộc, bao gồm 11 phường: 1.Ea Tam; 2.Khánh Xuân; 3.Tân An; 4.Tân Hòa; 5.Tân Lập; 6.Tân Lợi; 7.Tân T",
+          "assessment": "rejected-noise",
+          "usage": "rejected"
+        }
+      ]
+    },
+    {
+      "code": "24163",
+      "unit": "Tân An",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24169",
+      "unit": "Ea Kao",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Ban Mê.png",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ban_M%C3%AA.png",
+          "license": "CC0",
+          "licenseFree": true,
+          "author": "Xahoa",
+          "description": "Thành phố Buôn Ma Thuột có 19 đơn vị hành chính cấp xã trực thuộc, bao gồm 11 phường: 1.Ea Tam; 2.Khánh Xuân; 3.Tân An; 4.Tân Hòa; 5.Tân Lập; 6.Tân Lợi; 7.Tân T",
+          "assessment": "rejected-noise",
+          "usage": "rejected"
+        }
+      ]
+    },
+    {
+      "code": "24175",
+      "unit": "Hoà Phú",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Một góc TP.Tuy Hòa, Phú Yên1.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:M%E1%BB%99t_g%C3%B3c_TP.Tuy_H%C3%B2a,_Ph%C3%BA_Y%C3%AAn1.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "NDS at Vietnamese Wikipedia",
+          "description": "Một góc TP.Tuy Hòa, Phú Yên",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Tuy Hoà beach, Phú Yên.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tuy_Ho%C3%A0_beach,_Ph%C3%BA_Y%C3%AAn.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "Baoothersks",
+          "description": "Bãi biển Tuy Hoà, Phú Yên",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24181",
+      "unit": "Ea Drăng",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Thị trấn Ea Đrăng, Đắk Lắk.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Th%E1%BB%8B_tr%E1%BA%A5n_Ea_%C4%90r%C4%83ng,_%C4%90%E1%BA%AFk_L%E1%BA%AFk.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đông Sơn ( thảo luận )",
+          "description": "Thị trấn Ea Đrăng",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24184",
+      "unit": "Ea H'Leo",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Seal of Ea H'leo District.png",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Seal_of_Ea_H%27leo_District.png",
+          "license": "CC0",
+          "licenseFree": true,
+          "author": "Manh2107",
+          "description": "This is the seal of Ea H'leo District, a district of Đắk Lắk Province, Vietnam",
+          "assessment": "rejected-noise",
+          "usage": "rejected"
+        }
+      ]
+    },
+    {
+      "code": "24187",
+      "unit": "Ea Hiao",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24193",
+      "unit": "Ea Wy",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24208",
+      "unit": "Ea Khăl",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24211",
+      "unit": "Ea Súp",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Tháp Yang Prong, Ea Súp, Đắk Lắk.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Th%C3%A1p_Yang_Prong,_Ea_S%C3%BAp,_%C4%90%E1%BA%AFk_L%E1%BA%AFk.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Nguyễn Đông Sơn at Vietnamese Wikipedia",
+          "description": "Cham tower Yang Prong in Ea Súp, Đắk Lắk, Viet Nam.",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Thị trấn Ea Súp, Đắk Lắk.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Th%E1%BB%8B_tr%E1%BA%A5n_Ea_S%C3%BAp,_%C4%90%E1%BA%AFk_L%E1%BA%AFk.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đông Sơn ( thảo luận )",
+          "description": "Thị trấn Ea Súp",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Easup.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Easup.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "",
+          "description": "",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Ia Lốp Frontier Area.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ia_L%E1%BB%91p_Frontier_Area.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "OlBoes",
+          "description": "Multilingual sign indicating the start of the frontier area near the Cambodia-Vietnam border. Photo taken from the Vietnamese side in Ia Lốp commune, Ea Súp dis",
+          "assessment": "rejected-noise",
+          "usage": "rejected"
+        },
+        {
+          "title": "File:Ea Súp landscape.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ea_S%C3%BAp_landscape.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "OlBoes",
+          "description": "Landscape in Ea Súp commune, Đắk Lắk province, Vietnam",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24214",
+      "unit": "Ia Lốp",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Ia Lốp Frontier Area.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ia_L%E1%BB%91p_Frontier_Area.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "OlBoes",
+          "description": "Multilingual sign indicating the start of the frontier area near the Cambodia-Vietnam border. Photo taken from the Vietnamese side in Ia Lốp commune, Ea Súp dis",
+          "assessment": "rejected-noise",
+          "usage": "rejected"
+        },
+        {
+          "title": "File:Ia Lốp landscape.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ia_L%E1%BB%91p_landscape.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "OlBoes",
+          "description": "Landscape in Ia Lốp commune, Đắk Lắk province, Vietnam",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24217",
+      "unit": "Ea Rốk",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24221",
+      "unit": "Ia Rvê",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24229",
+      "unit": "Ea Bung",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24235",
+      "unit": "Buôn Đôn",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Srepok Ban Don.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Srepok_Ban_Don.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đỗ Tuấn Hưng",
+          "description": "Srepok river at Ban Don, Dak Lak, Vietnam.",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:DKoehl Buon Don annual hunting ceremony 2012.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:DKoehl_Buon_Don_annual_hunting_ceremony_2012.jpg",
+          "license": "CC BY 3.0",
+          "licenseFree": true,
+          "author": "Dan Koehl",
+          "description": "Annual hunting ceremony in Buon Don village, Dak Lak, Vietnam 2012",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:DKoehl Buon Don elephant hunter cemetry 2011.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:DKoehl_Buon_Don_elephant_hunter_cemetry_2011.jpg",
+          "license": "CC BY 3.0",
+          "licenseFree": true,
+          "author": "Dan Koehl",
+          "description": "Cemetery for elephant hunters in the village Buon Don in Dak Lak, Vietnam 2012",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Thị trấn Buôn Đôn, Đắk Lắk.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Th%E1%BB%8B_tr%E1%BA%A5n_Bu%C3%B4n_%C4%90%C3%B4n,_%C4%90%E1%BA%AFk_L%E1%BA%AFk.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Nguyễn Đông Sơn",
+          "description": "Thị trấn Buôn Đôn",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Seal of Buôn Đôn District.png",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Seal_of_Bu%C3%B4n_%C4%90%C3%B4n_District.png",
+          "license": "CC0",
+          "licenseFree": true,
+          "author": "Manh2107",
+          "description": "This is the seal of Buôn Đôn District, a district of Đắk Lắk Province, Vietnam",
+          "assessment": "rejected-noise",
+          "usage": "rejected"
+        }
+      ]
+    },
+    {
+      "code": "24241",
+      "unit": "Ea Wer",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24250",
+      "unit": "Ea Nuôl",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24259",
+      "unit": "Quảng Phú",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24265",
+      "unit": "Ea Kiết",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24277",
+      "unit": "Ea Tul",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24280",
+      "unit": "Cư M'gar",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24286",
+      "unit": "Ea M'Droh",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24301",
+      "unit": "Cuôr Đăng",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24305",
+      "unit": "Buôn Hồ",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Thị xã Buôn Hồ, Đắk Lắk.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Th%E1%BB%8B_x%C3%A3_Bu%C3%B4n_H%E1%BB%93,_%C4%90%E1%BA%AFk_L%E1%BA%AFk.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Nguyễn Đông Sơn at Vietnamese Wikipedia",
+          "description": "Buôn Hồ Township, Đắk Lắk Province, Việt Nam",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Chợ buôn hồ.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ch%E1%BB%A3_bu%C3%B4n_h%E1%BB%93.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "Tronglongthuc",
+          "description": "Chợ buôn hồ",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Thi xa Buon Ho.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Thi_xa_Buon_Ho.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "Tronglongthuc",
+          "description": "QL14 thị xã Buôn Hồ",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24310",
+      "unit": "Krông Búk",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Deohalan.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Deohalan.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đỗ Tuấn Hưng",
+          "description": "Ảnh Đèo Hà Lan ở Krông Búk Đắk Lắk .",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24313",
+      "unit": "Cư Pơng",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24316",
+      "unit": "Pơng Drang",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24328",
+      "unit": "Ea Drông",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24340",
+      "unit": "Cư Bao",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Các đại biểu khảo sát vùng trồng sầu riêng tại Nông trường Cư Bao, Đắk Lắk.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:C%C3%A1c_%C4%91%E1%BA%A1i_bi%E1%BB%83u_kh%E1%BA%A3o_s%C3%A1t_v%C3%B9ng_tr%E1%BB%93ng_s%E1%BA%A7u_ri%C3%AAng_t%E1%BA%A1i_N%C3%B4ng_tr%C6%B0%E1%BB%9Dng_C%C6%B0_Bao,_%C4%90%E1%BA%AFk_L%E1%BA%AFk.jpg",
+          "license": "CC BY 4.0",
+          "licenseFree": true,
+          "author": "Paulominh",
+          "description": "Các đại biểu khảo sát vùng trồng sầu riêng tại Nông trường Cư Bao, Đắk Lắk",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24343",
+      "unit": "Krông Năng",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Seal of Krông Năng District.png",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Seal_of_Kr%C3%B4ng_N%C4%83ng_District.png",
+          "license": "CC0",
+          "licenseFree": true,
+          "author": "Manh2107",
+          "description": "This is the seal of Krông Năng District of Đắk Lắk District",
+          "assessment": "rejected-noise",
+          "usage": "rejected"
+        }
+      ]
+    },
+    {
+      "code": "24346",
+      "unit": "Dliê Ya",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24352",
+      "unit": "Tam Giang",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24364",
+      "unit": "Phú Xuân",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24373",
+      "unit": "Ea Kar",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Easo02.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Easo02.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đỗ Tuấn Hưng",
+          "description": "Bay Waterfall in Easo, Daklak, Vietnam",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Easo06.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Easo06.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đỗ Tuấn Hưng",
+          "description": "Suối ở Ea Sô – Đắk Lắk",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Easo07.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Easo07.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đỗ Tuấn Hưng",
+          "description": "Suối ở Ea Sô, Đắk Lắk.",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24376",
+      "unit": "Ea Knốp",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24400",
+      "unit": "Ea Păl",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24403",
+      "unit": "Ea Ô",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24406",
+      "unit": "Cư Yang",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24412",
+      "unit": "M'Drắk",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Drayknao02.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Drayknao02.JPG",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Đỗ Tuấn Hưng",
+          "description": "Thác Đray K’nao, huyện M’Đrắk, tỉnh Đắk Lắk.",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Phuong Hoang pass Dak Lak VN.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Phuong_Hoang_pass_Dak_Lak_VN.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Dotuanhungdaklak at Vietnamese Wikipedia",
+          "description": "Tác giả: Đỗ Tuấn Hưng. Nguồn: Ảnh tự chụp. Nội dung hình: Ảnh Đèo Phượng Hoàng ở M'Drăk Đắk Lắk . Thể loại:Đắk Lắk",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24415",
+      "unit": "Cư Prao",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24433",
+      "unit": "Ea Riêng",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24436",
+      "unit": "Cư M'ta",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:QL26 đoạn qua Cư M'ta.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:QL26_%C4%91o%E1%BA%A1n_qua_C%C6%B0_M%27ta.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "Bún bòa",
+          "description": "QL26. Cư M'ta",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24444",
+      "unit": "Krông Á",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24445",
+      "unit": "Ea Trang",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24448",
+      "unit": "Krông Bông",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24454",
+      "unit": "Dang Kang",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24472",
+      "unit": "Hoà Sơn",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24478",
+      "unit": "Cư Pui",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24484",
+      "unit": "Yang Mao",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24490",
+      "unit": "Krông Pắc",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Thị trấn Phước An, Krông Pắc.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Th%E1%BB%8B_tr%E1%BA%A5n_Ph%C6%B0%E1%BB%9Bc_An,_Kr%C3%B4ng_P%E1%BA%AFc.jpg",
+          "license": "CC BY-SA 4.0",
+          "licenseFree": true,
+          "author": "Bún bòa",
+          "description": "Đường Lê Duẩn, thị trấn Phước An, Krông Pắc",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24496",
+      "unit": "Ea Kly",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24502",
+      "unit": "Ea Phê",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24505",
+      "unit": "Ea Knuếc",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24526",
+      "unit": "Tân Tiến",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24529",
+      "unit": "Vụ Bổn",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24538",
+      "unit": "Krông Ana",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Center of Buon Trap town.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Center_of_Buon_Trap_town.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Y Kpia Mlo",
+          "description": "Trung tâm thị trấn Buôn Trấp, huyện Krông Ana, tỉnh Đắk Lắk",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Kuop highland village.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kuop_highland_village.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Y Kpia Mlo",
+          "description": "Đường vào buôn Kuôp, xã Dray Sáp, huyện Krông Ana",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Krong Ana district.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Krong_Ana_district.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Y Kpia Mlo",
+          "description": "Huyện Krông Ana tỉnh Đắk Lắk",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        },
+        {
+          "title": "File:Sông Ea Krong Ana, Đắk Lắk.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:S%C3%B4ng_Ea_Krong_Ana,_%C4%90%E1%BA%AFk_L%E1%BA%AFk.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Dongson.vmvn ( thảo luận )",
+          "description": "Sông Krông Ana đoạn chảy qua cầu Giang Sơn, xã Hòa Hiệp , huyện Cư Kuin , tỉnh Đắk Lắk",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24540",
+      "unit": "Ea Ning",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Village of Ea Ning.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Village_of_Ea_Ning.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "DXLINH",
+          "description": "Village of Ea Ning",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24544",
+      "unit": "Ea Ktur",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24559",
+      "unit": "Ea Na",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24561",
+      "unit": "Dray Bhăng",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24568",
+      "unit": "Dur Kmăl",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24580",
+      "unit": "Liên Sơn Lắk",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Liên Sơn, Lăk, Đắk Lắk, Vietnam - panoramio.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Li%C3%AAn_S%C6%A1n,_L%C4%83k,_%C4%90%E1%BA%AFk_L%E1%BA%AFk,_Vietnam_-_panoramio.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "Makarenko Sasha",
+          "description": "Liên Sơn, Lăk, Đắk Lắk, Vietnam",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24595",
+      "unit": "Đắk Liêng",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24598",
+      "unit": "Đắk Phơi",
+      "status": "none-found",
+      "candidates": []
+    },
+    {
+      "code": "24604",
+      "unit": "Krông Nô",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Hồ Đăk Rồ (Tân Thành-Krông Nô-Đăk Nông) - panoramio.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:H%E1%BB%93_%C4%90%C4%83k_R%E1%BB%93_(T%C3%A2n_Th%C3%A0nh-Kr%C3%B4ng_N%C3%B4-%C4%90%C4%83k_N%C3%B4ng)_-_panoramio.jpg",
+          "license": "CC BY 3.0",
+          "licenseFree": true,
+          "author": "Nghiem DangVi",
+          "description": "Hồ Đăk Rồ (Tân Thành-Krông Nô-Đăk Nông)",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    },
+    {
+      "code": "24607",
+      "unit": "Nam Ka",
+      "status": "candidates",
+      "candidates": [
+        {
+          "title": "File:Mountain Nam Ka, Lak, Dak Lak, Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mountain_Nam_Ka,_Lak,_Dak_Lak,_Vietnam.jpg",
+          "license": "CC BY-SA 3.0",
+          "licenseFree": true,
+          "author": "DXLINH",
+          "description": "Núi Nam Ka xã Nam Ka, huyện Lắk, Đắk Lắk, Vietnam",
+          "assessment": "needs-visual-review",
+          "usage": "reference-only"
+        }
+      ]
+    }
+  ],
+  "classifiedAt": "2026-10-23T15:15:26.812Z"
+}

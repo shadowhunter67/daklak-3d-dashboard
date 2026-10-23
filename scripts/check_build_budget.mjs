@@ -67,8 +67,13 @@ const dist = join(root, 'dist');
 // (+2.8KB over the previous 3,421,287 after dead-key scan found nothing left to drop) for the
 // planning-layer legend, the Overview-specific help, the "Tình trạng danh mục" label, locale-aware
 // data-quality details and the auto-opened settings in the phone drawer. Gzip is untouched.
+// totalJavaScriptBytes raised 3,428,000 -> 3,446,000 (V3 PR-A: administrative-unit profile page + image
+// coverage KPI, 2026-10). Measured 3,442,101 (+14.4KB over 3,427,726): lazy UnitProfileView chunk
+// ~7.8KB, vi/en strings, the Overview/Data-readiness hooks, and `daklak-wards-render` becoming its own
+// chunk. The ward geometry (463KB) and tourism destinations were already in the bundle; no new
+// dependency. Gzip budget untouched. Each later V3 module (tourism, planning) is measured separately.
 const limits = {
-  totalJavaScriptBytes: 3_428_000,
+  totalJavaScriptBytes: 3_446_000,
   totalJavaScriptGzipBytes: 950_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,

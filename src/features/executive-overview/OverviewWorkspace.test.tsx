@@ -47,4 +47,12 @@ describe('OverviewWorkspace', () => {
     renderWorkspace();
     expect(screen.getByRole('img', { name: /Bản đồ ranh giới/ })).toBeInTheDocument();
   });
+
+  it('có nút "Xem hồ sơ đơn vị" dẫn tới #/unit/<mã> khi đã chọn một đơn vị', () => {
+    window.location.hash = '';
+    useMapStore.setState({ selectedCode: '24133' });
+    renderWorkspace();
+    fireEvent.click(screen.getByRole('button', { name: 'Xem hồ sơ đơn vị' }));
+    expect(window.location.hash).toBe('#/unit/24133');
+  });
 });

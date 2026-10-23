@@ -205,17 +205,20 @@ function CatalogCard({ row }: { row: CatalogRow }) {
 export function InvestmentCatalogView({
   onBackToPortfolio,
   initialQuery = '',
+  initialArea = '',
 }: {
   onBackToPortfolio: () => void;
   /** Từ khóa mang từ tìm kiếm toàn cục (`#/investment-catalog?q=…`). */
   initialQuery?: string;
+  /** Mã đơn vị mang từ hồ sơ xã/phường (`#/investment-catalog?area=…`). */
+  initialArea?: string;
 }) {
   const { t, locale } = useTranslation();
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [retry, setRetry] = useState(0);
   const [query, setQuery] = useState(initialQuery);
   const [sector, setSector] = useState('');
-  const [area, setArea] = useState('');
+  const [area, setArea] = useState(initialArea);
   const [sort, setSort] = useState<CatalogSortKey>('capital-desc');
   const [limit, setLimit] = useState(PAGE_SIZE);
   const headingRef = useRef<HTMLHeadingElement | null>(null);
@@ -239,8 +242,9 @@ export function InvestmentCatalogView({
     // Chọn một kết quả khác từ ô tìm kiếm toàn cục khi đang ở trang này.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setQuery(initialQuery);
+    setArea(initialArea);
     setLimit(PAGE_SIZE);
-  }, [initialQuery]);
+  }, [initialQuery, initialArea]);
 
   const rows = useMemo(
     () => (state.status === 'ok' ? buildCatalogRows(state.dataset) : []),

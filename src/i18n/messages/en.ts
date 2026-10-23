@@ -94,6 +94,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'workspace.info.subUnits': 'Villages / residential groups / neighbourhoods',
   'workspace.info.viewOnMap': 'View on map',
   'workspace.info.viewProjects': 'View project list ({count})',
+  'workspace.info.viewProfile': 'View unit profile',
   'workspace.info.viewReports': 'View reports',
   // Sidebar + topbar (UI redesign)
   'sidebar.brandTagline': '3D administrative map and project data',
@@ -452,6 +453,26 @@ export const en: Partial<Record<MessageKey, string>> = {
   'portfolio.viewMode': 'Project portfolio view mode',
   'portfolio.viewCards': 'Cards',
   'portfolio.viewTable': 'Table',
+  'unit.crumb': 'Communes and wards',
+  'unit.kpiLabel': 'Administrative unit figures',
+  'unit.notFound': 'No administrative unit with code "{code}".',
+  'unit.hero.caption':
+    'Figures for this administrative unit. No verified photo yet, so the boundary shape from the GIS map is shown.',
+  'unit.hero.shapeAlt': 'Boundary shape of {name} from the GIS map',
+  'unit.stat.density': 'Population density',
+  'unit.opps.heading': 'Investment-attraction projects in this area',
+  'unit.opps.summary': '{count} projects, total planned capital {capital}.',
+  'unit.opps.noCapital': '{count} projects have no capital figure and are not in the total.',
+  'unit.opps.empty': 'No investment-attraction project is linked to this unit.',
+  'unit.opps.viewAll': 'See all in the catalog',
+  'unit.tourism.heading': 'Tourist places in this area',
+  'unit.tourism.note':
+    'Assigned when the place coordinates fall inside the unit boundary (derived by calculation, not official administrative information).',
+  'unit.tourism.empty': 'No verified destination lies inside this unit boundary.',
+  'unit.sources.heading': 'Sources and reliability',
+  'unit.sources.profile': 'Area, 2025 population, village counts: {title}.',
+  'unit.sources.coverage':
+    'Image coverage: {verified}/{total} units have a verified photo; {fallback} use the GIS map.',
   'catalog.heading': 'Investment attraction list 2026–2030',
   'catalog.badge': 'OFFICIAL SOURCE · PLANNED CAPITAL',
   'catalog.description':
@@ -1149,6 +1170,8 @@ export const en: Partial<Record<MessageKey, string>> = {
   'dataReadiness.alertColumn': 'Alert content',
   'dataReadiness.entityColumn': 'Related record',
   'dataReadiness.openCatalog': 'View dataset catalog',
+  'dataReadiness.imageCoverage': 'Local image coverage',
+  'dataReadiness.imageCoverageDetail': '{fallback} units use the GIS map, no verified photo yet',
   'dataReadiness.technicalDetails': 'View technical details',
 
   'dataQuality.rule.duplicatePrimaryKey': 'A record is duplicated',

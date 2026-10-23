@@ -100,6 +100,7 @@ export const vi = {
   'workspace.info.subUnits': 'Thôn, buôn / tổ dân phố / khu phố',
   'workspace.info.viewOnMap': 'Xem trên bản đồ',
   'workspace.info.viewProjects': 'Xem danh sách dự án ({count})',
+  'workspace.info.viewProfile': 'Xem hồ sơ đơn vị',
   'workspace.info.viewReports': 'Xem báo cáo',
   // Sidebar + topbar (UI redesign)
   'sidebar.brandTagline': 'Bản đồ hành chính 3D và dữ liệu dự án',
@@ -460,6 +461,26 @@ export const vi = {
   'portfolio.viewMode': 'Chế độ xem danh mục dự án',
   'portfolio.viewCards': 'Thẻ',
   'portfolio.viewTable': 'Bảng',
+  'unit.crumb': 'Xã, phường',
+  'unit.kpiLabel': 'Số liệu của đơn vị hành chính',
+  'unit.notFound': 'Không tìm thấy đơn vị hành chính có mã "{code}".',
+  'unit.hero.caption':
+    'Hồ sơ số liệu của đơn vị hành chính. Chưa có ảnh đã xác minh nên hiển thị hình dạng ranh giới theo bản đồ GIS.',
+  'unit.hero.shapeAlt': 'Hình dạng ranh giới của {name} theo bản đồ GIS',
+  'unit.stat.density': 'Mật độ dân số',
+  'unit.opps.heading': 'Dự án thu hút đầu tư trong địa bàn',
+  'unit.opps.summary': '{count} dự án, tổng vốn dự kiến {capital}.',
+  'unit.opps.noCapital': '{count} dự án chưa có số liệu vốn, không tính vào tổng.',
+  'unit.opps.empty': 'Chưa có dự án nào trong danh mục thu hút đầu tư gắn với đơn vị này.',
+  'unit.opps.viewAll': 'Xem tất cả trong danh mục',
+  'unit.tourism.heading': 'Điểm du lịch trong địa bàn',
+  'unit.tourism.note':
+    'Gán theo tọa độ điểm đến nằm trong ranh giới đơn vị (suy ra bằng tính toán, không phải thông tin hành chính chính thức).',
+  'unit.tourism.empty': 'Chưa có điểm đến đã xác minh nào nằm trong ranh giới đơn vị này.',
+  'unit.sources.heading': 'Nguồn và độ tin cậy',
+  'unit.sources.profile': 'Diện tích, dân số 2025, số thôn/buôn: {title}.',
+  'unit.sources.coverage':
+    'Độ phủ hình ảnh: {verified}/{total} đơn vị có ảnh đã xác minh; {fallback} đơn vị dùng bản đồ GIS.',
   'catalog.heading': 'Danh mục thu hút đầu tư 2026–2030',
   'catalog.badge': 'NGUỒN CHÍNH THỨC · VỐN DỰ KIẾN',
   'catalog.description':
@@ -1166,6 +1187,8 @@ export const vi = {
   'dataReadiness.alertColumn': 'Nội dung cảnh báo',
   'dataReadiness.entityColumn': 'Bản ghi liên quan',
   'dataReadiness.openCatalog': 'Xem danh mục bộ dữ liệu',
+  'dataReadiness.imageCoverage': 'Độ phủ hình ảnh địa phương',
+  'dataReadiness.imageCoverageDetail': '{fallback} đơn vị dùng bản đồ GIS, chưa có ảnh đã xác minh',
   'dataReadiness.technicalDetails': 'Xem chi tiết kỹ thuật',
 
   // Nhãn tiếng Việt dễ hiểu cho từng `DataQualityIssue.rule` — dùng thay cho slug kỹ thuật
