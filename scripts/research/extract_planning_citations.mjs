@@ -15,7 +15,7 @@ const rows = JSON.parse(
 );
 
 const NUMBER =
-  /(\d{1,5}\s?\/\s?(?:[A-ZĐ]{1,4})(?:\s?-\s?[A-Za-zĐ]{2,6})+)(?:\s*ngày\s+(\d{1,2})\/(\d{1,2})\/(\d{4}))?/g;
+  /(\d{1,5}\s?\/\s?(?:[A-ZĐ]{1,4})(?:\s?-\s?[A-Za-zĐ]{2,6})+|\d{1,5}\s?\/\s?QĐUBND)(?:\s*ngày\s+(\d{1,2})\/(\d{1,2})\/(\d{4}))?/g;
 const GAP = /chưa có quy hoạch|:\s*chưa có|\(chưa đủ\)|chưa có nghị quyết/i;
 
 const issuerOf = (number) => {
@@ -25,7 +25,12 @@ const issuerOf = (number) => {
   if (/-B[A-Z]{1,3}$/i.test(number)) return 'ministry';
   return 'unknown';
 };
-const normalize = (n) => n.replace(/\s+/g, '').replace(/\/QD-/i, '/QĐ-').replace(/DQQ/, 'QĐ');
+const normalize = (n) =>
+  n
+    .replace(/\s+/g, '')
+    .replace(/\/QD-/i, '/QĐ-')
+    .replace(/DQQ/, 'QĐ')
+    .replace(/\/QĐUBND$/, '/QĐ-UBND');
 const iso = (d, m, y) => `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
 
 const docs = new Map();

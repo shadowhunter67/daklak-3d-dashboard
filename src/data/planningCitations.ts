@@ -89,7 +89,7 @@ const RAW: readonly {
   {
     number: '501/QĐ-UBND',
     issuer: 'people-committee',
-    projectIds: [2004, 6004, 6005, 6006, 6008, 6010, 6013, 6018],
+    projectIds: [2004, 6004, 6005, 6006, 6008, 6009, 6010, 6013, 6018],
     date: '2025-03-28',
   },
   {
@@ -220,6 +220,12 @@ const RAW: readonly {
     date: '2023-01-03',
   },
   {
+    number: '1218/QĐ-UBND',
+    issuer: 'people-committee',
+    projectIds: [2004, 6009],
+    date: '2024-09-09',
+  },
+  {
     number: '1363/QĐ-UBND',
     issuer: 'people-committee',
     projectIds: [4042, 6023],
@@ -273,7 +279,6 @@ const RAW: readonly {
   { number: '1061/QĐ-UBND', issuer: 'people-committee', projectIds: [2020], date: '2021-04-27' },
   { number: '11/NQ-HĐND', issuer: 'provincial-council', projectIds: [2030], date: '2025-08-19' },
   { number: '12/QĐ-UBND', issuer: 'people-committee', projectIds: [2016], date: '2010-01-04' },
-  { number: '1218/QĐ-UBND', issuer: 'people-committee', projectIds: [2004], date: '2024-09-09' },
   { number: '1248/QĐ-UBND', issuer: 'people-committee', projectIds: [6016], date: '2024-03-27' },
   { number: '1422/QĐ-UBND', issuer: 'people-committee', projectIds: [5015], date: '2023-03-31' },
   { number: '1424/QĐ-UBND', issuer: 'people-committee', projectIds: [2019], date: '2024-10-22' },
@@ -294,6 +299,7 @@ const RAW: readonly {
   { number: '1982/QĐ-UBND', issuer: 'people-committee', projectIds: [6032] },
   { number: '1994/QĐ-UBND', issuer: 'people-committee', projectIds: [2010], date: '2021-12-31' },
   { number: '200/QĐ-UBND', issuer: 'people-committee', projectIds: [2021], date: '2024-01-23' },
+  { number: '2090/QĐ-UBND', issuer: 'people-committee', projectIds: [4020], date: '2024-07-04' },
   { number: '2153/QĐ-UBND', issuer: 'people-committee', projectIds: [2032], date: '2019-12-27' },
   { number: '2164/QĐ-UBND', issuer: 'people-committee', projectIds: [2052], date: '2014-09-18' },
   { number: '2223/QĐ-UBND', issuer: 'people-committee', projectIds: [2034], date: '2022-05-23' },
@@ -305,6 +311,7 @@ const RAW: readonly {
   { number: '2562/QĐ-UBND', issuer: 'people-committee', projectIds: [2044], date: '2021-09-16' },
   { number: '2582/QĐ-UBND', issuer: 'people-committee', projectIds: [6029], date: '2025-06-06' },
   { number: '264/QĐ-UBND', issuer: 'people-committee', projectIds: [2048], date: '2022-01-26' },
+  { number: '2791/QĐ-UBND', issuer: 'people-committee', projectIds: [2026], date: '2025-05-19' },
   { number: '2841/QĐ-UBND', issuer: 'people-committee', projectIds: [2018], date: '2020-12-31' },
   { number: '2854/CAT-ANKT', issuer: 'unknown', projectIds: [4016], date: '2025-12-04' },
   { number: '2898/QĐ-UBND', issuer: 'people-committee', projectIds: [6023], date: '2023-11-01' },
@@ -347,7 +354,7 @@ const RAW: readonly {
 ];
 const REVIEW_RAW: readonly number[] = [2006, 2010, 2020, 2044, 6032];
 const UNCITED_RAW: readonly number[] = [
-  2003, 2005, 2007, 2028, 2042, 2054, 4006, 4020, 4026, 4039, 5007, 5016, 5017, 6009, 6012, 6031,
+  2003, 2005, 2007, 2028, 2042, 2054, 4006, 4026, 4039, 5007, 5016, 5017, 6012, 6031,
 ];
 
 export const PLANNING_TOTAL_PROJECTS = 201;

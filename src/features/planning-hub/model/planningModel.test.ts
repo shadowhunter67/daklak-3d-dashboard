@@ -43,5 +43,9 @@ describe('planning model', () => {
     expect(cited.size + PLANNING_UNCITED_PROJECT_IDS.length).toBe(PLANNING_TOTAL_PROJECTS);
     for (const id of PLANNING_REVIEW_PROJECT_IDS) expect(id).toMatch(/^qd1985-pl\d-\d{3}$/);
     expect(PLANNING_DOCUMENTS.every((d) => d.projectIds.length > 0)).toBe(true);
+    // Số hiệu viết không có gạch nối trong nguồn (2791/QĐUBND) vẫn phải được trích.
+    expect(PLANNING_DOCUMENTS.some((d) => d.number === '2791/QĐ-UBND')).toBe(true);
+    // Số hiệu ghi sai chữ trong nguồn (945/DQQ-UBND) được chuẩn hóa, không thành văn bản riêng.
+    expect(PLANNING_DOCUMENTS.some((d) => d.number.includes('DQQ'))).toBe(false);
   });
 });
