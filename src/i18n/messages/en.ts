@@ -1275,4 +1275,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'briefing.accountability.heading': 'Accountability and progress',
   'briefing.accountability.note':
     'No published source names the investor, responsible unit or disbursement of the catalogue projects, so no accountability table is shown.',
+  'briefing.economy.caveat':
+    'Sum of the rows extracted from the source; 4 groups differ from the figure in their group title and are not yet reconciled with the original PDF (see the data-conflict report).',
+  'planning.sourceSpelling': 'source writes: {text}',
 };

@@ -61,4 +61,10 @@ describe('PlanningHubView', () => {
     const region = screen.getByRole('region', { name: 'Dự án cần rà soát quy hoạch' });
     expect(region).toHaveTextContent(/không phải kết luận xung đột pháp lý/);
   });
+
+  it('số hiệu đã chuẩn hóa vẫn ghi lại cách nguồn viết, không tự khẳng định đúng pháp lý', () => {
+    renderHub();
+    fireEvent.change(screen.getByLabelText('Tìm số hiệu văn bản'), { target: { value: '945' } });
+    expect(screen.getByText('nguồn ghi: 945/DQQ-UBND')).toBeTruthy();
+  });
 });

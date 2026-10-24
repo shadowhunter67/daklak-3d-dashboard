@@ -1293,4 +1293,7 @@ export const vi = {
   'briefing.accountability.heading': 'Trách nhiệm và tiến độ',
   'briefing.accountability.note':
     'Chưa có nguồn công bố về chủ đầu tư, đơn vị chịu trách nhiệm hay giải ngân của các dự án trong danh mục, nên không hiển thị bảng trách nhiệm.',
+  'briefing.economy.caveat':
+    'Tổng các dòng trích từ nguồn; 4 nhóm lệch so với con số ở tiêu đề nhóm và chưa đối chiếu với PDF gốc (xem báo cáo xung đột dữ liệu).',
+  'planning.sourceSpelling': 'nguồn ghi: {text}',
 } as const satisfies Record<string, string>;

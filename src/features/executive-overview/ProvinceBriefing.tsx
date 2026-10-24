@@ -145,6 +145,7 @@ export function ProvinceBriefing() {
             </li>
           ))}
         </ul>
+        <p>{t('briefing.economy.caveat')}</p>
         {briefing.projectsWithoutCapital > 0 && (
           <p>
             {t('briefing.economy.excluded', {

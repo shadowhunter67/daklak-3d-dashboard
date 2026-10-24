@@ -2863,3 +2863,9 @@
 .province-briefing__bar-label {
   font-weight: 600;
 }
+
+/* Trang Quy hoạch: dòng nhỏ ghi cách nguồn viết số hiệu khi đã chuẩn hóa. */
+.planning-hub__spelling {
+  display: block;
+  opacity: 0.75;
+}

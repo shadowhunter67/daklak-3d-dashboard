@@ -13,6 +13,8 @@ export interface PlanningDocument {
   issuer: PlanningIssuer;
   /** ISO yyyy-mm-dd; vắng nghĩa là nguồn không nêu ngày ngay sau số hiệu. */
   date?: string;
+  /** Cách nguồn viết số hiệu khi khác dạng chuẩn hóa (không tự khẳng định số hiệu pháp lý). */
+  sourceSpelling?: string;
   /** Id dự án trong researched-projects (qd1985-pl<N>-<stt>) có trích dẫn văn bản này. */
   projectIds: string[];
 }
@@ -23,6 +25,7 @@ const RAW: readonly {
   number: string;
   issuer: PlanningIssuer;
   date?: string;
+  sourceSpelling?: string;
   projectIds: number[];
 }[] = [
   {
@@ -91,6 +94,7 @@ const RAW: readonly {
     issuer: 'people-committee',
     projectIds: [2004, 6004, 6005, 6006, 6008, 6009, 6010, 6013, 6018],
     date: '2025-03-28',
+    sourceSpelling: '501/QĐUBND',
   },
   {
     number: '996/QĐ-UBND',
@@ -109,6 +113,7 @@ const RAW: readonly {
     issuer: 'people-committee',
     projectIds: [2026, 2027, 5005, 5009, 5010],
     date: '2025-06-20',
+    sourceSpelling: '1361/QD-UBND',
   },
   {
     number: '1747/QĐ-TTg',
@@ -182,7 +187,12 @@ const RAW: readonly {
     projectIds: [2039, 2040, 6019],
     date: '2024-06-06',
   },
-  { number: '1758/QĐ-UBND', issuer: 'people-committee', projectIds: [2039, 2040, 6019] },
+  {
+    number: '1758/QĐ-UBND',
+    issuer: 'people-committee',
+    projectIds: [2039, 2040, 6019],
+    date: '2014-07-31',
+  },
   {
     number: '1824/QĐ-UBND',
     issuer: 'people-committee',
@@ -224,6 +234,7 @@ const RAW: readonly {
     issuer: 'people-committee',
     projectIds: [2004, 6009],
     date: '2024-09-09',
+    sourceSpelling: '1218/QĐUBND',
   },
   {
     number: '1363/QĐ-UBND',
@@ -272,6 +283,7 @@ const RAW: readonly {
     number: '945/QĐ-UBND',
     issuer: 'people-committee',
     projectIds: [6001, 6030],
+    sourceSpelling: '945/DQQ-UBND',
     date: '2025-04-09',
   },
   { number: '02197/QĐ-UBND', issuer: 'people-committee', projectIds: [4019], date: '2025-12-01' },
@@ -296,10 +308,16 @@ const RAW: readonly {
   { number: '1846/QĐ-UBND', issuer: 'people-committee', projectIds: [2001], date: '2020-10-22' },
   { number: '1865/QĐ-UBND', issuer: 'people-committee', projectIds: [4025], date: '2015-07-17' },
   { number: '1960/QĐ-UBND', issuer: 'people-committee', projectIds: [5011], date: '2022-08-31' },
-  { number: '1982/QĐ-UBND', issuer: 'people-committee', projectIds: [6032] },
+  { number: '1982/QĐ-UBND', issuer: 'people-committee', projectIds: [6032], date: '2012-08-31' },
   { number: '1994/QĐ-UBND', issuer: 'people-committee', projectIds: [2010], date: '2021-12-31' },
   { number: '200/QĐ-UBND', issuer: 'people-committee', projectIds: [2021], date: '2024-01-23' },
-  { number: '2090/QĐ-UBND', issuer: 'people-committee', projectIds: [4020], date: '2024-07-04' },
+  {
+    number: '2090/QĐ-UBND',
+    issuer: 'people-committee',
+    projectIds: [4020],
+    sourceSpelling: '2090/QĐUBND',
+    date: '2024-07-04',
+  },
   { number: '2153/QĐ-UBND', issuer: 'people-committee', projectIds: [2032], date: '2019-12-27' },
   { number: '2164/QĐ-UBND', issuer: 'people-committee', projectIds: [2052], date: '2014-09-18' },
   { number: '2223/QĐ-UBND', issuer: 'people-committee', projectIds: [2034], date: '2022-05-23' },
@@ -311,14 +329,20 @@ const RAW: readonly {
   { number: '2562/QĐ-UBND', issuer: 'people-committee', projectIds: [2044], date: '2021-09-16' },
   { number: '2582/QĐ-UBND', issuer: 'people-committee', projectIds: [6029], date: '2025-06-06' },
   { number: '264/QĐ-UBND', issuer: 'people-committee', projectIds: [2048], date: '2022-01-26' },
-  { number: '2791/QĐ-UBND', issuer: 'people-committee', projectIds: [2026], date: '2025-05-19' },
+  {
+    number: '2791/QĐ-UBND',
+    issuer: 'people-committee',
+    projectIds: [2026],
+    sourceSpelling: '2791/QĐUBND',
+    date: '2025-05-19',
+  },
   { number: '2841/QĐ-UBND', issuer: 'people-committee', projectIds: [2018], date: '2020-12-31' },
   { number: '2854/CAT-ANKT', issuer: 'unknown', projectIds: [4016], date: '2025-12-04' },
   { number: '2898/QĐ-UBND', issuer: 'people-committee', projectIds: [6023], date: '2023-11-01' },
   { number: '2934/QĐ-UBND', issuer: 'people-committee', projectIds: [2010], date: '2019-06-28' },
   { number: '3030/QĐ-UBND', issuer: 'people-committee', projectIds: [5006], date: '2011-11-17' },
   { number: '3053/QĐ-UBND', issuer: 'people-committee', projectIds: [2027], date: '2020-12-15' },
-  { number: '3124/QĐ-UBND', issuer: 'people-committee', projectIds: [6019] },
+  { number: '3124/QĐ-UBND', issuer: 'people-committee', projectIds: [6019], date: '2011-12-01' },
   { number: '3141/QĐ-UBND', issuer: 'people-committee', projectIds: [2019], date: '2021-12-27' },
   { number: '3150/QĐ-UBND', issuer: 'people-committee', projectIds: [4002], date: '2022-09-26' },
   { number: '32/QĐ-UBND', issuer: 'people-committee', projectIds: [2027], date: '2021-01-22' },
@@ -345,7 +369,7 @@ const RAW: readonly {
   { number: '767/QĐ-UBND', issuer: 'people-committee', projectIds: [6003], date: '2021-06-08' },
   { number: '7730/QĐ-UBND', issuer: 'people-committee', projectIds: [4034], date: '2018-12-28' },
   { number: '84/QĐ-UBND', issuer: 'people-committee', projectIds: [5003], date: '2025-01-23' },
-  { number: '857/QĐ-UBND', issuer: 'people-committee', projectIds: [4027] },
+  { number: '857/QĐ-UBND', issuer: 'people-committee', projectIds: [4027], date: '2021-04-15' },
   { number: '893/QĐ-TTg', issuer: 'prime-minister', projectIds: [4021], date: '2023-07-26' },
   { number: '903/QĐ-UBND', issuer: 'people-committee', projectIds: [2016], date: '2022-04-15' },
   { number: '918/QĐ-UBND', issuer: 'people-committee', projectIds: [2045], date: '2013-05-14' },

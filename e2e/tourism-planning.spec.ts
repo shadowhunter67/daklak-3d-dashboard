@@ -80,3 +80,29 @@ test.describe('Trung tâm quy hoạch', () => {
     ).toEqual([]);
   });
 });
+
+test.describe('Tổng quan và tìm kiếm (V3)', () => {
+  test('Tổng quan có khối Việc cần chú ý và quy mô vốn, nói rõ không phải vốn giải ngân', async ({
+    page,
+  }) => {
+    await page.goto('./?view=overview');
+    const queue = page.getByRole('region', { name: 'Việc cần chú ý' });
+    await expect(queue).toBeVisible();
+    await expect(queue).toContainText('xã/phường chưa có ảnh đã xác minh');
+    const economy = page.getByRole('region', { name: 'Quy mô vốn theo lĩnh vực' });
+    await expect(economy).toContainText('chưa phải vốn đã giải ngân hay đã cam kết');
+  });
+
+  test('tìm số hiệu văn bản quy hoạch ở ô tìm kiếm chung và mở trang Quy hoạch', async ({
+    page,
+  }) => {
+    await page.goto('./');
+    const search = page.getByRole('combobox', { name: /Tìm kiếm/ });
+    await search.click();
+    await search.fill('768/QĐ');
+    const option = page.getByRole('option', { name: /768\/QĐ-TTg/ });
+    await expect(option).toBeVisible();
+    await option.click();
+    await expect(page).toHaveURL(/#\/planning/);
+  });
+});

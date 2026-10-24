@@ -80,13 +80,16 @@ const dist = join(root, 'dist');
 // chunk ~20KB (it was previously folded into another chunk), plus vi/en strings. No new
 // dependency. totalJavaScriptGzipBytes 950,000 -> 958,000 (measured 954,368; the sum counts every
 // lazy chunk's own gzip). largest-chunk gzip budget untouched. Eager entry unchanged apart from routes.
+// V3 overview briefing + planning search group: totalJavaScriptBytes 3,476,000 -> 3,484,000 and
+// totalBuildBytes 22,822,000 -> 22,830,000 (measured 3,480,249 / 22,826,381; +4.2KB: ProvinceBriefing
+// card, provinceBriefing model, sectorLabels split, planning search kind and strings).
 const limits = {
-  totalJavaScriptBytes: 3_476_000,
+  totalJavaScriptBytes: 3_484_000,
   totalJavaScriptGzipBytes: 958_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 22_822_000,
+  totalBuildBytes: 22_830_000,
 };
 
 async function filesAt(directory) {

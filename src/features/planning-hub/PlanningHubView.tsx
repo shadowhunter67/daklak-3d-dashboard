@@ -200,7 +200,20 @@ export function PlanningHubView({
           rows={filtered.slice(0, limit)}
           getRowKey={(d) => d.number}
           columns={[
-            { key: 'number', header: t('planning.table.number') },
+            {
+              key: 'number',
+              header: t('planning.table.number'),
+              render: (d) => (
+                <>
+                  {d.number}
+                  {d.sourceSpelling && (
+                    <small className="planning-hub__spelling">
+                      {t('planning.sourceSpelling', { text: d.sourceSpelling })}
+                    </small>
+                  )}
+                </>
+              ),
+            },
             {
               key: 'issuer',
               header: t('planning.table.issuer'),

@@ -15,8 +15,8 @@ const rows = JSON.parse(
 );
 
 const NUMBER =
-  /(\d{1,5}\s?\/\s?(?:[A-ZĐ]{1,4})(?:\s?-\s?[A-Za-zĐ]{2,6})+|\d{1,5}\s?\/\s?QĐUBND)(?:\s*ngày\s+(\d{1,2})\/(\d{1,2})\/(\d{4}))?/g;
-const GAP = /chưa có quy hoạch|:\s*chưa có|\(chưa đủ\)|chưa có nghị quyết/i;
+  /(\d{1,5}\s?\/\s?(?:[A-ZĐ]{1,4})(?:\s?-\s?[A-Za-zĐ]{2,6})+|\d{1,5}\s?\/\s?QĐUBND)(?:\s*,?\s*ngày\s+(\d{1,2})\/(\d{1,2})\/(\d{4}))?/g;
+const GAP = /chưa có quy hoạch|:\s*chưa có|quy hoạch[^;.]*\(chưa đủ\)|chưa có nghị quyết/i;
 
 const issuerOf = (number) => {
   if (/TTg$/i.test(number)) return 'prime-minister';
@@ -46,9 +46,12 @@ for (const row of rows) {
   const seen = new Set();
   for (const match of text.matchAll(NUMBER)) {
     const number = normalize(match[1]);
+    const written = match[1].replace(/\s+/g, '');
     if (seen.has(number)) continue;
     seen.add(number);
     const entry = docs.get(number) ?? { number, issuer: issuerOf(number), projectIds: [] };
+    // Giữ dấu vết khi số hiệu đã bị chuẩn hóa so với cách nguồn viết (ví dụ DQQ, QĐUBND).
+    if (written !== number && !entry.sourceSpelling) entry.sourceSpelling = written;
     if (match[4] && !entry.date) entry.date = iso(match[2], match[3], match[4]);
     entry.projectIds.push(id);
     docs.set(number, entry);
@@ -81,12 +84,14 @@ export interface PlanningDocument {
   issuer: PlanningIssuer;
   /** ISO yyyy-mm-dd; vắng nghĩa là nguồn không nêu ngày ngay sau số hiệu. */
   date?: string;
+  /** Cách nguồn viết số hiệu khi khác dạng chuẩn hóa (không tự khẳng định số hiệu pháp lý). */
+  sourceSpelling?: string;
   /** Id dự án trong researched-projects (qd1985-pl<N>-<stt>) có trích dẫn văn bản này. */
   projectIds: string[];
 }
 
 const decode = (n: number) => \`qd1985-pl\${Math.floor(n / 1000)}-\${String(n % 1000).padStart(3, '0')}\`;
-const RAW: readonly { number: string; issuer: PlanningIssuer; date?: string; projectIds: number[] }[] = ${JSON.stringify(compact)};
+const RAW: readonly { number: string; issuer: PlanningIssuer; date?: string; sourceSpelling?: string; projectIds: number[] }[] = ${JSON.stringify(compact)};
 const REVIEW_RAW: readonly number[] = ${JSON.stringify(review.map(code))};
 const UNCITED_RAW: readonly number[] = ${JSON.stringify(withoutCitation.map(code))};
 
