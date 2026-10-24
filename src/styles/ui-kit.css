@@ -2780,3 +2780,47 @@
   padding-left: 22px;
   line-height: 1.6;
 }
+
+/* Trung tâm du lịch: thẻ điểm đến có ảnh tham chiếu (cùng origin) co theo khung thẻ. */
+.tourism-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tourism-card__photo {
+  margin: 0;
+}
+.tourism-card__photo img {
+  display: block;
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.tourism-card__photo figcaption {
+  margin-top: 4px;
+  font-size: 0.8125rem;
+  opacity: 0.8;
+}
+.tourism-card__photo--empty {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  border: 1px dashed currentColor;
+  border-radius: 10px;
+  opacity: 0.7;
+}
+.tourism-card__title {
+  margin: 0;
+  font-size: 1.125rem;
+}
+.tourism-card__category,
+.tourism-card p {
+  margin: 0;
+}
+.tourism-card__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}

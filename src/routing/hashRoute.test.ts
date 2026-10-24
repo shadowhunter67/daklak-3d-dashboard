@@ -3,6 +3,8 @@ import {
   parseHashRoute,
   serializeDataReadinessHash,
   serializeInvestmentCatalogHash,
+  serializePlanningHash,
+  serializeTourismHash,
   serializeUnitHash,
   serializeDioramaHash,
   serializePortfolioHash,
@@ -93,6 +95,15 @@ describe('parseHashRoute', () => {
       query: 'điện gió',
     });
     expect(parseHashRoute('#/investment-catalog?q=')).toEqual({ kind: 'investment-catalog' });
+  });
+
+  it('parses #/tourism and #/planning, rejects extra segments, and round-trips', () => {
+    expect(parseHashRoute('#/tourism')).toEqual({ kind: 'tourism' });
+    expect(parseHashRoute('#/planning')).toEqual({ kind: 'planning' });
+    expect(parseHashRoute('#/tourism/x')).toEqual({ kind: 'none' });
+    expect(parseHashRoute('#/planning/x')).toEqual({ kind: 'none' });
+    expect(parseHashRoute(serializeTourismHash())).toEqual({ kind: 'tourism' });
+    expect(parseHashRoute(serializePlanningHash())).toEqual({ kind: 'planning' });
   });
 
   it('parses #/unit/<code>, rejects extra or empty segments, and round-trips', () => {

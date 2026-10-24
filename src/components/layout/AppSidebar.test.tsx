@@ -40,11 +40,23 @@ describe('AppSidebar', () => {
     expect(useMapStore.getState().viewMode).toBe('3d');
   });
 
-  it('Quy hoạch opens the map with a planning overlay on', () => {
-    renderSidebar();
+  it('Quy hoạch và Du lịch mở trang riêng qua hash route', () => {
+    const navigate = renderSidebar();
     fireEvent.click(screen.getByRole('button', { name: 'Quy hoạch' }));
-    expect(useMapStore.getState().viewMode).toBe('map');
-    expect(useMapStore.getState().detailMapLayers.planningOverlay).not.toBe('none');
+    expect(navigate).toHaveBeenLastCalledWith('#/planning');
+    fireEvent.click(screen.getByRole('button', { name: 'Du lịch' }));
+    expect(navigate).toHaveBeenLastCalledWith('#/tourism');
+  });
+
+  it('tô sáng đúng mục khi đang ở trang Du lịch / Quy hoạch', () => {
+    renderSidebar({ kind: 'tourism' });
+    expect(screen.getByRole('button', { name: 'Du lịch' })).toHaveAttribute('aria-current', 'page');
+    cleanup();
+    renderSidebar({ kind: 'planning' });
+    expect(screen.getByRole('button', { name: 'Quy hoạch' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
   });
 
   it('routes Dự án, Dữ liệu & nguồn and Báo cáo to their hash routes', () => {
