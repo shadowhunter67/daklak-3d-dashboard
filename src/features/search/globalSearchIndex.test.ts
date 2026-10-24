@@ -11,6 +11,7 @@ const entries: SearchEntry[] = [
     code: 'DL-2026-YT-001',
   },
   { kind: 'place', id: 'ho-lak', name: 'Hồ Lắk' },
+  { kind: 'planning', id: '768/QĐ-TTg', name: '768/QĐ-TTg' },
   { kind: 'opportunity', id: 'qd1985-pl1-001', name: 'Nhà máy điện gió Thuận Phong 2, GĐ 1' },
 ];
 const index = buildSearchIndex(entries);
@@ -61,5 +62,10 @@ describe('global search index', () => {
   it('returns nothing for an empty query and honours the per-kind limit', () => {
     expect(flattenResults(searchAll(index, '   '))).toHaveLength(0);
     expect(searchAll(index, 'buon', 1).ward).toHaveLength(1);
+  });
+
+  it('finds a planning document by its number, with or without diacritics', () => {
+    expect(searchAll(index, '768/qd-ttg').planning.map((e) => e.id)).toEqual(['768/QĐ-TTg']);
+    expect(searchAll(index, '768').planning).toHaveLength(1);
   });
 });

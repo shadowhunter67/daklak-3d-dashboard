@@ -72,13 +72,24 @@ const dist = join(root, 'dist');
 // ~7.8KB, vi/en strings, the Overview/Data-readiness hooks, and `daklak-wards-render` becoming its own
 // chunk. The ward geometry (463KB) and tourism destinations were already in the bundle; no new
 // dependency. Gzip budget untouched. Each later V3 module (tourism, planning) is measured separately.
+// V3 PR-B/C (tourism hub + planning hub, 2026-10): totalJavaScriptBytes 3,446,000 -> 3,476,000 and
+// totalBuildBytes 22,800,000 -> 22,822,000. Measured 3,472,676 JS (+30.6KB over 3,442,101) and
+// 22,817,673 build bytes. Breakdown: lazy PlanningHubView chunk ~16.5KB (of which ~11KB is the 116
+// planning-document citations extracted from QĐ 1985's own planning column, stored compactly and
+// decoded at runtime), lazy TourismHubView ~5.4KB, `verifiedTourismDestinations` now a shared lazy
+// chunk ~20KB (it was previously folded into another chunk), plus vi/en strings. No new
+// dependency. totalJavaScriptGzipBytes 950,000 -> 958,000 (measured 954,368; the sum counts every
+// lazy chunk's own gzip). largest-chunk gzip budget untouched. Eager entry unchanged apart from routes.
+// V3 overview briefing + planning search group: totalJavaScriptBytes 3,476,000 -> 3,484,000 and
+// totalBuildBytes 22,822,000 -> 22,830,000 (measured 3,480,249 / 22,826,381; +4.2KB: ProvinceBriefing
+// card, provinceBriefing model, sectorLabels split, planning search kind and strings).
 const limits = {
-  totalJavaScriptBytes: 3_446_000,
-  totalJavaScriptGzipBytes: 950_000,
+  totalJavaScriptBytes: 3_484_000,
+  totalJavaScriptGzipBytes: 958_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 22_800_000,
+  totalBuildBytes: 22_830_000,
 };
 
 async function filesAt(directory) {

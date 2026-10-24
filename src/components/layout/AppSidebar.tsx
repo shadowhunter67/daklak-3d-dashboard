@@ -6,8 +6,10 @@ import type { MessageKey } from '../../i18n/messages';
 import type { HashRoute } from '../../routing/hashRoute';
 import {
   serializeDataReadinessHash,
+  serializePlanningHash,
   serializePortfolioHash,
   serializeReportsHash,
+  serializeTourismHash,
 } from '../../routing/hashRoute';
 import { BrandLogo } from './BrandLogo';
 import { DisplaySettings } from './DisplaySettings';
@@ -20,12 +22,14 @@ import {
   HomeIcon,
   LayersIcon,
   MapIcon,
+  PinIcon,
   UsersIcon,
 } from './icons';
 
 const unitCount = wards.features.length;
 
-type ItemId = 'overview' | 'map' | '3d' | 'projects' | 'wards' | 'planning' | 'data' | 'reports';
+type ItemId =
+  'overview' | 'map' | '3d' | 'projects' | 'wards' | 'tourism' | 'planning' | 'data' | 'reports';
 
 interface Item {
   id: ItemId;
@@ -39,19 +43,15 @@ const ITEMS: Item[] = [
   { id: '3d', labelKey: 'sidebar.map3d', icon: <CubeIcon /> },
   { id: 'projects', labelKey: 'sidebar.projects', icon: <DocumentIcon /> },
   { id: 'wards', labelKey: 'sidebar.wards', icon: <UsersIcon /> },
+  { id: 'tourism', labelKey: 'sidebar.tourism', icon: <PinIcon /> },
   { id: 'planning', labelKey: 'sidebar.planning', icon: <LayersIcon /> },
   { id: 'data', labelKey: 'sidebar.data', icon: <DatabaseIcon /> },
   { id: 'reports', labelKey: 'sidebar.reports', icon: <ChartIcon /> },
 ];
 
-/** Which sidebar item is "current". Wards and Planning are entries into the map view with their own
- * intent (ward directory open / planning overlay on), so exactly one of the three map items is lit. */
-function activeItem(
-  route: HashRoute,
-  viewMode: string,
-  planningOverlay: string,
-  mapEntry: string,
-): ItemId | null {
+/** Which sidebar item is "current". Wards is an entry into the map view with its own intent (ward
+ * directory open); Tourism and Planning are their own hash-route pages. */
+function activeItem(route: HashRoute, viewMode: string, mapEntry: string): ItemId | null {
   if (
     route.kind === 'portfolio' ||
     route.kind === 'project-detail' ||
@@ -60,11 +60,13 @@ function activeItem(
     return 'projects';
   if (route.kind === 'data-readiness') return 'data';
   if (route.kind === 'reports') return 'reports';
+  if (route.kind === 'tourism') return 'tourism';
+  if (route.kind === 'planning') return 'planning';
+  if (route.kind === 'unit') return 'wards';
   if (route.kind === 'diorama') return null;
   if (viewMode === 'overview') return 'overview';
   if (viewMode === '3d') return '3d';
-  if (viewMode === 'map')
-    return planningOverlay !== 'none' ? 'planning' : mapEntry === 'wards' ? 'wards' : 'map';
+  if (viewMode === 'map') return mapEntry === 'wards' ? 'wards' : 'map';
   return null;
 }
 
@@ -82,11 +84,10 @@ export function AppSidebar({
   const { t } = useTranslation();
   const viewMode = useMapStore((state) => state.viewMode);
   const setViewMode = useMapStore((state) => state.setViewMode);
-  const planningOverlay = useMapStore((state) => state.detailMapLayers.planningOverlay);
   const setPlanningOverlay = useMapStore((state) => state.setDetailMapPlanningOverlay);
   const mapEntry = useMapStore((state) => state.mapEntry);
   const setMapEntry = useMapStore((state) => state.setMapEntry);
-  const current = activeItem(route, viewMode, planningOverlay, mapEntry);
+  const current = activeItem(route, viewMode, mapEntry);
 
   const go = (id: ItemId) => {
     // Hash routes sit on top of the query-based view; leave them first, then switch view.
@@ -111,11 +112,11 @@ export function AppSidebar({
         setMapEntry('wards');
         setViewMode('map');
         break;
+      case 'tourism':
+        navigate(serializeTourismHash());
+        break;
       case 'planning':
-        leaveHash();
-        if (planningOverlay === 'none') setPlanningOverlay('land-use');
-        setMapEntry('map');
-        setViewMode('map');
+        navigate(serializePlanningHash());
         break;
       case '3d':
         leaveHash();

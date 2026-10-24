@@ -11,6 +11,7 @@ import { formatPercentagePointsDelta } from '../../i18n/formatters';
 import { AlertList } from './AlertList';
 import { DataHealthCard } from './DataHealthCard';
 import { OverviewWorkspace } from './OverviewWorkspace';
+import { ProvinceBriefing } from './ProvinceBriefing';
 import { PriorityProjectsTable } from './PriorityProjectsTable';
 import { RecentUpdatesCard } from './RecentUpdatesCard';
 import { PortfolioStatusChart } from './PortfolioStatusChart';
@@ -192,6 +193,7 @@ export function ExecutiveOverview({
           <OverviewWorkspace
             projectCountByAdministrativeArea={model.projectCountByAdministrativeArea}
           />
+          <ProvinceBriefing />
           <section className="executive-overview__panel-grid" aria-label={t('overview.panelsAria')}>
             <PriorityProjectsTable
               items={model.priorityProjects}

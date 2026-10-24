@@ -16,8 +16,10 @@ import { useHashRoute } from './routing/useHashRoute';
 import {
   serializeDioramaHash,
   serializeInvestmentCatalogHash,
+  serializePlanningHash,
   serializePortfolioHash,
   serializeProjectDetailHash,
+  serializeUnitHash,
 } from './routing/hashRoute';
 import type { PortfolioFilters } from './routing/hashRoute';
 import { useTranslation } from './i18n/useTranslation';
@@ -43,6 +45,16 @@ const InvestmentCatalogView = lazy(() =>
 const UnitProfileView = lazy(() =>
   import('./features/unit-profile/UnitProfileView').then((module) => ({
     default: module.UnitProfileView,
+  })),
+);
+const TourismHubView = lazy(() =>
+  import('./features/tourism-hub/TourismHubView').then((module) => ({
+    default: module.TourismHubView,
+  })),
+);
+const PlanningHubView = lazy(() =>
+  import('./features/planning-hub/PlanningHubView').then((module) => ({
+    default: module.PlanningHubView,
   })),
 );
 const ReportsView = lazy(() =>
@@ -139,6 +151,9 @@ export default function App() {
   const aboutPanelOpen = useMapStore((state) => state.aboutPanelOpen);
   const setDetailMapCamera = useMapStore((state) => state.setDetailMapCamera);
   const select = useMapStore((state) => state.select);
+  const setMapEntry = useMapStore((state) => state.setMapEntry);
+  const planningOverlay = useMapStore((state) => state.detailMapLayers.planningOverlay);
+  const setPlanningOverlay = useMapStore((state) => state.setDetailMapPlanningOverlay);
   const [menuOpen, setMenuOpen] = useState(false);
   const previousView = useRef(viewMode);
   useDashboardUrlSync();
@@ -190,6 +205,8 @@ export default function App() {
     route.kind === 'reports' ||
     route.kind === 'investment-catalog' ||
     route.kind === 'unit' ||
+    route.kind === 'tourism' ||
+    route.kind === 'planning' ||
     route.kind === 'diorama';
   const skipLinkTargetId = isProjectRoute
     ? route.kind === 'portfolio'
@@ -204,7 +221,11 @@ export default function App() {
               ? 'investment-catalog'
               : route.kind === 'unit'
                 ? 'unit-profile'
-                : 'data-readiness'
+                : route.kind === 'tourism'
+                  ? 'tourism-hub'
+                  : route.kind === 'planning'
+                    ? 'planning-hub'
+                    : 'data-readiness'
     : viewMode === 'map'
       ? 'detail-map-viewport'
       : viewMode === 'overview'
@@ -223,6 +244,10 @@ export default function App() {
     }
     if (entry.kind === 'opportunity') {
       navigate(serializeInvestmentCatalogHash(entry.name));
+      return;
+    }
+    if (entry.kind === 'planning') {
+      navigate(serializePlanningHash());
       return;
     }
     if (entry.kind === 'place') {
@@ -300,6 +325,25 @@ export default function App() {
                 onOpenDestination={(id) => navigate(serializeDioramaHash(id))}
               />
             )}
+            {route.kind === 'tourism' && (
+              <TourismHubView
+                onBack={goToOverview}
+                onOpenUnit={(code) => navigate(serializeUnitHash(code))}
+                onOpenDestination={(id) => navigate(serializeDioramaHash(id))}
+              />
+            )}
+            {route.kind === 'planning' && (
+              <PlanningHubView
+                onBack={goToOverview}
+                onOpenCatalog={(query) => navigate(serializeInvestmentCatalogHash(query))}
+                onOpenOverlay={() => {
+                  if (planningOverlay === 'none') setPlanningOverlay('land-use');
+                  setMapEntry('map');
+                  setViewMode('map');
+                  navigate('', { replace: false });
+                }}
+              />
+            )}
             {route.kind === 'investment-catalog' && (
               <InvestmentCatalogView
                 onBackToPortfolio={() => goToPortfolio()}
@@ -364,7 +408,11 @@ export default function App() {
                     ? t('catalog.heading')
                     : route.kind === 'unit'
                       ? t('unit.crumb')
-                      : t('app.live.openedDataReadiness')
+                      : route.kind === 'tourism'
+                        ? t('tourism.heading')
+                        : route.kind === 'planning'
+                          ? t('planning.heading')
+                          : t('app.live.openedDataReadiness')
           : viewMode === 'map'
             ? t('app.live.openedMap')
             : viewMode === 'overview'
