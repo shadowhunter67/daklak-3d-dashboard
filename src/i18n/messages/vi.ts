@@ -126,6 +126,7 @@ export const vi = {
   'topbar.search.group.project': 'Dự án',
   'topbar.search.group.opportunity': 'Thu hút đầu tư',
   'topbar.search.group.place': 'Địa danh',
+  'topbar.search.group.planning': 'Văn bản quy hoạch',
   'topbar.search.label': 'Tìm kiếm xã, phường, dự án và địa danh',
   'topbar.search.submit': 'Tìm kiếm',
   'topbar.search.noResults': 'Không có kết quả phù hợp',
@@ -1269,4 +1270,27 @@ export const vi = {
   'planning.overlay.open': 'Mở lớp quy hoạch minh họa trên bản đồ',
   'planning.back': 'Về Tổng quan điều hành',
   'planning.more': 'Xem thêm {count} văn bản',
+  'briefing.queue.heading': 'Việc cần chú ý',
+  'briefing.queue.note':
+    'Các khoảng trống dữ liệu thật cần người xử lý, tính từ dữ liệu hiện có (không phải số minh họa).',
+  'briefing.queue.empty': 'Hiện không có khoảng trống dữ liệu nào được ghi nhận.',
+  'briefing.task.capital': '{count} dự án thu hút đầu tư chưa có số liệu vốn',
+  'briefing.task.planning':
+    '{count} dự án cần rà soát quy hoạch (ô quy hoạch của danh mục nêu còn thiếu)',
+  'briefing.task.tourism-photo': '{count} điểm đến du lịch chưa có ảnh giấy phép tự do',
+  'briefing.task.unit-photo': '{count} xã/phường chưa có ảnh đã xác minh',
+  'briefing.action.capital': 'Xem danh mục dự án',
+  'briefing.action.planning': 'Mở trung tâm quy hoạch',
+  'briefing.action.tourism-photo': 'Mở trung tâm du lịch',
+  'briefing.action.unit-photo': 'Xem độ phủ ảnh',
+  'briefing.economy.heading': 'Quy mô vốn theo lĩnh vực',
+  'briefing.economy.note':
+    'Vốn dự kiến ghi trong danh mục thu hút đầu tư (Quyết định 1985/QĐ-UBND), chưa phải vốn đã giải ngân hay đã cam kết.',
+  'briefing.economy.total': 'Tổng vốn dự kiến của {count} dự án có số liệu: {capital} tỷ đồng.',
+  'briefing.economy.excluded': '{count} dự án chưa có số liệu vốn, không tính vào tổng.',
+  'briefing.economy.row': '{capital} tỷ đồng · {count} dự án',
+  'briefing.economy.listAria': 'Vốn dự kiến theo lĩnh vực',
+  'briefing.accountability.heading': 'Trách nhiệm và tiến độ',
+  'briefing.accountability.note':
+    'Chưa có nguồn công bố về chủ đầu tư, đơn vị chịu trách nhiệm hay giải ngân của các dự án trong danh mục, nên không hiển thị bảng trách nhiệm.',
 } as const satisfies Record<string, string>;

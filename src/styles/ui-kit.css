@@ -2824,3 +2824,42 @@
   gap: 8px;
   margin-top: auto;
 }
+
+/* Tổng quan: khối "việc cần chú ý" + quy mô vốn theo lĩnh vực (chỉ dữ liệu thật). */
+.province-briefing {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.province-briefing__queue,
+.province-briefing__bars {
+  margin: 8px 0 12px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.province-briefing__queue li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+.province-briefing__sub {
+  margin: 16px 0 4px;
+  font-size: 1rem;
+}
+.province-briefing__bars li {
+  display: grid;
+  gap: 4px;
+}
+.province-briefing__bar {
+  display: block;
+  height: 10px;
+  border-radius: 5px;
+  background: var(--ui-accent);
+}
+.province-briefing__bar-label {
+  font-weight: 600;
+}

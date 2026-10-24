@@ -16,6 +16,7 @@ import { useHashRoute } from './routing/useHashRoute';
 import {
   serializeDioramaHash,
   serializeInvestmentCatalogHash,
+  serializePlanningHash,
   serializePortfolioHash,
   serializeProjectDetailHash,
   serializeUnitHash,
@@ -243,6 +244,10 @@ export default function App() {
     }
     if (entry.kind === 'opportunity') {
       navigate(serializeInvestmentCatalogHash(entry.name));
+      return;
+    }
+    if (entry.kind === 'planning') {
+      navigate(serializePlanningHash());
       return;
     }
     if (entry.kind === 'place') {

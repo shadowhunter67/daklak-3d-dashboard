@@ -120,6 +120,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'topbar.search.group.project': 'Projects',
   'topbar.search.group.opportunity': 'Investment attraction',
   'topbar.search.group.place': 'Places',
+  'topbar.search.group.planning': 'Planning documents',
   'topbar.search.label': 'Search communes, wards, projects and places',
   'topbar.search.submit': 'Search',
   'topbar.search.noResults': 'No matching results',
@@ -1249,4 +1250,29 @@ export const en: Partial<Record<MessageKey, string>> = {
   'planning.overlay.open': 'Open the illustrative planning layer on the map',
   'planning.back': 'Back to executive overview',
   'planning.more': 'Show {count} more documents',
+  'briefing.queue.heading': 'Needs attention',
+  'briefing.queue.note':
+    'Real data gaps needing someone to act, computed from the data on hand (not illustrative numbers).',
+  'briefing.queue.empty': 'No data gaps are currently recorded.',
+  'briefing.task.capital': '{count} investment-attraction projects have no capital figure',
+  'briefing.task.planning':
+    '{count} projects need planning review (the catalogue planning cell states something missing)',
+  'briefing.task.tourism-photo': '{count} tourist destinations have no free-licence photo',
+  'briefing.task.unit-photo': '{count} communes/wards have no verified photo',
+  'briefing.action.capital': 'View project catalogue',
+  'briefing.action.planning': 'Open planning hub',
+  'briefing.action.tourism-photo': 'Open tourism hub',
+  'briefing.action.unit-photo': 'View photo coverage',
+  'briefing.economy.heading': 'Capital scale by sector',
+  'briefing.economy.note':
+    'Expected capital listed in the investment-attraction catalogue (Decision 1985/QĐ-UBND), not capital disbursed or committed.',
+  'briefing.economy.total':
+    'Total expected capital of the {count} projects with a figure: {capital} billion VND.',
+  'briefing.economy.excluded':
+    '{count} projects have no capital figure and are excluded from the total.',
+  'briefing.economy.row': '{capital} billion VND · {count} projects',
+  'briefing.economy.listAria': 'Expected capital by sector',
+  'briefing.accountability.heading': 'Accountability and progress',
+  'briefing.accountability.note':
+    'No published source names the investor, responsible unit or disbursement of the catalogue projects, so no accountability table is shown.',
 };

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import labels from '#province-assets/daklak-labels.json';
+import { SECTOR_KEY } from './model/sectorLabels';
 import { loadResearchedProjects } from '../../data/loadResearchedProjects';
 import type { ResearchedDataset, ResearchedSector } from '../../entities/researched-project/types';
 import { useTranslation } from '../../i18n/useTranslation';
@@ -26,22 +27,6 @@ import {
 } from './model/catalogModel';
 
 const PAGE_SIZE = 24;
-/** Tái dùng nhãn lĩnh vực có sẵn; chỉ các lĩnh vực mới của danh mục thu hút đầu tư có khóa riêng. */
-const SECTOR_KEY: Record<ResearchedSector, MessageKey> = {
-  transport: 'sector.transport',
-  energy: 'sector.energy',
-  irrigation: 'sector.irrigation',
-  health: 'sector.health',
-  education: 'sector.education',
-  urban: 'sector.urban-development',
-  'digital-government': 'sector.digital-transformation',
-  housing: 'catalogSector.housing',
-  industrial: 'catalogSector.industrial',
-  agriculture: 'catalogSector.agriculture',
-  tourism: 'catalogSector.tourism',
-  environment: 'catalogSector.environment',
-  other: 'catalogSector.other',
-};
 const labelMap = labels as Record<string, { name: string }>;
 const areaName = (code: string) => labelMap[code]?.name ?? code;
 
