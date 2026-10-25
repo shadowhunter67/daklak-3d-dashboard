@@ -19,3 +19,13 @@ Cập nhật 2026-10-25. Đã tải bản thu nhỏ 480 px của 42/45 ảnh ứ
 
 - Chụp hoặc xin ảnh có giấy phép cho 88 đơn vị còn lại (ảnh trung tâm hành chính, địa điểm đặc trưng).
 - Xác nhận cách gán "xã chứa điểm đến" khi ranh giới đơn giản hóa làm điểm sát biên rơi sang đơn vị bên cạnh.
+
+## Thử thêm: ảnh Commons có tọa độ nằm trong ranh giới (2026-10-25)
+
+Script `scripts/research/geosearch_unit_media.mjs` tìm ảnh Commons có gắn tọa độ rơi đúng trong ranh giới từng đơn vị (point-in-polygon), giấy phép tự do; kết quả ở `reports/research/administrative-unit-geomedia.json` (55/102 đơn vị có ứng viên, 300 ảnh). Đã tải bản thu nhỏ của 94 ảnh cho các đơn vị chưa có ảnh và xem bằng mắt.
+
+- Phần lớn là **ảnh chụp từ Trạm vũ trụ ISS** (tọa độ là vùng chụp, không đặc trưng cho đơn vị), ảnh thú/côn trùng, ảnh người (trẻ em, sự kiện USAID, lễ tốt nghiệp) hoặc ảnh quảng cáo. Không dùng.
+- Chỉ có **Sân bay Buôn Ma Thuột** (nằm trong phường Tân Lập theo ranh giới) là địa điểm rõ ràng; chưa đưa vào vì không phải điểm đến du lịch và cần quyết định riêng về loại "công trình đặc trưng".
+- Wikidata (hộp tọa độ quanh tỉnh có ảnh P18) chỉ trả về vài chục mục, đa số đã dùng hoặc thuộc Khánh Hòa; độ phủ của nguồn mở cho Đắk Lắk còn mỏng.
+
+Kết luận: nguồn ảnh tự do chỉ phủ được khoảng 14–20 đơn vị. Muốn phủ 102 đơn vị cần ảnh từ cơ quan (UBND, Báo Đắk Lắk) có phép hoặc ảnh tự chụp.
