@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 import { expectNoHorizontalOverflow } from './layoutAssertions';
 
 // Hồ sơ xã/phường (#/unit/<mã>): số liệu thật, điểm du lịch suy ra từ ranh giới, dự án thu hút đầu tư,
-// hình ranh giới khi chưa có ảnh đã xác minh, độ phủ hình ảnh thật (0/102).
+// ảnh điểm đến trong địa bàn (hoặc hình ranh giới khi chưa có ảnh), độ phủ hình ảnh đếm từ dữ liệu.
 test.describe('Hồ sơ xã/phường', () => {
   test('mở trực tiếp bằng URL, hiện số liệu thật và điểm du lịch trong ranh giới', async ({
     page,
@@ -14,8 +14,8 @@ test.describe('Hồ sơ xã/phường', () => {
     const tourism = page.getByRole('region', { name: 'Điểm du lịch trong địa bàn' });
     await expect(tourism).toContainText('Hồ Lắk');
     await expect(tourism).toContainText('suy ra');
-    await expect(page.getByRole('img', { name: /Hình dạng ranh giới/ })).toBeVisible();
-    await expect(page.getByText(/0\/102 đơn vị có ảnh đã xác minh/)).toBeVisible();
+    await expect(page.getByRole('img', { name: /Ảnh tham chiếu của Hồ Lắk/ })).toBeVisible();
+    await expect(page.getByText(/\d+\/102 đơn vị có ảnh đã xác minh/)).toBeVisible();
   });
 
   test('dự án thu hút đầu tư của đơn vị dẫn sang danh mục đã lọc theo địa bàn', async ({

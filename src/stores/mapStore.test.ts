@@ -115,6 +115,7 @@ describe('getInitialDashboardUrlState', () => {
       planningOverlay: 'none',
       keyProjectsVisible: false,
       planningZonesVisible: false,
+      tourismVisible: false,
       buildingsVisible: true,
       dashboardMetricsVisible: false,
       heatmapVisible: true,

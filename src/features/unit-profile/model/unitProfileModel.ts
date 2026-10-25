@@ -1,12 +1,8 @@
 import type { UnitProfile } from '../../../data/unitProfiles';
-import type { MediaSource } from '../../../entities/researched-project/media';
+import type { UnitMedia } from '../../../entities/admin-unit/unitMedia';
 import type { CatalogRow } from '../../investment-catalog/model/catalogModel';
 
-/** Ảnh gắn với một xã/phường. Chỉ `usage: 'production'` (đã kiểm license, có file cục bộ) mới được
- * hiển thị và tính vào độ phủ; `reference-only`/`rejected` chỉ lưu để truy vết. */
-export interface UnitMedia extends MediaSource {
-  administrativeUnitCode: string;
-}
+export type { UnitMedia };
 
 export interface UnitProfileModel {
   code: string;

@@ -37,6 +37,8 @@ export interface DetailMapLayerState {
   keyProjectsVisible: boolean;
   /** Approved-planning-zone reference overlay (`planningZones.ts`) — off by default. */
   planningZonesVisible: boolean;
+  /** Verified tourist destinations (`verifiedTourismDestinations`) — off by default. */
+  tourismVisible: boolean;
 }
 
 export interface DetailMapCameraState {
@@ -156,6 +158,7 @@ export interface DetailedMapProvider {
   /** `animate` (default `false`) plays the "khoanh vùng" glow-reveal when the layer transitions
    * off→on — same convention as `setKeyProjectsVisible`. */
   setPlanningZonesVisible(visible: boolean, options?: { animate?: boolean }): void;
+  setTourismVisible(visible: boolean): void;
   setBuildingsVisible(visible: boolean): void;
   setServicesVisible(visible: boolean): void;
   setDashboardMetricsVisible(visible: boolean): void;
@@ -202,6 +205,7 @@ export const DEFAULT_DETAIL_MAP_LAYER_STATE: DetailMapLayerState = {
   planningOverlay: 'none',
   keyProjectsVisible: false,
   planningZonesVisible: false,
+  tourismVisible: false,
 };
 
 /** Centered on the province's real bounding box (lng 107.484–109.459, lat 12.161–13.695). The old

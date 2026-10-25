@@ -2873,3 +2873,19 @@
 .province-briefing__status {
   margin: 16px 0 0;
 }
+
+/* Hồ sơ xã/phường: ảnh điểm đến trong địa bàn (cùng origin) co theo khung, kèm ghi công. */
+.unit-profile__photo {
+  margin: 0;
+}
+.unit-profile__photo img {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.unit-profile__photo figcaption {
+  margin-top: 8px;
+  font-size: 0.875rem;
+}

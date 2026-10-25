@@ -152,6 +152,19 @@ export const LAYER_REGISTRY: readonly MapLayerDescriptor[] = [
     availability: 'available',
   },
   {
+    id: 'tourismVisible',
+    title: 'Điểm đến du lịch (đã xác minh nguồn)',
+    group: 'Bản đồ chi tiết',
+    datasetId: 'administrative-units',
+    renderer: 'maplibre',
+    geometryType: 'point',
+    defaultVisible: false,
+    accessPolicyId: 'public-standard',
+    // Điểm đến có tọa độ đối chiếu 2 nguồn (Wikipedia/Wikidata), mỗi điểm kèm URL nguồn. Không có
+    // số lượt khách. Xem verifiedTourismDestinations.ts.
+    availability: 'available',
+  },
+  {
     id: 'buildingsVisible',
     title: 'Công trình xây dựng',
     group: 'Bản đồ chi tiết',

@@ -1,6 +1,8 @@
 import { cleanup, fireEvent, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ResearchedDataset } from '../../entities/researched-project/types';
+import labels from '#province-assets/daklak-labels.json';
+import { ADMIN_UNIT_MEDIA } from '../../data/adminUnitMedia';
 import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 
 const obs = <T,>(value: T) => ({
@@ -63,7 +65,10 @@ describe('ProvinceBriefing', () => {
     renderWithI18n(<ProvinceBriefing />);
     const queue = await screen.findByRole('region', { name: 'Việc cần chú ý' });
     expect(queue).toHaveTextContent('1 dự án thu hút đầu tư chưa có số liệu vốn');
-    expect(queue).toHaveTextContent('102 xã/phường chưa có ảnh đã xác minh');
+    const missing =
+      Object.keys(labels).length -
+      new Set(ADMIN_UNIT_MEDIA.map((m) => m.administrativeUnitCode)).size;
+    expect(queue).toHaveTextContent(`${missing} xã/phường chưa có ảnh đã xác minh`);
     expect(queue).toHaveTextContent(/dự án cần rà soát quy hoạch/);
     fireEvent.click(within(queue).getByRole('button', { name: 'Mở trung tâm quy hoạch' }));
     expect(window.location.hash).toBe('#/planning');

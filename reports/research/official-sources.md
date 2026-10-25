@@ -15,5 +15,5 @@ Cập nhật 2026-10-24. Chỉ liệt kê nguồn thật sự có trong repo; ng
 - Số lượt khách, doanh thu du lịch, công suất lưu trú theo điểm đến hoặc theo xã/phường: chưa tìm được nguồn công bố có thể trích dẫn. Giao diện ghi "Chưa có dữ liệu".
 - Ranh giới quy hoạch chính thức (đất đai, phân khu, 3 loại rừng): chưa có tệp công bố tải được. Lớp quy hoạch trên bản đồ là minh họa và được gắn nhãn như vậy. Cổng tương tác công dân của tỉnh không nhúng được (đã thử: dữ liệu khoảng 154 MB mỗi phường, nền bản đồ Google, CORS khóa).
 - Chủ đầu tư, đơn vị chịu trách nhiệm, giải ngân của dự án trong danh mục: nguồn không nêu, nên không dựng bảng trách nhiệm.
-- Ảnh đặc trưng cho 102 xã/phường: 0/102 đạt điều kiện đưa vào bản chạy thật (xem `administrative-unit-media-review.md`).
+- Ảnh đặc trưng cho 102 xã/phường: 14/102 có ảnh của một điểm đến du lịch nằm trong địa bàn (dùng lại ảnh Commons giấy phép tự do đã có); 88 đơn vị chưa có ảnh. Không ảnh ứng viên Commons nào khác đạt điều kiện (xem `administrative-unit-media-decisions.md`).
 - Trang `daklak.gov.vn` không tải được bằng công cụ hiện có; chính sách tái phân phối nội dung của `vpubnd.daklak.gov.vn` chưa xác nhận.

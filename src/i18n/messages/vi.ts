@@ -989,6 +989,7 @@ export const vi = {
   'detailMapViewport.roads': 'Lớp giao thông',
   'detailMapViewport.planning': 'Lớp quy hoạch',
   'detailMapViewport.projects': 'Lớp dự án',
+  'detailMapViewport.tourism': 'Lớp du lịch',
   'detailMapViewport.mapHud': 'Thông tin bản đồ',
   'detailMapViewport.north': 'Hướng bắc',
   'detailMapViewport.legend': 'Chú giải',
@@ -1299,4 +1300,13 @@ export const vi = {
   'briefing.loading': 'Đang tải tóm tắt điều hành…',
   'briefing.error':
     'Không tải được dữ liệu tóm tắt điều hành. Các trang Dự án, Du lịch và Quy hoạch vẫn dùng được từ thanh bên.',
+  'layerPanel.lensHeading': 'Góc nhìn',
+  'layerPanel.lens.executive': 'Điều hành',
+  'layerPanel.lens.investment': 'Đầu tư',
+  'layerPanel.lens.tourism': 'Du lịch',
+  'layerPanel.lens.planning': 'Quy hoạch',
+  'unit.hero.captionPhoto':
+    'Hồ sơ số liệu của đơn vị hành chính. Ảnh là của một điểm đến du lịch nằm trong địa bàn, không phải ảnh toàn cảnh của đơn vị.',
+  'unit.hero.photoAlt': 'Ảnh tham chiếu của {place}',
+  'unit.hero.photoCaption': 'Ảnh điểm đến trong địa bàn: {place} (gán theo tọa độ).',
 } as const satisfies Record<string, string>;

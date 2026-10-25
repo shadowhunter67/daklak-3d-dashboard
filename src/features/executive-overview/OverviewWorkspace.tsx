@@ -3,7 +3,11 @@ import { geoMercator, geoPath } from 'd3-geo';
 import wards from '#province-assets/daklak-wards-render.json';
 import labels from '#province-assets/daklak-labels.json';
 import { unitMetrics } from '../../data/unitMetrics';
-import { layoutOverviewLabels, OVERVIEW_LABEL_FONT_SIZE } from './overviewMapLabels';
+import {
+  layoutOverviewLabels,
+  OVERVIEW_LABEL_FONT_SIZE,
+  overviewLabelTextLength,
+} from './overviewMapLabels';
 import { formatSubUnits } from '../../data/formatSubUnits';
 import { getUnitProfile } from '../../data/unitProfiles';
 import type { Metric, WardCollection } from '../../types/map';
@@ -191,6 +195,8 @@ function ProvinceMap() {
                 textAnchor="middle"
                 dominantBaseline="central"
                 fontSize={OVERVIEW_LABEL_FONT_SIZE}
+                textLength={overviewLabelTextLength(label.name)}
+                lengthAdjust="spacingAndGlyphs"
                 data-selected={label.code === selectedCode || undefined}
               >
                 {label.name}

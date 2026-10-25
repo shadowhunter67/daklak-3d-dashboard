@@ -23,7 +23,7 @@ describe('overview map labels', () => {
     expect(layoutOverviewLabels(inputs)).toEqual(layoutOverviewLabels(inputs));
   });
 
-  it('keeps residual overlap small after displacement', () => {
+  it('leaves no overlapping label boxes after displacement', () => {
     const placed = layoutOverviewLabels(inputs);
     const box = (label: (typeof placed)[number]) => ({
       left: label.x - (label.name.length * 0.6 * OVERVIEW_LABEL_FONT_SIZE) / 2,
@@ -43,9 +43,9 @@ describe('overview map labels', () => {
           overlapping += 1;
       }
     }
-    // The engine never drops a label; a few unavoidable overlaps in the densest cluster are
-    // tolerated, but most labels must end up clear of each other.
-    expect(overlapping).toBeLessThan(10);
+    // The engine never drops a label and, no two boxes
+    // overlap (measured in the real browser too: e2e/tourism-planning.spec.ts).
+    expect(overlapping).toBe(0);
   });
 
   it('marks displaced labels so a leader line can be drawn', () => {

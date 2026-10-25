@@ -28,7 +28,7 @@ import type {
 } from './detailMapTypes';
 import type { LocalSearchEntry } from './localSearchIndex';
 import { useTranslation } from '../../i18n/useTranslation';
-import { MapIcon, LayersIcon, TrendIcon, FolderIcon } from '../layout/icons';
+import { MapIcon, LayersIcon, TrendIcon, FolderIcon, PinIcon } from '../layout/icons';
 import { DetailPanel } from '../dashboard/DetailPanel';
 import { pickScaleBar } from './mapScale';
 import { useAppTheme } from '../../a11y/useAppTheme';
@@ -107,6 +107,7 @@ export function DetailMapViewport() {
   const setDetailMapBaseMap = useMapStore((state) => state.setDetailMapBaseMap);
   const toggleDetailMapLayer = useMapStore((state) => state.toggleDetailMapLayer);
   const setDetailMapPlanningOverlay = useMapStore((state) => state.setDetailMapPlanningOverlay);
+  const applyDetailMapLens = useMapStore((state) => state.applyDetailMapLens);
   const planningActive = layers.planningOverlay !== 'none';
   const scaleBar = pickScaleBar(camera.latitude, camera.zoom);
   const setDetailMapCamera = useMapStore((state) => state.setDetailMapCamera);
@@ -386,6 +387,14 @@ export function DetailMapViewport() {
             <FolderIcon />
             {t('detailMapViewport.projects')}
           </button>
+          <button
+            type="button"
+            aria-pressed={layers.tourismVisible}
+            onClick={() => toggleDetailMapLayer('tourismVisible')}
+          >
+            <PinIcon />
+            {t('detailMapViewport.tourism')}
+          </button>
         </div>
       </header>
       <div className={`detail-map-viewport__sidebar${directoryOpen ? '' : ' is-collapsed'}`}>
@@ -413,6 +422,7 @@ export function DetailMapViewport() {
             onBaseMapChange={setDetailMapBaseMap}
             onToggleLayer={toggleDetailMapLayer}
             onPlanningOverlayChange={setDetailMapPlanningOverlay}
+            onLensChange={applyDetailMapLens}
             suppressEscapeClose={interactionMode === 'measure' || interactionMode === 'radius'}
             toolsSlot={
               <>

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { applyDetailMapLens, type DetailMapLens } from '../components/detail-map/detailMapLens';
 import labels from '#province-assets/daklak-labels.json';
 import {
   parseDashboardUrl,
@@ -113,6 +114,7 @@ export interface MapState {
   setDetailMapBaseMap: (baseMap: DetailBaseMap) => void;
   toggleDetailMapLayer: (layer: ToggleableDetailMapLayer) => void;
   setDetailMapPlanningOverlay: (overlay: DetailMapLayerState['planningOverlay']) => void;
+  applyDetailMapLens: (lens: DetailMapLens) => void;
   /** No-op (and no re-render) if the new camera is within epsilon of the current one. */
   setDetailMapCamera: (camera: DetailMapCameraState) => void;
   applyDetailMapUrlState: (state: {
@@ -193,6 +195,8 @@ export function createMapStore(
       set((state) => ({
         detailMapLayers: { ...state.detailMapLayers, planningOverlay },
       })),
+    applyDetailMapLens: (lens) =>
+      set((state) => ({ detailMapLayers: applyDetailMapLens(state.detailMapLayers, lens) })),
     setDetailMapCamera: (camera) => {
       if (camerasApproximatelyEqual(get().detailMapCamera, camera)) return;
       set({ detailMapCamera: camera });

@@ -30,6 +30,7 @@ import {
   buildKeyProjectsSource,
   KEY_PROJECTS_SOURCE_ID,
 } from './keyProjectLayers';
+import { TOURISM_SOURCE_ID, buildTourismLayers, buildTourismSource } from './tourismLayers';
 import {
   buildPlanningZoneLayers,
   buildPlanningZonesSource,
@@ -92,6 +93,7 @@ export function buildDetailMapStyle(
           }
         : {}),
       [KEY_PROJECTS_SOURCE_ID]: buildKeyProjectsSource(),
+      [TOURISM_SOURCE_ID]: buildTourismSource(),
       [PLANNING_ZONES_SOURCE_ID]: buildPlanningZonesSource(),
     },
     layers: [
@@ -137,6 +139,9 @@ export function buildDetailMapStyle(
   // it on deliberately and it must never be occluded. Starts hidden (visibility: 'none');
   // MapLibreProvider.setKeyProjectsVisible reveals it and its label layer needs glyphs.
   style.layers.push(...buildKeyProjectsLayers(Boolean(glyphsUrl)));
+
+  // Verified tourist destinations (opt-in, starts hidden; labels need glyphs like every symbol layer).
+  style.layers.push(...buildTourismLayers(Boolean(glyphsUrl)));
 
   // Public-service POI overlay — separate PMTiles archive from `roads` (see serviceLayers.ts's doc
   // comment for why), gated independently. Drawn on top like key-projects/planning-zones (an
