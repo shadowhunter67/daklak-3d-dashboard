@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { renderWithI18n as render } from '../../i18n/tests/renderWithI18n';
 import { DEFAULT_DETAIL_MAP_LAYER_STATE } from './detailMapTypes';
@@ -26,6 +26,7 @@ function renderPanel(sourceAvailability: typeof availableSources) {
   const onToggleLayer = vi.fn();
   const onBaseMapChange = vi.fn();
   const onPlanningOverlayChange = vi.fn();
+  const onLensChange = vi.fn();
   render(
     <MapLayerPanel
       layers={DEFAULT_DETAIL_MAP_LAYER_STATE}
@@ -33,10 +34,11 @@ function renderPanel(sourceAvailability: typeof availableSources) {
       onBaseMapChange={onBaseMapChange}
       onToggleLayer={onToggleLayer}
       onPlanningOverlayChange={onPlanningOverlayChange}
+      onLensChange={onLensChange}
     />,
   );
   fireEvent.click(screen.getByRole('button', { name: 'Lớp bản đồ' }));
-  return { onToggleLayer, onBaseMapChange, onPlanningOverlayChange };
+  return { onToggleLayer, onBaseMapChange, onPlanningOverlayChange, onLensChange };
 }
 
 /** Heatmap/street-names/POI-labels/buildings/dashboard-metrics only render once "Nâng cao" is
@@ -156,6 +158,7 @@ describe('MapLayerPanel', () => {
         onBaseMapChange={vi.fn()}
         onToggleLayer={vi.fn()}
         onPlanningOverlayChange={vi.fn()}
+        onLensChange={vi.fn()}
       />,
     );
     fireEvent.click(screen.getByRole('button', { name: 'Lớp bản đồ' }));
@@ -179,10 +182,23 @@ describe('MapLayerPanel', () => {
         onBaseMapChange={vi.fn()}
         onToggleLayer={vi.fn()}
         onPlanningOverlayChange={vi.fn()}
+        onLensChange={vi.fn()}
       />,
     );
     fireEvent.click(screen.getByRole('button', { name: 'Lớp bản đồ' }));
     expect(screen.getByText('Rừng đặc dụng')).toBeInTheDocument();
     expect(screen.getByText(/không có giá trị pháp lý/i)).toBeInTheDocument();
+  });
+
+  it('góc nhìn: hiện 4 lựa chọn, đánh dấu góc nhìn hiện tại và gọi onLensChange', () => {
+    const { onLensChange } = renderPanel(availableSources);
+    const group = screen.getByRole('group', { name: 'Góc nhìn' });
+    expect(within(group).getAllByRole('button')).toHaveLength(4);
+    expect(within(group).getByRole('button', { name: 'Điều hành' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    fireEvent.click(within(group).getByRole('button', { name: 'Du lịch' }));
+    expect(onLensChange).toHaveBeenCalledWith('tourism');
   });
 });

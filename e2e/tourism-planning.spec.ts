@@ -106,3 +106,29 @@ test.describe('Tổng quan và tìm kiếm (V3)', () => {
     await expect(page).toHaveURL(/#\/planning/);
   });
 });
+
+test.describe('Góc nhìn bản đồ chi tiết', () => {
+  test('chọn góc nhìn Du lịch bật lớp điểm đến và ghi vào URL; Điều hành tắt lại', async ({
+    page,
+  }) => {
+    await page.addInitScript(() =>
+      window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true'),
+    );
+    await page.goto('./?view=map');
+    await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    const group = page.getByRole('group', { name: 'Góc nhìn' });
+    await expect(group.getByRole('button', { name: 'Điều hành' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await group.getByRole('button', { name: 'Du lịch' }).click();
+    await expect(group.getByRole('button', { name: 'Du lịch' })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+    await expect(page.getByRole('checkbox', { name: /Điểm đến du lịch/ })).toBeChecked();
+    await expect.poll(() => page.url()).toContain('tourism=1');
+    await group.getByRole('button', { name: 'Điều hành' }).click();
+    await expect(page.getByRole('checkbox', { name: /Điểm đến du lịch/ })).not.toBeChecked();
+  });
+});

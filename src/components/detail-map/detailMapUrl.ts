@@ -108,6 +108,11 @@ export function parseDetailMapLayers(search: string): DetailMapLayerState {
       'zones',
       DEFAULT_DETAIL_MAP_LAYER_STATE.planningZonesVisible,
     ),
+    tourismVisible: parseBooleanParam(
+      params,
+      'tourism',
+      DEFAULT_DETAIL_MAP_LAYER_STATE.tourismVisible,
+    ),
     buildingsVisible: parseBooleanParam(
       params,
       'buildings',
@@ -147,6 +152,7 @@ export function serializeDetailMapParams(
   params.set('planning', layers.planningOverlay);
   params.set('projects', layers.keyProjectsVisible ? '1' : '0');
   params.set('zones', layers.planningZonesVisible ? '1' : '0');
+  params.set('tourism', layers.tourismVisible ? '1' : '0');
   params.set('buildings', layers.buildingsVisible ? '1' : '0');
   params.set('services', layers.servicesVisible ? '1' : '0');
   params.set('metrics', layers.dashboardMetricsVisible ? '1' : '0');
@@ -184,6 +190,7 @@ export function layerStatesEqual(a: DetailMapLayerState, b: DetailMapLayerState)
     a.planningOverlay === b.planningOverlay &&
     a.keyProjectsVisible === b.keyProjectsVisible &&
     a.planningZonesVisible === b.planningZonesVisible &&
+    a.tourismVisible === b.tourismVisible &&
     a.buildingsVisible === b.buildingsVisible &&
     a.servicesVisible === b.servicesVisible &&
     a.dashboardMetricsVisible === b.dashboardMetricsVisible &&

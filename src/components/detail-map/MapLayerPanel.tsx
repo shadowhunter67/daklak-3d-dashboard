@@ -2,12 +2,14 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { getLayerDescriptor } from '../../data-platform/catalog/layers';
 import { BaseMapSelector } from './BaseMapSelector';
 import { PlanningOverlaySelector } from './PlanningOverlaySelector';
+import { DETAIL_MAP_LENSES, detectDetailMapLens, type DetailMapLens } from './detailMapLens';
 import {
   KEY_PROJECT_STATUS_COLOR,
   KEY_PROJECT_STATUS_LABEL,
   type KeyProjectStatus,
 } from './keyProjects';
 import { useTranslation } from '../../i18n/useTranslation';
+import type { MessageKey } from '../../i18n/messages';
 import type {
   DetailBaseMap,
   DetailMapLayerState,
@@ -74,6 +76,8 @@ const basicLayerToggles: Array<{
   // Bundled, externally-sourced reference layer — always available.
   { key: 'keyProjectsVisible', unavailableWhen: 'administrativeBoundaries' },
   { key: 'planningZonesVisible', unavailableWhen: 'administrativeBoundaries' },
+  // Bundled verified destinations — always available, like the other reference layers.
+  { key: 'tourismVisible', unavailableWhen: 'administrativeBoundaries' },
 ];
 const advancedLayerToggles: typeof basicLayerToggles = [
   { key: 'roadLabelsVisible', unavailableWhen: 'roads' },
@@ -137,6 +141,7 @@ export function MapLayerPanel({
   onBaseMapChange,
   onToggleLayer,
   onPlanningOverlayChange,
+  onLensChange,
   toolsSlot,
   suppressEscapeClose = false,
 }: {
@@ -145,6 +150,7 @@ export function MapLayerPanel({
   onBaseMapChange: (baseMap: DetailBaseMap) => void;
   onToggleLayer: (layer: ToggleableLayer) => void;
   onPlanningOverlayChange: (overlay: PlanningOverlay) => void;
+  onLensChange: (lens: DetailMapLens) => void;
   toolsSlot?: ReactNode;
   /**
    * True while a child tool (distance measurement) owns Escape for its own exit. Without this,
@@ -192,6 +198,25 @@ export function MapLayerPanel({
           className="detail-map-layer-panel__content"
           aria-label={t('layerPanel.contentAria')}
         >
+          <section aria-labelledby="detail-map-layer-panel-lens-heading">
+            <h3 id="detail-map-layer-panel-lens-heading">{t('layerPanel.lensHeading')}</h3>
+            <div
+              className="detail-map-layer-panel__mode"
+              role="group"
+              aria-label={t('layerPanel.lensHeading')}
+            >
+              {DETAIL_MAP_LENSES.map((lens) => (
+                <button
+                  key={lens}
+                  type="button"
+                  aria-pressed={detectDetailMapLens(layers) === lens}
+                  onClick={() => onLensChange(lens)}
+                >
+                  {t(`layerPanel.lens.${lens}` as MessageKey)}
+                </button>
+              ))}
+            </div>
+          </section>
           <section aria-labelledby="detail-map-layer-panel-layers-heading">
             <div
               className="detail-map-layer-panel__mode"

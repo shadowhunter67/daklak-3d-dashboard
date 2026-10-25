@@ -974,6 +974,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'detailMapViewport.roads': 'Transport layer',
   'detailMapViewport.planning': 'Planning layer',
   'detailMapViewport.projects': 'Projects layer',
+  'detailMapViewport.tourism': 'Tourism layer',
   'detailMapViewport.mapHud': 'Map information',
   'detailMapViewport.north': 'North',
   'detailMapViewport.legend': 'Legend',
@@ -1281,4 +1282,9 @@ export const en: Partial<Record<MessageKey, string>> = {
   'briefing.loading': 'Loading the executive briefing…',
   'briefing.error':
     'Could not load the executive briefing data. The Projects, Tourism and Planning pages are still available from the sidebar.',
+  'layerPanel.lensHeading': 'Lens',
+  'layerPanel.lens.executive': 'Executive',
+  'layerPanel.lens.investment': 'Investment',
+  'layerPanel.lens.tourism': 'Tourism',
+  'layerPanel.lens.planning': 'Planning',
 };

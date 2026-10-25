@@ -37,6 +37,8 @@ import {
 } from './planningZoneLayers';
 import type { DetailMapSourceAvailability } from './detailMapTypes';
 
+import { TOURISM_LABEL_LAYER_ID, TOURISM_POINT_LAYER_ID } from './tourismLayers';
+
 const KEY_PROJECT_POINT_LINE = [KEY_PROJECTS_LINE_LAYER_ID, KEY_PROJECTS_POINT_LAYER_ID];
 const PLANNING_ZONE_IDS = [PLANNING_ZONES_FILL_LAYER_ID, PLANNING_ZONES_LINE_LAYER_ID];
 
@@ -74,6 +76,7 @@ describe('buildDetailMapStyle', () => {
       // no glyphs => no key-projects label layer, only line + point
       KEY_PROJECTS_LINE_LAYER_ID,
       KEY_PROJECTS_POINT_LAYER_ID,
+      TOURISM_POINT_LAYER_ID,
     ]);
     const planning = style.layers.find((l) => l.id === PLANNING_FILL_LAYER_ID);
     expect(planning?.type === 'fill' && planning.paint?.['fill-opacity']).toBe(0);
@@ -111,6 +114,7 @@ describe('buildDetailMapStyle', () => {
       (layer) =>
         layer.id !== 'background' &&
         !layer.id.startsWith('key-projects') &&
+        !layer.id.startsWith('tourism-destinations') &&
         !layer.id.startsWith('planning-zones') &&
         !layer.id.startsWith('ward-labels'),
     );
@@ -159,6 +163,8 @@ describe('buildDetailMapStyle', () => {
       KEY_PROJECTS_LINE_LAYER_ID,
       KEY_PROJECTS_POINT_LAYER_ID,
       KEY_PROJECTS_LABEL_LAYER_ID,
+      TOURISM_POINT_LAYER_ID,
+      TOURISM_LABEL_LAYER_ID,
     ]);
     expect(style.glyphs).toBe(GLYPHS_URL);
   });
@@ -198,6 +204,8 @@ describe('buildDetailMapStyle', () => {
       KEY_PROJECTS_LINE_LAYER_ID,
       KEY_PROJECTS_POINT_LAYER_ID,
       KEY_PROJECTS_LABEL_LAYER_ID,
+      TOURISM_POINT_LAYER_ID,
+      TOURISM_LABEL_LAYER_ID,
     ]);
     expect(ids).not.toContain(ROAD_LABELS_LAYER_ID);
     expect(style.glyphs).toBe(GLYPHS_URL);

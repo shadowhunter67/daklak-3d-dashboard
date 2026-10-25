@@ -118,6 +118,16 @@ describe('parseDetailMapLayers', () => {
     expect(parseDetailMapLayers('').planningZonesVisible).toBe(false);
     expect(parseDetailMapLayers('?zones=1').planningZonesVisible).toBe(true);
   });
+
+  it('tourism overlay defaults off, toggles via `tourism`, and round-trips', () => {
+    expect(parseDetailMapLayers('').tourismVisible).toBe(false);
+    expect(parseDetailMapLayers('?tourism=1').tourismVisible).toBe(true);
+    const layers = { ...DEFAULT_DETAIL_MAP_LAYER_STATE, tourismVisible: true };
+    const params = serializeDetailMapParams(DEFAULT_DETAIL_MAP_CAMERA, layers);
+    expect(params.get('tourism')).toBe('1');
+    expect(parseDetailMapLayers(`?${params.toString()}`).tourismVisible).toBe(true);
+    expect(layerStatesEqual(layers, DEFAULT_DETAIL_MAP_LAYER_STATE)).toBe(false);
+  });
 });
 
 describe('serializeDetailMapParams', () => {

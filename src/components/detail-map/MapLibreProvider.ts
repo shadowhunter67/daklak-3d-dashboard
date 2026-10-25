@@ -52,6 +52,8 @@ import {
   KEY_PROJECT_LAYER_IDS,
 } from './keyProjectLayers';
 import { keyProjectPopupHtml } from './keyProjectPopup';
+import { TOURISM_LAYER_IDS, TOURISM_POINT_LAYER_ID } from './tourismLayers';
+import { tourismPopupHtml } from './tourismPopup';
 import { KEY_PROJECTS } from './keyProjects';
 import { LINE_DRAW_DURATION_MS, sliceFeatureCollectionLines } from './lineDrawAnimation';
 import {
@@ -385,6 +387,7 @@ export class MapLibreProvider implements DetailedMapProvider {
     this.setPlanningZonesVisible(layers.planningZonesVisible, {
       animate: canAnimate && layers.planningZonesVisible && !previous?.planningZonesVisible,
     });
+    this.setTourismVisible(layers.tourismVisible);
     this.setBuildingsVisible(layers.buildingsVisible);
     this.setServicesVisible(layers.servicesVisible);
     this.setDashboardMetricsVisible(layers.dashboardMetricsVisible);
@@ -567,7 +570,23 @@ export class MapLibreProvider implements DetailedMapProvider {
         return true;
       }
     }
+    if (this.openTourismPopupAt(point)) return true;
     return this.openPlanningZonePopupAt(point);
+  }
+
+  /** Returns true if a tourist-destination point was under the click and a popup was opened. */
+  private openTourismPopupAt(point: { x: number; y: number }): boolean {
+    if (!this.map?.getLayer(TOURISM_POINT_LAYER_ID)) return false;
+    const features = this.map.queryRenderedFeatures([point.x, point.y], {
+      layers: [TOURISM_POINT_LAYER_ID],
+    });
+    const feature = features[0] as MapGeoJSONFeature | undefined;
+    if (!feature || feature.geometry.type !== 'Point') return false;
+    this.showReferencePopup(
+      feature.geometry.coordinates as [number, number],
+      tourismPopupHtml(feature.properties ?? {}),
+    );
+    return true;
   }
 
   /** Returns true if a planning-zone polygon was under the point and a popup was opened. */
@@ -603,6 +622,14 @@ export class MapLibreProvider implements DetailedMapProvider {
       .setLngLat(anchor)
       .setHTML(html)
       .addTo(this.map);
+  }
+
+  setTourismVisible(visible: boolean): void {
+    for (const id of TOURISM_LAYER_IDS) this.setLayerVisibility(id, visible);
+    if (!visible) {
+      this.keyProjectPopup?.remove();
+      this.keyProjectPopup = null;
+    }
   }
 
   setBuildingsVisible(visible: boolean): void {
