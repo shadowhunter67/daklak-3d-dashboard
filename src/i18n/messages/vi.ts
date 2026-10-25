@@ -1305,4 +1305,8 @@ export const vi = {
   'layerPanel.lens.investment': 'Đầu tư',
   'layerPanel.lens.tourism': 'Du lịch',
   'layerPanel.lens.planning': 'Quy hoạch',
+  'unit.hero.captionPhoto':
+    'Hồ sơ số liệu của đơn vị hành chính. Ảnh là của một điểm đến du lịch nằm trong địa bàn, không phải ảnh toàn cảnh của đơn vị.',
+  'unit.hero.photoAlt': 'Ảnh tham chiếu của {place}',
+  'unit.hero.photoCaption': 'Ảnh điểm đến trong địa bàn: {place} (gán theo tọa độ).',
 } as const satisfies Record<string, string>;

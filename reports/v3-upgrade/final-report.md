@@ -1,6 +1,6 @@
 # Báo cáo cuối V3 — Đắk Lắk Spatial Intelligence
 
-Cập nhật 2026-10-24. Mọi con số dưới đây lấy từ dữ liệu và lần chạy thật; mockup không được coi là dữ liệu.
+Cập nhật 2026-10-25. Mọi con số dưới đây lấy từ dữ liệu và lần chạy thật; mockup không được coi là dữ liệu.
 
 ## Trạng thái: NOT READY
 
@@ -8,18 +8,20 @@ Lý do chính: các hạng mục bắt buộc của V3 chưa đạt (xem "Chưa 
 
 ## Đã làm
 
-| Hạng mục                                              | Kết quả                                                                                                                                              | Bằng chứng                                                                      |
-| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| Hồ sơ xã/phường `#/unit/<mã>` (PR #219)               | Diện tích, dân số 2025, mật độ, đơn vị cấp dưới, dự án thu hút đầu tư và điểm du lịch trong địa bàn; hình ranh giới GIS khi chưa có ảnh              | `e2e/unit-profile.spec.ts`, ảnh `reports/ui-review/v3/after/unit-profile-*.png` |
-| Độ phủ ảnh xã/phường                                  | KPI thật: 0/102 có ảnh đã xác minh                                                                                                                   | `DataReadinessView.test.tsx`                                                    |
-| Nghiên cứu ảnh xã/phường                              | 21 đơn vị có ứng viên (45 ảnh), tất cả chỉ-tham-chiếu, không ảnh nào vào bản chạy thật                                                               | `reports/research/administrative-unit-media-review.md`                          |
-| Trung tâm Du lịch `#/tourism` (PR #220)               | 28 điểm đến có nguồn, 25 có ảnh giấy phép tự do, 17 xã/phường có điểm; lượt khách ghi "Chưa có dữ liệu"                                              | `e2e/tourism-planning.spec.ts`, `tourism-desktop.png`                           |
-| Trung tâm Quy hoạch `#/planning` (PR #220)            | 118 văn bản trích dẫn, 187/201 dự án có trích dẫn, 5 dự án cần rà soát (theo chính ô nguồn), ghi lại cách nguồn viết số hiệu                         | `scripts/research/extract_planning_citations.mjs`, `planning-desktop.png`       |
-| Tổng quan: Việc cần chú ý và Quy mô vốn theo lĩnh vực | Chỉ khoảng trống dữ liệu thật và vốn dự kiến theo lĩnh vực từ QĐ 1985; ghi chú tổng lệch 4 nhóm; khối trách nhiệm chỉ nêu lý do chưa có nguồn        | `overview-briefing-desktop.png`                                                 |
-| Tìm kiếm                                              | Thêm nhóm "Văn bản quy hoạch"                                                                                                                        | `globalSearchIndex.test.ts`, e2e                                                |
-| Sidebar                                               | Thêm "Du lịch"; "Quy hoạch" mở trang riêng; hồ sơ xã tô sáng "Xã, phường"                                                                            | `AppSidebar.test.tsx`                                                           |
-| Hạ tầng                                               | `npm audit fix` (fast-uri, undici, zod) để job security xanh (PR #221)                                                                               | CI                                                                              |
-| Ngân sách                                             | JS 3.428.000 → 3.484.000, gzip 950.000 → 958.000, build 22.800.000 → 22.830.000; từng lần nâng có đo và lý do trong `scripts/check_build_budget.mjs` | `npm run check:budget`                                                          |
+| Hạng mục                                              | Kết quả                                                                                                                                                                                                      | Bằng chứng                                                                           |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| Hồ sơ xã/phường `#/unit/<mã>` (PR #219)               | Diện tích, dân số 2025, mật độ, đơn vị cấp dưới, dự án thu hút đầu tư và điểm du lịch trong địa bàn; hình ranh giới GIS khi chưa có ảnh                                                                      | `e2e/unit-profile.spec.ts`, ảnh `reports/ui-review/v3/after/unit-profile-*.png`      |
+| Độ phủ ảnh xã/phường                                  | KPI thật đếm từ dữ liệu: 14/102 đơn vị có ảnh của một điểm đến du lịch nằm trong địa bàn (dùng lại file Commons giấy phép tự do, ghi rõ không phải toàn cảnh)                                                | `unitMedia.test.ts`, `DataReadinessView.test.tsx`, `unit-profile-photo-desktop.png`  |
+| Nghiên cứu ảnh xã/phường                              | 21 đơn vị có ứng viên (45 ảnh); đã tải thu nhỏ và xem 42 ảnh bằng mắt, không ảnh ứng viên nào đủ điều kiện                                                                                                   | `administrative-unit-media-decisions.md`                                             |
+| Góc nhìn bản đồ chi tiết                              | Nhóm 4 góc nhìn (Điều hành, Đầu tư, Du lịch, Quy hoạch) trong bảng lớp, lớp điểm đến du lịch thật trên bản đồ MapLibre (popup có nguồn, không có lượt khách), tab nhanh "Lớp du lịch", tham số URL `tourism` | `detailMapLens.test.ts`, `tourismPopup.test.ts`, e2e, `map-tourism-lens-desktop.png` |
+| Trung tâm Du lịch `#/tourism` (PR #220)               | 28 điểm đến có nguồn, 25 có ảnh giấy phép tự do, 17 xã/phường có điểm; lượt khách ghi "Chưa có dữ liệu"                                                                                                      | `e2e/tourism-planning.spec.ts`, `tourism-desktop.png`                                |
+| Trung tâm Quy hoạch `#/planning` (PR #220)            | 118 văn bản trích dẫn, 187/201 dự án có trích dẫn, 5 dự án cần rà soát (theo chính ô nguồn), ghi lại cách nguồn viết số hiệu                                                                                 | `scripts/research/extract_planning_citations.mjs`, `planning-desktop.png`            |
+| Tổng quan: Việc cần chú ý và Quy mô vốn theo lĩnh vực | Chỉ khoảng trống dữ liệu thật và vốn dự kiến theo lĩnh vực từ QĐ 1985; ghi chú tổng lệch 4 nhóm; khối trách nhiệm chỉ nêu lý do chưa có nguồn                                                                | `overview-briefing-desktop.png`                                                      |
+| Nhãn bản đồ Tổng quan                                 | 102 tên, 0 cặp chồng đo trong trình duyệt ở 2 độ rộng                                                                                                                                                        | e2e `Nhãn bản đồ Tổng quan`                                                          |
+| Tìm kiếm                                              | Thêm nhóm "Văn bản quy hoạch"                                                                                                                                                                                | `globalSearchIndex.test.ts`, e2e                                                     |
+| Sidebar                                               | Thêm "Du lịch"; "Quy hoạch" mở trang riêng; hồ sơ xã tô sáng "Xã, phường"                                                                                                                                    | `AppSidebar.test.tsx`                                                                |
+| Hạ tầng                                               | `npm audit fix` (fast-uri, undici, zod) để job security xanh (PR #221)                                                                                                                                       | CI                                                                                   |
+| Ngân sách                                             | JS 3.428.000 → 3.490.000, gzip 950.000 → 960.000, build 22.800.000 → 22.838.000; từng lần nâng có đo và lý do trong `scripts/check_build_budget.mjs`                                                         | `npm run check:budget`                                                               |
 
 ## Review độc lập (Codex qua bridge)
 
@@ -30,9 +32,9 @@ Lý do chính: các hạng mục bắt buộc của V3 chưa đạt (xem "Chưa 
 
 ## Chưa làm / chưa đạt
 
-1. **Thanh chuyển góc nhìn bản đồ (Điều hành / Đầu tư / Du lịch / Quy hoạch)**: chưa làm. Sidebar đóng vai trò điều hướng giữa các trang, chưa có lớp bản đồ theo từng góc nhìn.
-2. **Không chồng nhãn 102 xã/phường**: chưa đạt. Một số nhãn 2D vẫn chạm nhau; bản đồ 3D (địa hình, nhãn) không kiểm chứng được trong Chrome không GPU.
-3. **Ảnh xã/phường**: 0/102. Cần người xem 45 ảnh ứng viên để xác nhận chủ thể, và quyết định ngân sách dung lượng (build còn dư rất ít).
+1. **Không chồng nhãn 102 xã/phường**: bản đồ Tổng quan 2D đạt (đo bằng hộp bao DOM thật: 0 cặp chồng ở 1366 và 500 px, có e2e `Nhãn bản đồ Tổng quan`; đã nới ước lượng bề rộng/chiều cao nhãn trong `overviewMapLabels.ts`). Chưa kiểm chứng được: nhãn 3D (Chrome không GPU nên vị trí chiếu không tính được, đo ra 215 cặp chồng là số vô nghĩa) và nhãn bản đồ chi tiết MapLibre (vẽ trên canvas, không đo được bằng DOM).
+2. **Ảnh xã/phường**: 14/102. 88 đơn vị còn lại cần ảnh có giấy phép (chụp mới hoặc xin phép); 45 ảnh ứng viên Commons đã xem và không đủ điều kiện.
+3. **Góc nhìn bản đồ**: là các cấu hình sẵn lớp tham khảo; "Quy hoạch" vẫn dùng lớp quy hoạch minh họa và ranh quy hoạch tham khảo, không phải ranh chính thức.
 4. **Bảng trách nhiệm, tác động kinh tế thật**: không có nguồn về chủ đầu tư, giải ngân, nên không dựng. Khối "Quy mô vốn" là vốn dự kiến, không phải tác động kinh tế.
 5. **Ranh giới quy hoạch chính thức**: chưa có tệp công bố tải được; lớp trên bản đồ vẫn là minh họa.
 6. **Lượt khách và chỉ số du lịch**: chưa có nguồn công bố.

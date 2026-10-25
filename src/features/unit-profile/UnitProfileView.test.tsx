@@ -1,6 +1,8 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { ResearchedDataset } from '../../entities/researched-project/types';
+import labels from '#province-assets/daklak-labels.json';
+import { ADMIN_UNIT_MEDIA } from '../../data/adminUnitMedia';
 import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 
 const obs = <T,>(value: T) => ({
@@ -93,11 +95,25 @@ describe('UnitProfileView', () => {
     expect(onOpenCatalog).toHaveBeenCalledWith('24580');
   });
 
-  it('không có ảnh đã xác minh thì dùng hình ranh giới GIS và nói thẳng điều đó', async () => {
+  it('đơn vị có điểm đến kèm ảnh: hiện ảnh điểm đến, ghi rõ không phải ảnh toàn cảnh, kèm giấy phép', async () => {
     renderUnit('24580');
     await screen.findByRole('heading', { level: 1 });
+    expect(screen.getByRole('img', { name: /Ảnh tham chiếu của Hồ Lắk/ })).toBeTruthy();
+    expect(screen.getByText(/không phải ảnh toàn cảnh/)).toBeTruthy();
+    expect(screen.getAllByText(/CC BY-SA/).length).toBeGreaterThan(0);
+    expect(screen.queryByRole('img', { name: /Hình dạng ranh giới/ })).toBeNull();
+  });
+
+  it('không có ảnh thì dùng hình ranh giới GIS và nói thẳng độ phủ thật', async () => {
+    const withMedia = new Set(ADMIN_UNIT_MEDIA.map((m) => m.administrativeUnitCode));
+    const total = Object.keys(labels).length;
+    const bare = Object.keys(labels).find((c) => !withMedia.has(c))!;
+    renderUnit(bare);
+    await screen.findByRole('heading', { level: 1 });
     expect(screen.getByRole('img', { name: /Hình dạng ranh giới/ })).toBeTruthy();
-    expect(screen.getByText(/0\/102 đơn vị có ảnh đã xác minh/)).toBeTruthy();
+    expect(
+      screen.getByText(new RegExp(`${withMedia.size}/${total} đơn vị có ảnh đã xác minh`)),
+    ).toBeTruthy();
   });
 
   it('mã không tồn tại → thông báo rõ ràng, không crash', async () => {

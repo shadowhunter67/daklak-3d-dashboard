@@ -1287,4 +1287,9 @@ export const en: Partial<Record<MessageKey, string>> = {
   'layerPanel.lens.investment': 'Investment',
   'layerPanel.lens.tourism': 'Tourism',
   'layerPanel.lens.planning': 'Planning',
+  'unit.hero.captionPhoto':
+    'Data profile of the administrative unit. The photo shows a tourist destination inside the unit, not an overview of the whole unit.',
+  'unit.hero.photoAlt': 'Reference photo of {place}',
+  'unit.hero.photoCaption':
+    'Photo of a destination in the unit: {place} (assigned by coordinates).',
 };

@@ -83,13 +83,17 @@ const dist = join(root, 'dist');
 // V3 overview briefing + planning search group: totalJavaScriptBytes 3,476,000 -> 3,484,000 and
 // totalBuildBytes 22,822,000 -> 22,830,000 (measured 3,480,249 / 22,826,381; +4.2KB: ProvinceBriefing
 // card, provinceBriefing model, sectorLabels split, planning search kind and strings).
+// V3 map lens + tourism map layer + unit photos from verified destinations (2026-10): JS 3,484,000 ->
+// 3,490,000, gzip 958,000 -> 960,000, build 22,830,000 -> 22,838,000 (measured 3,487,478 / 957,684 /
+// 22,834,007; +3.5KB: tourism layer + popup, lens module, layer panel group, unit photo hero, strings).
+// The unit photos reuse files already in public/images/destinations, so they add no image bytes.
 const limits = {
-  totalJavaScriptBytes: 3_484_000,
-  totalJavaScriptGzipBytes: 958_000,
+  totalJavaScriptBytes: 3_490_000,
+  totalJavaScriptGzipBytes: 960_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 22_830_000,
+  totalBuildBytes: 22_838_000,
 };
 
 async function filesAt(directory) {

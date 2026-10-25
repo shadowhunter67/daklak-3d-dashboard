@@ -27,8 +27,8 @@ export interface OverviewLabelPlacement {
 }
 
 export const OVERVIEW_LABEL_FONT_SIZE = 11;
-const CHAR_WIDTH_EM = 0.6;
-const LINE_HEIGHT_EM = 1.3;
+const CHAR_WIDTH_EM = 0.64;
+const LINE_HEIGHT_EM = 1.45;
 const RADII_PX = [14, 26, 40, 56, 74, 94];
 
 export function layoutOverviewLabels(

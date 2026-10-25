@@ -114,6 +114,9 @@ export function UnitProfileView({
   const typeLabel = t(profile.type === 'phuong' ? 'unitType.ward' : 'unitType.commune');
   const destinations = DESTINATIONS_BY_UNIT.get(code) ?? [];
   const coverage = imageCoverage(ALL_UNIT_CODES, ADMIN_UNIT_MEDIA);
+  const photo = ADMIN_UNIT_MEDIA.find(
+    (m) => m.administrativeUnitCode === code && m.usage === 'production' && m.localAsset,
+  );
   const capital = formatCapitalBillions(model.opportunityCapitalVnd, locale);
 
   return (
@@ -127,7 +130,7 @@ export function UnitProfileView({
         headingId="unit-profile-heading"
         headingRef={headingRef}
         title={`${typeLabel} ${model.name}`}
-        description={t('unit.hero.caption')}
+        description={t(photo ? 'unit.hero.captionPhoto' : 'unit.hero.caption')}
         breadcrumb={
           <>
             <span>{t('common.home')}</span>
@@ -151,9 +154,29 @@ export function UnitProfileView({
           </>
         }
       />
-      <Card>
-        <BoundaryShape code={code} label={t('unit.hero.shapeAlt', { name: model.name })} />
-      </Card>
+      {photo ? (
+        <Card>
+          <figure className="unit-profile__photo">
+            <img
+              src={`${import.meta.env.BASE_URL}${photo.localAsset}`}
+              alt={t('unit.hero.photoAlt', { place: photo.subject })}
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption>
+              {t('unit.hero.photoCaption', { place: photo.subject })} {photo.notes}{' '}
+              <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer">
+                {t('catalog.source')}
+              </a>{' '}
+              ({photo.license})
+            </figcaption>
+          </figure>
+        </Card>
+      ) : (
+        <Card>
+          <BoundaryShape code={code} label={t('unit.hero.shapeAlt', { name: model.name })} />
+        </Card>
+      )}
       <ul className="ui-kpi-grid project-portfolio__kpis" aria-label={t('unit.kpiLabel')}>
         <KpiTile
           label={t('workspace.info.area')}

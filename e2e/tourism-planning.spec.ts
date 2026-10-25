@@ -132,3 +132,28 @@ test.describe('Góc nhìn bản đồ chi tiết', () => {
     await expect(page.getByRole('checkbox', { name: /Điểm đến du lịch/ })).not.toBeChecked();
   });
 });
+
+test.describe('Nhãn bản đồ Tổng quan', () => {
+  test('102 tên đều hiện và không nhãn nào chồng lên nhãn khác', async ({ page }) => {
+    await page.goto('./?view=overview');
+    const labels = page.locator('.overview-workspace__map-labels text');
+    await expect(labels).toHaveCount(102);
+    const overlaps = await labels.evaluateAll((nodes) => {
+      const boxes = nodes.map((node) => node.getBoundingClientRect());
+      let count = 0;
+      for (let i = 0; i < boxes.length; i += 1) {
+        for (let j = i + 1; j < boxes.length; j += 1) {
+          const a = boxes[i];
+          const b = boxes[j];
+          if (
+            Math.min(a.right, b.right) > Math.max(a.left, b.left) &&
+            Math.min(a.bottom, b.bottom) > Math.max(a.top, b.top)
+          )
+            count += 1;
+        }
+      }
+      return count;
+    });
+    expect(overlaps).toBe(0);
+  });
+});
