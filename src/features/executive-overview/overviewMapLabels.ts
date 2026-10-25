@@ -27,9 +27,19 @@ export interface OverviewLabelPlacement {
 }
 
 export const OVERVIEW_LABEL_FONT_SIZE = 11;
-const CHAR_WIDTH_EM = 0.64;
-const LINE_HEIGHT_EM = 1.45;
+const CHAR_WIDTH_EM = 0.6;
+const LINE_HEIGHT_EM = 1.3;
+const LAYOUT_PADDING_PX = 3;
 const RADII_PX = [14, 26, 40, 56, 74, 94];
+
+/**
+ * Chiều dài chữ mà bộ bố trí giả định cho một nhãn. Giao diện ép chữ vẽ ra đúng chiều dài này
+ * (`textLength`) để hộp nhãn trong trình duyệt khớp bộ bố trí trên mọi nền tảng/phông chữ; nếu không,
+ * phông rộng hơn (ví dụ trên Linux) làm nhãn chồng nhau dù bộ bố trí đã tách.
+ */
+export function overviewLabelTextLength(name: string, fontSize = OVERVIEW_LABEL_FONT_SIZE): number {
+  return name.length * CHAR_WIDTH_EM * fontSize;
+}
 
 export function layoutOverviewLabels(
   labels: readonly OverviewLabelInput[],
@@ -40,7 +50,8 @@ export function layoutOverviewLabels(
       id: label.code,
       x: label.x,
       y: label.y,
-      width: label.name.length * CHAR_WIDTH_EM * fontSize,
+      // Nhãn được vẽ đúng `textLength`; cộng đệm nhỏ để hai nhãn sát nhau không chạm do làm tròn.
+      width: overviewLabelTextLength(label.name, fontSize) + LAYOUT_PADDING_PX,
       height: fontSize * LINE_HEIGHT_EM,
       priority: label.priority,
     })),

@@ -23,7 +23,7 @@ describe('overview map labels', () => {
     expect(layoutOverviewLabels(inputs)).toEqual(layoutOverviewLabels(inputs));
   });
 
-  it('leaves no overlapping label boxes after displacement (real-text estimate)', () => {
+  it('leaves no overlapping label boxes after displacement', () => {
     const placed = layoutOverviewLabels(inputs);
     const box = (label: (typeof placed)[number]) => ({
       left: label.x - (label.name.length * 0.6 * OVERVIEW_LABEL_FONT_SIZE) / 2,
@@ -43,7 +43,7 @@ describe('overview map labels', () => {
           overlapping += 1;
       }
     }
-    // The engine never drops a label and, with the padded layout, no two real-text boxes
+    // The engine never drops a label and, no two boxes
     // overlap (measured in the real browser too: e2e/tourism-planning.spec.ts).
     expect(overlapping).toBe(0);
   });

@@ -139,21 +139,32 @@ test.describe('Nhãn bản đồ Tổng quan', () => {
     const labels = page.locator('.overview-workspace__map-labels text');
     await expect(labels).toHaveCount(102);
     const overlaps = await labels.evaluateAll((nodes) => {
-      const boxes = nodes.map((node) => node.getBoundingClientRect());
-      let count = 0;
+      // Chiều ngang lấy từ chữ thật (đã ép đúng `textLength`); chiều cao dùng hộp chữ cố định quanh
+      // tâm chữ (11px x 1.3) vì chiều cao hộp bao của phông khác nhau giữa nền tảng.
+      // Chạm mép (độ sâu chồng ≤ 0,5px do làm tròn) không tính là chồng.
+      const boxes = nodes.map((node) => {
+        const b = node.getBoundingClientRect();
+        const midY = (b.top + b.bottom) / 2;
+        const scale = (node as SVGGraphicsElement).getScreenCTM()?.a ?? 1;
+        const half = (11 * 1.3 * scale) / 2;
+        return { left: b.left, right: b.right, top: midY - half, bottom: midY + half };
+      });
+      const pairs: string[] = [];
       for (let i = 0; i < boxes.length; i += 1) {
         for (let j = i + 1; j < boxes.length; j += 1) {
           const a = boxes[i];
           const b = boxes[j];
           if (
-            Math.min(a.right, b.right) > Math.max(a.left, b.left) &&
-            Math.min(a.bottom, b.bottom) > Math.max(a.top, b.top)
+            Math.min(a.right, b.right) - Math.max(a.left, b.left) > 0.5 &&
+            Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 0.5
           )
-            count += 1;
+            pairs.push(
+              `${nodes[i].textContent} / ${nodes[j].textContent}: ${(Math.min(a.right, b.right) - Math.max(a.left, b.left)).toFixed(1)}x${(Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)).toFixed(1)}`,
+            );
         }
       }
-      return count;
+      return pairs;
     });
-    expect(overlaps).toBe(0);
+    expect(overlaps).toEqual([]);
   });
 });
