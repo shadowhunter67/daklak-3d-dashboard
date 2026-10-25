@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, screen, within } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ResearchedDataset } from '../../entities/researched-project/types';
 import { renderWithI18n } from '../../i18n/tests/renderWithI18n';
 
@@ -39,11 +39,19 @@ const dataset: ResearchedDataset = {
   ],
 };
 
+// Hàm thường (không phải vi.fn) vì vi.fn bọc promise bị reject và tạo unhandled rejection giả.
+const loader = vi.hoisted(() => ({
+  load: (): Promise<unknown> => Promise.resolve(),
+}));
 vi.mock('../../data/loadResearchedProjects', () => ({
-  loadResearchedProjects: () => Promise.resolve(dataset),
+  loadResearchedProjects: () => loader.load(),
 }));
 
 import { ProvinceBriefing } from './ProvinceBriefing';
+
+beforeEach(() => {
+  loader.load = () => Promise.resolve(dataset);
+});
 
 afterEach(() => {
   cleanup();
@@ -73,5 +81,13 @@ describe('ProvinceBriefing', () => {
   it('nói thẳng chưa có nguồn về trách nhiệm/giải ngân thay vì dựng bảng giả', async () => {
     renderWithI18n(<ProvinceBriefing />);
     expect(await screen.findByText(/Chưa có nguồn công bố về chủ đầu tư/)).toBeTruthy();
+  });
+
+  it('đang tải thì báo đang tải; tải lỗi thì báo lỗi rõ ràng thay vì biến mất', async () => {
+    loader.load = () =>
+      new Promise((_, reject) => setTimeout(() => reject(new Error('offline')), 0));
+    renderWithI18n(<ProvinceBriefing />);
+    expect(screen.getByRole('status')).toHaveTextContent('Đang tải tóm tắt điều hành');
+    expect(await screen.findByRole('alert')).toHaveTextContent('Không tải được dữ liệu tóm tắt');
   });
 });

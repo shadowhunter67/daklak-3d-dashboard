@@ -2869,3 +2869,7 @@
   display: block;
   opacity: 0.75;
 }
+
+.province-briefing__status {
+  margin: 16px 0 0;
+}

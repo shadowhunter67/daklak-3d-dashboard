@@ -1278,4 +1278,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'briefing.economy.caveat':
     'Sum of the rows extracted from the source; 4 groups differ from the figure in their group title and are not yet reconciled with the original PDF (see the data-conflict report).',
   'planning.sourceSpelling': 'source writes: {text}',
+  'briefing.loading': 'Loading the executive briefing…',
+  'briefing.error':
+    'Could not load the executive briefing data. The Projects, Tourism and Planning pages are still available from the sidebar.',
 };

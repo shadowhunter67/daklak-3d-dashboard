@@ -1296,4 +1296,7 @@ export const vi = {
   'briefing.economy.caveat':
     'Tổng các dòng trích từ nguồn; 4 nhóm lệch so với con số ở tiêu đề nhóm và chưa đối chiếu với PDF gốc (xem báo cáo xung đột dữ liệu).',
   'planning.sourceSpelling': 'nguồn ghi: {text}',
+  'briefing.loading': 'Đang tải tóm tắt điều hành…',
+  'briefing.error':
+    'Không tải được dữ liệu tóm tắt điều hành. Các trang Dự án, Du lịch và Quy hoạch vẫn dùng được từ thanh bên.',
 } as const satisfies Record<string, string>;

@@ -39,13 +39,14 @@ export function ProvinceBriefing() {
   const { t, locale } = useTranslation();
   const { navigate } = useHashRoute();
   const [dataset, setDataset] = useState<ResearchedDataset | null>(null);
+  const [failed, setFailed] = useState(false);
   const [extras, setExtras] = useState<{ planning: number; tourismNoPhoto: number } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     loadResearchedProjects().then(
       (value) => !cancelled && setDataset(value),
-      () => undefined,
+      () => !cancelled && setFailed(true),
     );
     Promise.all([
       import('../../data/planningCitations'),
@@ -57,7 +58,7 @@ export function ProvinceBriefing() {
           planning: planning.PLANNING_REVIEW_PROJECT_IDS.length,
           tourismNoPhoto: tourism.verifiedTourismDestinations.filter((d) => !d.imageUrl).length,
         }),
-      () => undefined,
+      () => !cancelled && setFailed(true),
     );
     return () => {
       cancelled = true;
@@ -75,7 +76,18 @@ export function ProvinceBriefing() {
     });
   }, [dataset, extras]);
 
-  if (!briefing) return null;
+  if (failed)
+    return (
+      <p className="province-briefing__status" role="alert">
+        {t('briefing.error')}
+      </p>
+    );
+  if (!briefing)
+    return (
+      <p className="province-briefing__status" role="status">
+        {t('briefing.loading')}
+      </p>
+    );
   const sectors = briefing.sectors.slice(0, TOP_SECTORS);
   const largest = sectors[0]?.capitalVnd ?? 1;
 
