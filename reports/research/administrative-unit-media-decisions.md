@@ -29,3 +29,13 @@ Script `scripts/research/geosearch_unit_media.mjs` tìm ảnh Commons có gắn 
 - Wikidata (hộp tọa độ quanh tỉnh có ảnh P18) chỉ trả về vài chục mục, đa số đã dùng hoặc thuộc Khánh Hòa; độ phủ của nguồn mở cho Đắk Lắk còn mỏng.
 
 Kết luận: nguồn ảnh tự do chỉ phủ được khoảng 14–20 đơn vị. Muốn phủ 102 đơn vị cần ảnh từ cơ quan (UBND, Báo Đắk Lắk) có phép hoặc ảnh tự chụp.
+
+## Kiểm kê ảnh trên trang thành phần xã/phường (2026-10-25)
+
+Script `scripts/research/inventory_unit_sites.mjs` đọc danh mục chính thức <https://daklak.gov.vn/ubnd-cac-xa-phuong> (102 mục, 99 có liên kết) và liệt kê ảnh ở trang chủ từng xã/phường (tôn trọng robots.txt, giãn 1,5 giây): 64 trang mở được, 37 trang trả 404 (địa chỉ phụ khác với danh mục). Kết quả ở `reports/research/unit-site-image-inventory.json`. Đã tải 152 ảnh đầu của mỗi trang về thư mục tạm và xem bằng mắt.
+
+- **Gần như toàn bộ là ảnh hội nghị, biểu ngữ, thông báo, mã QR, cờ, ảnh có người rõ mặt**, một số là ảnh do AI tạo. Không đặc trưng cho địa danh và vướng quyền hình ảnh cá nhân. Không dùng.
+- Chỉ thấy vài ảnh cảnh quan, thường ở dải ảnh đầu trang: Hòa Thịnh (toàn cảnh hồ chứa), Hòa Mỹ (thác nước), Ea Ô (công trình tượng đài), Ea Kar (dải cảnh quan). Chưa tải vào ứng dụng vì chưa có phép bằng văn bản.
+- Cả cổng tỉnh lẫn Báo Đắk Lắk chỉ ghi "ghi rõ nguồn khi sử dụng thông tin", không có giấy phép riêng cho ảnh.
+
+Đã soạn thư xin phép ở `reports/research/permission-request-draft.md`. Việc cần người: duyệt và gửi thư; chỉ ra địa danh đặc trưng của từng xã/phường (hoặc ảnh tự chụp) vì trang chủ xã không cung cấp.
