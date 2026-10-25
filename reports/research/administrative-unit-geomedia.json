@@ -1,0 +1,3373 @@
+{
+  "retrievedAt": "2026-10-25T12:02:08.010Z",
+  "method": "Commons geosearch bán kính 10 km quanh tâm nhãn + point-in-polygon trong ranh giới đơn vị + license tự do",
+  "rows": [
+    {
+      "code": "22015",
+      "unit": "Tuy Hoà",
+      "candidates": [
+        {
+          "title": "File:Vietnamese locomotive Thanh Pho.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vietnamese_locomotive_Thanh_Pho.jpg",
+          "license": "CC BY 2.0",
+          "author": "Tomasz Dunn from London, UK",
+          "description": "Vietnamese locomotive Thanh Pho",
+          "lat": 13.088052,
+          "lon": 109.297077
+        },
+        {
+          "title": "File:Phu Yen Museum 4.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Phu_Yen_Museum_4.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "The outside part of the Phu Yen Museum in Tuy Hoa.",
+          "lat": 13.094478,
+          "lon": 109.301811
+        },
+        {
+          "title": "File:Phu Yen Museum 1.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Phu_Yen_Museum_1.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "The Phu Yen Museum in Tuy Hoa.",
+          "lat": 13.094906,
+          "lon": 109.301881
+        },
+        {
+          "title": "File:Nhan Tower 2.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nhan_Tower_2.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "The Nhan Tower in Tuy Hoa.",
+          "lat": 13.0825,
+          "lon": 109.301544
+        },
+        {
+          "title": "File:Nhan Tower 1.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nhan_Tower_1.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "The Nhan Tower in Tuy Hoa.",
+          "lat": 13.082164,
+          "lon": 109.301483
+        },
+        {
+          "title": "File:Nhan Tower 3.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nhan_Tower_3.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "The Nhan Tower in Tuy Hoa.",
+          "lat": 13.082436,
+          "lon": 109.301772
+        },
+        {
+          "title": "File:Tuy Hòa nhìn từ núi Nhạn.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tuy_H%C3%B2a_nh%C3%ACn_t%E1%BB%AB_n%C3%BAi_Nh%E1%BA%A1n.jpg",
+          "license": "CC BY-SA 3.0",
+          "author": "Huynh Phuc Hung",
+          "description": "TUy hOa",
+          "lat": 13.0824173,
+          "lon": 109.3021342
+        },
+        {
+          "title": "File:Thap Nhan Hindu temple, Tuy Hoa, Phu Yen province, Vietnam 89.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Thap_Nhan_Hindu_temple,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_89.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082303,
+          "lon": 109.301872
+        },
+        {
+          "title": "File:Thap Nhan Hindu temple, Tuy Hoa, Phu Yen province, Vietnam 15.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Thap_Nhan_Hindu_temple,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_15.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082506,
+          "lon": 109.301864
+        },
+        {
+          "title": "File:Thap Nhan Hindu temple, Tuy Hoa, Phu Yen province, Vietnam 17.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Thap_Nhan_Hindu_temple,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_17.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082317,
+          "lon": 109.301881
+        },
+        {
+          "title": "File:Thap Nhan Hindu temple, Tuy Hoa, Phu Yen province, Vietnam 36.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Thap_Nhan_Hindu_temple,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_36.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082453,
+          "lon": 109.301544
+        },
+        {
+          "title": "File:Thap Nhan Hindu temple, Tuy Hoa, Phu Yen province, Vietnam 23.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Thap_Nhan_Hindu_temple,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_23.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082144,
+          "lon": 109.301728
+        },
+        {
+          "title": "File:Thap Nhan Hindu temple, Tuy Hoa, Phu Yen province, Vietnam 42.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Thap_Nhan_Hindu_temple,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_42.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082475,
+          "lon": 109.301803
+        },
+        {
+          "title": "File:Thap Nhan Hindu temple, Tuy Hoa, Phu Yen province, Vietnam 57.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Thap_Nhan_Hindu_temple,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_57.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082094,
+          "lon": 109.301803
+        },
+        {
+          "title": "File:Thap Nhan Hindu temple, Tuy Hoa, Phu Yen province, Vietnam 108.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Thap_Nhan_Hindu_temple,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_108.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082289,
+          "lon": 109.301583
+        },
+        {
+          "title": "File:Hindu artwork in Thap Nhan Tower park, Tuy Hoa, Phu Yen province, Vietnam 018.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hindu_artwork_in_Thap_Nhan_Tower_park,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_018.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082747,
+          "lon": 109.301619
+        },
+        {
+          "title": "File:Hindu artwork in Thap Nhan Tower park, Tuy Hoa, Phu Yen province, Vietnam 033.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hindu_artwork_in_Thap_Nhan_Tower_park,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_033.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082683,
+          "lon": 109.301567
+        },
+        {
+          "title": "File:Hindu artwork in Thap Nhan Tower park, Tuy Hoa, Phu Yen province, Vietnam 060.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hindu_artwork_in_Thap_Nhan_Tower_park,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_060.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082664,
+          "lon": 109.301567
+        },
+        {
+          "title": "File:Hindu artwork in Thap Nhan Tower park, Tuy Hoa, Phu Yen province, Vietnam 007.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hindu_artwork_in_Thap_Nhan_Tower_park,_Tuy_Hoa,_Phu_Yen_province,_Vietnam_007.jpg",
+          "license": "CC0",
+          "author": "Ms Sarah Welch",
+          "description": "The Thap Nhan or Nhan Tower, sometimes called the Swallow Tower, is a Champa era Hindu temple located on the Nhan hill in Tuy Hoa, near the ",
+          "lat": 13.082764,
+          "lon": 109.301644
+        },
+        {
+          "title": "File:YuanDynasty.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:YuanDynasty.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Bin thúi ờm",
+          "description": "The maximum territory of the Yuan Dynasty",
+          "lat": 13.074562,
+          "lon": 109.302754
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22045",
+      "unit": "Bình Kiến",
+      "candidates": [
+        {
+          "title": "File:Ga Tuy Hoa.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ga_Tuy_Hoa.JPG",
+          "license": "CC BY-SA 3.0",
+          "author": "Dragfyre",
+          "description": "Tuy Hoa Station, Phu Yen Province, Vietnam.",
+          "lat": 13.123833333333,
+          "lon": 109.24333333333
+        },
+        {
+          "title": "File:Đường phố ở Tuy Hòa nhìn từ tháp Nghinh Phong.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:%C4%90%C6%B0%E1%BB%9Dng_ph%E1%BB%91_%E1%BB%9F_Tuy_H%C3%B2a_nh%C3%ACn_t%E1%BB%AB_th%C3%A1p_Nghinh_Phong.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Baoothersks",
+          "description": "Đường phố Tuy Hòa",
+          "lat": 13.118319,
+          "lon": 109.305328
+        },
+        {
+          "title": "File:Hải Đăng ở Tuy Hòa.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:H%E1%BA%A3i_%C4%90%C4%83ng_%E1%BB%9F_Tuy_H%C3%B2a.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Baoothersks",
+          "description": "Hải Đăng ở Tuy Hòa",
+          "lat": 13.118333,
+          "lon": 109.305328
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22051",
+      "unit": "Sông Cầu",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22057",
+      "unit": "Xuân Lộc",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22060",
+      "unit": "Xuân Cảnh",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22075",
+      "unit": "Xuân Thọ",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22076",
+      "unit": "Xuân Đài",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22081",
+      "unit": "Đồng Xuân",
+      "candidates": [
+        {
+          "title": "File:ISS040-E-135158 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-135158_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 13.4,
+          "lon": 109.1
+        },
+        {
+          "title": "File:ISS040-E-135157 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-135157_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 13.4,
+          "lon": 109.1
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22090",
+      "unit": "Xuân Lãnh",
+      "candidates": [
+        {
+          "title": "File:ISS040-E-135155 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-135155_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 13.5,
+          "lon": 109
+        },
+        {
+          "title": "File:ISS040-E-135156 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-135156_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 13.5,
+          "lon": 109
+        },
+        {
+          "title": "File:ISS006-E-31157 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS006-E-31157_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 6.",
+          "lat": 13.5,
+          "lon": 109
+        },
+        {
+          "title": "File:ISS009-E-18095 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS009-E-18095_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 9.",
+          "lat": 13.5,
+          "lon": 109
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22096",
+      "unit": "Phú Mỡ",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22111",
+      "unit": "Xuân Phước",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22114",
+      "unit": "Tuy An Bắc",
+      "candidates": [
+        {
+          "title": "File:ISS040-E-135159 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-135159_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 13.3,
+          "lon": 109.2
+        },
+        {
+          "title": "File:ISS040-E-135160 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-135160_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 13.3,
+          "lon": 109.2
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22120",
+      "unit": "Tuy An Đông",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22132",
+      "unit": "Tuy An Tây",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22147",
+      "unit": "Ô Loan",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22153",
+      "unit": "Tuy An Nam",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22165",
+      "unit": "Sơn Hoà",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22171",
+      "unit": "Tây Sơn",
+      "candidates": [
+        {
+          "title": "File:Gekko gecko 137806101.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Gekko_gecko_137806101.jpg",
+          "license": "CC BY 4.0",
+          "author": "Eugene Popov",
+          "description": "Tokay Gecko ( Gekko gecko )",
+          "lat": 13.2549865398,
+          "lon": 108.9378730922
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22177",
+      "unit": "Vân Hoà",
+      "candidates": [
+        {
+          "title": "File:ISS046-E-13467 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS046-E-13467_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 46.",
+          "lat": 13.2,
+          "lon": 109.1
+        },
+        {
+          "title": "File:ISS046-E-13468 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS046-E-13468_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 46.",
+          "lat": 13.2,
+          "lon": 109.1
+        },
+        {
+          "title": "File:ISS046-E-13469 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS046-E-13469_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 46.",
+          "lat": 13.2,
+          "lon": 109.1
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22192",
+      "unit": "Suối Trai",
+      "candidates": [
+        {
+          "title": "File:ISS038-E-30988 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-30988_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 13.1,
+          "lon": 108.9
+        },
+        {
+          "title": "File:ISS038-E-30987 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-30987_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 13.1,
+          "lon": 108.9
+        },
+        {
+          "title": "File:ISS038-E-30986 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-30986_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 13.1,
+          "lon": 108.9
+        },
+        {
+          "title": "File:ISS038-E-30989 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-30989_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 13.1,
+          "lon": 108.9
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22207",
+      "unit": "Sông Hinh",
+      "candidates": [
+        {
+          "title": "File:Prosopocoilus suturalis 136861316.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Prosopocoilus_suturalis_136861316.jpg",
+          "license": "CC BY 4.0",
+          "author": "Eugene Popov",
+          "description": "Prosopocoilus suturalis",
+          "lat": 12.8135361137,
+          "lon": 109.0093705081
+        },
+        {
+          "title": "File:Calotes bachae 136679102.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Calotes_bachae_136679102.jpg",
+          "license": "CC BY 4.0",
+          "author": "Eugene Popov",
+          "description": "Vietnamese Blue Crested Lizard ( Calotes bachae )",
+          "lat": 12.83055,
+          "lon": 108.9972166667
+        },
+        {
+          "title": "File:Calotes bachae 136679093.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Calotes_bachae_136679093.jpg",
+          "license": "CC BY 4.0",
+          "author": "Eugene Popov",
+          "description": "Vietnamese Blue Crested Lizard ( Calotes bachae )",
+          "lat": 12.83055,
+          "lon": 108.9972166667
+        },
+        {
+          "title": "File:Lyssa zampa 136860958.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lyssa_zampa_136860958.jpg",
+          "license": "CC BY 4.0",
+          "author": "Eugene Popov",
+          "description": "Tropical Swallowtail Moth ( Lyssa zampa )",
+          "lat": 12.8130025687,
+          "lon": 109.0096065425
+        },
+        {
+          "title": "File:Dillenia excelsa 135651148.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Dillenia_excelsa_135651148.jpg",
+          "license": "CC BY 4.0",
+          "author": "Eugene Popov",
+          "description": "Dillenia excelsa in Vietnam",
+          "lat": 12.830874,
+          "lon": 108.99097
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22222",
+      "unit": "Đức Bình",
+      "candidates": [
+        {
+          "title": "File:ISS047-E-11994 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS047-E-11994_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 47.",
+          "lat": 13,
+          "lon": 109
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22225",
+      "unit": "Ea Bá",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22237",
+      "unit": "Ea Ly",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22240",
+      "unit": "Phú Yên",
+      "candidates": [
+        {
+          "title": "File:Nuôi tôm trên cát-Huyện Đông Hòa-Phú Yên - panoramio (4).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nu%C3%B4i_t%C3%B4m_tr%C3%AAn_c%C3%A1t-Huy%E1%BB%87n_%C4%90%C3%B4ng_H%C3%B2a-Ph%C3%BA_Y%C3%AAn_-_panoramio_(4).jpg",
+          "license": "CC BY 3.0",
+          "author": "Nghiem DangVi",
+          "description": "Nuôi tôm trên cát-Huyện Đông Hòa-Phú Yên",
+          "lat": 13.039873,
+          "lon": 109.355078
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22250",
+      "unit": "Sơn Thành",
+      "candidates": [
+        {
+          "title": "File:ISS047-E-11995 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS047-E-11995_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 47.",
+          "lat": 13,
+          "lon": 109.1
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22255",
+      "unit": "Tây Hoà",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22258",
+      "unit": "Đông Hoà",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22261",
+      "unit": "Hoà Hiệp",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22276",
+      "unit": "Hoà Thịnh",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22285",
+      "unit": "Hoà Mỹ",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "22291",
+      "unit": "Hoà Xuân",
+      "candidates": [
+        {
+          "title": "File:Nuôi tôm, cá nước lợ hạ lưu sông Bàn Thạch-Huyện Đông Hòa-Phú Yên - panoramio.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nu%C3%B4i_t%C3%B4m,_c%C3%A1_n%C6%B0%E1%BB%9Bc_l%E1%BB%A3_h%E1%BA%A1_l%C6%B0u_s%C3%B4ng_B%C3%A0n_Th%E1%BA%A1ch-Huy%E1%BB%87n_%C4%90%C3%B4ng_H%C3%B2a-Ph%C3%BA_Y%C3%AAn_-_panoramio.jpg",
+          "license": "CC BY 3.0",
+          "author": "Nghiem DangVi",
+          "description": "Nuôi tôm, cá nước lợ hạ lưu sông Bàn Thạch-Huyện Đông Hòa-Phú Yên",
+          "lat": 12.937896,
+          "lon": 109.400354
+        },
+        {
+          "title": "File:Máy bơm nước ngọt (nước ngầm) NTTS huyện Đông Hòa-Phú Yên - panoramio.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:M%C3%A1y_b%C6%A1m_n%C6%B0%E1%BB%9Bc_ng%E1%BB%8Dt_(n%C6%B0%E1%BB%9Bc_ng%E1%BA%A7m)_NTTS_huy%E1%BB%87n_%C4%90%C3%B4ng_H%C3%B2a-Ph%C3%BA_Y%C3%AAn_-_panoramio.jpg",
+          "license": "CC BY 3.0",
+          "author": "Nghiem DangVi",
+          "description": "Máy bơm nước ngọt (nước ngầm) NTTS huyện Đông Hòa-Phú Yên",
+          "lat": 12.936391,
+          "lon": 109.398948
+        },
+        {
+          "title": "File:Khu nuôi tôm, cá nước lợ, sử dụng nước ngầm tại huyện Đông Hòa-Phú Yên - panoramio.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Khu_nu%C3%B4i_t%C3%B4m,_c%C3%A1_n%C6%B0%E1%BB%9Bc_l%E1%BB%A3,_s%E1%BB%AD_d%E1%BB%A5ng_n%C6%B0%E1%BB%9Bc_ng%E1%BA%A7m_t%E1%BA%A1i_huy%E1%BB%87n_%C4%90%C3%B4ng_H%C3%B2a-Ph%C3%BA_Y%C3%AAn_-_panoramio.jpg",
+          "license": "CC BY 3.0",
+          "author": "Nghiem DangVi",
+          "description": "Khu nuôi tôm, cá nước lợ, sử dụng nước ngầm tại huyện Đông Hòa-Phú Yên",
+          "lat": 12.936265,
+          "lon": 109.397178
+        },
+        {
+          "title": "File:Vung Ro Bay 1.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vung_Ro_Bay_1.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "Vung Ro Bay in Phu Yen Province.",
+          "lat": 12.870025,
+          "lon": 109.413825
+        },
+        {
+          "title": "File:Vung Ro Bay 2.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vung_Ro_Bay_2.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "Vung Ro Bay in Phu Yen Province.",
+          "lat": 12.870017,
+          "lon": 109.413794
+        },
+        {
+          "title": "File:Vung Ro Bay 3.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vung_Ro_Bay_3.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "Vung Ro Bay in Phu Yen Province.",
+          "lat": 12.869997,
+          "lon": 109.413833
+        },
+        {
+          "title": "File:Vung Ro Bay 9.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vung_Ro_Bay_9.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "Vung Ro Bay in Phu Yen Province.",
+          "lat": 12.869917,
+          "lon": 109.413811
+        },
+        {
+          "title": "File:Vung Ro Bay 10.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vung_Ro_Bay_10.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "Vung Ro Bay in Phu Yen Province.",
+          "lat": 12.869953,
+          "lon": 109.413811
+        },
+        {
+          "title": "File:Landscape near Bai Mon Beach.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Landscape_near_Bai_Mon_Beach.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "The landscape near Bai Mon Beach, Phu Yen.",
+          "lat": 12.893733,
+          "lon": 109.449469
+        },
+        {
+          "title": "File:Bai Mon Beach 2.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bai_Mon_Beach_2.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "Bai Mon Beach in Phu Yen Province.",
+          "lat": 12.894025,
+          "lon": 109.451256
+        },
+        {
+          "title": "File:Bai Mon Beach 5.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bai_Mon_Beach_5.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "Bai Mon Beach in Phu Yen Province.",
+          "lat": 12.896756,
+          "lon": 109.452431
+        },
+        {
+          "title": "File:Bai Mon Beach 6.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bai_Mon_Beach_6.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Christophe95",
+          "description": "Bai Mon Beach in Phu Yen Province.",
+          "lat": 12.895328,
+          "lon": 109.450333
+        },
+        {
+          "title": "File:330hh48938.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:330hh48938.jpg",
+          "license": "CC BY-SA 3.0",
+          "author": "huynh phuc hung",
+          "description": "Vịnh Vũng Rô ở Phú Yên",
+          "lat": 12.8608191,
+          "lon": 109.4022664
+        },
+        {
+          "title": "File:Vung Ro Bay.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Vung_Ro_Bay.jpg",
+          "license": "CC BY-SA 3.0",
+          "author": "Huynh Phuc Hung",
+          "description": "Vịnh Vũng Rô",
+          "lat": 12.8601999,
+          "lon": 109.4025591
+        },
+        {
+          "title": "File:330489jjh47.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:330489jjh47.jpg",
+          "license": "CC BY-SA 3.0",
+          "author": "huynh phuc hung",
+          "description": "",
+          "lat": 12.8613424,
+          "lon": 109.4018093
+        },
+        {
+          "title": "File:ISS053-E-197907 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS053-E-197907_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 53.",
+          "lat": 12.9,
+          "lon": 109.4
+        },
+        {
+          "title": "File:ISS053-E-197908 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS053-E-197908_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 53.",
+          "lat": 12.9,
+          "lon": 109.4
+        },
+        {
+          "title": "File:ISS055-E-95697 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS055-E-95697_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 55.",
+          "lat": 12.9,
+          "lon": 109.4
+        },
+        {
+          "title": "File:ISS055-E-95696 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS055-E-95696_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 55.",
+          "lat": 12.9,
+          "lon": 109.4
+        },
+        {
+          "title": "File:Núi Đá Bia nhìn từ xa.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:N%C3%BAi_%C4%90%C3%A1_Bia_nh%C3%ACn_t%E1%BB%AB_xa.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Baoothersks",
+          "description": "Núi Đá Bia nhìn từ xa",
+          "lat": 12.891586,
+          "lon": 109.368095
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22303",
+      "unit": "Phú Hoà 2",
+      "candidates": [
+        {
+          "title": "File:Máy laser 168 Thẩm Mỹ Hoa Khôi.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:M%C3%A1y_laser_168_Th%E1%BA%A9m_M%E1%BB%B9_Hoa_Kh%C3%B4i.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "VN Media",
+          "description": "Máy Lasser đốt nám",
+          "lat": 13.1,
+          "lon": 109.2
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "22319",
+      "unit": "Phú Hoà 1",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24121",
+      "unit": "Tân Lập",
+      "candidates": [
+        {
+          "title": "File:Buon Ma Thuot Airport.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Buon_Ma_Thuot_Airport.JPG",
+          "license": "CC BY 3.0",
+          "author": "Easyroc75",
+          "description": "Buon Ma Thuot Airport",
+          "lat": 12.665666666667,
+          "lon": 108.1175
+        },
+        {
+          "title": "File:Buon Ma Thuot business lounge.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Buon_Ma_Thuot_business_lounge.jpg",
+          "license": "CC BY-SA 3.0",
+          "author": "[Tycho] talk , http://shansov.net",
+          "description": "Business lounge of Buon Ma Thuot airport, Vietnam.",
+          "lat": 12.6657,
+          "lon": 108.118
+        },
+        {
+          "title": "File:Buon Ma Thuot airport.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Buon_Ma_Thuot_airport.jpg",
+          "license": "CC BY-SA 3.0",
+          "author": "[Tycho] talk , http://shansov.net",
+          "description": "Buon Ma Thuot airport",
+          "lat": 12.66635,
+          "lon": 108.117681
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24133",
+      "unit": "Buôn Ma Thuột",
+      "candidates": [
+        {
+          "title": "File:Buôn Ma Thuột city square.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_city_square.jpg",
+          "license": "CC BY-SA 3.0",
+          "author": "Rdavout",
+          "description": "Buôn Ma Thuột city square (Central Highlands, Vietnam) - ISO code VN-E-DL",
+          "lat": 12.6798333,
+          "lon": 108.0446389
+        },
+        {
+          "title": "File:Hoàng Sơn Tết Tân Mão tại Ban Mê - panoramio.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ho%C3%A0ng_S%C6%A1n_T%E1%BA%BFt_T%C3%A2n_M%C3%A3o_t%E1%BA%A1i_Ban_M%C3%AA_-_panoramio.jpg",
+          "license": "CC BY-SA 3.0",
+          "author": "Dinh Ngoc Binh",
+          "description": "Hoàng Sơn Tết Tân Mão tại Ban Mê",
+          "lat": 12.679792,
+          "lon": 108.044679
+        },
+        {
+          "title": "File:Nhà thờ Chánh tòa - panoramio.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nh%C3%A0_th%E1%BB%9D_Ch%C3%A1nh_t%C3%B2a_-_panoramio.jpg",
+          "license": "CC BY-SA 3.0",
+          "author": "Dinh Ngoc Binh",
+          "description": "Nhà thờ Chánh tòa",
+          "lat": 12.680452,
+          "lon": 108.044958
+        },
+        {
+          "title": "File:Lang ca phe Trung Nguyen.JPG",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Lang_ca_phe_Trung_Nguyen.JPG",
+          "license": "CC BY-SA 3.0",
+          "author": "vi:User:Pttp1991",
+          "description": "Không gian làng cà phê Trung Nguyên",
+          "lat": 12.701419,
+          "lon": 108.060242
+        },
+        {
+          "title": "File:Ngày hội tư vấn nghề nghiệp.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ng%C3%A0y_h%E1%BB%99i_t%C6%B0_v%E1%BA%A5n_ngh%E1%BB%81_nghi%E1%BB%87p.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Ama Vũ BMT",
+          "description": "Ngày hội tư vấn nghề nghiệp",
+          "lat": 12.677646277778,
+          "lon": 108.04819569444
+        },
+        {
+          "title": "File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 01.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_01.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Dominic Nelson",
+          "description": "Building at the Buôn Ma Thuột Exile House, a former prison dating to the French colonial era in the city of Buôn Ma Thuột, Đắk Lắk, Vietnam,",
+          "lat": 12.676851,
+          "lon": 108.047662
+        },
+        {
+          "title": "File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 03.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_03.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Dominic Nelson",
+          "description": "Small outbuilding at the Buôn Ma Thuột Exile House, a former prison dating to the French colonial era in the city of Buôn Ma Thuột, Đắk Lắk,",
+          "lat": 12.676953,
+          "lon": 108.046964
+        },
+        {
+          "title": "File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 02.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_02.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Dominic Nelson",
+          "description": "Footpath and building at the Buôn Ma Thuột Exile House, a former prison dating to the French colonial era in the city of Buôn Ma Thuột, Đắk ",
+          "lat": 12.676851,
+          "lon": 108.047662
+        },
+        {
+          "title": "File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 05.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_05.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Dominic Nelson",
+          "description": "Cell block at the Buôn Ma Thuột Exile House, a former prison dating to the French colonial era in the city of Buôn Ma Thuột, Đắk Lắk, Vietna",
+          "lat": 12.677278,
+          "lon": 108.047164
+        },
+        {
+          "title": "File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 04.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_04.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Dominic Nelson",
+          "description": "View towards the gate at the Buôn Ma Thuột Exile House, a former prison dating to the French colonial era in the city of Buôn Ma Thuột, Đắk ",
+          "lat": 12.677245,
+          "lon": 108.047101
+        },
+        {
+          "title": "File:Buôn Ma Thuột - buildings at Exile House former prison Apr 2024 06.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Bu%C3%B4n_Ma_Thu%E1%BB%99t_-_buildings_at_Exile_House_former_prison_Apr_2024_06.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Dominic Nelson",
+          "description": "Small temple shrine at the Buôn Ma Thuột Exile House, a former prison dating to the French colonial era in the city of Buôn Ma Thuột, Đắk Lắ",
+          "lat": 12.677196,
+          "lon": 108.047249
+        },
+        {
+          "title": "File:Nguyễn Thiện Chân chụp ở đường hoa Buôn Mê Thuộc, Đăk Lăk.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nguy%E1%BB%85n_Thi%E1%BB%87n_Ch%C3%A2n_ch%E1%BB%A5p_%E1%BB%9F_%C4%91%C6%B0%E1%BB%9Dng_hoa_Bu%C3%B4n_M%C3%AA_Thu%E1%BB%99c,_%C4%90%C4%83k_L%C4%83k.jpg",
+          "license": "CC0",
+          "author": "NguyenThienChan.vn",
+          "description": "Rực rỡ",
+          "lat": 12.676669,
+          "lon": 108.043094
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24154",
+      "unit": "Thành Nhất",
+      "candidates": [
+        {
+          "title": "File:Nhà Xuân Thắng - panoramio.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nh%C3%A0_Xu%C3%A2n_Th%E1%BA%AFng_-_panoramio.jpg",
+          "license": "CC BY-SA 3.0",
+          "author": "Dinh Ngoc Binh",
+          "description": "Nhà Xuân Thắng",
+          "lat": 12.630812,
+          "lon": 107.997129
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24163",
+      "unit": "Tân An",
+      "candidates": [
+        {
+          "title": "File:ISS038-E-28745 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-28745_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS022-E-57496 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-57496_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS022-E-57497 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-57497_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS022-E-57498 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-57498_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS022-E-62445 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-62445_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 22.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS074-E-889040 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889040_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS074-E-889041 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889041_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS074-E-889042 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889042_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS074-E-889043 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889043_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS075-E-17430 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17430_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS075-E-17429 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17429_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS075-E-17431 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17431_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.7,
+          "lon": 108.1
+        },
+        {
+          "title": "File:ISS075-E-17428 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17428_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.7,
+          "lon": 108.1
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24169",
+      "unit": "Ea Kao",
+      "candidates": [
+        {
+          "title": "File:500px photo (38869722).jpeg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:500px_photo_(38869722).jpeg",
+          "license": "CC BY 3.0",
+          "author": "Mark Le",
+          "description": "500px provided description: Untitled [#markle]",
+          "lat": 12.6661944,
+          "lon": 108.0382475
+        },
+        {
+          "title": "File:Happiness (38875136).jpeg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Happiness_(38875136).jpeg",
+          "license": "CC BY 3.0",
+          "author": "Mark Le",
+          "description": "500px provided description: At Lak lake [#markle]",
+          "lat": 12.6661944,
+          "lon": 108.0382475
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24175",
+      "unit": "Hoà Phú",
+      "candidates": [
+        {
+          "title": "File:ISS006-E-23415 - View of Cambodia.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS006-E-23415_-_View_of_Cambodia.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Cambodia taken during ISS Expedition 6.",
+          "lat": 12.6,
+          "lon": 108
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24181",
+      "unit": "Ea Drăng",
+      "candidates": [
+        {
+          "title": "File:Flickr - Shinrya - Chicken Village girl.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flickr_-_Shinrya_-_Chicken_Village_girl.jpg",
+          "license": "CC BY-SA 2.0",
+          "author": "Pete Stewart from Perth, Australia",
+          "description": "Chicken Village girl",
+          "lat": 13.19,
+          "lon": 108.28
+        },
+        {
+          "title": "File:Flickr - Shinrya - Chicken Village girl greyscale.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flickr_-_Shinrya_-_Chicken_Village_girl_greyscale.jpg",
+          "license": "CC BY-SA 2.0",
+          "author": "Pete Stewart from Perth, Australia; greyscale by Thomas Schoch",
+          "description": "Chicken Village girl",
+          "lat": 13.19,
+          "lon": 108.28
+        },
+        {
+          "title": "File:Flickr - Shinrya - Chicken Village girl bw.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Flickr_-_Shinrya_-_Chicken_Village_girl_bw.jpg",
+          "license": "CC BY-SA 2.0",
+          "author": "Pete Stewart from Perth, Australia; black-and-white by Thomas Schoch",
+          "description": "Chicken Village girl",
+          "lat": 13.19,
+          "lon": 108.28
+        },
+        {
+          "title": "File:ISS022-E-64275 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64275_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13.2,
+          "lon": 108.2
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24184",
+      "unit": "Ea H'Leo",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24187",
+      "unit": "Ea Hiao",
+      "candidates": [
+        {
+          "title": "File:ISS061-E-135661 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135661_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 13.2,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS061-E-135660 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135660_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 13.2,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS061-E-135662 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135662_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 13.2,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS061-E-135659 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135659_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 13.2,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS040-E-127176 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-127176_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 13.2,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS040-E-127177 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-127177_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 13.2,
+          "lon": 108.3
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24193",
+      "unit": "Ea Wy",
+      "candidates": [
+        {
+          "title": "File:ISS065-E-163518 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS065-E-163518_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 65.",
+          "lat": 13.2,
+          "lon": 108
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24208",
+      "unit": "Ea Khăl",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24211",
+      "unit": "Ea Súp",
+      "candidates": [
+        {
+          "title": "File:ISS022-E-57491 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-57491_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS022-E-62442 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-62442_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 22.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS022-E-62443 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-62443_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 22.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:Ea Súp landscape.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ea_S%C3%BAp_landscape.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "OlBoes",
+          "description": "Landscape in Ea Súp commune, Đắk Lắk province, Vietnam",
+          "lat": 13.06415,
+          "lon": 107.896633
+        },
+        {
+          "title": "File:ISS074-E-889028 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889028_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS074-E-889027 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889027_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS074-E-889029 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889029_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS074-E-889030 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889030_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS074-E-889031 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889031_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS075-E-17415 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17415_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS075-E-17418 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17418_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS075-E-17417 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17417_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS075-E-17419 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17419_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS075-E-17416 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17416_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13,
+          "lon": 107.9
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24214",
+      "unit": "Ia Lốp",
+      "candidates": [
+        {
+          "title": "File:ISS053-E-176505 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS053-E-176505_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 53.",
+          "lat": 13.3,
+          "lon": 107.8
+        },
+        {
+          "title": "File:ISS053-E-176506 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS053-E-176506_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 53.",
+          "lat": 13.3,
+          "lon": 107.8
+        },
+        {
+          "title": "File:ISS053-E-178982 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS053-E-178982_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 53.",
+          "lat": 13.3,
+          "lon": 107.8
+        },
+        {
+          "title": "File:ISS053-E-178981 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS053-E-178981_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 53.",
+          "lat": 13.3,
+          "lon": 107.8
+        },
+        {
+          "title": "File:ISS062-E-73457 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS062-E-73457_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 62.",
+          "lat": 13.3,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS062-E-73459 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS062-E-73459_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 62.",
+          "lat": 13.3,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS062-E-73458 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS062-E-73458_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 62.",
+          "lat": 13.3,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS062-E-73460 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS062-E-73460_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 62.",
+          "lat": 13.3,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS074-E-889018 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889018_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 13.3,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS075-E-17404 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17404_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13.3,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS075-E-17403 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17403_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13.3,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS075-E-17405 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17405_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13.3,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS075-E-17407 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17407_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13.3,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS075-E-17406 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17406_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13.3,
+          "lon": 107.7
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24217",
+      "unit": "Ea Rốk",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24221",
+      "unit": "Ia Rvê",
+      "candidates": [
+        {
+          "title": "File:ISS062-E-73454 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS062-E-73454_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 62.",
+          "lat": 13.2,
+          "lon": 107.6
+        },
+        {
+          "title": "File:ISS062-E-73453 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS062-E-73453_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 62.",
+          "lat": 13.2,
+          "lon": 107.6
+        },
+        {
+          "title": "File:ISS064-E-37846 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS064-E-37846_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 64.",
+          "lat": 13.2,
+          "lon": 107.6
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24229",
+      "unit": "Ea Bung",
+      "candidates": [
+        {
+          "title": "File:ISS053-E-176501 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS053-E-176501_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 53.",
+          "lat": 13.1,
+          "lon": 107.6
+        },
+        {
+          "title": "File:ISS053-E-176502 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS053-E-176502_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 53.",
+          "lat": 13.1,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS053-E-176503 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS053-E-176503_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 53.",
+          "lat": 13.2,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS053-E-178979 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS053-E-178979_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 53.",
+          "lat": 13.2,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS053-E-178978 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS053-E-178978_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 53.",
+          "lat": 13.1,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS062-E-73455 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS062-E-73455_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 62.",
+          "lat": 13.2,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS062-E-73452 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS062-E-73452_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 62.",
+          "lat": 13.1,
+          "lon": 107.6
+        },
+        {
+          "title": "File:ISS062-E-73451 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS062-E-73451_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 62.",
+          "lat": 13.1,
+          "lon": 107.6
+        },
+        {
+          "title": "File:ISS062-E-73456 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS062-E-73456_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 62.",
+          "lat": 13.2,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS022-E-54608 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-54608_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13.1,
+          "lon": 107.6
+        },
+        {
+          "title": "File:ISS022-E-54609 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-54609_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13.1,
+          "lon": 107.6
+        },
+        {
+          "title": "File:ISS022-E-56670 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-56670_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13.1,
+          "lon": 107.6
+        },
+        {
+          "title": "File:ISS006-E-10242 - View of Cambodia.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS006-E-10242_-_View_of_Cambodia.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Cambodia taken during ISS Expedition 6.",
+          "lat": 13.1,
+          "lon": 107.6
+        },
+        {
+          "title": "File:ISS074-E-889019 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889019_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 13.2,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS074-E-889020 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889020_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 13.2,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS074-E-889021 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889021_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 13.2,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS074-E-889022 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889022_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 13.2,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS074-E-889023 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889023_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 13.2,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS075-E-17408 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17408_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13.2,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS075-E-17409 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17409_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 13.2,
+          "lon": 107.7
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24235",
+      "unit": "Buôn Đôn",
+      "candidates": [
+        {
+          "title": "File:USAF UH-1Ps on alert at Ban Don 1970.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAF_UH-1Ps_on_alert_at_Ban_Don_1970.jpg",
+          "license": "Public domain",
+          "author": "U.S. Air Force photo",
+          "description": "U.S. Air Force UH-1P Huey helicopters from the 20th Special Operations Squadron Green Hornets on alert at Ban Don, South Vietnam, in July 19",
+          "lat": 12.895555555556,
+          "lon": 107.79361111111
+        },
+        {
+          "title": "File:Voyage au Viêt Nam - panoramio (6).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Voyage_au_Vi%C3%AAt_Nam_-_panoramio_(6).jpg",
+          "license": "CC BY 3.0",
+          "author": "Jean Van Jean",
+          "description": "Voyage au Viêt Nam",
+          "lat": 12.885086,
+          "lon": 107.784945
+        },
+        {
+          "title": "File:Bản Đôn.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:B%E1%BA%A3n_%C4%90%C3%B4n.jpg",
+          "license": "CC BY 3.0",
+          "author": "Jean Van Jean",
+          "description": "Voyage au Viêt Nam",
+          "lat": 12.885122,
+          "lon": 107.784719
+        },
+        {
+          "title": "File:Fiio F9 2.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fiio_F9_2.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Dmatteng",
+          "description": "Dmatteng, Samsung S7",
+          "lat": 12.881111,
+          "lon": 107.787778
+        },
+        {
+          "title": "File:Sitta neglecta - Christoph Moning - 1.jpeg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sitta_neglecta_-_Christoph_Moning_-_1.jpeg",
+          "license": "CC BY 4.0",
+          "author": "Christoph Moning (iNaturalist user christoph_moning)",
+          "description": "Sitta neglecta , in Vietnam",
+          "lat": 12.8632923469,
+          "lon": 107.7657598403
+        },
+        {
+          "title": "File:Sitta neglecta - Christoph Moning - 2.jpeg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sitta_neglecta_-_Christoph_Moning_-_2.jpeg",
+          "license": "CC BY 4.0",
+          "author": "Christoph Moning (iNaturalist user christoph_moning)",
+          "description": "Sitta neglecta , in Vietnam",
+          "lat": 12.8632923469,
+          "lon": 107.7657598403
+        },
+        {
+          "title": "File:Sitta neglecta - Christoph Moning - 1 (cropped).jpeg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sitta_neglecta_-_Christoph_Moning_-_1_(cropped).jpeg",
+          "license": "CC BY 4.0",
+          "author": "Christoph Moning (iNaturalist user christoph_moning)",
+          "description": "Sitta neglecta , in Vietnam",
+          "lat": 12.8632923469,
+          "lon": 107.7657598403
+        },
+        {
+          "title": "File:Sitta neglecta - Christoph Moning - 1 (cropped 2).jpeg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sitta_neglecta_-_Christoph_Moning_-_1_(cropped_2).jpeg",
+          "license": "CC BY 4.0",
+          "author": "Christoph Moning (iNaturalist user christoph_moning)",
+          "description": "Sitta neglecta , in Vietnam",
+          "lat": 12.8632923469,
+          "lon": 107.7657598403
+        },
+        {
+          "title": "File:ISS022-E-54610 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-54610_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS022-E-54611 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-54611_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.9,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS022-E-56671 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-56671_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS022-E-56672 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-56672_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.9,
+          "lon": 107.7
+        },
+        {
+          "title": "File:ISS026-E-5342 - View of Thailand.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS026-E-5342_-_View_of_Thailand.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Thailand taken during ISS Expedition 26.",
+          "lat": 13,
+          "lon": 107.7
+        },
+        {
+          "title": "File:Tamiops rodolphii 63725014.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tamiops_rodolphii_63725014.jpg",
+          "license": "CC BY 4.0",
+          "author": "Christoph Moning",
+          "description": "Cambodian Striped Squirrel ( Tamiops rodolphii )",
+          "lat": 12.8639574,
+          "lon": 107.7653445
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24241",
+      "unit": "Ea Wer",
+      "candidates": [
+        {
+          "title": "File:ISS022-E-57492 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-57492_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.9,
+          "lon": 107.9
+        },
+        {
+          "title": "File:ISS074-E-889032 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889032_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.9,
+          "lon": 107.9
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24250",
+      "unit": "Ea Nuôl",
+      "candidates": [
+        {
+          "title": "File:ISS038-E-29479 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-29479_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 12.8,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS022-E-57494 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-57494_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.8,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS022-E-62444 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-62444_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 22.",
+          "lat": 12.8,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS006-E-11976 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS006-E-11976_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 6.",
+          "lat": 12.8,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS074-E-889036 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889036_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.8,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS074-E-889037 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889037_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.8,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS074-E-889038 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889038_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.8,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS074-E-889039 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889039_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.8,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS075-E-17424 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17424_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.8,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS075-E-17425 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17425_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.8,
+          "lon": 108
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24259",
+      "unit": "Quảng Phú",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24265",
+      "unit": "Ea Kiết",
+      "candidates": [
+        {
+          "title": "File:USAID provides support to people affected by drought in southern provinces (30016643945).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_provides_support_to_people_affected_by_drought_in_southern_provinces_(30016643945).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Dak Lak, Vietnam, September 28, 2016. Photo: USAID/Vietnam.",
+          "lat": 12.941022,
+          "lon": 108.020752
+        },
+        {
+          "title": "File:USAID provides support to people affected by drought in southern provinces (29722484600).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_provides_support_to_people_affected_by_drought_in_southern_provinces_(29722484600).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Dak Lak, Vietnam, September 28, 2016. Photo: USAID/Vietnam.",
+          "lat": 12.941016,
+          "lon": 108.020752
+        },
+        {
+          "title": "File:USAID provides support to people affected by drought in southern provinces (29388793154).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_provides_support_to_people_affected_by_drought_in_southern_provinces_(29388793154).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Dak Lak, Vietnam, September 28, 2016. Photo: USAID/Vietnam.",
+          "lat": 12.941052,
+          "lon": 108.020705
+        },
+        {
+          "title": "File:USAID provides support to people affected by drought in southern provinces (30016665495).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_provides_support_to_people_affected_by_drought_in_southern_provinces_(30016665495).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Dak Lak, Vietnam, September 28, 2016. Photo: USAID/Vietnam.",
+          "lat": 12.940997,
+          "lon": 108.020591
+        },
+        {
+          "title": "File:Pakhar Apr 1 2012 0610Z.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Pakhar_Apr_1_2012_0610Z.jpg",
+          "license": "Public domain",
+          "author": "National Aeronautics and Space Administration, LANCE/EOSDIS Rapid Response, captured on Aqua satelli",
+          "description": "Typhoon Pakhar (02W) over Vietnam",
+          "lat": 13,
+          "lon": 108
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24277",
+      "unit": "Ea Tul",
+      "candidates": [
+        {
+          "title": "File:USAID provides support to people affected by drought in southern provinces (29388802344).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_provides_support_to_people_affected_by_drought_in_southern_provinces_(29388802344).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Dak Lak, Vietnam, September 28, 2016. Photo: USAID/Vietnam.",
+          "lat": 12.924063,
+          "lon": 108.094855
+        },
+        {
+          "title": "File:USAID provides support to people affected by drought in southern provinces (29933221041).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_provides_support_to_people_affected_by_drought_in_southern_provinces_(29933221041).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Dak Lak, Vietnam, September 28, 2016. Photo: USAID/Vietnam.",
+          "lat": 12.924072,
+          "lon": 108.094969
+        },
+        {
+          "title": "File:ISS006-E-23416 - View of Cambodia.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS006-E-23416_-_View_of_Cambodia.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Cambodia taken during ISS Expedition 6.",
+          "lat": 12.9,
+          "lon": 108.2
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24280",
+      "unit": "Cư M'gar",
+      "candidates": [
+        {
+          "title": "File:River under the sunlight (34911908181).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:River_under_the_sunlight_(34911908181).jpg",
+          "license": "Public domain",
+          "author": "Le Anh Tuan",
+          "description": "River under the sunlight",
+          "lat": 12.860004,
+          "lon": 108.132934
+        },
+        {
+          "title": "File:NTHACMAU.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:NTHACMAU.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "Nthacmau",
+          "description": "Chào Anh Em Nha",
+          "lat": 12.856153,
+          "lon": 108.104125
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24286",
+      "unit": "Ea M'Droh",
+      "candidates": [
+        {
+          "title": "File:ISS022-E-57493 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-57493_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.9,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS074-E-889033 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889033_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.9,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS074-E-889034 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889034_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.9,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS074-E-889035 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889035_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.9,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS075-E-17420 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17420_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.9,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS075-E-17421 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17421_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.9,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS075-E-17422 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17422_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.9,
+          "lon": 108
+        },
+        {
+          "title": "File:ISS075-E-17423 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17423_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.9,
+          "lon": 108
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24301",
+      "unit": "Cuôr Đăng",
+      "candidates": [
+        {
+          "title": "File:USAID supports cocoa farmer families in Dak Lak, Vietnam (8341332238).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_supports_cocoa_farmer_families_in_Dak_Lak,_Vietnam_(8341332238).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Photo: R. Nyberg @USAID/Vietnam",
+          "lat": 12.73519,
+          "lon": 108.14849
+        },
+        {
+          "title": "File:USAID supports cocoa farmer families in Dak Lak, Vietnam (8341332834).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_supports_cocoa_farmer_families_in_Dak_Lak,_Vietnam_(8341332834).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Photo: R. Nyberg @USAID/Vietnam",
+          "lat": 12.73519,
+          "lon": 108.14849
+        },
+        {
+          "title": "File:USAID supports cocoa farmer families in Dak Lak, Vietnam (8340273101).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_supports_cocoa_farmer_families_in_Dak_Lak,_Vietnam_(8340273101).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Photo: R. Nyberg @USAID/Vietnam",
+          "lat": 12.73519,
+          "lon": 108.14849
+        },
+        {
+          "title": "File:USAID supports cocoa farmer families in Dak Lak, Vietnam (8341332340).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_supports_cocoa_farmer_families_in_Dak_Lak,_Vietnam_(8341332340).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Photo: R. Nyberg @USAID/Vietnam",
+          "lat": 12.73519,
+          "lon": 108.14849
+        },
+        {
+          "title": "File:USAID supports cocoa farming communities in Central Vietnam (8743701690).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_supports_cocoa_farming_communities_in_Central_Vietnam_(8743701690).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Photo: Richard Nyberg, USAID",
+          "lat": 12.73519,
+          "lon": 108.14849
+        },
+        {
+          "title": "File:USAID supports cocoa farming communities in Central Vietnam (8743702710).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_supports_cocoa_farming_communities_in_Central_Vietnam_(8743702710).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Photo: Richard Nyberg, USAID",
+          "lat": 12.73519,
+          "lon": 108.14849
+        },
+        {
+          "title": "File:USAID supports cocoa farming communities in Central Vietnam (8742580905).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_supports_cocoa_farming_communities_in_Central_Vietnam_(8742580905).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Photo: Richard Nyberg, USAID",
+          "lat": 12.73519,
+          "lon": 108.14849
+        },
+        {
+          "title": "File:Local populations benefit from new cocoa crop techniques and market access. (5715604076).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Local_populations_benefit_from_new_cocoa_crop_techniques_and_market_access._(5715604076).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Photo: Richard Nyberg, @USAIDVietnam",
+          "lat": 12.73519,
+          "lon": 108.14849
+        },
+        {
+          "title": "File:Farmers and their families in rural, central Vietnam profit from cocoa farming with USAID-sponsored training and support. (5071424602).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Farmers_and_their_families_in_rural,_central_Vietnam_profit_from_cocoa_farming_with_USAID-sponsored_training_and_support._(5071424602).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "Farmers and their families in rural, central Vietnam profit from cocoa farming with USAID-sponsored training and support.",
+          "lat": 12.73519,
+          "lon": 108.14849
+        },
+        {
+          "title": "File:USAID promotes sustainable cocoa farming in rural communities of central Vietnam. (5071422612).jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:USAID_promotes_sustainable_cocoa_farming_in_rural_communities_of_central_Vietnam._(5071422612).jpg",
+          "license": "Public domain",
+          "author": "USAID Vietnam",
+          "description": "USAID Mission Director Francis Donovan meets with cocoa farming associations in rural Vietnam.",
+          "lat": 12.73519,
+          "lon": 108.14849
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24305",
+      "unit": "Buôn Hồ",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24310",
+      "unit": "Krông Búk",
+      "candidates": [
+        {
+          "title": "File:Hosting gia re.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:Hosting_gia_re.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "hosting",
+          "description": "Tinohost chuyen cung cap dich vu cloud hosting gia re co chat luong cao",
+          "lat": 13.057625,
+          "lon": 108.246328
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24313",
+      "unit": "Cư Pơng",
+      "candidates": [
+        {
+          "title": "File:ISS022-E-64276 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64276_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13.1,
+          "lon": 108.2
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24316",
+      "unit": "Pơng Drang",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24328",
+      "unit": "Ea Drông",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24340",
+      "unit": "Cư Bao",
+      "candidates": [
+        {
+          "title": "File:LamvuDesign - panoramio.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:LamvuDesign_-_panoramio.jpg",
+          "license": "CC BY 3.0",
+          "author": "L@mvuDesign",
+          "description": "LamvuDesign",
+          "lat": 12.833728,
+          "lon": 108.248377
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24343",
+      "unit": "Krông Năng",
+      "candidates": [
+        {
+          "title": "File:ISS022-E-64278 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64278_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS022-E-64683 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64683_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13,
+          "lon": 108.3
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24346",
+      "unit": "Dliê Ya",
+      "candidates": [
+        {
+          "title": "File:ISS061-E-135664 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135664_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 13.1,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS061-E-135665 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135665_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 13.1,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS061-E-135663 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135663_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 13.1,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS061-E-135666 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135666_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 13.1,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS040-E-127178 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-127178_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 13.1,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS040-E-127179 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-127179_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 13.1,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS022-E-64277 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64277_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13.1,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS022-E-64682 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64682_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13.1,
+          "lon": 108.3
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24352",
+      "unit": "Tam Giang",
+      "candidates": [
+        {
+          "title": "File:ISS061-E-135667 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135667_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 13,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS061-E-135668 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135668_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 13,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS040-E-127180 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-127180_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 13,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS022-E-64279 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64279_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS022-E-64684 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64684_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS022-E-64685 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64685_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 13,
+          "lon": 108.4
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24364",
+      "unit": "Phú Xuân",
+      "candidates": [
+        {
+          "title": "File:ISS022-E-64280 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64280_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.9,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS022-E-64687 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64687_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.9,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS022-E-64686 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64686_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.9,
+          "lon": 108.4
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24373",
+      "unit": "Ea Kar",
+      "candidates": [
+        {
+          "title": "File:Một góc sân trường THCS Nguyễn Khuyến.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:M%E1%BB%99t_g%C3%B3c_s%C3%A2n_tr%C6%B0%E1%BB%9Dng_THCS_Nguy%E1%BB%85n_Khuy%E1%BA%BFn.jpg",
+          "license": "CC BY-SA 4.0",
+          "author": "THCS Nguyễn Khuyến",
+          "description": "Hình ảnh sân trường Nguyễn Khuyến lúc chào cờ",
+          "lat": 12.804339,
+          "lon": 108.453175
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24376",
+      "unit": "Ea Knốp",
+      "candidates": [
+        {
+          "title": "File:ISS061-E-135674 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135674_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 12.9,
+          "lon": 108.5
+        },
+        {
+          "title": "File:ISS061-E-135672 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135672_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 12.9,
+          "lon": 108.5
+        },
+        {
+          "title": "File:ISS061-E-135673 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135673_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 12.9,
+          "lon": 108.5
+        },
+        {
+          "title": "File:ISS061-E-135671 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135671_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 12.9,
+          "lon": 108.5
+        },
+        {
+          "title": "File:ISS040-E-127183 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-127183_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 12.9,
+          "lon": 108.5
+        },
+        {
+          "title": "File:ISS040-E-127182 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-127182_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 12.9,
+          "lon": 108.5
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24400",
+      "unit": "Ea Păl",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24403",
+      "unit": "Ea Ô",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24406",
+      "unit": "Cư Yang",
+      "candidates": [
+        {
+          "title": "File:ISS044-E-36566 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS044-E-36566_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 44.",
+          "lat": 12.6,
+          "lon": 108.6
+        },
+        {
+          "title": "File:ISS044-E-36567 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS044-E-36567_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 44.",
+          "lat": 12.6,
+          "lon": 108.6
+        },
+        {
+          "title": "File:ISS044-E-36568 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS044-E-36568_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 44.",
+          "lat": 12.6,
+          "lon": 108.6
+        },
+        {
+          "title": "File:ISS046-E-13463 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS046-E-13463_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 46.",
+          "lat": 12.6,
+          "lon": 108.6
+        },
+        {
+          "title": "File:ISS022-E-64281 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-64281_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.7,
+          "lon": 108.6
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24412",
+      "unit": "M'Drắk",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24415",
+      "unit": "Cư Prao",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24433",
+      "unit": "Ea Riêng",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24436",
+      "unit": "Cư M'ta",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24444",
+      "unit": "Krông Á",
+      "candidates": [
+        {
+          "title": "File:ISS061-E-135683 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135683_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 12.6,
+          "lon": 108.7
+        },
+        {
+          "title": "File:ISS061-E-135684 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135684_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 12.6,
+          "lon": 108.7
+        },
+        {
+          "title": "File:ISS040-E-127188 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-127188_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 12.6,
+          "lon": 108.7
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24445",
+      "unit": "Ea Trang",
+      "candidates": [
+        {
+          "title": "File:ISS061-E-135685 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135685_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 12.6,
+          "lon": 108.8
+        },
+        {
+          "title": "File:ISS061-E-135686 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS061-E-135686_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit, NASA Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 61.",
+          "lat": 12.6,
+          "lon": 108.8
+        },
+        {
+          "title": "File:ISS040-E-127189 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS040-E-127189_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 40.",
+          "lat": 12.6,
+          "lon": 108.8
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24448",
+      "unit": "Krông Bông",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24454",
+      "unit": "Dang Kang",
+      "candidates": [
+        {
+          "title": "File:ISS030-E-70529 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS030-E-70529_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 30.",
+          "lat": 12.6,
+          "lon": 108.3
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24472",
+      "unit": "Hoà Sơn",
+      "candidates": [
+        {
+          "title": "File:ISS038-E-28747 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-28747_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 12.5,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS038-E-28748 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-28748_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 12.5,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS038-E-29481 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-29481_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 12.5,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS022-E-57500 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-57500_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.5,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS022-E-62447 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-62447_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 22.",
+          "lat": 12.5,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS074-E-889048 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889048_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.5,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS074-E-889049 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889049_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.5,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS074-E-889050 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889050_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.5,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS074-E-889051 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889051_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.5,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS075-E-17437 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17437_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.5,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS075-E-17435 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17435_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.5,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS075-E-17438 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17438_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.5,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS075-E-17436 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17436_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.5,
+          "lon": 108.3
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24478",
+      "unit": "Cư Pui",
+      "candidates": [
+        {
+          "title": "File:ISS046-E-13461 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS046-E-13461_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 46.",
+          "lat": 12.5,
+          "lon": 108.5
+        },
+        {
+          "title": "File:ISS046-E-13462 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS046-E-13462_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 46.",
+          "lat": 12.5,
+          "lon": 108.5
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24484",
+      "unit": "Yang Mao",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24490",
+      "unit": "Krông Pắc",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24496",
+      "unit": "Ea Kly",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24502",
+      "unit": "Ea Phê",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24505",
+      "unit": "Ea Knuếc",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24526",
+      "unit": "Tân Tiến",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24529",
+      "unit": "Vụ Bổn",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24538",
+      "unit": "Krông Ana",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24540",
+      "unit": "Ea Ning",
+      "candidates": [
+        {
+          "title": "File:ISS038-E-28746 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-28746_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 12.6,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS038-E-29480 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-29480_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 12.6,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS022-E-57499 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-57499_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.6,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS022-E-62446 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-62446_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 22.",
+          "lat": 12.6,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS030-E-70528 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS030-E-70528_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 30.",
+          "lat": 12.6,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS074-E-889044 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889044_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.6,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS074-E-889045 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889045_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.6,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS074-E-889046 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889046_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.6,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS074-E-889047 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889047_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.6,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS075-E-17434 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17434_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.6,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS075-E-17433 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17433_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.6,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS075-E-17432 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17432_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.6,
+          "lon": 108.2
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24544",
+      "unit": "Ea Ktur",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24559",
+      "unit": "Ea Na",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24561",
+      "unit": "Dray Bhăng",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24568",
+      "unit": "Dur Kmăl",
+      "candidates": [
+        {
+          "title": "File:ISS006-E-10243 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS006-E-10243_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 6.",
+          "lat": 12.5,
+          "lon": 108.1
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24580",
+      "unit": "Liên Sơn Lắk",
+      "candidates": [
+        {
+          "title": "File:ISS038-E-28749 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS038-E-28749_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 38.",
+          "lat": 12.4,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS022-E-57501 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-57501_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.4,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS022-E-62448 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-62448_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 22.",
+          "lat": 12.4,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS074-E-889052 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889052_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.4,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS074-E-889053 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889053_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.4,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS074-E-889054 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889054_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.4,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS074-E-889055 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS074-E-889055_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 74.",
+          "lat": 12.4,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS075-E-17439 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17439_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.4,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS075-E-17440 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17440_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.4,
+          "lon": 108.3
+        },
+        {
+          "title": "File:ISS075-E-17443 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17443_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.4,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS075-E-17442 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17442_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.4,
+          "lon": 108.4
+        },
+        {
+          "title": "File:ISS075-E-17441 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS075-E-17441_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 75.",
+          "lat": 12.4,
+          "lon": 108.3
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24595",
+      "unit": "Đắk Liêng",
+      "candidates": [
+        {
+          "title": "File:ISS022-E-61247 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-61247_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.4,
+          "lon": 108
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24598",
+      "unit": "Đắk Phơi",
+      "candidates": [
+        {
+          "title": "File:ISS022-E-56675 - View of Earth.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS022-E-56675_-_View_of_Earth.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Earth taken during ISS Expedition 22.",
+          "lat": 12.3,
+          "lon": 108.2
+        },
+        {
+          "title": "File:ISS006-E-10244 - View of Vietnam.jpg",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/File:ISS006-E-10244_-_View_of_Vietnam.jpg",
+          "license": "Public domain",
+          "author": "Earth Science and Remote Sensing Unit , Lyndon B. Johnson Space Center",
+          "description": "View of Vietnam taken during ISS Expedition 6.",
+          "lat": 12.3,
+          "lon": 108.2
+        }
+      ],
+      "status": "candidates"
+    },
+    {
+      "code": "24604",
+      "unit": "Krông Nô",
+      "candidates": [],
+      "status": "none"
+    },
+    {
+      "code": "24607",
+      "unit": "Nam Ka",
+      "candidates": [],
+      "status": "none"
+    }
+  ]
+}
