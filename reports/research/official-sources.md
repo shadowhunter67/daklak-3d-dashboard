@@ -1,0 +1,19 @@
+# Danh mục nguồn đang dùng cho V3
+
+Cập nhật 2026-10-24. Chỉ liệt kê nguồn thật sự có trong repo; nguồn chưa có thì ghi ở mục "Chưa có".
+
+| Nguồn                                                    | Loại                       | Dùng cho                                                                                            | Nơi lưu trong repo                                                                                                                 | Độ tin cậy                                                                                     |
+| -------------------------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Quyết định 1985/QĐ-UBND và 5 phụ lục (UBND tỉnh Đắk Lắk) | Văn bản pháp lý chính thức | 201 dự án thu hút đầu tư 2026–2030: tên, địa điểm, diện tích, vốn, văn bản quy hoạch được trích dẫn | `docs/data-sources/evidence/1985-qd-ubnd/`, `reports/research/researched-projects.json`, `public/data/researched-projects.json.gz` | Cao cho nội dung văn bản; vốn có 4 nhóm lệch tổng so với bản PDF gốc (xem `data-conflicts.md`) |
+| Ranh giới 102 xã/phường (GIS đã đơn giản hóa)            | Dữ liệu địa lý xử lý       | Bản đồ, hồ sơ xã/phường, gán điểm du lịch vào đơn vị                                                | `src/assets/maps/daklak/`                                                                                                          | Trung bình: ranh giới đơn giản hóa, điểm sát biên có thể rơi ngoài                             |
+| Wikipedia (bản sửa đổi 75567164)                         | Ấn phẩm mở                 | Diện tích, dân số 2025, số thôn/buôn/tổ dân phố của từng xã/phường                                  | `src/data/unitProfiles.ts`                                                                                                         | Trung bình: không phải số liệu thống kê chính thức của cơ quan nhà nước                        |
+| Wikipedia / Wikidata                                     | Dữ liệu mở đã đối chiếu    | 28 điểm đến du lịch: tên, tọa độ, mô tả                                                             | `src/entities/tourism/verifiedTourismDestinations.ts`                                                                              | Trung bình: tọa độ đối chiếu 2 nguồn, chưa có nguồn cơ quan du lịch                            |
+| Wikimedia Commons                                        | Ảnh giấy phép tự do        | 25 ảnh điểm đến (CC BY-SA/GFDL, có ghi tác giả)                                                     | `public/images/destinations/`                                                                                                      | Cao về giấy phép (trang file Commons liệt kê giấy phép và tác giả)                             |
+
+## Chưa có (không bịa)
+
+- Số lượt khách, doanh thu du lịch, công suất lưu trú theo điểm đến hoặc theo xã/phường: chưa tìm được nguồn công bố có thể trích dẫn. Giao diện ghi "Chưa có dữ liệu".
+- Ranh giới quy hoạch chính thức (đất đai, phân khu, 3 loại rừng): chưa có tệp công bố tải được. Lớp quy hoạch trên bản đồ là minh họa và được gắn nhãn như vậy. Cổng tương tác công dân của tỉnh không nhúng được (đã thử: dữ liệu khoảng 154 MB mỗi phường, nền bản đồ Google, CORS khóa).
+- Chủ đầu tư, đơn vị chịu trách nhiệm, giải ngân của dự án trong danh mục: nguồn không nêu, nên không dựng bảng trách nhiệm.
+- Ảnh đặc trưng cho 102 xã/phường: 0/102 đạt điều kiện đưa vào bản chạy thật (xem `administrative-unit-media-review.md`).
+- Trang `daklak.gov.vn` không tải được bằng công cụ hiện có; chính sách tái phân phối nội dung của `vpubnd.daklak.gov.vn` chưa xác nhận.

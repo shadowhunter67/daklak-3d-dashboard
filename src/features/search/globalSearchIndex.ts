@@ -6,7 +6,7 @@ import { normalizeSearchText } from '../../utils/search';
  * destinations); nothing here is invented. Results are grouped by kind so a keyboard or
  * screen-reader user knows what a result is before opening it.
  */
-export type SearchResultKind = 'ward' | 'project' | 'opportunity' | 'place';
+export type SearchResultKind = 'ward' | 'project' | 'opportunity' | 'place' | 'planning';
 
 export interface WardSearchEntry {
   kind: 'ward';
@@ -33,8 +33,18 @@ export interface PlaceSearchEntry {
   id: string;
   name: string;
 }
+/** Một văn bản quy hoạch được trích dẫn trong danh mục thu hút đầu tư (số hiệu là tên tìm kiếm). */
+export interface PlanningSearchEntry {
+  kind: 'planning';
+  id: string;
+  name: string;
+}
 export type SearchEntry =
-  WardSearchEntry | ProjectSearchEntry | OpportunitySearchEntry | PlaceSearchEntry;
+  | WardSearchEntry
+  | ProjectSearchEntry
+  | OpportunitySearchEntry
+  | PlaceSearchEntry
+  | PlanningSearchEntry;
 
 interface IndexedEntry {
   entry: SearchEntry;
@@ -64,7 +74,13 @@ export function searchAll(
   query: string,
   limitPerKind = 6,
 ): GroupedSearchResults {
-  const grouped: GroupedSearchResults = { ward: [], project: [], opportunity: [], place: [] };
+  const grouped: GroupedSearchResults = {
+    ward: [],
+    project: [],
+    opportunity: [],
+    place: [],
+    planning: [],
+  };
   const needle = normalizeSearchText(query);
   if (!needle) return grouped;
   const scored: Array<{ entry: SearchEntry; score: number }> = [];
@@ -86,6 +102,7 @@ export const SEARCH_KIND_ORDER: readonly SearchResultKind[] = [
   'project',
   'opportunity',
   'place',
+  'planning',
 ];
 
 export function flattenResults(grouped: GroupedSearchResults): SearchEntry[] {

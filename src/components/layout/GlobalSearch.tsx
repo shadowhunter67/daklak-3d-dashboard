@@ -8,6 +8,7 @@ import {
   SEARCH_KIND_ORDER,
   type OpportunitySearchEntry,
   type PlaceSearchEntry,
+  type PlanningSearchEntry,
   type ProjectSearchEntry,
   type SearchEntry,
   type SearchResultKind,
@@ -30,6 +31,7 @@ const GROUP_LABEL_KEY: Record<SearchResultKind, MessageKey> = {
   project: 'topbar.search.group.project',
   opportunity: 'topbar.search.group.opportunity',
   place: 'topbar.search.group.place',
+  planning: 'topbar.search.group.planning',
 };
 
 /**
@@ -45,7 +47,8 @@ export function GlobalSearch({ onSelect }: { onSelect: (entry: SearchEntry) => v
     projects: ProjectSearchEntry[];
     opportunities: OpportunitySearchEntry[];
     places: PlaceSearchEntry[];
-  }>({ projects: [], opportunities: [], places: [] });
+    planning: PlanningSearchEntry[];
+  }>({ projects: [], opportunities: [], places: [], planning: [] });
   const loadStarted = useRef(false);
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
@@ -89,6 +92,17 @@ export function GlobalSearch({ onSelect }: { onSelect: (entry: SearchEntry) => v
       }));
       setExtra((current) => ({ ...current, places }));
     });
+    // Số hiệu văn bản quy hoạch được trích dẫn trong danh mục (tải lười, cùng chunk với trang Quy hoạch).
+    void import('../../data/planningCitations')
+      .then((module) => {
+        const planning = module.PLANNING_DOCUMENTS.map(({ number }) => ({
+          kind: 'planning' as const,
+          id: number,
+          name: number,
+        }));
+        setExtra((current) => ({ ...current, planning }));
+      })
+      .catch(() => undefined);
   };
 
   const index = useMemo(
@@ -98,6 +112,7 @@ export function GlobalSearch({ onSelect }: { onSelect: (entry: SearchEntry) => v
         ...extra.projects,
         ...extra.opportunities,
         ...extra.places,
+        ...extra.planning,
       ]),
     [extra],
   );

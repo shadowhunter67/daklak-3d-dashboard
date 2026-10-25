@@ -10,6 +10,8 @@
  *   #/projects/:id                   -> { kind: 'project-detail', projectId: id }
  *   #/data-readiness                 -> { kind: 'data-readiness' } (Phase 5 §C)
  *   #/investment-catalog           -> { kind: 'investment-catalog' } (danh mục thu hút đầu tư từ nguồn chính thức)
+ *   #/tourism                      -> { kind: 'tourism' } (trung tâm du lịch: điểm đến đã xác minh nguồn)
+ *   #/planning                     -> { kind: 'planning' } (văn bản quy hoạch được trích dẫn trong danh mục)
  *   #/diorama/:destinationId         -> { kind: 'diorama', destinationId } (illustrative destination diorama)
  *   bất kỳ giá trị nào khác          -> { kind: 'none' } (không crash trên hash lạ/hỏng)
  */
@@ -41,6 +43,8 @@ export type HashRoute =
   | { kind: 'reports' }
   | { kind: 'investment-catalog'; query?: string; area?: string }
   | { kind: 'unit'; code: string }
+  | { kind: 'tourism' }
+  | { kind: 'planning' }
   | { kind: 'diorama'; destinationId: string };
 
 function isPortfolioSortKey(value: string): value is PortfolioSortKey {
@@ -101,6 +105,12 @@ export function parseHashRoute(rawHash: string): HashRoute {
       ...(area ? { area } : {}),
     };
   }
+  if (segments[0] === 'tourism') {
+    return segments.length === 1 ? { kind: 'tourism' } : { kind: 'none' };
+  }
+  if (segments[0] === 'planning') {
+    return segments.length === 1 ? { kind: 'planning' } : { kind: 'none' };
+  }
   if (segments[0] === 'unit') {
     if (segments.length !== 2) return { kind: 'none' };
     const code = decodeURIComponent(segments[1]).trim();
@@ -147,6 +157,14 @@ export function serializeInvestmentCatalogHash(query?: string, area?: string): s
   if (query?.trim()) parts.push(`q=${encodeURIComponent(query.trim())}`);
   if (area?.trim()) parts.push(`area=${encodeURIComponent(area.trim())}`);
   return parts.length ? `#/investment-catalog?${parts.join('&')}` : '#/investment-catalog';
+}
+
+export function serializeTourismHash(): string {
+  return '#/tourism';
+}
+
+export function serializePlanningHash(): string {
+  return '#/planning';
 }
 
 export function serializeUnitHash(code: string): string {
