@@ -1,4 +1,5 @@
 import type { LayerSpecification, VectorSourceSpecification } from 'maplibre-gl';
+import labels from '#province-assets/daklak-labels.json';
 
 /**
  * Real OpenStreetMap roads/place-labels vector source, single source of truth for the ids shared
@@ -37,6 +38,18 @@ export const HAMLET_LABELS_LAYER_ID = 'hamlet-labels';
  * left virtually all of them still shown at province-wide zoom. Do not "fix" this list back to
  * OSM's textbook place-tag semantics without re-checking the actual tile data. */
 const SETTLEMENT_PLACES = ['city', 'town'];
+
+/** Tên 102 xã/phường (cả dạng NFC và NFD vì tên trong thẻ OSM có thể chuẩn hóa khác nhau). Lớp nhãn
+ * tên xã/phường (`wardLabelLayers.ts`) đã vẽ các tên này; nếu nhãn địa danh OSM (`place=city|town`,
+ * thường là tên thị trấn cũ trùng tên xã mới) cũng vẽ cùng tên thì hai nhãn đè lên nhau. */
+const WARD_NAMES = [
+  ...new Set(
+    Object.values(labels as Record<string, { name: string }>).flatMap(({ name }) => [
+      name.normalize('NFC'),
+      name.normalize('NFD'),
+    ]),
+  ),
+];
 /** Hamlet/sub-village-tier `place` values — "Thôn"/"Buôn"/"Tổ dân phố" labels. These used to share
  * `PLACE_LABELS_LAYER_ID`'s minzoom 8 with every other place tier, which papered the province-wide
  * overview in thousands of hamlet names (e.g. zoom ~8.8 showing "Thôn 1", "Thôn 2A", ...). They now
@@ -138,8 +151,15 @@ export function buildLabelLayers(): LayerSpecification[] {
       type: 'symbol',
       source: OSM_VECTOR_SOURCE_ID,
       'source-layer': PLACES_SOURCE_LAYER,
-      minzoom: 8,
-      filter: ['all', ['has', 'name'], ['in', ['get', 'place'], ['literal', SETTLEMENT_PLACES]]],
+      // Ở zoom toàn tỉnh các nhãn tên xã/phường đã đủ; tên địa danh OSM (thường là tên thị trấn/xã cũ,
+      // khác tên đơn vị mới) chỉ hiện khi đã phóng gần để không đè lên nhãn tên đơn vị hành chính.
+      minzoom: 11,
+      filter: [
+        'all',
+        ['has', 'name'],
+        ['in', ['get', 'place'], ['literal', SETTLEMENT_PLACES]],
+        ['!', ['in', ['get', 'name'], ['literal', WARD_NAMES]]],
+      ],
       layout: {
         'text-field': ['get', 'name'],
         'text-size': 12,

@@ -768,14 +768,22 @@
 .data-readiness__chart-summary {
   color: var(--ui-muted);
 }
-.data-readiness__kpis {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+.ui-kpi-grid.data-readiness__kpis {
+  /* 5 chỉ số: hàng trên 3 ô, hàng dưới 2 ô giãn đều hết bề ngang — không để 1 ô lẻ loi ở góc. */
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+.ui-kpi-grid.data-readiness__kpis > * {
+  grid-column: span 2;
+}
+.ui-kpi-grid.data-readiness__kpis > :nth-child(n + 4) {
+  grid-column: span 3;
 }
 .data-readiness__operations-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
-  align-items: start;
+  /* Ba thẻ cao bằng nhau để mép dưới thẳng hàng. */
+  align-items: stretch;
 }
 .data-readiness__operation-card,
 .data-readiness__alerts {
@@ -899,13 +907,31 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
-  align-items: start;
+  /* Các thẻ cùng hàng cao bằng nhau, không để khoảng trống giữa hai hàng. */
+  align-items: stretch;
 }
 .reports-panel {
   min-width: 0;
 }
 .reports-panel--status {
   grid-column: span 2;
+}
+/* Thẻ cơ cấu trạng thái rộng 2/3: biểu đồ tròn to hơn, chú giải chia 2 cột để lấp đầy chiều ngang. */
+.reports-panel--status .ui-donut-layout {
+  gap: 40px;
+  flex-wrap: wrap;
+}
+.reports-panel--status .ui-donut {
+  width: 190px;
+  height: 190px;
+}
+.reports-panel--status .ui-legend {
+  flex: 1 1 320px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 40px;
+}
+.reports-panel--status .ui-legend li {
+  font-size: 14px;
 }
 .reports-chart-summary {
   min-height: 28px;
@@ -967,8 +993,16 @@
 }
 
 @media (max-width: 1100px) {
-  .data-readiness__kpis {
+  .ui-kpi-grid.data-readiness__kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .ui-kpi-grid.data-readiness__kpis > *,
+  .ui-kpi-grid.data-readiness__kpis > :nth-child(n + 4) {
+    grid-column: auto;
+  }
+  /* Số ô lẻ: ô cuối trải hết hàng thay vì bị lẻ ở góc. */
+  .ui-kpi-grid.data-readiness__kpis > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
   .data-readiness__operations-grid,
   .reports-grid {
@@ -992,7 +1026,7 @@
   .project-portfolio__filters .ui-field:first-child {
     grid-column: auto;
   }
-  .data-readiness__kpis {
+  .ui-kpi-grid.data-readiness__kpis {
     grid-template-columns: minmax(0, 1fr);
   }
   .data-readiness__health-hero {
