@@ -238,12 +238,12 @@ describe('buildDetailMapStyle', () => {
     ).toBe(PLACES_SOURCE_LAYER);
   });
 
-  it('splits place labels into a settlement tier (minzoom 8) and a hamlet tier (minzoom 13) so hamlet names do not clutter the province-wide overview', () => {
+  it('splits place labels into a settlement tier (minzoom 11) and a hamlet tier (minzoom 13) so hamlet names do not clutter the province-wide overview', () => {
     const style = buildDetailMapStyle(withRoads, PMTILES_URL, GLYPHS_URL);
     const byId = Object.fromEntries(style.layers.map((layer) => [layer.id, layer]));
     const placeLayer = byId[PLACE_LABELS_LAYER_ID];
     const hamletLayer = byId[HAMLET_LABELS_LAYER_ID];
-    expect('minzoom' in placeLayer && placeLayer.minzoom).toBe(8);
+    expect('minzoom' in placeLayer && placeLayer.minzoom).toBe(11);
     expect('minzoom' in hamletLayer && hamletLayer.minzoom).toBe(13);
   });
 });
