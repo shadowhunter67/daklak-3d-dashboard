@@ -6,7 +6,7 @@
 
 **Tiếng Việt** (chính) · [**English**](README.en.md)
 
-Dashboard bản đồ 3D thể hiện 102 xã/phường của tỉnh Đắk Lắk sau sáp nhập năm 2025, kết hợp một nền tảng theo dõi các dự án đầu tư trọng điểm của tỉnh.
+Dashboard bản đồ 3D thể hiện 102 xã/phường của tỉnh Đắk Lắk sau sáp nhập năm 2025, kết hợp một nền tảng theo dõi dự án đầu tư của tỉnh. Ngoài phần trình diễn bằng dữ liệu minh họa, ứng dụng đã có phần **dữ liệu thật có nguồn**: 201 dự án trong danh mục thu hút đầu tư 2026–2030 (Quyết định 1985/QĐ-UBND), hồ sơ 102 xã/phường, 28 điểm đến du lịch đã xác minh và các văn bản quy hoạch được trích dẫn. Nguyên tắc xuyên suốt: **chưa có nguồn thì ghi "Chưa có dữ liệu", không bịa số**.
 
 ## Xem thử
 
@@ -14,27 +14,38 @@ Dashboard bản đồ 3D thể hiện 102 xã/phường của tỉnh Đắk Lắ
 
 **Bản demo trực tuyến:** https://shadowhunter67.github.io/daklak-3d-dashboard/
 
-> **Lưu ý:** toàn bộ số liệu dự án/ngân sách/tiến độ hiển thị trong bản demo đều là **dữ liệu minh họa**, không phải số liệu vận hành hay số liệu chính thức của cơ quan nhà nước — chỉ để trình diễn giao diện. Ranh giới hành chính là dữ liệu mở tham khảo, không dùng cho mục đích pháp lý/quy hoạch.
+> **Lưu ý về dữ liệu — hai loại được tách bạch trên giao diện:**
+>
+> - **Dữ liệu minh họa:** số liệu dự án/ngân sách/tiến độ trong phần **Tổng quan điều hành**, **Dự án** (danh mục 9 dự án mẫu) và chỉ tiêu cấp xã đều là dữ liệu minh họa, chỉ để trình diễn giao diện, không phải số liệu vận hành hay chính thức. Lớp quy hoạch tô màu trên bản đồ cũng là minh họa.
+> - **Dữ liệu thật có nguồn:** danh mục thu hút đầu tư (201 dự án), hồ sơ xã/phường, điểm đến du lịch, văn bản quy hoạch được trích dẫn. Mỗi mục kèm nguồn và mức độ tin cậy; phần chưa có nguồn (lượt khách, chủ đầu tư, giải ngân…) được ghi rõ là chưa có dữ liệu.
+>
+> Ranh giới hành chính là dữ liệu mở tham khảo (đã đơn giản hóa), không dùng cho mục đích pháp lý/quy hoạch. Báo cáo chất lượng nguồn: [reports/research/source-quality-review.md](reports/research/source-quality-review.md).
 
 ## App có gì
 
-- **Tổng quan điều hành** — trang mặc định. Panel **Executive Status Hero** ngay đầu trang cho biết tình hình tổng thể (Ổn định/Cần chú ý/Nghiêm trọng) và số dự án cần xử lý chỉ trong vài giây, không cần đọc bảng số liệu. Bên dưới là KPI danh mục dự án, cảnh báo ("Cần xử lý", đã diễn giải sang tiếng Việt/Anh dễ hiểu thay vì mã lỗi kỹ thuật), dự án cần chú ý, và biểu đồ phân bố trạng thái dự án (mỗi trạng thái một màu riêng biệt). Tỷ lệ giải ngân có thêm mũi tên xu hướng so với 30 ngày trước, dựng từ lịch sử tiến độ thật của từng dự án — không hiển thị nếu chưa đủ dự án có dữ liệu lịch sử để so sánh đáng tin cậy.
-- **Bản đồ 3D** — địa hình tỉnh dựng từ dữ liệu vệ tinh thật (SRTM + Sentinel-2), xoay/phóng được, click vào từng xã để xem hồ sơ nhanh.
-- **Danh sách** — phiên bản 2D dễ dùng, phù hợp máy yếu, điều hướng bàn phím và trình đọc màn hình.
-- **Bản đồ chi tiết** — bản đồ MapLibre, xem lớp đường giao thông, đo khoảng cách. Tên cả 102 xã/phường **luôn hiển thị đầy đủ, không viết tắt**; khi nhãn chồng nhau thì được dịch ra và nối về vị trí thật bằng một đường dẫn mảnh thay vì bị ẩn đi. Bảng điều khiển lớp bản đồ chia hai mức **Cơ bản** (5 lớp chính: ranh giới, tên xã/phường, đường, dự án, quy hoạch) và **Nâng cao** (thêm tên đường/địa danh/công trình, chỉ số dashboard, và lớp **Heatmap** hiển thị số liệu thật 0–100 ngay trên biểu đồ thay vì chỉ có trong dữ liệu ẩn).
-- **Khám phá** _(nền địa hình minh họa, dữ liệu điểm đến là thật, tạm dừng phát triển — chỉ vào được qua link trực tiếp, không còn trên menu chính)_ — đi bộ hoặc bay tự do trên địa hình tỉnh (bám địa hình thật qua CPU terrain sampler), xem 28 điểm đến/công trình có nguồn (thác, hồ, vườn quốc gia, tháp Chăm, di tích, địa danh ven biển…; mỗi điểm ghi rõ mức xác minh toạ độ), teleport nhanh, và 3 tuyến tham quan có hướng dẫn. Xem [docs/world-exploration.md](docs/world-exploration.md). Mỗi điểm đến còn có **diorama 3D minh họa** riêng (`#/diorama/<id>`, có ô chọn chuyển điểm đến; ảnh thực tế CC hiện ngay cạnh cảnh để đối chiếu, và cảnh nói rõ dựng theo ảnh hay chỉ theo mô tả văn bản) — xem [docs/destination-diorama.md](docs/destination-diorama.md).
-- **Danh mục dự án** và **Chi tiết dự án** — xem đầy đủ ngân sách, tiến độ, gói thầu, vướng mắc của từng dự án. Danh mục có nút **Xuất CSV** tải về đúng danh sách dự án đang hiển thị (đã áp bộ lọc), phục vụ phân tích lại bằng Excel/Sheets.
+Thanh bên gồm: **Tổng quan · Bản đồ · Bản đồ 3D · Dự án · Xã, phường · Du lịch · Quy hoạch · Dữ liệu & nguồn · Báo cáo**. Ô tìm kiếm chung ở trên cùng tìm được xã/phường, dự án, danh mục thu hút đầu tư, điểm du lịch và văn bản quy hoạch.
+
+- **Tổng quan điều hành** — trang mặc định. Panel **Executive Status Hero** cho biết tình hình tổng thể (Ổn định/Cần chú ý/Nghiêm trọng) và số dự án cần xử lý trong vài giây; bên dưới là KPI danh mục (minh họa), cảnh báo bằng tiếng dễ hiểu, dự án cần chú ý, biểu đồ trạng thái, bản đồ định vị 102 xã/phường (mọi tên đều hiện, không nhãn nào chồng nhau) và hai khối dữ liệu thật: **Việc cần chú ý** (khoảng trống dữ liệu thật như dự án chưa có số vốn, dự án cần rà soát quy hoạch, xã chưa có ảnh) và **Quy mô vốn theo lĩnh vực** (vốn dự kiến trong Quyết định 1985, ghi rõ không phải vốn giải ngân). Khối trách nhiệm/giải ngân chỉ nêu lý do chưa hiển thị vì không có nguồn công bố.
+- **Bản đồ (chi tiết)** — bản đồ MapLibre: ranh giới, đường giao thông, đo khoảng cách. Tên cả 102 xã/phường luôn hiển thị; nhãn chồng nhau được dịch ra và nối về vị trí thật bằng đường dẫn mảnh. Bảng lớp có nhóm **Góc nhìn** (Điều hành / Đầu tư / Du lịch / Quy hoạch) bật nhanh các lớp tham khảo tương ứng, cùng tab nhanh **Lớp du lịch** (điểm đến có nguồn, popup kèm link nguồn, không có số lượt khách). Hai mức **Cơ bản** và **Nâng cao** như trước.
+- **Bản đồ 3D** — địa hình dựng từ dữ liệu vệ tinh thật (SRTM + Sentinel-2), xoay/phóng được, click xã để xem hồ sơ nhanh.
+- **Xã, phường** — danh sách 2D dễ dùng (điều hướng bàn phím, trình đọc màn hình) và **hồ sơ từng đơn vị** (`#/unit/<mã>`): diện tích, dân số 2025, mật độ, số thôn/buôn/tổ dân phố, dự án thu hút đầu tư và điểm du lịch trong địa bàn. Ảnh đại diện hiện có cho 14/102 đơn vị (ảnh điểm đến du lịch trong địa bàn, giấy phép tự do, ghi rõ tác giả; không phải ảnh toàn cảnh); các đơn vị còn lại dùng hình ranh giới GIS và nói rõ điều đó.
+- **Dự án** — hai phần: **Danh mục dự án** và **Chi tiết dự án** (ngân sách, tiến độ, gói thầu, vướng mắc; dữ liệu minh họa, có nút **Xuất CSV**), và **Danh mục thu hút đầu tư 2026–2030** (`#/investment-catalog`): 201 dự án thật từ Quyết định 1985/QĐ-UBND, lọc theo lĩnh vực/địa bàn, mỗi trường kèm văn bản nguồn, ngày và mức bằng chứng.
+- **Du lịch** (`#/tourism`) — 28 điểm đến đã xác minh nguồn (thác, hồ, vườn quốc gia, tháp Chăm, di tích, địa danh ven biển…), lọc theo loại hình, mỗi thẻ có ảnh giấy phép tự do (25/28), link nguồn, xã/phường chứa điểm (suy ra từ tọa độ) và diorama 3D minh họa. Lượt khách ghi "Chưa có dữ liệu".
+- **Quy hoạch** (`#/planning`) — 118 văn bản quy hoạch được trích dẫn trong danh mục thu hút đầu tư, kèm số dự án trích dẫn, cơ quan ban hành (suy từ số hiệu) và cách nguồn viết số hiệu; danh sách dự án mà chính ô nguồn nêu còn thiếu quy hoạch ("cần rà soát", **không phải kết luận pháp lý**); lớp quy hoạch trên bản đồ gắn nhãn minh họa.
+- **Dữ liệu & nguồn** và **Báo cáo** — độ sẵn sàng dữ liệu (kể cả độ phủ ảnh xã/phường), nguồn gốc và chất lượng dữ liệu, báo cáo tổng hợp.
+- **Khám phá** _(nền địa hình minh họa, dữ liệu điểm đến là thật, tạm dừng phát triển — chỉ vào được qua link trực tiếp `?view=world`)_ — đi bộ hoặc bay trên địa hình tỉnh, 28 điểm đến có nguồn, 3 tuyến tham quan. Xem [docs/world-exploration.md](docs/world-exploration.md) và [docs/destination-diorama.md](docs/destination-diorama.md).
 - Giao diện có cả **tiếng Việt và tiếng Anh**, chuyển đổi ngay không cần tải lại trang.
-- **Thiết kế ưu tiên dễ đọc** — cỡ chữ lớn cho người lớn tuổi/thị lực kém, nút chỉnh cỡ chữ **A− / A / A+** ngay trên thanh tiêu đề (lựa chọn được ghi nhớ giữa các lần truy cập, áp dụng đồng bộ cho toàn bộ giao diện kể cả các nhãn nhỏ trước đây bị bỏ sót), trạng thái luôn kèm nhãn chữ chứ không chỉ dựa vào màu. Xem [docs/accessibility.md](docs/accessibility.md).
+- **Thiết kế ưu tiên dễ đọc** — cỡ chữ lớn, nút chỉnh cỡ chữ **A− / A / A+** (được ghi nhớ), trạng thái luôn kèm nhãn chữ, tên truy cập của nút chứa đúng chữ hiển thị (WCAG 2.5.3), kiểm tự động bằng axe. Xem [docs/accessibility.md](docs/accessibility.md).
 
-### Đang tiếp tục hoàn thiện
+### Giới hạn đã biết và việc đang tiếp tục
 
-Phần dưới đây đang hoặc sẽ được làm tiếp, chưa xong:
+- **Ảnh xã/phường:** 88/102 đơn vị chưa có ảnh; ảnh từ báo/UBND cần giấy phép (bản nháp thư xin phép: [reports/research/permission-request-draft.md](reports/research/permission-request-draft.md)).
+- **Nhãn bản đồ 3D và bản đồ chi tiết:** chưa kiểm chứng được không chồng nhãn (cần GPU thật); bản đồ định vị ở Tổng quan đã đo 0 chồng.
+- **Thiếu nguồn công bố:** lượt khách du lịch, chủ đầu tư/giải ngân của dự án trong danh mục, ranh giới quy hoạch chính thức.
+- **Chưa đối chiếu bản gốc:** số hiệu văn bản quy hoạch (trích bằng biểu thức chính quy) và 4 nhóm vốn trong Quyết định 1985 lệch tổng so với tiêu đề.
+- **Phân cấp nhãn giữa nhiều loại nhãn** khi bật đồng thời nhiều lớp ở chế độ Nâng cao; **provenance passport** chi tiết hơn cho từng số liệu.
 
-- **Phân cấp nhãn bản đồ** (map label hierarchy) — đã có cho riêng tên xã/phường (ưu tiên + tránh chồng nhãn khi phóng to/thu nhỏ); còn thiếu là phân cấp **giữa nhiều loại nhãn cùng lúc** (tên xã, tên đường, địa danh, marker dự án) khi người dùng bật đồng thời nhiều lớp ở chế độ Nâng cao.
-- **Provenance passport đầy đủ** — hồ sơ nguồn gốc dữ liệu chi tiết hơn cho từng số liệu hiển thị (đang có ở mức cơ bản, xem [docs/data-provenance.md](docs/data-provenance.md)).
-- **Thu thập thêm dữ liệu công khai thật** — mở rộng danh mục dự án/số liệu vượt ra ngoài dữ liệu minh họa hiện tại.
-- **Làm lại sâu hơn Danh mục dự án / Chi tiết dự án** — cùng đợt audit UI/UX đã áp dụng cho Tổng quan điều hành.
+Báo cáo đầy đủ trạng thái V3: [reports/v3-upgrade/final-report.md](reports/v3-upgrade/final-report.md).
 
 ## Chạy thử trên máy
 
@@ -70,6 +81,7 @@ Tài liệu kỹ thuật chi tiết (kiến trúc hệ thống, pipeline dữ li
 - [Thuyết minh "Make in Viet Nam" (tính nguyên bản, công nghệ làm chủ, tiêu chuẩn áp dụng)](docs/make-in-vietnam.md)
 - [Nguồn gốc và kiểm định dữ liệu](docs/data-provenance.md)
 - [Hiệu năng và ngân sách](docs/performance.md)
+- [Kiểm kê nguồn và chất lượng dữ liệu V3](reports/research/official-sources.md)
 - [Khả năng tiếp cận](docs/accessibility.md)
 - [Hướng dẫn đóng góp](CONTRIBUTING.md) và [chính sách bảo mật](SECURITY.md)
 - [English documentation](README.en.md)
