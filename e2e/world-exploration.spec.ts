@@ -307,7 +307,7 @@ test.describe('world exploration — first-time visitor, no pre-existing onboard
     // "Trợ giúp" HUD button, which is covered separately below).
     await page.getByRole('button', { name: 'Bắt đầu' }).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
-    await page.getByRole('button', { name: 'Mở hướng dẫn sử dụng' }).click();
+    await page.getByRole('button', { name: 'Trợ giúp: mở hướng dẫn sử dụng' }).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
   });
 

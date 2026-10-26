@@ -62,7 +62,7 @@ export const vi = {
   'header.share.title': 'Sao chép liên kết',
   'header.share.status': 'Đã sao chép liên kết',
   'header.share.prompt': 'Sao chép liên kết này:',
-  'header.help.ariaLabel': 'Mở hướng dẫn sử dụng',
+  'header.help.ariaLabel': 'Trợ giúp: mở hướng dẫn sử dụng',
   'header.help.title': 'Hướng dẫn sử dụng',
   'header.provenance.ariaLabel': 'Xem danh mục bộ dữ liệu',
   'header.provenance.title': 'Danh mục bộ dữ liệu',
@@ -174,9 +174,9 @@ export const vi = {
 
   // FontScaleControl ("A- / A / A+")
   'fontScale.groupAriaLabel': 'Cỡ chữ',
-  'fontScale.small': 'Chữ nhỏ hơn',
-  'fontScale.default': 'Chữ cỡ mặc định',
-  'fontScale.large': 'Chữ lớn hơn',
+  'fontScale.small': 'Chữ nhỏ hơn A-',
+  'fontScale.default': 'Chữ cỡ mặc định A',
+  'fontScale.large': 'Chữ lớn hơn A+',
 
   // Executive Overview
   'executiveOverview.loading': 'Đang tải tổng quan danh mục dự án…',
