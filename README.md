@@ -61,12 +61,16 @@ Muốn build thử bản production hoặc chạy kiểm tra chất lượng cod
 ## Một vài ảnh minh họa
 
 <p align="center">
-  <img src="docs/images/readme-gallery/dashboard-3d-overview.png" alt="Bản đồ 3D Đắk Lắk hiển thị đầy đủ nhãn hành chính 102 xã/phường trên nền địa hình vệ tinh" width="49%">
-  <img src="docs/images/readme-gallery/project-portfolio-desktop.png" alt="Danh mục dự án trọng điểm với bộ lọc trạng thái/lĩnh vực và bảng dự án" width="49%">
+  <img src="docs/images/readme-gallery/tourism-hub-desktop.png" alt="Trang Du lịch: 28 điểm đến đã xác minh nguồn, KPI, bộ lọc loại hình và thẻ điểm đến có ảnh giấy phép tự do; lượt khách ghi Chưa có dữ liệu" width="49%">
+  <img src="docs/images/readme-gallery/planning-hub-desktop.png" alt="Trang Quy hoạch: 118 văn bản quy hoạch được trích dẫn trong danh mục thu hút đầu tư, số dự án cần rà soát và bảng văn bản" width="49%">
 </p>
 <p align="center">
-  <img src="docs/images/readme-gallery/executive-overview-mobile.png" alt="Tổng quan điều hành trên điện thoại, các thẻ KPI xếp thành lưới không tràn ngang" width="49%">
-  <img src="docs/images/readme-gallery/dashboard-2d-administrative-labels.png" alt="Bản đồ chi tiết hiển thị đầy đủ tên 102 xã/phường, nhãn chồng nhau được dịch ra thay vì ẩn đi" width="49%">
+  <img src="docs/images/readme-gallery/unit-profile-desktop.png" alt="Hồ sơ xã Liên Sơn Lắk: ảnh điểm đến Hồ Lắk kèm giấy phép và tác giả, ghi rõ không phải ảnh toàn cảnh đơn vị" width="49%">
+  <img src="docs/images/readme-gallery/detail-map-tourism-lens-desktop.png" alt="Bản đồ chi tiết với tab nhanh Lớp du lịch bật: các điểm đến có nguồn hiện trên ranh giới 102 xã/phường" width="49%">
+</p>
+<p align="center">
+  <img src="docs/images/readme-gallery/dashboard-3d-overview.png" alt="Bản đồ 3D Đắk Lắk hiển thị đầy đủ nhãn hành chính 102 xã/phường trên nền địa hình vệ tinh" width="49%">
+  <img src="docs/images/readme-gallery/executive-overview-mobile.png" alt="Tổng quan điều hành trên điện thoại, các thẻ KPI xếp thành lưới không tràn ngang, có nhãn dữ liệu minh họa" width="24%">
 </p>
 
 ## Giấy phép

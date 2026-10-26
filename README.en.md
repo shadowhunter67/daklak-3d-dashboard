@@ -108,7 +108,11 @@ source text" note in that case rather than a broken or half-translated sentence)
 <p align="center">
   <img src="docs/images/readme-gallery/detail-map-desktop-en.png" alt="The MapLibre detail map in English on desktop 1440x900, showing the translated toolbar and the honest awaiting-data notice (no PMTiles source configured yet)" width="70%">
 </p>
-<p align="center"><sub>Every other screenshot in <a href="README.md">README.md</a> is in Vietnamese, the app's default language — these five show the same views switched to English.</sub></p>
+<p align="center">
+  <img src="docs/images/readme-gallery/tourism-hub-desktop.png" alt="Tourism page (Vietnamese UI): 28 sourced destinations, filters and photo cards; visitor counts shown as No data yet" width="49%">
+  <img src="docs/images/readme-gallery/planning-hub-desktop.png" alt="Planning page (Vietnamese UI): 118 planning documents cited in the investment catalogue and the table of documents" width="49%">
+</p>
+<p align="center"><sub>Every other screenshot in <a href="README.md">README.md</a> is in Vietnamese, the app's default language — the first five show the same views switched to English; the last two (Tourism, Planning) are shown in Vietnamese.</sub></p>
 
 ## Running the project
 
