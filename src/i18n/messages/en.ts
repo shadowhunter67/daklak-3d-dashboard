@@ -1292,4 +1292,5 @@ export const en: Partial<Record<MessageKey, string>> = {
   'unit.hero.photoAlt': 'Reference photo of {place}',
   'unit.hero.photoCaption':
     'Photo of a destination in the unit: {place} (assigned by coordinates).',
+  'workspace.info.noPhoto': 'No verified photo yet; showing the boundary shape from the GIS map.',
 };

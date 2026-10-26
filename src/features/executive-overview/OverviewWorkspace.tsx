@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { geoMercator, geoPath } from 'd3-geo';
 import wards from '#province-assets/daklak-wards-render.json';
 import labels from '#province-assets/daklak-labels.json';
@@ -23,6 +23,7 @@ import {
 } from '../../routing/hashRoute';
 import { useHashRoute } from '../../routing/useHashRoute';
 import { Card, PanelHeader, StatList } from '../../components/ui';
+import type { UnitMedia } from '../../entities/admin-unit/unitMedia';
 import { BuildingIcon, ListIcon, MapIcon, PinIcon } from '../../components/layout/icons';
 
 const collection = wards as WardCollection;
@@ -214,6 +215,71 @@ function ProvinceMap() {
   );
 }
 
+/** Hình ranh giới của đơn vị (GIS) — dùng khi chưa có ảnh đã xác minh. */
+function UnitShape({ code, label }: { code: string; label: string }) {
+  const path = useMemo(() => {
+    const feature = collection.features.find((f) => f.properties.code === code);
+    if (!feature) return '';
+    return geoPath(geoMercator().fitSize([240, 140], feature))(feature) ?? '';
+  }, [code]);
+  return (
+    <svg
+      viewBox="0 0 240 140"
+      role="img"
+      aria-label={label}
+      className="overview-workspace__unit-shape"
+    >
+      <path
+        d={path}
+        fill="var(--ui-accent)"
+        fillOpacity="0.22"
+        stroke="var(--ui-accent)"
+        strokeWidth="2"
+      />
+    </svg>
+  );
+}
+
+/** Ảnh (nếu có) hoặc hình ranh giới của đơn vị đang chọn; dữ liệu ảnh tải lười để không làm nặng trang. */
+function UnitPhoto({ code, name }: { code: string; name: string }) {
+  const { t } = useTranslation();
+  const [media, setMedia] = useState<readonly UnitMedia[] | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    import('../../data/adminUnitMedia').then(
+      (module) => !cancelled && setMedia(module.ADMIN_UNIT_MEDIA),
+      () => undefined,
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+  if (!media) return null;
+  const photo = media.find(
+    (m) => m.administrativeUnitCode === code && m.usage === 'production' && m.localAsset,
+  );
+  if (!photo)
+    return (
+      <figure className="overview-workspace__unit-photo">
+        <UnitShape code={code} label={t('unit.hero.shapeAlt', { name })} />
+        <figcaption>{t('workspace.info.noPhoto')}</figcaption>
+      </figure>
+    );
+  return (
+    <figure className="overview-workspace__unit-photo">
+      <img
+        src={`${import.meta.env.BASE_URL}${photo.localAsset}`}
+        alt={t('unit.hero.photoAlt', { place: photo.subject })}
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>
+        {t('unit.hero.photoCaption', { place: photo.subject })} {photo.notes} ({photo.license})
+      </figcaption>
+    </figure>
+  );
+}
+
 function QuickInfo({
   projectCountByAdministrativeArea,
 }: {
@@ -265,6 +331,7 @@ function QuickInfo({
               {t(unit.type === 'phuong' ? 'unitType.ward' : 'unitType.commune')} {unit.name}
             </span>
           </p>
+          <UnitPhoto code={unit.code} name={unit.name} />
           <StatList
             items={[
               {
