@@ -7,50 +7,61 @@
 [Tiếng Việt](README.md) (primary, most complete) · **English** (this file — a summary, not a full translation)
 
 A WebGL dashboard for the 102 communes/wards of Đắk Lắk province after the 2025 administrative
-merger, from the former Đắk Lắk highlands to the former Phú Yên coast. The map uses an SRTM
-displacement terrain surface with Sentinel-2 imagery and polygon hit-testing for hover/click/
-selection. Four experiences: **Executive Overview** (default landing — an "Executive Status Hero"
-panel gives the overall situation and how many projects need attention in a 5-second read, plain-
-language alerts with no leaked technical jargon, portfolio KPIs, a colour-distinct project-status
-chart, and data health), the 3D overview, an accessible 2D list, and a detail map (`?view=map`)
-using **MapLibre GL JS + self-hosted PMTiles** — no Google Maps Platform dependency, no API key or
-billing required. On the detail map all 102 commune/ward names stay visible at every zoom — never
-hidden, never abbreviated; overlapping labels are displaced and tied back to their true point with
-a thin leader line instead of being dropped. Its layer panel has a **Basic** tier (boundaries,
-commune/ward names, roads, projects, planning) and an **Advanced** tier (road/landmark/building
-names, dashboard metrics, and a **heatmap layer** with real 0–100 values shown on the chart, not
-just in hidden data).
+merger (former Đắk Lắk highlands plus former Phú Yên coast), combined with a project-tracking
+platform. Beside the illustrative demo data it now carries **sourced real data**: 201 projects from
+the 2026–2030 investment-attraction catalogue (Decision 1985/QĐ-UBND), profiles of all 102
+communes/wards, 28 verified tourist destinations, and the planning documents cited in the
+catalogue. The rule throughout: **no source means "No data yet" — never an invented number.**
 
-Beyond those four, an **"Explore"** button (`?view=world`) opens an early preview — a fly-over of
-the province terrain, the initial foundation for a "Tourism Digital Twin" direction. This is a
-**clearly-labeled illustrative scenario** (an "ILLUSTRATIVE" badge is shown directly on the scene),
-with no real destinations/tour routes yet — see
-[reports/tourism-digital-twin/phase-status.md](reports/tourism-digital-twin/phase-status.md) for
-current status and limitations. **Currently paused:** the nav tab is hidden (only reachable via a
-direct `?view=world` link) while the team focuses elsewhere.
+The sidebar has: **Overview · Map · 3D map · Projects · Communes/wards · Tourism · Planning ·
+Data & sources · Reports**, and the top search finds communes/wards, projects, catalogue entries,
+tourist places and planning documents.
 
-**In progress / planned next:** cross-category map label hierarchy — priority-based decluttering
-already exists within commune/ward names alone, but not yet _between_ label types (ward names vs.
-road names vs. landmarks vs. project markers) when several Advanced layers are on at once; a fuller
-data-provenance passport per figure; collecting more real public data beyond the current
-illustrative set; and a deeper redesign pass on Project Portfolio / Project Detail (the same audit
-already applied to Executive Overview).
+- **Executive Overview** (default) — status hero, plain-language alerts, KPIs and status chart
+  (illustrative data), a locator map where all 102 names are drawn with zero overlaps, plus two
+  real-data blocks: **Needs attention** (real data gaps: projects without a capital figure,
+  projects needing planning review, communes without a photo) and **Capital scale by sector**
+  (expected capital from Decision 1985, explicitly not disbursed capital). The accountability
+  block only states why it is not shown: no published source names investors or disbursement.
+- **Detail map** (`?view=map`, MapLibre GL JS + self-hosted PMTiles, no Google Maps) — all 102
+  names always visible, overlaps displaced with leader lines; a **Lens** group (Executive /
+  Investment / Tourism / Planning) switches the matching reference layers, and a **Tourism layer**
+  shows sourced destinations (popup with a source link, no visitor counts).
+- **3D map** — terrain from SRTM + Sentinel-2.
+- **Communes/wards** — accessible 2D list and a **per-unit profile** (`#/unit/<code>`): area,
+  2025 population, density, sub-units, investment projects and tourist places inside the unit.
+  14/102 units show a photo of a tourist destination located inside them (free licence, author
+  credited, labelled as not an overview of the unit); the rest show the GIS boundary shape and say so.
+- **Projects** — illustrative portfolio/detail (CSV export) and the real **investment-attraction
+  catalogue** (`#/investment-catalog`, 201 projects with per-field source, date and evidence level).
+- **Tourism** (`#/tourism`) — 28 sourced destinations, 25 with free-licence photos, the commune/
+  ward containing each (derived from coordinates, labelled as derived); visitors = "No data yet".
+- **Planning** (`#/planning`) — 118 planning documents cited in the catalogue with issuing body
+  (inferred from the document number) and the spelling used in the source; projects whose own
+  planning cell states a gap are flagged "needs review", **not a legal finding**; the planning
+  layer on the map is labelled illustrative.
+- **Explore** (`?view=world`, paused) — fly/walk over terrain with the 28 sourced destinations and
+  per-destination 3D dioramas; see [reports/tourism-digital-twin/phase-status.md](reports/tourism-digital-twin/phase-status.md).
 
-The project is transitioning from a "3D map dashboard" toward a "provincial key-project executive
-platform that uses the map as a contextual layer" — see [ADR 0001](docs/adr/0001-project-centric-domain.md)
-and the [domain model](docs/domain-model.md). Executive Overview, Project Portfolio, and Project
-Detail currently use **deterministic illustrative data** for 9 sample projects, not real
-operational figures.
+**Known limits:** 88/102 units have no photo (photos from the press/UBND need permission; draft
+letter in [reports/research/permission-request-draft.md](reports/research/permission-request-draft.md));
+label overlap is unverified on the 3D and detail maps (needs a real GPU); no published source for
+visitor counts, investors/disbursement or official planning boundaries; planning document numbers
+are regex-extracted and not yet checked against the originals; 4 capital groups in Decision 1985
+differ from their group totals. Full status: [reports/v3-upgrade/final-report.md](reports/v3-upgrade/final-report.md).
 
 ## Demo
 
 **Live demo:** https://shadowhunter67.github.io/daklak-3d-dashboard/
 
-> **Disclaimer:** all project/work-package/milestone/budget/disbursement/issue data shown in
-> Executive Overview and the map experiences is **deterministic illustrative data** (a fixed seed
-> in the source code), not real operational or official government figures — it is not for actual
-> management decisions, approvals, or reporting. The map is a reference visualization, not a legal
-> record for land, surveying, planning, or administrative boundary purposes.
+> **Disclaimer — two kinds of data, kept separate in the UI:** Executive Overview KPIs, the sample
+> project portfolio (9 projects), commune-level indicators and the coloured planning layer are
+> **deterministic illustrative data** (fixed seed), not operational or official figures. The
+> investment-attraction catalogue, unit profiles, tourist destinations and cited planning documents
+> are **sourced real data** with per-item source and confidence; what has no source is shown as
+> "No data yet". The map is a reference visualization, not a legal record for land, surveying,
+> planning, or administrative boundary purposes. See
+> [reports/research/source-quality-review.md](reports/research/source-quality-review.md).
 
 ## Accessibility
 
