@@ -57,7 +57,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'header.share.title': 'Copy link',
   'header.share.status': 'Link copied',
   'header.share.prompt': 'Copy this link:',
-  'header.help.ariaLabel': 'Open the usage guide',
+  'header.help.ariaLabel': 'Help: open the usage guide',
   'header.help.title': 'Usage guide',
   'header.provenance.ariaLabel': 'View dataset catalog',
   'header.provenance.title': 'Dataset catalog',
@@ -168,9 +168,9 @@ export const en: Partial<Record<MessageKey, string>> = {
 
   // FontScaleControl ("A- / A / A+")
   'fontScale.groupAriaLabel': 'Text size',
-  'fontScale.small': 'Smaller text',
-  'fontScale.default': 'Default text size',
-  'fontScale.large': 'Larger text',
+  'fontScale.small': 'Smaller text A-',
+  'fontScale.default': 'Default text size A',
+  'fontScale.large': 'Larger text A+',
 
   // Executive Overview
   'executiveOverview.loading': 'Loading the project portfolio overview…',

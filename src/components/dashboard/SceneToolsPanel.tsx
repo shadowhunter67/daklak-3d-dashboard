@@ -44,13 +44,6 @@ export function SceneToolsPanel() {
           onClick={toggleAutoRotate}
           aria-pressed={autoRotate}
           disabled={reducedMotion}
-          aria-label={
-            reducedMotion
-              ? t('header.autoRotate.ariaLabelReducedMotion')
-              : autoRotate
-                ? t('header.autoRotate.ariaLabelStop')
-                : t('header.autoRotate.ariaLabelStart')
-          }
           title={
             reducedMotion ? t('header.autoRotate.titleReducedMotion') : t('header.autoRotate.title')
           }
@@ -74,9 +67,6 @@ export function SceneToolsPanel() {
           className="scene-tools__toggle"
           onClick={toggleRoads}
           aria-pressed={roadsVisible}
-          aria-label={
-            roadsVisible ? t('header.roads.ariaLabelHide') : t('header.roads.ariaLabelShow')
-          }
         >
           <span className="scene-tools__icon" aria-hidden="true">
             <LayersIcon />
@@ -91,11 +81,6 @@ export function SceneToolsPanel() {
           className="scene-tools__toggle"
           onClick={toggleLabels}
           aria-pressed={labelsVisible}
-          aria-label={
-            labelsVisible
-              ? t('header.centerLabels.ariaLabelHide')
-              : t('header.centerLabels.ariaLabelShow')
-          }
         >
           <span className="scene-tools__icon" aria-hidden="true">
             <TextIcon />
@@ -116,7 +101,6 @@ export function SceneToolsPanel() {
         type="button"
         className="scene-tools__action"
         onClick={requestCameraReset}
-        aria-label={t('header.resetCamera.ariaLabel')}
         title={t('header.resetCamera.title')}
       >
         <span className="scene-tools__icon" aria-hidden="true">

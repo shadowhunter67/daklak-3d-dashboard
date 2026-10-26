@@ -27,7 +27,7 @@ describe('DashboardHeader (topbar)', () => {
   it('offers contextual help without changing selection', () => {
     useMapStore.setState({ selectedCode: '24580', helpSignal: 0 });
     renderHeader();
-    fireEvent.click(screen.getByRole('button', { name: 'Mở hướng dẫn sử dụng' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Trợ giúp: mở hướng dẫn sử dụng' }));
     expect(useMapStore.getState().helpSignal).toBe(1);
     expect(useMapStore.getState().selectedCode).toBe('24580');
   });
