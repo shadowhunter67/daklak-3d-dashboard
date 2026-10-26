@@ -80,22 +80,19 @@ describe('AppSidebar', () => {
     expect(screen.getByRole('button', { name: 'Tổng quan' })).not.toHaveAttribute('aria-current');
   });
 
-  it('"Xã, phường" là lối vào riêng: mở bản đồ với danh sách 102 đơn vị, và tự nó được tô sáng', () => {
+  it('không có mục "Xã, phường" riêng: danh sách 102 đơn vị đã nằm trong bản đồ nên không lặp mục', () => {
     renderSidebar();
-    fireEvent.click(screen.getByRole('button', { name: /Xã, phường/ }));
-    expect(useMapStore.getState().viewMode).toBe('map');
-    expect(useMapStore.getState().mapEntry).toBe('wards');
+    expect(screen.queryByRole('button', { name: /Xã, phường/ })).toBeNull();
+    expect(screen.getAllByRole('button').length).toBeGreaterThan(0);
   });
 
-  it('"Bản đồ" đặt lại lối vào về bản đồ thường để hai mục không cùng sáng', () => {
-    useMapStore.setState({ viewMode: 'map', mapEntry: 'wards' });
+  it('"Bản đồ" được tô sáng khi đang ở bản đồ 2D và bấm vào mở bản đồ', () => {
+    useMapStore.setState({ viewMode: 'overview' });
     renderSidebar();
-    expect(screen.getByRole('button', { name: /Xã, phường/ })).toHaveAttribute(
-      'aria-current',
-      'page',
-    );
-    expect(screen.getByRole('button', { name: 'Bản đồ' })).not.toHaveAttribute('aria-current');
     fireEvent.click(screen.getByRole('button', { name: 'Bản đồ' }));
-    expect(useMapStore.getState().mapEntry).toBe('map');
+    expect(useMapStore.getState().viewMode).toBe('map');
+    cleanup();
+    renderSidebar();
+    expect(screen.getByRole('button', { name: 'Bản đồ' })).toHaveAttribute('aria-current', 'page');
   });
 });
