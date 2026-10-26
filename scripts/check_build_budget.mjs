@@ -87,13 +87,17 @@ const dist = join(root, 'dist');
 // 3,490,000, gzip 958,000 -> 960,000, build 22,830,000 -> 22,838,000 (measured 3,487,478 / 957,684 /
 // 22,834,007; +3.5KB: tourism layer + popup, lens module, layer panel group, unit photo hero, strings).
 // The unit photos reuse files already in public/images/destinations, so they add no image bytes.
+// Dependabot production-dependencies group (2026-10-26: maplibre-gl 6.14.0->6.15.0, react/react-dom
+// 19.3.0->19.3.1, @react-three/fiber 9.8.1->9.8.2, zustand 5.0.15->5.0.16): no code of ours changed, the
+// shipped libraries grew. Measured 3,508,126 JS / 964,703 gzip / 22,853,551 build bytes (+20.6KB JS
+// over 3,487,478). Limits raised to JS 3,512,000, gzip 968,000, build 22,858,000.
 const limits = {
-  totalJavaScriptBytes: 3_490_000,
-  totalJavaScriptGzipBytes: 960_000,
+  totalJavaScriptBytes: 3_512_000,
+  totalJavaScriptGzipBytes: 968_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 22_838_000,
+  totalBuildBytes: 22_858_000,
 };
 
 async function filesAt(directory) {
