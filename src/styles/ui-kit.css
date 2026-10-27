@@ -3031,3 +3031,38 @@
   margin: 8px 0;
   font-size: 1.125rem;
 }
+
+/* Báo cáo V2: phần danh mục thu hút đầu tư (dữ liệu có nguồn). */
+.reports-invest {
+  display: grid;
+  gap: 16px;
+  margin-top: 8px;
+}
+.reports-invest h2 {
+  margin: 8px 0 0;
+  font-size: 1.25rem;
+}
+.reports-invest__grid {
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+.reports-invest__empty {
+  font-weight: 700;
+}
+.reports-invest__bottlenecks {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.reports-invest__bottlenecks li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--ui-border);
+}
+.reports-invest__status {
+  margin: 16px 0 0;
+}

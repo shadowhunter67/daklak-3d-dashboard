@@ -257,3 +257,26 @@ test.describe('Nhãn bản đồ Tổng quan', () => {
     expect(m.pairs).toEqual([]);
   });
 });
+
+test.describe('Báo cáo V2 — danh mục thu hút đầu tư', () => {
+  test('có xu hướng (chưa có lịch sử), điểm nghẽn, vốn liên quan và so sánh; không bịa số', async ({
+    page,
+  }) => {
+    await page.goto('./#/reports');
+    await expect(
+      page.getByRole('heading', { name: /Danh mục thu hút đầu tư — báo cáo có nguồn/ }),
+    ).toBeVisible();
+    await expect(page.getByRole('region', { name: 'Xu hướng theo thời gian' })).toContainText(
+      'Chưa có dữ liệu lịch sử',
+    );
+    const bottleneck = page.getByRole('region', { name: 'Điểm nghẽn' });
+    await expect(bottleneck.getByText('Đất đai').locator('..')).toContainText('Chưa có dữ liệu');
+    await expect(
+      page.getByRole('region', { name: 'Vốn liên quan tới dự án có vấn đề' }),
+    ).toContainText('không phải tác động kinh tế');
+    const benchmark = page.getByRole('region', { name: 'So sánh' });
+    await expect(benchmark.getByRole('table')).toBeVisible();
+    await benchmark.getByRole('button', { name: /Xã, phường/ }).click();
+    await expect(benchmark.getByRole('table')).toContainText(/Phường|Xã|[A-ZĐ]/);
+  });
+});
