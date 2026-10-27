@@ -3067,6 +3067,23 @@
   margin: 16px 0 0;
 }
 
+/* Quy hoạch: bảng thuật ngữ "Cách đọc trang này" và trạng thái ranh giới. */
+.planning-hub__terms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px 24px;
+  margin: 8px 0 0;
+}
+.planning-hub__terms dt {
+  font-weight: 700;
+}
+.planning-hub__terms dd {
+  margin: 4px 0 0;
+}
+.planning-hub__boundary-status {
+  font-weight: 700;
+}
+
 /* Du lịch: chuỗi điểm đến → địa bàn → dự án → quy hoạch → cơ hội đầu tư trong từng thẻ. */
 .tourism-card__chain {
   display: grid;

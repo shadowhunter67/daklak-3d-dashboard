@@ -1347,6 +1347,23 @@ export const vi = {
   'sidebar.projectsNote': 'Dữ liệu minh họa',
   'sidebar.investment': 'Thu hút đầu tư',
   'sidebar.investmentNote': '{count} dự án có nguồn',
+  'planning.terms.heading': 'Cách đọc trang này',
+  'planning.terms.reference': 'Thông tin tham khảo',
+  'planning.terms.referenceDesc':
+    'Dữ liệu và lớp bản đồ ở đây giúp hình dung, không có giá trị pháp lý.',
+  'planning.terms.cited': 'Nguồn trích dẫn',
+  'planning.terms.citedDesc':
+    'Văn bản quy hoạch được nêu trong danh mục thu hút đầu tư (Quyết định 1985/QĐ-UBND); chưa đối chiếu với bản gốc từng văn bản.',
+  'planning.terms.review': 'Cần rà soát',
+  'planning.terms.reviewDesc':
+    'Ô quy hoạch của nguồn tự nêu còn thiếu. Đây là dấu hiệu để xem lại, không phải kết luận pháp lý.',
+  'planning.terms.noBoundary': 'Chưa có ranh giới chính thức',
+  'planning.terms.noBoundaryDesc':
+    'Chưa có tệp ranh giới quy hoạch chính thức nên không kiểm tra được dự án nằm trong hay ngoài khu quy hoạch.',
+  'planning.boundary.heading': 'Ranh giới quy hoạch',
+  'planning.boundary.status': 'Chưa có ranh giới chính thức',
+  'planning.boundary.note':
+    'Hệ thống chưa có dữ liệu ranh giới quy hoạch đáng tin cậy, nên không đối chiếu vị trí dự án với quy hoạch và không đưa ra kết luận phù hợp hay xung đột quy hoạch.',
   'tourism.chain.aria': 'Liên kết của {name}: địa bàn, dự án, hạ tầng, quy hoạch, cơ hội đầu tư',
   'tourism.chain.projects': 'Dự án thu hút đầu tư trong địa bàn',
   'tourism.chain.projectsValue': '{count} dự án ({tourism} lĩnh vực du lịch)',

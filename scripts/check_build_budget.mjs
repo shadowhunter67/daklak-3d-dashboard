@@ -101,9 +101,13 @@ const dist = join(root, 'dist');
 // V4 P1 Reports V2 (2026-10-27): JS 3,524,000 -> 3,534,000, build 22,874,000 -> 22,884,000 (measured
 // 3,528,868 / 22,877,067; +~10KB: InvestmentReports + benchmark/bottleneck/exposure model, strings).
 // Combined V4 state (P0 + P1 + Reports V2 + media pipeline, 2026-10-27): measured JS 3,532,728, gzip 972,196,
-// build 23,207,593 -> gzip limit 972,000 -> 976,000, build limit 23,225,000 (JS limit 3,534,000 unchanged).
+// build 23,207,593 -> gzip limit 972,000 -> 976,000, build limit 23,225,000 (JS limit 3,534,000 unchanged). After merging the P2 tourism/planning work the final measured state is
+// 3,539,381 JS / 973,620 gzip / 23,214,711 build, inside JS 3,540,000, gzip 976,000, build 23,225,000.
+// V4 P2 tourism links + planning terms (2026-10-27): JS 3,534,000 -> 3,540,000, build 22,884,000 ->
+// 22,892,000 (measured 3,535,521 / 22,884,185 on top of the Reports V2 limits; +~7KB: destination link
+// model, chain list in the tourism cards, planning terms/boundary cards, strings).
 const limits = {
-  totalJavaScriptBytes: 3_534_000,
+  totalJavaScriptBytes: 3_540_000,
   totalJavaScriptGzipBytes: 976_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
