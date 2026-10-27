@@ -102,7 +102,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'sidebar.overview': 'Overview',
   'sidebar.map': 'Map',
   'sidebar.map3d': '3D map',
-  'sidebar.projects': 'Projects',
+  'sidebar.projects': 'Project tracking',
   'sidebar.wards': 'Communes & wards',
   'sidebar.wardsCount': '({count} units)',
   'sidebar.planning': 'Planning',
@@ -1293,4 +1293,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'unit.hero.photoCaption':
     'Photo of a destination in the unit: {place} (assigned by coordinates).',
   'workspace.info.noPhoto': 'No verified photo yet; showing the boundary shape from the GIS map.',
+  'sidebar.projectsNote': 'Illustrative data',
+  'sidebar.investment': 'Investment attraction',
+  'sidebar.investmentNote': '{count} sourced projects',
 };
