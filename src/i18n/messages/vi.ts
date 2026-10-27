@@ -1309,4 +1309,5 @@ export const vi = {
     'Hồ sơ số liệu của đơn vị hành chính. Ảnh là của một điểm đến du lịch nằm trong địa bàn, không phải ảnh toàn cảnh của đơn vị.',
   'unit.hero.photoAlt': 'Ảnh tham chiếu của {place}',
   'unit.hero.photoCaption': 'Ảnh điểm đến trong địa bàn: {place} (gán theo tọa độ).',
+  'workspace.info.noPhoto': 'Chưa có ảnh đã xác minh; hiển thị hình ranh giới theo bản đồ GIS.',
 } as const satisfies Record<string, string>;

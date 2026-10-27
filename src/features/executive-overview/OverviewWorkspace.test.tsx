@@ -55,4 +55,22 @@ describe('OverviewWorkspace', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Xem hồ sơ đơn vị' }));
     expect(window.location.hash).toBe('#/unit/24133');
   });
+
+  it('Thông tin nhanh hiện ảnh điểm đến của đơn vị (kèm giấy phép) khi có ảnh', async () => {
+    useMapStore.setState({ selectedCode: '24580' });
+    renderWorkspace();
+    const photo = await screen.findByRole('img', { name: /Ảnh tham chiếu của Hồ Lắk/ });
+    expect(photo).toHaveAttribute('src', expect.stringContaining('images/destinations/ho-lak.jpg'));
+    expect(screen.getByText(/CC BY-SA/)).toBeInTheDocument();
+  });
+
+  it('đơn vị chưa có ảnh: hiện hình ranh giới và nói rõ chưa có ảnh đã xác minh', async () => {
+    useMapStore.setState({ selectedCode: '24436' });
+    renderWorkspace();
+    expect(await screen.findByText(/Chưa có ảnh đã xác minh/)).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: /Hình dạng ranh giới của Cư M'ta/ }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('img', { name: /Ảnh tham chiếu/ })).toBeNull();
+  });
 });

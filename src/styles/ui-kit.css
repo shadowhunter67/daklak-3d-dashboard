@@ -2923,3 +2923,20 @@
   margin-top: 8px;
   font-size: 0.875rem;
 }
+
+/* Thông tin nhanh (Tổng quan): ảnh điểm đến trong địa bàn hoặc hình ranh giới, kèm chú thích. */
+.overview-workspace__unit-photo {
+  margin: 0 0 12px;
+}
+.overview-workspace__unit-photo img,
+.overview-workspace__unit-shape {
+  display: block;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.overview-workspace__unit-photo figcaption {
+  margin-top: 6px;
+  font-size: 0.8125rem;
+}
