@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import labels from '#province-assets/daklak-labels.json';
-import { layoutOverviewLabels, OVERVIEW_LABEL_FONT_SIZE } from './overviewMapLabels';
+import { labelExtent, layoutOverviewLabels, OVERVIEW_LABEL_FONT_SIZE } from './overviewMapLabels';
 
 const inputs = Object.entries(labels).map(([code, label], index) => ({
   code,
@@ -53,6 +53,18 @@ describe('overview map labels', () => {
     expect(placed.some((label) => label.displaced)).toBe(true);
     for (const label of placed) {
       expect(label.displaced).toBe(label.x !== label.anchorX || label.y !== label.anchorY);
+    }
+  });
+
+  it('labelExtent ôm trọn mọi hộp nhãn và neo, nên không nhãn nào bị cắt mép', () => {
+    const placed = layoutOverviewLabels(inputs);
+    const box = labelExtent(placed, OVERVIEW_LABEL_FONT_SIZE, 0);
+    for (const label of placed) {
+      const half = (label.name.length * 0.6 * OVERVIEW_LABEL_FONT_SIZE) / 2;
+      expect(label.x - half).toBeGreaterThanOrEqual(box.x - 0.01);
+      expect(label.x + half).toBeLessThanOrEqual(box.x + box.width + 0.01);
+      expect(label.y).toBeGreaterThanOrEqual(box.y);
+      expect(label.y).toBeLessThanOrEqual(box.y + box.height);
     }
   });
 });

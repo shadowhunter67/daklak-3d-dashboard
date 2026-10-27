@@ -108,7 +108,7 @@ export const vi = {
   'sidebar.overview': 'Tổng quan',
   'sidebar.map': 'Bản đồ',
   'sidebar.map3d': 'Bản đồ 3D',
-  'sidebar.projects': 'Dự án',
+  'sidebar.projects': 'Theo dõi dự án',
   'sidebar.wards': 'Xã, phường',
   'sidebar.wardsCount': '({count} đơn vị)',
   'sidebar.planning': 'Quy hoạch',
@@ -1310,4 +1310,7 @@ export const vi = {
   'unit.hero.photoAlt': 'Ảnh tham chiếu của {place}',
   'unit.hero.photoCaption': 'Ảnh điểm đến trong địa bàn: {place} (gán theo tọa độ).',
   'workspace.info.noPhoto': 'Chưa có ảnh đã xác minh; hiển thị hình ranh giới theo bản đồ GIS.',
+  'sidebar.projectsNote': 'Dữ liệu minh họa',
+  'sidebar.investment': 'Thu hút đầu tư',
+  'sidebar.investmentNote': '{count} dự án có nguồn',
 } as const satisfies Record<string, string>;
