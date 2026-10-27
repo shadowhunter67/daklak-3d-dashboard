@@ -82,13 +82,16 @@ test.describe('Trung tâm quy hoạch', () => {
 });
 
 test.describe('Tổng quan và tìm kiếm (V3)', () => {
-  test('Tổng quan có khối Việc cần chú ý và quy mô vốn, nói rõ không phải vốn giải ngân', async ({
+  test('Tổng quan có Việc cần xử lý, Nội dung cần bổ sung và quy mô vốn, nói rõ không phải vốn giải ngân', async ({
     page,
   }) => {
     await page.goto('./?view=overview');
-    const queue = page.getByRole('region', { name: 'Việc cần chú ý' });
-    await expect(queue).toBeVisible();
-    await expect(queue).toContainText('xã/phường chưa có ảnh đã xác minh');
+    const decisions = page.getByRole('region', { name: 'Việc cần xử lý' });
+    await expect(decisions).toBeVisible();
+    await expect(decisions).toContainText('Cần rà soát quy hoạch');
+    await expect(decisions).toContainText('Đơn vị chịu trách nhiệm');
+    const gaps = page.getByRole('region', { name: 'Nội dung cần bổ sung' });
+    await expect(gaps).toContainText('xã/phường chưa có ảnh đã xác minh');
     const economy = page.getByRole('region', { name: 'Quy mô vốn theo lĩnh vực' });
     await expect(economy).toContainText('chưa phải vốn đã giải ngân hay đã cam kết');
   });
@@ -196,6 +199,26 @@ async function measureOverviewLabels(page: import('@playwright/test').Page) {
     { fontUnits: LABEL_FONT_UNITS, minPx: READABLE_MIN_PX },
   );
 }
+
+test.describe('Thứ bậc thông tin của góc nhìn', () => {
+  test('Đầu tư và Quy hoạch ẩn nhãn phụ nhưng tên 102 xã/phường vẫn bật; Điều hành bật lại', async ({
+    page,
+  }) => {
+    await page.addInitScript(() =>
+      window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true'),
+    );
+    await page.goto('./?view=map');
+    await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    const group = page.getByRole('group', { name: 'Góc nhìn' });
+    for (const lens of ['Đầu tư', 'Quy hoạch']) {
+      await group.getByRole('button', { name: lens }).click();
+      await expect.poll(() => page.url()).toContain('labels=0');
+      expect(page.url()).toContain('wardlabels=1');
+    }
+    await group.getByRole('button', { name: 'Điều hành' }).click();
+    await expect.poll(() => page.url()).toContain('labels=1');
+  });
+});
 
 test.describe('Nhãn bản đồ Tổng quan', () => {
   test('102 tên đều hiện và không nhãn nào chồng lên nhãn khác', async ({ page }) => {

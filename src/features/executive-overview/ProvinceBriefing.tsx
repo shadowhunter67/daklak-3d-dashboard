@@ -18,6 +18,8 @@ import { AlertIcon, ChartIcon } from '../../components/layout/icons';
 import { buildCatalogRows, formatCapitalBillions } from '../investment-catalog/model/catalogModel';
 import { SECTOR_KEY } from '../investment-catalog/model/sectorLabels';
 import { imageCoverage } from '../unit-profile/model/unitProfileModel';
+import { DecisionQueue } from './DecisionQueue';
+import { buildDecisionQueue } from './model/decisionQueue';
 import { buildBriefing, type BriefingTaskId } from './model/provinceBriefing';
 
 const ALL_UNIT_CODES = Object.keys(labels);
@@ -40,7 +42,12 @@ export function ProvinceBriefing() {
   const { navigate } = useHashRoute();
   const [dataset, setDataset] = useState<ResearchedDataset | null>(null);
   const [failed, setFailed] = useState(false);
-  const [extras, setExtras] = useState<{ planning: number; tourismNoPhoto: number } | null>(null);
+  const [extras, setExtras] = useState<{
+    planning: number;
+    tourismNoPhoto: number;
+    reviewIds: ReadonlySet<string>;
+    uncitedIds: ReadonlySet<string>;
+  } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -56,6 +63,8 @@ export function ProvinceBriefing() {
         !cancelled &&
         setExtras({
           planning: planning.PLANNING_REVIEW_PROJECT_IDS.length,
+          reviewIds: new Set(planning.PLANNING_REVIEW_PROJECT_IDS),
+          uncitedIds: new Set(planning.PLANNING_UNCITED_PROJECT_IDS),
           tourismNoPhoto: tourism.verifiedTourismDestinations.filter((d) => !d.imageUrl).length,
         }),
       () => !cancelled && setFailed(true),
@@ -68,12 +77,20 @@ export function ProvinceBriefing() {
   const briefing = useMemo(() => {
     if (!dataset || !extras) return null;
     const coverage = imageCoverage(ALL_UNIT_CODES, ADMIN_UNIT_MEDIA);
-    return buildBriefing({
-      rows: buildCatalogRows(dataset),
-      planningReviewCount: extras.planning,
-      destinationsWithoutPhoto: extras.tourismNoPhoto,
-      unitsWithoutVerifiedImage: coverage.total - coverage.verified,
-    });
+    const rows = buildCatalogRows(dataset);
+    return {
+      decisions: buildDecisionQueue({
+        rows,
+        reviewIds: extras.reviewIds,
+        uncitedIds: extras.uncitedIds,
+      }),
+      ...buildBriefing({
+        rows,
+        planningReviewCount: extras.planning,
+        destinationsWithoutPhoto: extras.tourismNoPhoto,
+        unitsWithoutVerifiedImage: coverage.total - coverage.verified,
+      }),
+    };
   }, [dataset, extras]);
 
   if (failed)
@@ -88,23 +105,31 @@ export function ProvinceBriefing() {
         {t('briefing.loading')}
       </p>
     );
+  // Việc về dự án nằm ở hàng chờ "Việc cần xử lý"; khối này chỉ còn khoảng trống nội dung (ảnh).
+  const contentGaps = briefing.queue.filter(
+    (task) => task.id === 'tourism-photo' || task.id === 'unit-photo',
+  );
   const sectors = briefing.sectors.slice(0, TOP_SECTORS);
   const largest = sectors[0]?.capitalVnd ?? 1;
 
   return (
     <div className="province-briefing">
+      <DecisionQueue
+        items={briefing.decisions}
+        onOpen={(item) => navigate(serializeInvestmentCatalogHash(item.name))}
+      />
       <Card role="region" aria-labelledby="briefing-queue-heading">
         <PanelHeader
-          title={t('briefing.queue.heading')}
+          title={t('briefing.gaps.heading')}
           icon={<AlertIcon />}
           headingId="briefing-queue-heading"
         />
         <p>{t('briefing.queue.note')}</p>
-        {briefing.queue.length === 0 ? (
+        {contentGaps.length === 0 ? (
           <p>{t('briefing.queue.empty')}</p>
         ) : (
           <ul className="province-briefing__queue">
-            {briefing.queue.map((task) => (
+            {contentGaps.map((task) => (
               <li key={task.id}>
                 <span>
                   {t(`briefing.task.${task.id}` as MessageKey, {
