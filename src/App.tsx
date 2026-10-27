@@ -342,6 +342,8 @@ export default function App() {
                 onBack={goToOverview}
                 onOpenUnit={(code) => navigate(serializeUnitHash(code))}
                 onOpenDestination={(id) => navigate(serializeDioramaHash(id))}
+                onOpenCatalog={(code) => navigate(serializeInvestmentCatalogHash(undefined, code))}
+                onOpenPlanning={() => navigate(serializePlanningHash())}
               />
             )}
             {route.kind === 'planning' && (

@@ -1330,6 +1330,17 @@ export const en: Partial<Record<MessageKey, string>> = {
   'sidebar.projectsNote': 'Illustrative data',
   'sidebar.investment': 'Investment attraction',
   'sidebar.investmentNote': '{count} sourced projects',
+  'tourism.chain.aria':
+    'Links for {name}: area, projects, access, planning, investment opportunity',
+  'tourism.chain.projects': 'Investment projects in the area',
+  'tourism.chain.projectsValue': '{count} projects ({tourism} in tourism)',
+  'tourism.chain.viewProjects': 'View projects',
+  'tourism.chain.access': 'Access infrastructure',
+  'tourism.chain.planning': 'Related planning',
+  'tourism.chain.planningValue': '{count} documents cited by projects in the area',
+  'tourism.chain.viewPlanning': 'Open planning hub',
+  'tourism.chain.opportunity': 'Investment opportunity (expected capital in the area)',
+  'tourism.chain.opportunityValue': '{capital} billion VND',
   'reports.invest.heading': 'Investment-attraction catalogue — sourced report',
   'reports.invest.note':
     'This section is computed from Decision 1985/QĐ-UBND (sourced data), unlike the illustrative report above. Capital is the expected capital listed in the catalogue, not disbursed capital or economic impact.',
