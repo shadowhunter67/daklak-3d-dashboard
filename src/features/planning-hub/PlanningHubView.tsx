@@ -164,6 +164,22 @@ export function PlanningHubView({
         />
       </ul>
 
+      <Card role="region" aria-labelledby="planning-terms-heading">
+        <PanelHeader
+          title={t('planning.terms.heading')}
+          icon={<LayersIcon />}
+          headingId="planning-terms-heading"
+        />
+        <dl className="planning-hub__terms">
+          {(['reference', 'cited', 'review', 'noBoundary'] as const).map((key) => (
+            <div key={key}>
+              <dt>{t(`planning.terms.${key}` as MessageKey)}</dt>
+              <dd>{t(`planning.terms.${key}Desc` as MessageKey)}</dd>
+            </div>
+          ))}
+        </dl>
+      </Card>
+
       <Card role="region" aria-labelledby="planning-docs-heading">
         <PanelHeader
           title={t('planning.table.caption')}
@@ -269,6 +285,16 @@ export function PlanningHubView({
             onOpenCatalog={onOpenCatalog}
           />
         )}
+      </Card>
+
+      <Card role="region" aria-labelledby="planning-boundary-heading">
+        <PanelHeader
+          title={t('planning.boundary.heading')}
+          icon={<MapIcon />}
+          headingId="planning-boundary-heading"
+        />
+        <p className="planning-hub__boundary-status">{t('planning.boundary.status')}</p>
+        <p>{t('planning.boundary.note')}</p>
       </Card>
 
       <Card role="region" aria-labelledby="planning-overlay-heading">

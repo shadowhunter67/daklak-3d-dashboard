@@ -3031,3 +3031,20 @@
   margin: 8px 0;
   font-size: 1.125rem;
 }
+
+/* Quy hoạch: bảng thuật ngữ "Cách đọc trang này" và trạng thái ranh giới. */
+.planning-hub__terms {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px 24px;
+  margin: 8px 0 0;
+}
+.planning-hub__terms dt {
+  font-weight: 700;
+}
+.planning-hub__terms dd {
+  margin: 4px 0 0;
+}
+.planning-hub__boundary-status {
+  font-weight: 700;
+}

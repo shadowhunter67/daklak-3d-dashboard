@@ -1330,4 +1330,21 @@ export const en: Partial<Record<MessageKey, string>> = {
   'sidebar.projectsNote': 'Illustrative data',
   'sidebar.investment': 'Investment attraction',
   'sidebar.investmentNote': '{count} sourced projects',
+  'planning.terms.heading': 'How to read this page',
+  'planning.terms.reference': 'Reference information',
+  'planning.terms.referenceDesc':
+    'The data and map layers here help visualise; they have no legal value.',
+  'planning.terms.cited': 'Cited source',
+  'planning.terms.citedDesc':
+    'Planning documents named in the investment-attraction catalogue (Decision 1985/QĐ-UBND); not yet checked against each original document.',
+  'planning.terms.review': 'Needs review',
+  'planning.terms.reviewDesc':
+    'The source planning cell itself states a gap. A prompt to look again, not a legal finding.',
+  'planning.terms.noBoundary': 'No official boundary yet',
+  'planning.terms.noBoundaryDesc':
+    'There is no official planning boundary file, so a project cannot be checked as inside or outside a planning zone.',
+  'planning.boundary.heading': 'Planning boundaries',
+  'planning.boundary.status': 'No official boundary yet',
+  'planning.boundary.note':
+    'The system has no reliable planning-boundary data, so it does not compare project locations with planning and makes no conformity or conflict finding.',
 };
