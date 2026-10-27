@@ -1364,6 +1364,16 @@ export const vi = {
   'planning.boundary.status': 'Chưa có ranh giới chính thức',
   'planning.boundary.note':
     'Hệ thống chưa có dữ liệu ranh giới quy hoạch đáng tin cậy, nên không đối chiếu vị trí dự án với quy hoạch và không đưa ra kết luận phù hợp hay xung đột quy hoạch.',
+  'tourism.chain.aria': 'Liên kết của {name}: địa bàn, dự án, hạ tầng, quy hoạch, cơ hội đầu tư',
+  'tourism.chain.projects': 'Dự án thu hút đầu tư trong địa bàn',
+  'tourism.chain.projectsValue': '{count} dự án ({tourism} lĩnh vực du lịch)',
+  'tourism.chain.viewProjects': 'Xem dự án',
+  'tourism.chain.access': 'Hạ tầng tiếp cận',
+  'tourism.chain.planning': 'Quy hoạch liên quan',
+  'tourism.chain.planningValue': '{count} văn bản được dự án trong địa bàn trích dẫn',
+  'tourism.chain.viewPlanning': 'Mở trung tâm quy hoạch',
+  'tourism.chain.opportunity': 'Cơ hội đầu tư (vốn dự kiến trong địa bàn)',
+  'tourism.chain.opportunityValue': '{capital} tỷ đồng',
   'reports.invest.heading': 'Danh mục thu hút đầu tư — báo cáo có nguồn',
   'reports.invest.note':
     'Phần này tính từ Quyết định 1985/QĐ-UBND (dữ liệu có nguồn), khác với phần báo cáo minh họa ở trên. Vốn là vốn dự kiến ghi trong danh mục, chưa phải vốn đã giải ngân hay tác động kinh tế.',

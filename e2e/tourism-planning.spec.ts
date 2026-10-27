@@ -258,6 +258,24 @@ test.describe('Nhãn bản đồ Tổng quan', () => {
   });
 });
 
+test.describe('Du lịch: chuỗi liên kết điểm đến → dự án → quy hoạch', () => {
+  test('thẻ Hồ Lắk có chuỗi liên kết và dẫn sang danh mục theo địa bàn', async ({ page }) => {
+    await page.goto('./#/tourism');
+    const card = page.locator('li', {
+      has: page.getByRole('heading', { level: 2, name: 'Hồ Lắk' }),
+    });
+    await expect(card.getByText('Hạ tầng tiếp cận').locator('..')).toContainText('Chưa có dữ liệu');
+    await expect(card.getByText('Dự án thu hút đầu tư trong địa bàn').locator('..')).toContainText(
+      /\d+ dự án/,
+    );
+    const view = card.getByRole('button', { name: /Xem dự án/ });
+    if (await view.count()) {
+      await view.click();
+      await expect(page).toHaveURL(/#\/investment-catalog\?area=24580/);
+    }
+  });
+});
+
 test.describe('Báo cáo V2 — danh mục thu hút đầu tư', () => {
   test('có xu hướng (chưa có lịch sử), điểm nghẽn, vốn liên quan và so sánh; không bịa số', async ({
     page,
