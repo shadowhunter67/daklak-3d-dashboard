@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { geoMercator, geoPath } from 'd3-geo';
 import wards from '#province-assets/daklak-wards-render.json';
 import { ADMIN_UNIT_MEDIA } from '../../data/adminUnitMedia';
+import { DESTINATION_MEDIA } from '../../data/destinationMedia';
+import { ResponsiveImage } from '../../components/ui/ResponsiveImage';
 import { loadResearchedProjects } from '../../data/loadResearchedProjects';
 import { formatSubUnits } from '../../data/formatSubUnits';
 import { getUnitProfile, unitProfileSource } from '../../data/unitProfiles';
@@ -117,6 +119,9 @@ export function UnitProfileView({
   const photo = ADMIN_UNIT_MEDIA.find(
     (m) => m.administrativeUnitCode === code && m.usage === 'production' && m.localAsset,
   );
+  const mediaItem = photo?.viaDestinationId
+    ? DESTINATION_MEDIA.get(photo.viaDestinationId)
+    : undefined;
   const capital = formatCapitalBillions(model.opportunityCapitalVnd, locale);
 
   return (
@@ -157,12 +162,13 @@ export function UnitProfileView({
       {photo ? (
         <Card>
           <figure className="unit-profile__photo">
-            <img
-              src={`${import.meta.env.BASE_URL}${photo.localAsset}`}
-              alt={t('unit.hero.photoAlt', { place: photo.subject })}
-              loading="lazy"
-              decoding="async"
-            />
+            {mediaItem && (
+              <ResponsiveImage
+                item={mediaItem}
+                variant="full"
+                alt={t('unit.hero.photoAlt', { place: photo.subject })}
+              />
+            )}
             <figcaption>
               {t('unit.hero.photoCaption', { place: photo.subject })} {photo.notes}{' '}
               <a href={photo.sourceUrl} target="_blank" rel="noopener noreferrer">

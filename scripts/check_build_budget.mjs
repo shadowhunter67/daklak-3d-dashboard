@@ -95,13 +95,16 @@ const dist = join(root, 'dist');
 // 3,524,000, gzip 968,000 -> 972,000, build 22,858,000 -> 22,874,000 (measured 3,518,750 / 968,481 /
 // 22,866,456; +~9KB over the 3,509,980 measured after P0). DecisionQueue + model, the simple status
 // panel (it statically imports the planning citations into the lazy data-readiness chunk), strings.
+// V4 media pipeline (2026-10-27): totalBuildBytes 22,874,000 -> 23,210,000 (measured 23,197,499). 25 WebP
+// thumbnails (320px, <= 25KB each, ~330KB total) in public/images/destinations/thumb/ so cards download ~12KB
+// instead of the ~60KB JPEG; the JPEGs stay for wide hero use. JS/gzip budgets unchanged (+<1KB JS).
 const limits = {
   totalJavaScriptBytes: 3_524_000,
   totalJavaScriptGzipBytes: 972_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 22_874_000,
+  totalBuildBytes: 23_210_000,
 };
 
 async function filesAt(directory) {
