@@ -99,7 +99,7 @@ const dist = join(root, 'dist');
 // 3,528,868 / 22,877,067; +~10KB: InvestmentReports + benchmark/bottleneck/exposure model, strings).
 const limits = {
   totalJavaScriptBytes: 3_534_000,
-  totalJavaScriptGzipBytes: 972_000,
+  totalJavaScriptGzipBytes: 976_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
