@@ -11,7 +11,16 @@ import type { MessageKey } from '../../i18n/messages';
 import { Card, KpiTile, PageHeader, SearchField, SelectField } from '../../components/ui';
 import { PinIcon, MapIcon, CubeIcon, UsersIcon } from '../../components/layout/icons';
 import type { WardCollection } from '../../types/map';
+import { PLANNING_DOCUMENTS } from '../../data/planningCitations';
+import { loadResearchedProjects } from '../../data/loadResearchedProjects';
+import { formatNumber } from '../../i18n/formatters';
 import { destinationPhotoUrl } from '../destination-diorama/dioramaPhotos';
+import {
+  buildCatalogRows,
+  formatCapitalBillions,
+  type CatalogRow,
+} from '../investment-catalog/model/catalogModel';
+import { buildUnitLinks } from './model/destinationLinks';
 import {
   buildTourismItems,
   filterTourismItems,
@@ -34,15 +43,24 @@ const CATEGORY_KEY: Record<TourismDestinationCategory, MessageKey> = {
 
 function DestinationCard({
   item,
+  rows,
   onOpenUnit,
   onOpenDestination,
+  onOpenCatalog,
+  onOpenPlanning,
 }: {
   item: TourismItem;
+  /** Danh mục thu hút đầu tư đã tải; `null` khi chưa tải được (thẻ ghi "Chưa có dữ liệu"). */
+  rows: readonly CatalogRow[] | null;
   onOpenUnit: (code: string) => void;
   onOpenDestination: (id: string) => void;
+  onOpenCatalog: (areaCode: string) => void;
+  onOpenPlanning: () => void;
 }) {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const { destination, unitCode } = item;
+  const links = rows && unitCode ? buildUnitLinks(unitCode, rows, PLANNING_DOCUMENTS) : null;
+  const missing = t('catalog.capitalMissing');
   return (
     <li className="project-portfolio-card tourism-card">
       {destination.imageUrl ? (
@@ -69,6 +87,74 @@ function DestinationCard({
           ? t('tourism.card.unit', { name: unitName(unitCode) })
           : t('tourism.card.unitUnknown')}
       </p>
+      {unitCode && (
+        <dl
+          className="tourism-card__chain"
+          aria-label={t('tourism.chain.aria', { name: destination.name })}
+        >
+          <div>
+            <dt>{t('tourism.chain.projects')}</dt>
+            <dd>
+              {links
+                ? t('tourism.chain.projectsValue', {
+                    count: formatNumber(links.projects, locale),
+                    tourism: formatNumber(links.tourismProjects, locale),
+                  })
+                : missing}
+              {links && links.projects > 0 && (
+                <>
+                  {' '}
+                  <button
+                    type="button"
+                    className="project-portfolio__row-link"
+                    onClick={() => onOpenCatalog(unitCode)}
+                  >
+                    {t('tourism.chain.viewProjects')}
+                    <span className="ui-visually-hidden"> — {destination.name}</span>
+                  </button>
+                </>
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt>{t('tourism.chain.access')}</dt>
+            <dd>{missing}</dd>
+          </div>
+          <div>
+            <dt>{t('tourism.chain.planning')}</dt>
+            <dd>
+              {links
+                ? t('tourism.chain.planningValue', {
+                    count: formatNumber(links.planningDocuments.length, locale),
+                  })
+                : missing}
+              {links && links.planningDocuments.length > 0 && (
+                <>
+                  {' '}
+                  <button
+                    type="button"
+                    className="project-portfolio__row-link"
+                    onClick={onOpenPlanning}
+                  >
+                    {t('tourism.chain.viewPlanning')}
+                    <span className="ui-visually-hidden"> — {destination.name}</span>
+                  </button>
+                </>
+              )}
+            </dd>
+          </div>
+          <div>
+            <dt>{t('tourism.chain.opportunity')}</dt>
+            <dd>
+              {links && links.capitalVnd !== undefined
+                ? t('tourism.chain.opportunityValue', {
+                    capital: formatCapitalBillions(links.capitalVnd, locale),
+                  })
+                : missing}
+            </dd>
+          </div>
+        </dl>
+      )}
       <p className="tourism-card__links">
         <a href={destination.sourceUrl} target="_blank" rel="noopener noreferrer">
           {t('tourism.card.source')}
@@ -103,15 +189,30 @@ export function TourismHubView({
   onBack,
   onOpenUnit,
   onOpenDestination,
+  onOpenCatalog,
+  onOpenPlanning,
 }: {
   onBack: () => void;
   onOpenUnit: (code: string) => void;
   onOpenDestination: (id: string) => void;
+  onOpenCatalog: (areaCode: string) => void;
+  onOpenPlanning: () => void;
 }) {
   const { t } = useTranslation();
   const headingRef = useRef<HTMLHeadingElement | null>(null);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState<TourismDestinationCategory | ''>('');
+  const [rows, setRows] = useState<readonly CatalogRow[] | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    loadResearchedProjects().then(
+      (dataset) => !cancelled && setRows(buildCatalogRows(dataset)),
+      () => undefined,
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   useEffect(() => {
     headingRef.current?.focus();
   }, []);
@@ -208,6 +309,9 @@ export function TourismHubView({
               item={item}
               onOpenUnit={onOpenUnit}
               onOpenDestination={onOpenDestination}
+              rows={rows}
+              onOpenCatalog={onOpenCatalog}
+              onOpenPlanning={onOpenPlanning}
             />
           ))}
         </ul>

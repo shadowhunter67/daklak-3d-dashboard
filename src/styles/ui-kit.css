@@ -2939,3 +2939,20 @@
   margin-top: 6px;
   font-size: 0.8125rem;
 }
+
+/* Du lịch: chuỗi điểm đến → địa bàn → dự án → quy hoạch → cơ hội đầu tư trong từng thẻ. */
+.tourism-card__chain {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--ui-border);
+}
+.tourism-card__chain dt {
+  font-size: 0.8125rem;
+  color: var(--ui-muted);
+}
+.tourism-card__chain dd {
+  margin: 0;
+  font-weight: 600;
+}
