@@ -76,6 +76,7 @@ test.describe('Bàn phím', () => {
     );
     expect(firstFocusable).toMatch(/Bỏ qua để tới nội dung chính/);
     // Kích hoạt liên kết (như Enter) rồi kiểm tra đích: không phụ thuộc cách từng trình duyệt hiện :focus.
+    await expect(page.locator('#tourism-hub')).toBeVisible();
     await page.evaluate(() => document.querySelector<HTMLElement>('.skip-link')?.click());
     // Vẫn ở trang Du lịch (hash không bị đổi thành #tourism-hub) và focus vào vùng nội dung.
     await expect(page).toHaveURL(/#\/tourism$/);

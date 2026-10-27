@@ -275,9 +275,9 @@ export default function App() {
         onClick={(event) => {
           // Không đổi hash: hash là tuyến của ứng dụng (#/tourism...), đổi thành #<id> sẽ đưa người dùng
           // ra khỏi trang hiện tại. Chuyển focus thẳng tới vùng nội dung.
+          event.preventDefault();
           const target = document.getElementById(skipLinkTargetId);
           if (!target) return;
-          event.preventDefault();
           target.focus();
           target.scrollIntoView({ block: 'start' });
         }}
