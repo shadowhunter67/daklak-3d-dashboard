@@ -67,4 +67,33 @@ describe('PlanningHubView', () => {
     fireEvent.change(screen.getByLabelText('Tìm số hiệu văn bản'), { target: { value: '945' } });
     expect(screen.getByText('nguồn ghi: 945/DQQ-UBND')).toBeTruthy();
   });
+
+  it('có bảng thuật ngữ: Thông tin tham khảo / Nguồn trích dẫn / Cần rà soát / Chưa có ranh giới chính thức', () => {
+    renderHub();
+    const terms = screen.getByRole('region', { name: 'Cách đọc trang này' });
+    for (const term of [
+      'Thông tin tham khảo',
+      'Nguồn trích dẫn',
+      'Cần rà soát',
+      'Chưa có ranh giới chính thức',
+    ]) {
+      expect(within(terms).getByText(term)).toBeTruthy();
+    }
+  });
+
+  it('ranh giới quy hoạch: nói thẳng chưa có và không đưa kết luận phù hợp/xung đột', () => {
+    renderHub();
+    const region = screen.getByRole('region', { name: 'Ranh giới quy hoạch' });
+    expect(region).toHaveTextContent('Chưa có ranh giới chính thức');
+    expect(region).toHaveTextContent(/không đưa ra kết luận phù hợp hay xung đột/);
+  });
+
+  it('không dùng ngôn ngữ pháp lý: vi phạm, xung đột pháp lý, không phù hợp quy hoạch chỉ xuất hiện trong câu phủ định', () => {
+    const { container } = renderWithI18n(
+      <PlanningHubView onBack={vi.fn()} onOpenCatalog={vi.fn()} onOpenOverlay={vi.fn()} />,
+    );
+    const text = container.textContent ?? '';
+    expect(text).not.toMatch(/vi phạm quy hoạch/i);
+    expect(text).not.toMatch(/không phù hợp quy hoạch/i);
+  });
 });
