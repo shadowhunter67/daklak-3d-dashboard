@@ -197,6 +197,26 @@ async function measureOverviewLabels(page: import('@playwright/test').Page) {
   );
 }
 
+test.describe('Thứ bậc thông tin của góc nhìn', () => {
+  test('Đầu tư và Quy hoạch ẩn nhãn phụ nhưng tên 102 xã/phường vẫn bật; Điều hành bật lại', async ({
+    page,
+  }) => {
+    await page.addInitScript(() =>
+      window.localStorage.setItem('daklak-dashboard:onboarding-dismissed', 'true'),
+    );
+    await page.goto('./?view=map');
+    await page.getByRole('button', { name: 'Lớp bản đồ' }).click();
+    const group = page.getByRole('group', { name: 'Góc nhìn' });
+    for (const lens of ['Đầu tư', 'Quy hoạch']) {
+      await group.getByRole('button', { name: lens }).click();
+      await expect.poll(() => page.url()).toContain('labels=0');
+      expect(page.url()).toContain('wardlabels=1');
+    }
+    await group.getByRole('button', { name: 'Điều hành' }).click();
+    await expect.poll(() => page.url()).toContain('labels=1');
+  });
+});
+
 test.describe('Nhãn bản đồ Tổng quan', () => {
   test('102 tên đều hiện và không nhãn nào chồng lên nhãn khác', async ({ page }) => {
     await page.goto('./?view=overview');
