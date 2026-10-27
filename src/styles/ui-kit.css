@@ -2940,3 +2940,65 @@
   margin-top: 6px;
   font-size: 0.8125rem;
 }
+
+/* Tổng quan: hàng chờ "Việc cần xử lý" — mỗi dự án là một thẻ con, trải hết hàng. */
+.decision-queue {
+  grid-column: 1 / -1;
+}
+.decision-queue__summary {
+  font-weight: 600;
+}
+.decision-queue__list {
+  display: grid;
+  gap: 12px;
+  margin: 8px 0 12px;
+  padding: 0;
+  list-style: none;
+}
+.decision-queue__item {
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--ui-line, #d9e2dd);
+  border-left-width: 5px;
+  border-radius: 10px;
+}
+.decision-queue__item[data-priority='high'] {
+  border-left-color: #d64545;
+}
+.decision-queue__item[data-priority='medium'] {
+  border-left-color: #d9a21b;
+}
+.decision-queue__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+.decision-queue__badges {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.decision-queue__priority,
+.decision-queue__kind {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  background: var(--ui-track, #e5ece8);
+}
+.decision-queue__fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 6px 16px;
+  margin: 0;
+}
+.decision-queue__fields dt {
+  font-size: 0.8125rem;
+  color: var(--ui-muted);
+}
+.decision-queue__fields dd {
+  margin: 0;
+  font-weight: 600;
+}
