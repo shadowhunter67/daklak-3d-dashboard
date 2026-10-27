@@ -1364,4 +1364,36 @@ export const vi = {
   'planning.boundary.status': 'Chưa có ranh giới chính thức',
   'planning.boundary.note':
     'Hệ thống chưa có dữ liệu ranh giới quy hoạch đáng tin cậy, nên không đối chiếu vị trí dự án với quy hoạch và không đưa ra kết luận phù hợp hay xung đột quy hoạch.',
+  'reports.invest.heading': 'Danh mục thu hút đầu tư — báo cáo có nguồn',
+  'reports.invest.note':
+    'Phần này tính từ Quyết định 1985/QĐ-UBND (dữ liệu có nguồn), khác với phần báo cáo minh họa ở trên. Vốn là vốn dự kiến ghi trong danh mục, chưa phải vốn đã giải ngân hay tác động kinh tế.',
+  'reports.invest.loading': 'Đang tải báo cáo danh mục thu hút đầu tư…',
+  'reports.invest.error':
+    'Không tải được dữ liệu danh mục thu hút đầu tư. Phần báo cáo minh họa phía trên vẫn dùng được.',
+  'reports.invest.trends.heading': 'Xu hướng theo thời gian',
+  'reports.invest.trends.empty': 'Chưa có dữ liệu lịch sử',
+  'reports.invest.trends.reason':
+    'Nguồn là một văn bản tại một thời điểm nên chưa có tiến độ, giải ngân hay số vấn đề theo tháng để vẽ xu hướng. Hệ thống không dựng đường xu hướng giả.',
+  'reports.invest.bottleneck.heading': 'Điểm nghẽn',
+  'reports.invest.bottleneck.note': 'Chỉ nhóm có trường dữ liệu trong nguồn mới có số.',
+  'reports.invest.bottleneck.planning': 'Quy hoạch (cần rà soát hoặc chưa nêu văn bản)',
+  'reports.invest.bottleneck.land': 'Đất đai',
+  'reports.invest.bottleneck.procedure': 'Thủ tục',
+  'reports.invest.bottleneck.infrastructure': 'Hạ tầng',
+  'reports.invest.bottleneck.count': '{count} dự án',
+  'reports.invest.exposure.heading': 'Vốn liên quan tới dự án có vấn đề',
+  'reports.invest.exposure.summary':
+    '{count} dự án đang có vấn đề dữ liệu hoặc quy hoạch; vốn dự kiến liên quan {capital} tỷ đồng ({share}% tổng vốn có số liệu).',
+  'reports.invest.exposure.noCapital':
+    '{count} dự án trong số đó chưa có số vốn, không tính vào tổng.',
+  'reports.invest.exposure.note': 'Đây là vốn dự kiến trong danh mục, không phải tác động kinh tế.',
+  'reports.invest.benchmark.heading': 'So sánh',
+  'reports.invest.benchmark.groupLabel': 'So sánh theo',
+  'reports.invest.benchmark.sector': 'Lĩnh vực',
+  'reports.invest.benchmark.unit': 'Xã, phường (10 nơi vốn lớn nhất)',
+  'reports.invest.benchmark.caption': 'So sánh số dự án và vốn dự kiến',
+  'reports.invest.benchmark.col.name': 'Nhóm',
+  'reports.invest.benchmark.col.projects': 'Số dự án',
+  'reports.invest.benchmark.col.capital': 'Vốn dự kiến',
+  'reports.invest.benchmark.col.average': 'Vốn trung bình mỗi dự án',
 } as const satisfies Record<string, string>;

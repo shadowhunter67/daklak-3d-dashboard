@@ -95,13 +95,15 @@ const dist = join(root, 'dist');
 // 3,524,000, gzip 968,000 -> 972,000, build 22,858,000 -> 22,874,000 (measured 3,518,750 / 968,481 /
 // 22,866,456; +~9KB over the 3,509,980 measured after P0). DecisionQueue + model, the simple status
 // panel (it statically imports the planning citations into the lazy data-readiness chunk), strings.
+// V4 P1 Reports V2 (2026-10-27): JS 3,524,000 -> 3,534,000, build 22,874,000 -> 22,884,000 (measured
+// 3,528,868 / 22,877,067; +~10KB: InvestmentReports + benchmark/bottleneck/exposure model, strings).
 const limits = {
-  totalJavaScriptBytes: 3_524_000,
+  totalJavaScriptBytes: 3_534_000,
   totalJavaScriptGzipBytes: 972_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 22_874_000,
+  totalBuildBytes: 22_884_000,
 };
 
 async function filesAt(directory) {

@@ -1347,4 +1347,36 @@ export const en: Partial<Record<MessageKey, string>> = {
   'planning.boundary.status': 'No official boundary yet',
   'planning.boundary.note':
     'The system has no reliable planning-boundary data, so it does not compare project locations with planning and makes no conformity or conflict finding.',
+  'reports.invest.heading': 'Investment-attraction catalogue — sourced report',
+  'reports.invest.note':
+    'This section is computed from Decision 1985/QĐ-UBND (sourced data), unlike the illustrative report above. Capital is the expected capital listed in the catalogue, not disbursed capital or economic impact.',
+  'reports.invest.loading': 'Loading the investment-attraction report…',
+  'reports.invest.error':
+    'Could not load the investment-attraction data. The illustrative report above still works.',
+  'reports.invest.trends.heading': 'Trends over time',
+  'reports.invest.trends.empty': 'No historical data yet',
+  'reports.invest.trends.reason':
+    'The source is a single document at one point in time, so there is no monthly progress, disbursement or issue count to chart. No fake trend line is drawn.',
+  'reports.invest.bottleneck.heading': 'Bottlenecks',
+  'reports.invest.bottleneck.note': 'Only groups with a data field in the source have a number.',
+  'reports.invest.bottleneck.planning': 'Planning (needs review or no document stated)',
+  'reports.invest.bottleneck.land': 'Land',
+  'reports.invest.bottleneck.procedure': 'Procedures',
+  'reports.invest.bottleneck.infrastructure': 'Infrastructure',
+  'reports.invest.bottleneck.count': '{count} projects',
+  'reports.invest.exposure.heading': 'Capital linked to projects with issues',
+  'reports.invest.exposure.summary':
+    '{count} projects have a data or planning issue; the related expected capital is {capital} billion VND ({share}% of the total capital with a figure).',
+  'reports.invest.exposure.noCapital':
+    '{count} of them have no capital figure and are excluded from the total.',
+  'reports.invest.exposure.note': 'This is expected capital in the catalogue, not economic impact.',
+  'reports.invest.benchmark.heading': 'Benchmark',
+  'reports.invest.benchmark.groupLabel': 'Compare by',
+  'reports.invest.benchmark.sector': 'Sector',
+  'reports.invest.benchmark.unit': 'Communes/wards (top 10 by capital)',
+  'reports.invest.benchmark.caption': 'Comparison of project count and expected capital',
+  'reports.invest.benchmark.col.name': 'Group',
+  'reports.invest.benchmark.col.projects': 'Projects',
+  'reports.invest.benchmark.col.capital': 'Expected capital',
+  'reports.invest.benchmark.col.average': 'Average capital per project',
 };
