@@ -97,13 +97,16 @@ const dist = join(root, 'dist');
 // panel (it statically imports the planning citations into the lazy data-readiness chunk), strings.
 // V4 P1 Reports V2 (2026-10-27): JS 3,524,000 -> 3,534,000, build 22,874,000 -> 22,884,000 (measured
 // 3,528,868 / 22,877,067; +~10KB: InvestmentReports + benchmark/bottleneck/exposure model, strings).
+// V4 P2 tourism links + planning terms (2026-10-27): JS 3,534,000 -> 3,540,000, build 22,884,000 ->
+// 22,892,000 (measured 3,535,521 / 22,884,185 on top of the Reports V2 limits; +~7KB: destination link
+// model, chain list in the tourism cards, planning terms/boundary cards, strings).
 const limits = {
-  totalJavaScriptBytes: 3_534_000,
+  totalJavaScriptBytes: 3_540_000,
   totalJavaScriptGzipBytes: 976_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 22_884_000,
+  totalBuildBytes: 22_892_000,
 };
 
 async function filesAt(directory) {
