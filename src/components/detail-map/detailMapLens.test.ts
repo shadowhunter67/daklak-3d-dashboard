@@ -47,4 +47,25 @@ describe('detail map lenses', () => {
     };
     expect(detectDetailMapLens(custom)).toBeNull();
   });
+
+  it('thứ bậc thông tin: nhãn phụ khác nhau theo góc nhìn nhưng tên 102 xã/phường luôn bật', () => {
+    const labelsOf = (lens: Parameters<typeof applyDetailMapLens>[1]) => {
+      const layers = applyDetailMapLens(DEFAULT_DETAIL_MAP_LAYER_STATE, lens);
+      return { road: layers.roadLabelsVisible, place: layers.placeLabelsVisible };
+    };
+    expect(labelsOf('executive')).toEqual({ road: true, place: true });
+    expect(labelsOf('tourism')).toEqual({ road: true, place: true });
+    expect(labelsOf('investment')).toEqual({ road: false, place: false });
+    expect(labelsOf('planning')).toEqual({ road: false, place: false });
+    for (const lens of DETAIL_MAP_LENSES) {
+      expect(applyDetailMapLens(DEFAULT_DETAIL_MAP_LAYER_STATE, lens).wardLabelsVisible).toBe(true);
+    }
+  });
+
+  it('góc nhìn Du lịch ẩn lớp dự án/quy hoạch; Quy hoạch ẩn điểm du lịch', () => {
+    const tourism = applyDetailMapLens(DEFAULT_DETAIL_MAP_LAYER_STATE, 'tourism');
+    expect([tourism.keyProjectsVisible, tourism.planningZonesVisible]).toEqual([false, false]);
+    const planning = applyDetailMapLens(DEFAULT_DETAIL_MAP_LAYER_STATE, 'planning');
+    expect(planning.tourismVisible).toBe(false);
+  });
 });
