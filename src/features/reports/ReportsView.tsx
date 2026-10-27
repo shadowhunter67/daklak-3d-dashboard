@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { InvestmentReports } from './InvestmentReports';
 import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
 import { useProjectPortfolio } from '../project-portfolio/data/useProjectPortfolio';
 import labels from '#province-assets/daklak-labels.json';
@@ -369,6 +370,7 @@ export function ReportsView({ onBackToOverview }: { onBackToOverview: () => void
           </ul>
         </Card>
       </div>
+      <InvestmentReports />
     </section>
   );
 }
