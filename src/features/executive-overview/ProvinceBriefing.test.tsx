@@ -61,17 +61,27 @@ afterEach(() => {
 });
 
 describe('ProvinceBriefing', () => {
-  it('hàng chờ liệt kê khoảng trống dữ liệu thật và dẫn tới trang xử lý', async () => {
+  it('nội dung cần bổ sung: ảnh còn thiếu, dẫn tới trang xử lý', async () => {
     renderWithI18n(<ProvinceBriefing />);
-    const queue = await screen.findByRole('region', { name: 'Việc cần chú ý' });
-    expect(queue).toHaveTextContent('1 dự án thu hút đầu tư chưa có số liệu vốn');
+    const gaps = await screen.findByRole('region', { name: 'Nội dung cần bổ sung' });
     const missing =
       Object.keys(labels).length -
       new Set(ADMIN_UNIT_MEDIA.map((m) => m.administrativeUnitCode)).size;
-    expect(queue).toHaveTextContent(`${missing} xã/phường chưa có ảnh đã xác minh`);
-    expect(queue).toHaveTextContent(/dự án cần rà soát quy hoạch/);
-    fireEvent.click(within(queue).getByRole('button', { name: 'Mở trung tâm quy hoạch' }));
-    expect(window.location.hash).toBe('#/planning');
+    expect(gaps).toHaveTextContent(`${missing} xã/phường chưa có ảnh đã xác minh`);
+    fireEvent.click(within(gaps).getByRole('button', { name: 'Mở trung tâm du lịch' }));
+    expect(window.location.hash).toBe('#/tourism');
+  });
+
+  it('Việc cần xử lý: từng dự án có loại vấn đề, ưu tiên, nguồn; chủ trách nhiệm/hạn ghi Chưa có dữ liệu', async () => {
+    renderWithI18n(<ProvinceBriefing />);
+    const queue = await screen.findByRole('region', { name: 'Việc cần xử lý' });
+    // Dữ liệu thử: p3 thiếu vốn; (p1, p2 có vốn và có địa bàn rỗng) — kiểm tra theo nội dung hiển thị.
+    expect(queue).toHaveTextContent('Thiếu dữ liệu vốn');
+    expect(within(queue).getAllByText('Chưa có dữ liệu').length).toBeGreaterThanOrEqual(2);
+    expect(queue).toHaveTextContent('Đơn vị chịu trách nhiệm');
+    expect(queue).toHaveTextContent('Hạn xử lý');
+    fireEvent.click(within(queue).getAllByRole('button', { name: /Xem hồ sơ/ })[0]);
+    expect(window.location.hash).toMatch(/^#\/investment-catalog\?q=/);
   });
 
   it('quy mô vốn: chỉ tính dự án có vốn, nói rõ đây không phải vốn giải ngân', async () => {

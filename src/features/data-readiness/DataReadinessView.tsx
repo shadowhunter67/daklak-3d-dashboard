@@ -2,6 +2,13 @@ import { useMemo, useState } from 'react';
 import labels from '#province-assets/daklak-labels.json';
 import { ADMIN_UNIT_MEDIA } from '../../data/adminUnitMedia';
 import { imageCoverage } from '../unit-profile/model/unitProfileModel';
+import {
+  PLANNING_DOCUMENTS,
+  PLANNING_REVIEW_PROJECT_IDS,
+  PLANNING_TOTAL_PROJECTS,
+  PLANNING_UNCITED_PROJECT_IDS,
+} from '../../data/planningCitations';
+import { summarizePlanning } from '../planning-hub/model/planningModel';
 import { defaultProjectPortfolioSource } from '../../app/createProjectPortfolioSource';
 import type { ProjectPortfolioSource } from '../../entities/project/adapters/ProjectPortfolioSource';
 import { useMapStore } from '../../stores/mapStore';
@@ -416,6 +423,73 @@ function ReadinessPanels({
 
 const ALL_UNIT_CODES = Object.keys(labels);
 
+/** Bốn con số dễ hiểu về nguồn của 201 dự án thu hút đầu tư (đếm từ dữ liệu thật) và cảnh báo chất lượng
+ * của dữ liệu minh họa. Không có số nào ở đây là số bịa: "Cần xác minh" và "Thiếu nguồn" đếm đúng ô quy
+ * hoạch trong văn bản nguồn. */
+function SimpleSourceStatus({
+  issueCount,
+  verifiedPhotos,
+  totalUnits,
+  fallbackUnits,
+}: {
+  issueCount: number;
+  verifiedPhotos: number;
+  totalUnits: number;
+  fallbackUnits: number;
+}) {
+  const { t } = useTranslation();
+  const summary = summarizePlanning({
+    documents: PLANNING_DOCUMENTS,
+    total: PLANNING_TOTAL_PROJECTS,
+    uncited: PLANNING_UNCITED_PROJECT_IDS,
+    review: PLANNING_REVIEW_PROJECT_IDS,
+  });
+  return (
+    <section aria-labelledby="source-status-heading" className="data-readiness__simple">
+      <h2 id="source-status-heading">
+        {t('dataReadiness.simple.heading', { total: summary.total })}
+      </h2>
+      <ul className="ui-kpi-grid data-readiness__kpis data-readiness__kpis--simple">
+        <KpiTile
+          label={t('dataReadiness.simple.sourced')}
+          value={summary.citedProjects}
+          tone="green"
+          icon={<CheckCircleIcon />}
+          detail={t('dataReadiness.simple.sourcedDetail')}
+        />
+        <KpiTile
+          label={t('dataReadiness.simple.verify')}
+          value={summary.reviewProjects}
+          tone="gold"
+          icon={<TargetIcon />}
+          detail={t('dataReadiness.simple.verifyDetail')}
+        />
+        <KpiTile
+          label={t('dataReadiness.simple.missing')}
+          value={summary.uncitedProjects}
+          tone="purple"
+          icon={<AlertIcon />}
+          detail={t('dataReadiness.simple.missingDetail')}
+        />
+        <KpiTile
+          label={t('dataReadiness.simple.update')}
+          value={issueCount}
+          tone="blue"
+          icon={<ClockIcon />}
+          detail={t('dataReadiness.simple.updateDetail')}
+        />
+        <KpiTile
+          label={t('dataReadiness.imageCoverage')}
+          value={`${verifiedPhotos}/${totalUnits}`}
+          tone="purple"
+          icon={<DocumentIcon />}
+          detail={t('dataReadiness.imageCoverageDetail', { fallback: String(fallbackUnits) })}
+        />
+      </ul>
+    </section>
+  );
+}
+
 export function DataReadinessView({
   source,
   onBackToOverview,
@@ -429,6 +503,8 @@ export function DataReadinessView({
   const openProvenancePanel = useMapStore((state) => state.openProvenancePanel);
   const coverage = useMemo(() => imageCoverage(ALL_UNIT_CODES, ADMIN_UNIT_MEDIA), []);
   const [retryToken, setRetryToken] = useState(0);
+  // Mặc định "Đơn giản": 4 con số dễ hiểu; "Kỹ thuật" mới mở bảng cảnh báo, danh mục nguồn, chuỗi truy xuất.
+  const [mode, setMode] = useState<'simple' | 'technical'>('simple');
   const effectiveSource = useMemo(() => source ?? defaultProjectPortfolioSource, [source]);
   const state = useDataReadiness(effectiveSource, retryToken);
   if (state.status === 'loading')
@@ -525,40 +601,66 @@ export function DataReadinessView({
           ariaLabel={`${t('dataHealth.scoreLabel')}: ${health.score}%`}
         />
       </Card>
-      <ul className="ui-kpi-grid data-readiness__kpis">
-        {health.metrics.map((metric) => {
-          const Icon = icons[metric.key];
-          return (
-            <KpiTile
-              key={metric.key}
-              label={t(`dataHealth.metric.${metric.key}` as MessageKey)}
-              value={`${Math.round(metric.value * 100)}%`}
-              tone={
-                metric.key === 'freshness'
-                  ? 'gold'
-                  : metric.key === 'consistency'
-                    ? 'green'
-                    : 'blue'
-              }
-              icon={<Icon />}
-              detail={t('dataReadiness.metricDetail')}
-            />
-          );
-        })}
-        <KpiTile
-          label={t('dataReadiness.imageCoverage')}
-          value={`${coverage.verified}/${coverage.total}`}
-          tone="purple"
-          icon={<DocumentIcon />}
-          detail={t('dataReadiness.imageCoverageDetail', { fallback: String(coverage.fallback) })}
+      <div
+        className="data-readiness__mode"
+        role="group"
+        aria-label={t('dataReadiness.mode.groupLabel')}
+      >
+        {(['simple', 'technical'] as const).map((value) => (
+          <button
+            key={value}
+            type="button"
+            aria-pressed={mode === value}
+            onClick={() => setMode(value)}
+          >
+            {t(`dataReadiness.mode.${value}` as MessageKey)}
+          </button>
+        ))}
+      </div>
+      {mode === 'simple' && (
+        <SimpleSourceStatus
+          issueCount={model.dataHealth.totalDataQualityIssues}
+          verifiedPhotos={coverage.verified}
+          totalUnits={coverage.total}
+          fallbackUnits={coverage.fallback}
         />
-      </ul>
+      )}
+      {mode === 'technical' && (
+        <ul className="ui-kpi-grid data-readiness__kpis">
+          {health.metrics.map((metric) => {
+            const Icon = icons[metric.key];
+            return (
+              <KpiTile
+                key={metric.key}
+                label={t(`dataHealth.metric.${metric.key}` as MessageKey)}
+                value={`${Math.round(metric.value * 100)}%`}
+                tone={
+                  metric.key === 'freshness'
+                    ? 'gold'
+                    : metric.key === 'consistency'
+                      ? 'green'
+                      : 'blue'
+                }
+                icon={<Icon />}
+                detail={t('dataReadiness.metricDetail')}
+              />
+            );
+          })}
+          <KpiTile
+            label={t('dataReadiness.imageCoverage')}
+            value={`${coverage.verified}/${coverage.total}`}
+            tone="purple"
+            icon={<DocumentIcon />}
+            detail={t('dataReadiness.imageCoverageDetail', { fallback: String(coverage.fallback) })}
+          />
+        </ul>
+      )}
       {state.status === 'degraded' && (
         <p role="alert" className="data-readiness__degraded-banner">
           {t('dataReadiness.degradedBanner', { issues: state.sourceIssues.join('; ') })}
         </p>
       )}
-      <ReadinessPanels model={model} onOpenProject={onOpenProject} />
+      {mode === 'technical' && <ReadinessPanels model={model} onOpenProject={onOpenProject} />}
     </section>
   );
 }

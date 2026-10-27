@@ -82,13 +82,16 @@ test.describe('Trung tâm quy hoạch', () => {
 });
 
 test.describe('Tổng quan và tìm kiếm (V3)', () => {
-  test('Tổng quan có khối Việc cần chú ý và quy mô vốn, nói rõ không phải vốn giải ngân', async ({
+  test('Tổng quan có Việc cần xử lý, Nội dung cần bổ sung và quy mô vốn, nói rõ không phải vốn giải ngân', async ({
     page,
   }) => {
     await page.goto('./?view=overview');
-    const queue = page.getByRole('region', { name: 'Việc cần chú ý' });
-    await expect(queue).toBeVisible();
-    await expect(queue).toContainText('xã/phường chưa có ảnh đã xác minh');
+    const decisions = page.getByRole('region', { name: 'Việc cần xử lý' });
+    await expect(decisions).toBeVisible();
+    await expect(decisions).toContainText('Cần rà soát quy hoạch');
+    await expect(decisions).toContainText('Đơn vị chịu trách nhiệm');
+    const gaps = page.getByRole('region', { name: 'Nội dung cần bổ sung' });
+    await expect(gaps).toContainText('xã/phường chưa có ảnh đã xác minh');
     const economy = page.getByRole('region', { name: 'Quy mô vốn theo lĩnh vực' });
     await expect(economy).toContainText('chưa phải vốn đã giải ngân hay đã cam kết');
   });
