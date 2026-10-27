@@ -11,7 +11,10 @@ describe('destination reference photos', () => {
   const withPhoto = verifiedTourismDestinations.filter((d) => d.imageUrl);
 
   it('has a compressed local JPEG for every destination that links a free photo, and no strays', () => {
-    const files = readdirSync(PHOTO_DIR).sort();
+    // Thư mục con `thumb/` chứa ảnh thu nhỏ WebP do media pipeline sinh (kiểm ở mediaItem.test.ts).
+    const files = readdirSync(PHOTO_DIR)
+      .filter((name) => name.endsWith('.jpg'))
+      .sort();
     expect(files).toEqual(withPhoto.map((d) => `${d.id}.jpg`).sort());
   });
 

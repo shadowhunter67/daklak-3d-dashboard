@@ -25,6 +25,8 @@ import {
 import { useHashRoute } from '../../routing/useHashRoute';
 import { Card, PanelHeader, StatList } from '../../components/ui';
 import type { UnitMedia } from '../../entities/admin-unit/unitMedia';
+import type { MediaItem } from '../../entities/media/mediaItem';
+import { ResponsiveImage } from '../../components/ui/ResponsiveImage';
 import { BuildingIcon, ListIcon, MapIcon, PinIcon } from '../../components/layout/icons';
 
 const collection = wards as WardCollection;
@@ -250,17 +252,22 @@ function UnitShape({ code, label }: { code: string; label: string }) {
 function UnitPhoto({ code, name }: { code: string; name: string }) {
   const { t } = useTranslation();
   const [media, setMedia] = useState<readonly UnitMedia[] | null>(null);
+  const [items, setItems] = useState<ReadonlyMap<string, MediaItem> | null>(null);
   useEffect(() => {
     let cancelled = false;
     import('../../data/adminUnitMedia').then(
       (module) => !cancelled && setMedia(module.ADMIN_UNIT_MEDIA),
       () => undefined,
     );
+    import('../../data/destinationMedia').then(
+      (module) => !cancelled && setItems(module.DESTINATION_MEDIA),
+      () => undefined,
+    );
     return () => {
       cancelled = true;
     };
   }, []);
-  if (!media) return null;
+  if (!media || !items) return null;
   const photo = media.find(
     (m) => m.administrativeUnitCode === code && m.usage === 'production' && m.localAsset,
   );
@@ -273,12 +280,13 @@ function UnitPhoto({ code, name }: { code: string; name: string }) {
     );
   return (
     <figure className="overview-workspace__unit-photo">
-      <img
-        src={`${import.meta.env.BASE_URL}${photo.localAsset}`}
-        alt={t('unit.hero.photoAlt', { place: photo.subject })}
-        loading="lazy"
-        decoding="async"
-      />
+      {photo.viaDestinationId && items.get(photo.viaDestinationId) && (
+        <ResponsiveImage
+          item={items.get(photo.viaDestinationId) as MediaItem}
+          alt={t('unit.hero.photoAlt', { place: photo.subject })}
+          sizes="280px"
+        />
+      )}
       <figcaption>
         {t('unit.hero.photoCaption', { place: photo.subject })} {photo.notes} ({photo.license})
       </figcaption>

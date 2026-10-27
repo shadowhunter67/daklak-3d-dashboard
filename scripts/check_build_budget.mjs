@@ -95,8 +95,14 @@ const dist = join(root, 'dist');
 // 3,524,000, gzip 968,000 -> 972,000, build 22,858,000 -> 22,874,000 (measured 3,518,750 / 968,481 /
 // 22,866,456; +~9KB over the 3,509,980 measured after P0). DecisionQueue + model, the simple status
 // panel (it statically imports the planning citations into the lazy data-readiness chunk), strings.
+// V4 media pipeline (2026-10-27): totalBuildBytes 22,874,000 -> 23,210,000 (measured 23,197,499 on top of the P1 budget; re-measured below after merging Reports V2). 25 WebP
+// thumbnails (320px, <= 25KB each, ~330KB total) in public/images/destinations/thumb/ so cards download ~12KB
+// instead of the ~60KB JPEG; the JPEGs stay for wide hero use. JS/gzip budgets unchanged (+<1KB JS).
 // V4 P1 Reports V2 (2026-10-27): JS 3,524,000 -> 3,534,000, build 22,874,000 -> 22,884,000 (measured
 // 3,528,868 / 22,877,067; +~10KB: InvestmentReports + benchmark/bottleneck/exposure model, strings).
+// Combined V4 state (P0 + P1 + Reports V2 + media pipeline, 2026-10-27): measured JS 3,532,728, gzip 972,196,
+// build 23,207,593 -> gzip limit 972,000 -> 976,000, build limit 23,225,000 (JS limit 3,534,000 unchanged). After merging the P2 tourism/planning work the final measured state is
+// 3,539,381 JS / 973,620 gzip / 23,214,711 build, inside JS 3,540,000, gzip 976,000, build 23,225,000.
 // V4 P2 tourism links + planning terms (2026-10-27): JS 3,534,000 -> 3,540,000, build 22,884,000 ->
 // 22,892,000 (measured 3,535,521 / 22,884,185 on top of the Reports V2 limits; +~7KB: destination link
 // model, chain list in the tourism cards, planning terms/boundary cards, strings).
@@ -106,7 +112,7 @@ const limits = {
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 22_892_000,
+  totalBuildBytes: 23_225_000,
 };
 
 async function filesAt(directory) {

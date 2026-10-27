@@ -1,8 +1,8 @@
 {
   "status": "passed",
-  "generatedAt": "2026-10-27T12:58:24.604Z",
+  "generatedAt": "2026-10-27T15:11:02.528Z",
   "limits": {
-    "totalJavaScriptBytes": 3534000,
+    "totalJavaScriptBytes": 3540000,
     "totalJavaScriptGzipBytes": 976000,
     "largestJavaScriptGzipBytes": 300000,
     "totalTextureBytes": 3000000,
@@ -10,23 +10,23 @@
     "totalBuildBytes": 23225000
   },
   "actual": {
-    "totalJavaScriptBytes": 3533069,
-    "totalJavaScriptGzipBytes": 972011,
+    "totalJavaScriptBytes": 3539381,
+    "totalJavaScriptGzipBytes": 973620,
     "largestJavaScriptGzipBytes": 293392,
     "totalTextureBytes": 2813884,
     "largestAssetBytes": 13424852,
-    "totalBuildBytes": 22881487
+    "totalBuildBytes": 23214711
   },
   "assets": [
     {
-      "file": "assets/AboutPanel-B6oKITnv.js",
+      "file": "assets/AboutPanel-D1jJTI8F.js",
       "bytes": 2415,
-      "gzipBytes": 1025
+      "gzipBytes": 1023
     },
     {
-      "file": "assets/AdministrativeMap-CspfohdE.js",
+      "file": "assets/AdministrativeMap-_8wLcsTl.js",
       "bytes": 21986,
-      "gzipBytes": 8078
+      "gzipBytes": 8082
     },
     {
       "file": "assets/be-vietnam-pro-400-latin-ext-CiZNW1ec.woff2",
@@ -96,54 +96,54 @@
       "bytes": 719308
     },
     {
-      "file": "assets/DataProvenancePanel-B61QGrfR.js",
+      "file": "assets/DataProvenancePanel-CA_2jtxP.js",
       "bytes": 10535,
-      "gzipBytes": 3422
+      "gzipBytes": 3421
     },
     {
-      "file": "assets/DataReadinessView-Dgq8iAll.js",
-      "bytes": 18038,
-      "gzipBytes": 4703
+      "file": "assets/DataReadinessView-BGjmm_xB.js",
+      "bytes": 18039,
+      "gzipBytes": 4700
     },
     {
-      "file": "assets/datasets-Bc_YsyXw.js",
+      "file": "assets/datasets-aXCDRQQw.js",
       "bytes": 31898,
       "gzipBytes": 9047
     },
     {
-      "file": "assets/DataSourcesPanel-DSKIO5_m.js",
+      "file": "assets/DataSourcesPanel-83kOgCzV.js",
       "bytes": 3848,
-      "gzipBytes": 1476
+      "gzipBytes": 1474
     },
     {
-      "file": "assets/DestinationDioramaView-B1e2PG2x.js",
-      "bytes": 9401,
-      "gzipBytes": 3238
+      "file": "assets/DestinationDioramaView-DyCitvWO.js",
+      "bytes": 9429,
+      "gzipBytes": 3239
     },
     {
-      "file": "assets/DetailMapViewport-CqVSy0R9.js",
-      "bytes": 71837,
-      "gzipBytes": 21151
+      "file": "assets/destinationMedia-dBT6DxWR.js",
+      "bytes": 2457,
+      "gzipBytes": 796
     },
     {
-      "file": "assets/dioramaCoverLayer-CF73SK0Y.js",
+      "file": "assets/DetailMapViewport-0jj4JZUF.js",
+      "bytes": 71836,
+      "gzipBytes": 21146
+    },
+    {
+      "file": "assets/dioramaCoverLayer-BJeun-L-.js",
       "bytes": 23681,
-      "gzipBytes": 9160
+      "gzipBytes": 9159
     },
     {
-      "file": "assets/dioramaPhotos-C_9efMFD.js",
-      "bytes": 87,
-      "gzipBytes": 101
-    },
-    {
-      "file": "assets/dioramaProps-Br7GyxdV.js",
+      "file": "assets/dioramaProps-D2ktqYSF.js",
       "bytes": 10602,
-      "gzipBytes": 3503
+      "gzipBytes": 3502
     },
     {
-      "file": "assets/en-By6NdKUk.js",
-      "bytes": 68033,
-      "gzipBytes": 18024
+      "file": "assets/en-BPvPYw3D.js",
+      "bytes": 69087,
+      "gzipBytes": 18266
     },
     {
       "file": "assets/esm-CpNd5vRp.js",
@@ -151,9 +151,9 @@
       "gzipBytes": 7397
     },
     {
-      "file": "assets/giaLong-B1yOYd-C.js",
+      "file": "assets/giaLong-DaZJ78Mr.js",
       "bytes": 5011,
-      "gzipBytes": 2514
+      "gzipBytes": 2511
     },
     {
       "file": "assets/graphicsQuality-B_LqLbvj.js",
@@ -161,18 +161,18 @@
       "gzipBytes": 269
     },
     {
-      "file": "assets/index-aPpZJ_ma.css",
-      "bytes": 156391
+      "file": "assets/index-DeYZwAmB.js",
+      "bytes": 978272,
+      "gzipBytes": 265483
     },
     {
-      "file": "assets/index-CgP8KXU2.js",
-      "bytes": 976287,
-      "gzipBytes": 264932
+      "file": "assets/index-MPmwaVC8.css",
+      "bytes": 156637
     },
     {
-      "file": "assets/InvestmentCatalogView-BEAlvnT4.js",
-      "bytes": 8512,
-      "gzipBytes": 2650
+      "file": "assets/InvestmentCatalogView-ZguBqH97.js",
+      "bytes": 8513,
+      "gzipBytes": 2647
     },
     {
       "file": "assets/jetbrains-mono-400-latin-ext-Bc8Ftmh3.woff2",
@@ -204,12 +204,12 @@
       "gzipBytes": 3382
     },
     {
-      "file": "assets/KrongKmarScene-BSVgFkL8.js",
+      "file": "assets/KrongKmarScene-B1kg2Y_U.js",
       "bytes": 2451,
-      "gzipBytes": 1193
+      "gzipBytes": 1191
     },
     {
-      "file": "assets/landmarks-BUrlESBW.js",
+      "file": "assets/landmarks-DLp1L-Fi.js",
       "bytes": 12944,
       "gzipBytes": 5663
     },
@@ -231,14 +231,14 @@
       "bytes": 518806
     },
     {
-      "file": "assets/OrbitControls-DTEooFY_.js",
+      "file": "assets/OrbitControls-Dhm3k3sM.js",
       "bytes": 192373,
-      "gzipBytes": 59809
+      "gzipBytes": 59808
     },
     {
-      "file": "assets/PanoramaViewer-CAgBZUJs.js",
+      "file": "assets/PanoramaViewer-p9lOQJJW.js",
       "bytes": 1534,
-      "gzipBytes": 828
+      "gzipBytes": 824
     },
     {
       "file": "assets/planningCitations-CTIK11-N.js",
@@ -246,9 +246,9 @@
       "gzipBytes": 2166
     },
     {
-      "file": "assets/PlanningHubView-XyglO7ee.js",
-      "bytes": 5248,
-      "gzipBytes": 1793
+      "file": "assets/PlanningHubView-duN_2PdT.js",
+      "bytes": 6040,
+      "gzipBytes": 1914
     },
     {
       "file": "assets/planningModel-0IUoT6Hu.js",
@@ -261,24 +261,24 @@
       "gzipBytes": 534
     },
     {
-      "file": "assets/ProjectDetailView-BUXrTkzC.js",
-      "bytes": 24658,
-      "gzipBytes": 6105
+      "file": "assets/ProjectDetailView-CeB9HqL-.js",
+      "bytes": 24659,
+      "gzipBytes": 6103
     },
     {
-      "file": "assets/ProjectPortfolioView-NJGo4ghH.js",
-      "bytes": 15142,
-      "gzipBytes": 4218
+      "file": "assets/ProjectPortfolioView-BRs2DM81.js",
+      "bytes": 15143,
+      "gzipBytes": 4215
     },
     {
-      "file": "assets/ReportsView-DcvsQ-rv.js",
-      "bytes": 14243,
-      "gzipBytes": 4018
+      "file": "assets/ReportsView-Doz-bGkE.js",
+      "bytes": 14244,
+      "gzipBytes": 4019
     },
     {
-      "file": "assets/roadLabels3D-OOwvXcef.js",
+      "file": "assets/roadLabels3D-7sbVW_tX.js",
       "bytes": 10818,
-      "gzipBytes": 4535
+      "gzipBytes": 4533
     },
     {
       "file": "assets/space-grotesk-700-latin-ext-BQnZhY3m.woff2",
@@ -293,14 +293,14 @@
       "bytes": 4204
     },
     {
-      "file": "assets/StatPanel-mhrE63RG.js",
+      "file": "assets/StatPanel-D6dHT1mz.js",
       "bytes": 4384,
       "gzipBytes": 1421
     },
     {
-      "file": "assets/structures-8hhoAump.js",
+      "file": "assets/structures-BGMqXmpb.js",
       "bytes": 14592,
-      "gzipBytes": 4508
+      "gzipBytes": 4507
     },
     {
       "file": "assets/three-vendor-B1uwA9vr.js",
@@ -308,19 +308,19 @@
       "gzipBytes": 190786
     },
     {
-      "file": "assets/TourismHubView-SgScrwXs.js",
-      "bytes": 7376,
-      "gzipBytes": 2371
+      "file": "assets/TourismHubView-tDUnj6On.js",
+      "bytes": 7379,
+      "gzipBytes": 2377
     },
     {
-      "file": "assets/UnitProfileView-BmFGw_Hy.js",
-      "bytes": 5961,
-      "gzipBytes": 2093
+      "file": "assets/UnitProfileView-DUEayDq_.js",
+      "bytes": 6037,
+      "gzipBytes": 2124
     },
     {
-      "file": "assets/useProjectPortfolio-BSv4hJ3X.js",
+      "file": "assets/useProjectPortfolio-DE9tQlW_.js",
       "bytes": 1994,
-      "gzipBytes": 996
+      "gzipBytes": 994
     },
     {
       "file": "assets/vanilla-DZJGj1NY.js",
@@ -328,19 +328,19 @@
       "gzipBytes": 235
     },
     {
-      "file": "assets/waterfalls-C1zspaEx.js",
+      "file": "assets/waterfalls-Bg2estEL.js",
       "bytes": 7265,
       "gzipBytes": 2878
     },
     {
-      "file": "assets/waters-BQTfioUC.js",
+      "file": "assets/waters-gHcJXx6K.js",
       "bytes": 6696,
       "gzipBytes": 2590
     },
     {
-      "file": "assets/WorldExplorationView-OIMFO2_0.js",
+      "file": "assets/WorldExplorationView-BcBJ7-iO.js",
       "bytes": 36626,
-      "gzipBytes": 11809
+      "gzipBytes": 11804
     },
     {
       "file": "build-info.json",
@@ -461,6 +461,106 @@
     {
       "file": "images/destinations/thap-yang-prong.jpg",
       "bytes": 95411
+    },
+    {
+      "file": "images/destinations/thumb/bao-tang-dak-lak.webp",
+      "bytes": 9404
+    },
+    {
+      "file": "images/destinations/thumb/buon-ako-dhong.webp",
+      "bytes": 14280
+    },
+    {
+      "file": "images/destinations/thumb/buon-don.webp",
+      "bytes": 17582
+    },
+    {
+      "file": "images/destinations/thumb/chua-pho-minh.webp",
+      "bytes": 8654
+    },
+    {
+      "file": "images/destinations/thumb/dam-o-loan.webp",
+      "bytes": 6442
+    },
+    {
+      "file": "images/destinations/thumb/dinh-lac-giao.webp",
+      "bytes": 9276
+    },
+    {
+      "file": "images/destinations/thumb/dray-nur-waterfall.webp",
+      "bytes": 20710
+    },
+    {
+      "file": "images/destinations/thumb/duc-me-giang-son.webp",
+      "bytes": 25066
+    },
+    {
+      "file": "images/destinations/thumb/ganh-da-dia.webp",
+      "bytes": 13332
+    },
+    {
+      "file": "images/destinations/thumb/ho-lak.webp",
+      "bytes": 3258
+    },
+    {
+      "file": "images/destinations/thumb/krong-kmar-waterfall.webp",
+      "bytes": 13208
+    },
+    {
+      "file": "images/destinations/thumb/lang-ca-phe-trung-nguyen.webp",
+      "bytes": 15732
+    },
+    {
+      "file": "images/destinations/thumb/mui-dien.webp",
+      "bytes": 12852
+    },
+    {
+      "file": "images/destinations/thumb/nha-day-buon-ma-thuot.webp",
+      "bytes": 7778
+    },
+    {
+      "file": "images/destinations/thumb/nui-chop-chai.webp",
+      "bytes": 6162
+    },
+    {
+      "file": "images/destinations/thumb/nui-da-bia.webp",
+      "bytes": 11534
+    },
+    {
+      "file": "images/destinations/thumb/thac-bay-nhanh.webp",
+      "bytes": 21126
+    },
+    {
+      "file": "images/destinations/thumb/thac-dray-knao.webp",
+      "bytes": 17222
+    },
+    {
+      "file": "images/destinations/thumb/thac-gia-long.webp",
+      "bytes": 15216
+    },
+    {
+      "file": "images/destinations/thumb/thap-nhan.webp",
+      "bytes": 20742
+    },
+    {
+      "file": "images/destinations/thumb/thap-yang-prong.webp",
+      "bytes": 20976
+    },
+    {
+      "file": "images/destinations/thumb/vinh-xuan-dai.webp",
+      "bytes": 5890
+    },
+    {
+      "file": "images/destinations/thumb/vung-ro.webp",
+      "bytes": 10066
+    },
+    {
+      "file": "images/destinations/thumb/vuon-quoc-gia-ea-so.webp",
+      "bytes": 15008
+    },
+    {
+      "file": "images/destinations/thumb/yok-don-national-park.webp",
+      "bytes": 5150
     },
     {
       "file": "images/destinations/vinh-xuan-dai.jpg",

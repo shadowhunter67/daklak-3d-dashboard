@@ -11,10 +11,11 @@ import type { MessageKey } from '../../i18n/messages';
 import { Card, KpiTile, PageHeader, SearchField, SelectField } from '../../components/ui';
 import { PinIcon, MapIcon, CubeIcon, UsersIcon } from '../../components/layout/icons';
 import type { WardCollection } from '../../types/map';
+import { DESTINATION_MEDIA } from '../../data/destinationMedia';
+import { ResponsiveImage } from '../../components/ui/ResponsiveImage';
 import { PLANNING_DOCUMENTS } from '../../data/planningCitations';
 import { loadResearchedProjects } from '../../data/loadResearchedProjects';
 import { formatNumber } from '../../i18n/formatters';
-import { destinationPhotoUrl } from '../destination-diorama/dioramaPhotos';
 import {
   buildCatalogRows,
   formatCapitalBillions,
@@ -59,18 +60,19 @@ function DestinationCard({
 }) {
   const { t, locale } = useTranslation();
   const { destination, unitCode } = item;
+  const media = DESTINATION_MEDIA.get(destination.id);
   const links = rows && unitCode ? buildUnitLinks(unitCode, rows, PLANNING_DOCUMENTS) : null;
   const missing = t('catalog.capitalMissing');
   return (
     <li className="project-portfolio-card tourism-card">
       {destination.imageUrl ? (
         <figure className="tourism-card__photo">
-          <img
-            src={destinationPhotoUrl(destination.id)}
-            alt={t('tourism.card.photoAlt', { name: destination.name })}
-            loading="lazy"
-            decoding="async"
-          />
+          {media && (
+            <ResponsiveImage
+              item={media}
+              alt={t('tourism.card.photoAlt', { name: destination.name })}
+            />
+          )}
           <figcaption>
             {destination.imageAttribution} ({destination.imageLicense})
           </figcaption>

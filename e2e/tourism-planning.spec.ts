@@ -258,6 +258,28 @@ test.describe('Nhãn bản đồ Tổng quan', () => {
   });
 });
 
+test.describe('Media pipeline', () => {
+  test('ảnh điểm đến dùng WebP thu nhỏ (picture/srcset), có width/height và tải được', async ({
+    page,
+  }) => {
+    const webp: number[] = [];
+    page.on('response', (response) => {
+      if (/\/images\/destinations\/thumb\/.+\.webp$/.test(response.url()))
+        webp.push(response.status());
+    });
+    await page.goto('./#/tourism');
+    const card = page.locator('li', {
+      has: page.getByRole('heading', { level: 2, name: 'Hồ Lắk' }),
+    });
+    const img = card.locator('picture img');
+    await expect(img).toHaveAttribute('width', /\d+/);
+    await expect(img).toHaveAttribute('height', /\d+/);
+    await expect(card.locator('picture source[type="image/webp"]')).toHaveCount(1);
+    await expect.poll(() => webp.length).toBeGreaterThan(0);
+    expect(webp.every((status) => status === 200)).toBe(true);
+  });
+});
+
 test.describe('Du lịch: chuỗi liên kết điểm đến → dự án → quy hoạch', () => {
   test('thẻ Hồ Lắk có chuỗi liên kết và dẫn sang danh mục theo địa bàn', async ({ page }) => {
     await page.goto('./#/tourism');
