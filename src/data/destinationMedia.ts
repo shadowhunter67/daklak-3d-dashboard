@@ -1,6 +1,6 @@
 import type { MediaItem } from '../entities/media/mediaItem';
 import { verifiedTourismDestinations } from '../entities/tourism/verifiedTourismDestinations';
-import meta from './destinationPhotoMeta.json';
+import { DESTINATION_PHOTO_META } from './destinationPhotoMeta';
 
 /** "Ảnh: Tác giả, Wikimedia Commons, File:X.jpg" → "Tác giả" (phần ghi công); rỗng nếu không tách được. */
 function authorOf(attribution: string | undefined): string {
@@ -11,11 +11,11 @@ function authorOf(attribution: string | undefined): string {
 
 /**
  * Siêu dữ liệu ảnh điểm đến (một nguồn sự thật cho giao diện). Kích thước lấy từ
- * `destinationPhotoMeta.json` do `scripts/media/build_destination_thumbnails.py` sinh.
+ * `destinationPhotoMeta.ts` do `scripts/media/build_destination_thumbnails.py` sinh.
  */
 export const DESTINATION_MEDIA: ReadonlyMap<string, MediaItem> = new Map(
   verifiedTourismDestinations.flatMap((d) => {
-    const dims = (meta as Record<string, (typeof meta)[keyof typeof meta]>)[d.id];
+    const dims = DESTINATION_PHOTO_META[d.id];
     if (!d.imageUrl || !d.imageLicense || !dims) return [];
     const item: MediaItem = {
       id: d.id,

@@ -8,7 +8,7 @@ Mọi ảnh hiển thị đi qua `MediaItem` (`src/entities/media/mediaItem.ts`)
 2. Chép ảnh đã nén (≤ 640px, ≤ 130 KB, JPEG) vào `public/images/destinations/<id>.jpg` và khai báo nguồn/giấy phép/ghi công trong `src/entities/tourism/verifiedTourismDestinations.ts`.
 3. Chạy `python scripts/media/build_destination_thumbnails.py` để sinh:
    - `public/images/destinations/thumb/<id>.webp` (rộng 320px, ≤ 25 KB);
-   - `src/data/destinationPhotoMeta.json` (width/height của ảnh gốc và thumbnail).
+   - `src/data/destinationPhotoMeta.ts` (width/height của ảnh gốc và thumbnail).
 4. `src/data/destinationMedia.ts` dựng `MediaItem` từ dữ liệu trên; `mediaItem.test.ts` kiểm giấy phép, ghi công, tệp tồn tại, WebP hợp lệ, tỉ lệ ảnh.
 
 ## Hiển thị

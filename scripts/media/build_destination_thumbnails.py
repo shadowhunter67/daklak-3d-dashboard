@@ -2,7 +2,7 @@
 
 Đầu vào : public/images/destinations/<id>.jpg (ảnh đã xác minh giấy phép, <= 640px)
 Đầu ra  : public/images/destinations/thumb/<id>.webp (rộng 320px) và
-          src/data/destinationPhotoMeta.json { id: {width, height, thumbWidth, thumbHeight} }
+          src/data/destinationPhotoMeta.ts (module TypeScript sinh tự động, không phải dataset JSON)
 
 Chạy:  python scripts/media/build_destination_thumbnails.py
 Ghi đè an toàn (idempotent): chạy lại cho cùng ảnh nguồn cho cùng kết quả. Cần Pillow có hỗ trợ WebP.
@@ -17,7 +17,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / 'public' / 'images' / 'destinations'
 THUMB = SRC / 'thumb'
-META = ROOT / 'src' / 'data' / 'destinationPhotoMeta.json'
+META = ROOT / 'src' / 'data' / 'destinationPhotoMeta.ts'
 THUMB_WIDTH = 320
 QUALITY = 68
 
@@ -38,7 +38,20 @@ def main() -> int:
             'thumbWidth': THUMB_WIDTH,
             'thumbHeight': thumb_height,
         }
-    META.write_text(json.dumps(meta, indent=2, ensure_ascii=False) + '\n', encoding='utf8')
+    header = (
+        '/**\n'
+        ' * SINH TỰ ĐỘNG bởi scripts/media/build_destination_thumbnails.py — đừng sửa tay.\n'
+        ' * Kích thước ảnh gốc và thumbnail của ảnh điểm đến (tránh nhảy bố cục).\n'
+        ' */\n'
+        'export interface DestinationPhotoDims {\n'
+        '  width: number;\n'
+        '  height: number;\n'
+        '  thumbWidth: number;\n'
+        '  thumbHeight: number;\n'
+        '}\n\n'
+        'export const DESTINATION_PHOTO_META: Readonly<Record<string, DestinationPhotoDims>> = '
+    )
+    META.write_text(header + json.dumps(meta, indent=2, ensure_ascii=False) + ';\n', encoding='utf8')
     print(f'{len(meta)} ảnh: thumbnails -> {THUMB}, meta -> {META}')
     return 0
 
