@@ -98,6 +98,8 @@ test.describe('Bàn phím', () => {
       const info = await page.evaluate(() => {
         const node = document.activeElement as HTMLElement | null;
         if (!node || node === document.body) return null;
+        // Vùng nội dung tabindex=-1 được focus bằng mã sau khi chuyển trang; không phải điểm dừng Tab.
+        if (node.getAttribute('tabindex') === '-1') return null;
         const style = getComputedStyle(node);
         return {
           label: (node.getAttribute('aria-label') ?? node.textContent ?? '').trim().slice(0, 40),
