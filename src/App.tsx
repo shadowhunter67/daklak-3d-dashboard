@@ -269,7 +269,19 @@ export default function App() {
 
   return (
     <main className="app-shell">
-      <a href={`#${skipLinkTargetId}`} className="skip-link">
+      <a
+        href={`#${skipLinkTargetId}`}
+        className="skip-link"
+        onClick={(event) => {
+          // Không đổi hash: hash là tuyến của ứng dụng (#/tourism...), đổi thành #<id> sẽ đưa người dùng
+          // ra khỏi trang hiện tại. Chuyển focus thẳng tới vùng nội dung.
+          event.preventDefault();
+          const target = document.getElementById(skipLinkTargetId);
+          if (!target) return;
+          target.focus();
+          target.scrollIntoView({ block: 'start' });
+        }}
+      >
         {t('app.skipLink')}
       </a>
       <AppSidebar

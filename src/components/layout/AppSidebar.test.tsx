@@ -61,7 +61,7 @@ describe('AppSidebar', () => {
 
   it('routes Dự án, Dữ liệu & nguồn and Báo cáo to their hash routes', () => {
     const navigate = renderSidebar();
-    fireEvent.click(screen.getByRole('button', { name: 'Dự án' }));
+    fireEvent.click(screen.getByRole('button', { name: /^Theo dõi dự án/ }));
     expect(navigate).toHaveBeenLastCalledWith('#/projects');
     fireEvent.click(screen.getByRole('button', { name: 'Dữ liệu & nguồn' }));
     expect(navigate).toHaveBeenLastCalledWith('#/data-readiness');
@@ -74,9 +74,15 @@ describe('AppSidebar', () => {
     expect(screen.getByRole('button', { name: 'Báo cáo' })).toHaveAttribute('aria-current', 'page');
   });
 
-  it('highlights "Dự án" (not "Tổng quan") on the investment-attraction catalog route', () => {
+  it('highlights "Thu hút đầu tư" (not "Theo dõi dự án") on the investment-attraction catalog route', () => {
     renderSidebar({ kind: 'investment-catalog' });
-    expect(screen.getByRole('button', { name: 'Dự án' })).toHaveAttribute('aria-current', 'page');
+    expect(screen.getByRole('button', { name: /^Thu hút đầu tư/ })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    expect(screen.getByRole('button', { name: /^Theo dõi dự án/ })).not.toHaveAttribute(
+      'aria-current',
+    );
     expect(screen.getByRole('button', { name: 'Tổng quan' })).not.toHaveAttribute('aria-current');
   });
 
@@ -94,5 +100,15 @@ describe('AppSidebar', () => {
     cleanup();
     renderSidebar();
     expect(screen.getByRole('button', { name: 'Bản đồ' })).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('hai loại dự án tách thành hai mục và mỗi mục nói rõ loại dữ liệu ngay trên thanh bên', () => {
+    const navigate = renderSidebar();
+    const tracking = screen.getByRole('button', { name: /^Theo dõi dự án/ });
+    expect(tracking).toHaveTextContent('Dữ liệu minh họa');
+    const investment = screen.getByRole('button', { name: /^Thu hút đầu tư/ });
+    expect(investment).toHaveTextContent('201 dự án có nguồn');
+    fireEvent.click(investment);
+    expect(navigate).toHaveBeenLastCalledWith('#/investment-catalog');
   });
 });

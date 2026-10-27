@@ -4,6 +4,7 @@ import wards from '#province-assets/daklak-wards-render.json';
 import labels from '#province-assets/daklak-labels.json';
 import { unitMetrics } from '../../data/unitMetrics';
 import {
+  labelExtent,
   layoutOverviewLabels,
   OVERVIEW_LABEL_FONT_SIZE,
   overviewLabelTextLength,
@@ -36,10 +37,12 @@ const units = sortAdministrativeUnits(collection.features.map(({ properties }) =
 
 const MAP_WIDTH = 640;
 const MAP_HEIGHT = 560;
+const MAP_PAD_X = 30;
+const MAP_PAD_Y = 30;
 const projection = geoMercator().fitExtent(
   [
-    [14, 14],
-    [MAP_WIDTH - 14, MAP_HEIGHT - 14],
+    [MAP_PAD_X, MAP_PAD_Y],
+    [MAP_WIDTH - MAP_PAD_X, MAP_HEIGHT - MAP_PAD_Y],
   ],
   collection,
 );
@@ -58,7 +61,10 @@ const mapLabels = layoutOverviewLabels(
       ? [{ code, name: label.name, x: point[0], y: point[1], priority: label.priority }]
       : [];
   }),
+  OVERVIEW_LABEL_FONT_SIZE,
 );
+// viewBox ôm trọn mọi nhãn (kể cả nhãn bị dịch ra): không nhãn nào bị cắt mép.
+const mapExtent = labelExtent(mapLabels);
 
 type TypeFilter = 'all' | 'xa' | 'phuong';
 
@@ -155,7 +161,7 @@ function ProvinceMap() {
       <div className="overview-workspace__map-canvas">
         <svg
           className="overview-workspace__map-svg"
-          viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
+          viewBox={`${mapExtent.x} ${mapExtent.y} ${mapExtent.width} ${mapExtent.height}`}
           role="img"
           aria-label={t('workspace.map.aria', { count })}
         >

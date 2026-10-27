@@ -5,11 +5,13 @@ import type { MessageKey } from '../../i18n/messages';
 import type { HashRoute } from '../../routing/hashRoute';
 import {
   serializeDataReadinessHash,
+  serializeInvestmentCatalogHash,
   serializePlanningHash,
   serializePortfolioHash,
   serializeReportsHash,
   serializeTourismHash,
 } from '../../routing/hashRoute';
+import { INVESTMENT_CATALOG_PROJECT_COUNT } from '../../data/investmentCatalogMeta';
 import { BrandLogo } from './BrandLogo';
 import { DisplaySettings } from './DisplaySettings';
 import {
@@ -18,17 +20,29 @@ import {
   CubeIcon,
   DatabaseIcon,
   DocumentIcon,
+  FolderIcon,
   HomeIcon,
   LayersIcon,
   MapIcon,
   PinIcon,
 } from './icons';
 
-type ItemId = 'overview' | 'map' | '3d' | 'projects' | 'tourism' | 'planning' | 'data' | 'reports';
+type ItemId =
+  | 'overview'
+  | 'map'
+  | '3d'
+  | 'projects'
+  | 'investment'
+  | 'tourism'
+  | 'planning'
+  | 'data'
+  | 'reports';
 
 interface Item {
   id: ItemId;
   labelKey: MessageKey;
+  /** Dòng phụ dưới nhãn: nói rõ loại dữ liệu (minh họa hay có nguồn). */
+  noteKey?: MessageKey;
   icon: ReactNode;
 }
 
@@ -36,7 +50,18 @@ const ITEMS: Item[] = [
   { id: 'overview', labelKey: 'sidebar.overview', icon: <HomeIcon /> },
   { id: 'map', labelKey: 'sidebar.map', icon: <MapIcon /> },
   { id: '3d', labelKey: 'sidebar.map3d', icon: <CubeIcon /> },
-  { id: 'projects', labelKey: 'sidebar.projects', icon: <DocumentIcon /> },
+  {
+    id: 'projects',
+    labelKey: 'sidebar.projects',
+    noteKey: 'sidebar.projectsNote',
+    icon: <DocumentIcon />,
+  },
+  {
+    id: 'investment',
+    labelKey: 'sidebar.investment',
+    noteKey: 'sidebar.investmentNote',
+    icon: <FolderIcon />,
+  },
   { id: 'tourism', labelKey: 'sidebar.tourism', icon: <PinIcon /> },
   { id: 'planning', labelKey: 'sidebar.planning', icon: <LayersIcon /> },
   { id: 'data', labelKey: 'sidebar.data', icon: <DatabaseIcon /> },
@@ -46,12 +71,8 @@ const ITEMS: Item[] = [
 /** Which sidebar item is "current". Tourism and Planning are their own hash-route pages; the ward
  * directory lives inside the map view, so there is no separate "wards" item. */
 function activeItem(route: HashRoute, viewMode: string): ItemId | null {
-  if (
-    route.kind === 'portfolio' ||
-    route.kind === 'project-detail' ||
-    route.kind === 'investment-catalog'
-  )
-    return 'projects';
+  if (route.kind === 'portfolio' || route.kind === 'project-detail') return 'projects';
+  if (route.kind === 'investment-catalog') return 'investment';
   if (route.kind === 'data-readiness') return 'data';
   if (route.kind === 'reports') return 'reports';
   if (route.kind === 'tourism') return 'tourism';
@@ -98,6 +119,9 @@ export function AppSidebar({
         setPlanningOverlay('none');
         setMapEntry('map');
         setViewMode('map');
+        break;
+      case 'investment':
+        navigate(serializeInvestmentCatalogHash());
         break;
       case 'tourism':
         navigate(serializeTourismHash());
@@ -153,7 +177,14 @@ export function AppSidebar({
               onClick={() => go(item.id)}
             >
               {item.icon}
-              <span>{t(item.labelKey)}</span>
+              <span>
+                {t(item.labelKey)}
+                {item.noteKey && (
+                  <small className="sidebar-link__count">
+                    {t(item.noteKey, { count: String(INVESTMENT_CATALOG_PROJECT_COUNT) })}
+                  </small>
+                )}
+              </span>
             </button>
           ))}
         </nav>

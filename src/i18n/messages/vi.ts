@@ -108,7 +108,7 @@ export const vi = {
   'sidebar.overview': 'Tổng quan',
   'sidebar.map': 'Bản đồ',
   'sidebar.map3d': 'Bản đồ 3D',
-  'sidebar.projects': 'Dự án',
+  'sidebar.projects': 'Theo dõi dự án',
   'sidebar.wards': 'Xã, phường',
   'sidebar.wardsCount': '({count} đơn vị)',
   'sidebar.planning': 'Quy hoạch',
@@ -1344,4 +1344,7 @@ export const vi = {
   'dataReadiness.simple.missingDetail': 'Dự án chưa nêu văn bản quy hoạch nào',
   'dataReadiness.simple.update': 'Dữ liệu cần cập nhật',
   'dataReadiness.simple.updateDetail': 'Cảnh báo chất lượng của dữ liệu minh họa',
+  'sidebar.projectsNote': 'Dữ liệu minh họa',
+  'sidebar.investment': 'Thu hút đầu tư',
+  'sidebar.investmentNote': '{count} dự án có nguồn',
 } as const satisfies Record<string, string>;

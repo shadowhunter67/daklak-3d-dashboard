@@ -102,7 +102,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'sidebar.overview': 'Overview',
   'sidebar.map': 'Map',
   'sidebar.map3d': '3D map',
-  'sidebar.projects': 'Projects',
+  'sidebar.projects': 'Project tracking',
   'sidebar.wards': 'Communes & wards',
   'sidebar.wardsCount': '({count} units)',
   'sidebar.planning': 'Planning',
@@ -1327,4 +1327,7 @@ export const en: Partial<Record<MessageKey, string>> = {
   'dataReadiness.simple.missingDetail': 'Projects that cite no planning document',
   'dataReadiness.simple.update': 'Data to update',
   'dataReadiness.simple.updateDetail': 'Quality warnings in the illustrative data',
+  'sidebar.projectsNote': 'Illustrative data',
+  'sidebar.investment': 'Investment attraction',
+  'sidebar.investmentNote': '{count} sourced projects',
 };

@@ -26,11 +26,11 @@ export interface OverviewLabelPlacement {
   displaced: boolean;
 }
 
-export const OVERVIEW_LABEL_FONT_SIZE = 11;
+export const OVERVIEW_LABEL_FONT_SIZE = 15;
 const CHAR_WIDTH_EM = 0.6;
 const LINE_HEIGHT_EM = 1.3;
 const LAYOUT_PADDING_PX = 3;
-const RADII_PX = [14, 26, 40, 56, 74, 94];
+const RADII_PX = [14, 26, 40, 56, 74, 94, 118, 146, 176, 208];
 
 /**
  * Chiều dài chữ mà bộ bố trí giả định cho một nhãn. Giao diện ép chữ vẽ ra đúng chiều dài này
@@ -39,6 +39,32 @@ const RADII_PX = [14, 26, 40, 56, 74, 94];
  */
 export function overviewLabelTextLength(name: string, fontSize = OVERVIEW_LABEL_FONT_SIZE): number {
   return name.length * CHAR_WIDTH_EM * fontSize;
+}
+
+/** Khung bao (đơn vị viewBox) của mọi nhãn sau khi bố trí, cộng lề — dùng làm viewBox để không nhãn
+ * nào bị cắt mép dù đã bị dịch ra xa vị trí thật. */
+export function labelExtent(
+  placements: readonly OverviewLabelPlacement[],
+  fontSize = OVERVIEW_LABEL_FONT_SIZE,
+  margin = 6,
+) {
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+  for (const p of placements) {
+    const half = overviewLabelTextLength(p.name, fontSize) / 2;
+    minX = Math.min(minX, p.x - half, p.anchorX);
+    maxX = Math.max(maxX, p.x + half, p.anchorX);
+    minY = Math.min(minY, p.y - fontSize * 0.65, p.anchorY);
+    maxY = Math.max(maxY, p.y + fontSize * 0.65, p.anchorY);
+  }
+  return {
+    x: minX - margin,
+    y: minY - margin,
+    width: maxX - minX + 2 * margin,
+    height: maxY - minY + 2 * margin,
+  };
 }
 
 export function layoutOverviewLabels(

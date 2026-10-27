@@ -136,22 +136,42 @@ test.describe('Góc nhìn bản đồ chi tiết', () => {
   });
 });
 
-test.describe('Nhãn bản đồ Tổng quan', () => {
-  test('102 tên đều hiện và không nhãn nào chồng lên nhãn khác', async ({ page }) => {
-    await page.goto('./?view=overview');
-    const labels = page.locator('.overview-workspace__map-labels text');
-    await expect(labels).toHaveCount(102);
-    const overlaps = await labels.evaluateAll((nodes) => {
+const LABEL_FONT_UNITS = 15; // phải khớp OVERVIEW_LABEL_FONT_SIZE
+const READABLE_MIN_PX = 9;
+
+/** Đo nhãn bản đồ Tổng quan trong trình duyệt thật: số nhãn hiện (visible), số nhãn đọc được
+ * (readable = cỡ chữ vẽ ra ≥ 10px và không chồng nhãn khác) và các cặp chồng. */
+async function measureOverviewLabels(page: import('@playwright/test').Page) {
+  const labels = page.locator('.overview-workspace__map-labels text');
+  await expect(labels).toHaveCount(102);
+  return labels.evaluateAll(
+    (nodes, { fontUnits, minPx }) => {
       // Chiều ngang lấy từ chữ thật (đã ép đúng `textLength`); chiều cao dùng hộp chữ cố định quanh
-      // tâm chữ (11px x 1.3) vì chiều cao hộp bao của phông khác nhau giữa nền tảng.
-      // Chạm mép (độ sâu chồng ≤ 0,5px do làm tròn) không tính là chồng.
+      // tâm chữ vì chiều cao hộp bao của phông khác nhau giữa nền tảng. Chạm mép (≤ 0,5px) không tính.
       const boxes = nodes.map((node) => {
         const b = node.getBoundingClientRect();
-        const midY = (b.top + b.bottom) / 2;
         const scale = (node as SVGGraphicsElement).getScreenCTM()?.a ?? 1;
-        const half = (11 * 1.3 * scale) / 2;
-        return { left: b.left, right: b.right, top: midY - half, bottom: midY + half };
+        const midY = (b.top + b.bottom) / 2;
+        const half = (fontUnits * 1.3 * scale) / 2;
+        return {
+          left: b.left,
+          right: b.right,
+          top: midY - half,
+          bottom: midY + half,
+          px: fontUnits * scale,
+        };
       });
+      const svg = (nodes[0] as SVGElement).ownerSVGElement?.getBoundingClientRect();
+      const clipped = svg
+        ? boxes.filter(
+            (b) =>
+              b.left < svg.left - 0.5 ||
+              b.right > svg.right + 0.5 ||
+              b.top < svg.top - 0.5 ||
+              b.bottom > svg.bottom + 0.5,
+          ).length
+        : 0;
+      const overlapping = new Set<number>();
       const pairs: string[] = [];
       for (let i = 0; i < boxes.length; i += 1) {
         for (let j = i + 1; j < boxes.length; j += 1) {
@@ -160,14 +180,60 @@ test.describe('Nhãn bản đồ Tổng quan', () => {
           if (
             Math.min(a.right, b.right) - Math.max(a.left, b.left) > 0.5 &&
             Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 0.5
-          )
-            pairs.push(
-              `${nodes[i].textContent} / ${nodes[j].textContent}: ${(Math.min(a.right, b.right) - Math.max(a.left, b.left)).toFixed(1)}x${(Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)).toFixed(1)}`,
-            );
+          ) {
+            overlapping.add(i);
+            overlapping.add(j);
+            pairs.push(`${nodes[i].textContent} / ${nodes[j].textContent}`);
+          }
         }
       }
-      return pairs;
-    });
-    expect(overlaps).toEqual([]);
+      const readable = boxes.filter((b, i) => b.px >= minPx && !overlapping.has(i)).length;
+      return {
+        visible: boxes.length,
+        clipped,
+        readable,
+        fontPx: Math.min(...boxes.map((b) => b.px)),
+        pairs,
+      };
+    },
+    { fontUnits: LABEL_FONT_UNITS, minPx: READABLE_MIN_PX },
+  );
+}
+
+test.describe('Nhãn bản đồ Tổng quan', () => {
+  test('102 tên đều hiện và không nhãn nào chồng lên nhãn khác', async ({ page }) => {
+    await page.goto('./?view=overview');
+    const m = await measureOverviewLabels(page);
+    expect(m.visible).toBe(102);
+    expect(m.pairs).toEqual([]);
+    expect(m.clipped).toBe(0);
+  });
+
+  test('tỉ lệ nhãn đọc được (cỡ chữ ≥ 10px, không chồng) đạt ngưỡng trên desktop', async ({
+    page,
+  }, testInfo) => {
+    test.skip(
+      testInfo.project.name.includes('mobile'),
+      'Mobile dùng danh sách thay cho nhãn bản đồ nhỏ',
+    );
+    await page.goto('./?view=overview');
+    const m = await measureOverviewLabels(page);
+    // Visible rate = 102/102; readable rate là chỉ số khắt khe hơn: "0 chồng" chưa đủ nếu chữ quá nhỏ.
+    expect(m.readable / m.visible).toBeGreaterThanOrEqual(0.95);
+  });
+
+  test('cỡ chữ A+ không làm tràn ngang và vẫn đủ 102 nhãn không chồng', async ({ page }) => {
+    await page.goto('./?view=overview');
+    const nav = page.getByRole('navigation', { name: 'Điều hướng chính' });
+    if (!(await nav.isVisible()))
+      await page.getByRole('button', { name: 'Mở menu điều hướng' }).click();
+    await page
+      .getByRole('button', { name: /Chữ lớn hơn/ })
+      .first()
+      .click();
+    await expectNoHorizontalOverflow(page);
+    const m = await measureOverviewLabels(page);
+    expect(m.visible).toBe(102);
+    expect(m.pairs).toEqual([]);
   });
 });

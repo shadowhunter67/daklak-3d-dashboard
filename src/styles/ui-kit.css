@@ -1257,7 +1257,7 @@
 }
 .overview-workspace__map-labels text {
   fill: #fff;
-  font-size: 9px;
+  font-size: 15px; /* khớp OVERVIEW_LABEL_FONT_SIZE */
   paint-order: stroke;
   stroke: #0a2a24;
   stroke-width: 2.4px;
@@ -1848,12 +1848,11 @@
 }
 
 .overview-workspace__map-labels text {
-  font-size: 11px;
+  font-size: 15px; /* khớp OVERVIEW_LABEL_FONT_SIZE: bố cục tính theo đúng cỡ này */
   font-weight: 600;
 }
 .overview-workspace__map-labels text[data-selected] {
   font-weight: 800;
-  font-size: 13px;
 }
 .overview-workspace__map-leader {
   stroke: #ffffffcc;
