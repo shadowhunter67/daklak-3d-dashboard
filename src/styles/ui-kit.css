@@ -2959,7 +2959,7 @@
   display: grid;
   gap: 8px;
   padding: 12px 14px;
-  border: 1px solid var(--ui-line, #d9e2dd);
+  border: 1px solid var(--ui-border, #d9e2dd);
   border-left-width: 5px;
   border-radius: 10px;
 }
@@ -3001,4 +3001,34 @@
 .decision-queue__fields dd {
   margin: 0;
   font-weight: 600;
+}
+
+/* Dữ liệu & nguồn: công tắc Đơn giản / Kỹ thuật. */
+.data-readiness__mode {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--ui-border, #d9e2dd);
+  border-radius: 999px;
+  background: var(--ui-card, #fff);
+}
+.data-readiness__mode button {
+  min-height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--ui-text);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.data-readiness__mode button[aria-pressed='true'] {
+  /* Nền vàng + chữ tối (cùng kiểu mục đang chọn ở thanh bên): đủ tương phản ở cả giao diện sáng/tối. */
+  background: #e9c46a;
+  color: #1b2a22;
+}
+.data-readiness__simple h2 {
+  margin: 8px 0;
+  font-size: 1.125rem;
 }
