@@ -294,6 +294,7 @@ export default function App() {
         <DashboardHeader
           onOpenMenu={() => setMenuOpen(true)}
           onSelectPlace={selectPlace}
+          routeOpen={route.kind !== 'none'}
           onLeaveRoute={() => {
             if (route.kind === 'none') return;
             goToOverview();

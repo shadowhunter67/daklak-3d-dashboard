@@ -1406,4 +1406,6 @@ export const vi = {
   'reports.invest.benchmark.col.projects': 'Số dự án',
   'reports.invest.benchmark.col.capital': 'Vốn dự kiến',
   'reports.invest.benchmark.col.average': 'Vốn trung bình mỗi dự án',
+  'topbar.backToOverview': 'Về Tổng quan',
+  'header.backToOverview.ariaLabel': 'Về trang Tổng quan toàn tỉnh',
 } as const satisfies Record<string, string>;
