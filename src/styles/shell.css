@@ -716,39 +716,37 @@
   overflow: visible;
 }
 .screen-labels__leaders line {
-  stroke: #ffffffcc;
-  stroke-width: 1.2;
+  stroke: #ffffff70;
+  stroke-width: 1;
   filter: drop-shadow(0 0 1px #041210);
 }
 .screen-labels__label {
   position: absolute;
   left: 0;
   top: 0;
-  padding: 2px 7px;
-  border: 1px solid #0f4a3f40;
-  border-radius: 7px;
-  background: #ffffffeb;
-  color: #14312b;
+  padding: 0 2px;
+  border-radius: 5px;
+  /* Chữ sáng có quầng tối thay cho nhãn nền trắng đặc: 102 tên vẫn đủ, nhưng bớt mảng trắng dày đặc
+     trên địa hình tối (cả giao diện sáng lẫn tối, vì cảnh 3D luôn tối). */
+  background: transparent;
+  color: #f6f3de;
   font-size: calc(14px * var(--user-font-scale, 1));
   font-weight: 700;
   line-height: 1.25;
   white-space: nowrap;
-  box-shadow: 0 1px 3px #04121055;
+  text-shadow:
+    0 0 2px #041210,
+    0 0 3px #041210,
+    0 1px 2px #041210;
   will-change: transform;
 }
 .screen-labels__label[data-selected='true'] {
   z-index: 2;
-  border-color: #b88a1c;
+  padding: 1px 7px;
+  border: 1px solid #b88a1c;
   background: #f6dd9b;
+  color: #14312b;
+  text-shadow: none;
   font-size: calc(16px * var(--user-font-scale, 1));
   font-weight: 800;
-}
-:root:not([data-theme='light']) .screen-labels__label {
-  background: #0b2924eb;
-  color: #f3f0d8;
-  border-color: #f3f0d833;
-}
-:root:not([data-theme='light']) .screen-labels__label[data-selected='true'] {
-  background: #5a4a14;
-  color: #ffe49a;
 }
