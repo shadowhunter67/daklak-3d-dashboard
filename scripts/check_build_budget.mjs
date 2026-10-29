@@ -106,13 +106,16 @@ const dist = join(root, 'dist');
 // V4 P2 tourism links + planning terms (2026-10-27): JS 3,534,000 -> 3,540,000, build 22,884,000 ->
 // 22,892,000 (measured 3,535,521 / 22,884,185 on top of the Reports V2 limits; +~7KB: destination link
 // model, chain list in the tourism cards, planning terms/boundary cards, strings).
+// Dependabot maplibre-gl 6.15.0 -> 6.16.0 (2026-10-29): no code of ours changed, the shipped library grew.
+// Measured 3,548,868 JS / 975,698 gzip / 23,224,764 build bytes (+8.9KB JS over 3,539,981). Limits raised to
+// JS 3,552,000, gzip 980,000, build 23,235,000.
 const limits = {
-  totalJavaScriptBytes: 3_540_000,
-  totalJavaScriptGzipBytes: 976_000,
+  totalJavaScriptBytes: 3_552_000,
+  totalJavaScriptGzipBytes: 980_000,
   largestJavaScriptGzipBytes: 300_000,
   totalTextureBytes: 3_000_000,
   largestAssetBytes: 14_000_000,
-  totalBuildBytes: 23_225_000,
+  totalBuildBytes: 23_235_000,
 };
 
 async function filesAt(directory) {
