@@ -291,7 +291,15 @@ export default function App() {
         onClose={() => setMenuOpen(false)}
       />
       <div className="app-main">
-        <DashboardHeader onOpenMenu={() => setMenuOpen(true)} onSelectPlace={selectPlace} />
+        <DashboardHeader
+          onOpenMenu={() => setMenuOpen(true)}
+          onSelectPlace={selectPlace}
+          onLeaveRoute={() => {
+            if (route.kind === 'none') return;
+            goToOverview();
+            setViewMode('overview');
+          }}
+        />
         {isProjectRoute ? (
           <Suspense fallback={<ProjectRouteLoading />}>
             {route.kind === 'portfolio' && (

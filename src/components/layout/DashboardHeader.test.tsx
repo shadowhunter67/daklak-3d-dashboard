@@ -49,6 +49,13 @@ describe('DashboardHeader (topbar)', () => {
     expect(useMapStore.getState().resetCameraSignal).toBe(1);
   });
 
+  it('"Về toàn tỉnh" also asks the shell to leave an open page (Du lịch, Quy hoạch…)', () => {
+    const onLeaveRoute = vi.fn();
+    renderHeader({ onLeaveRoute });
+    fireEvent.click(screen.getByRole('button', { name: 'Đưa camera về toàn tỉnh' }));
+    expect(onLeaveRoute).toHaveBeenCalledTimes(1);
+  });
+
   it('opens the mobile menu via the menu button', () => {
     const onOpenMenu = vi.fn();
     renderHeader({ onOpenMenu });

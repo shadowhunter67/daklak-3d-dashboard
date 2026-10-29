@@ -22,9 +22,12 @@ const modes = [
 export function DashboardHeader({
   onOpenMenu,
   onSelectPlace,
+  onLeaveRoute,
 }: {
   onOpenMenu: () => void;
   onSelectPlace: (entry: SearchEntry) => void;
+  /** Closes an open hash-route page (Du lịch, Quy hoạch, Báo cáo…) and returns to the overview. */
+  onLeaveRoute?: () => void;
 }) {
   const { t } = useTranslation();
   const dataMode = useMapStore((state) => state.dataMode);
@@ -36,6 +39,7 @@ export function DashboardHeader({
   const requestHelp = useMapStore((state) => state.requestHelp);
 
   const backToProvince = () => {
+    onLeaveRoute?.();
     select(null);
     requestCameraReset();
     setDetailMapCamera(DEFAULT_DETAIL_MAP_CAMERA);
