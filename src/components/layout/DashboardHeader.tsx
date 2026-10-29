@@ -22,24 +22,35 @@ const modes = [
 export function DashboardHeader({
   onOpenMenu,
   onSelectPlace,
+  onLeaveRoute,
+  routeOpen = false,
 }: {
   onOpenMenu: () => void;
   onSelectPlace: (entry: SearchEntry) => void;
+  /** Closes an open hash-route page (Du lịch, Quy hoạch, Báo cáo…) and returns to the overview. */
+  onLeaveRoute?: () => void;
+  /** A hash-route page (Du lịch, Quy hoạch, Báo cáo…) is open on top of the view. */
+  routeOpen?: boolean;
 }) {
   const { t } = useTranslation();
   const dataMode = useMapStore((state) => state.dataMode);
   const viewMode = useMapStore((state) => state.viewMode);
   const changeDataMode = useMapStore((state) => state.changeDataMode);
   const select = useMapStore((state) => state.select);
+  const selectedCode = useMapStore((state) => state.selectedCode);
   const requestCameraReset = useMapStore((state) => state.requestCameraReset);
   const setDetailMapCamera = useMapStore((state) => state.setDetailMapCamera);
   const requestHelp = useMapStore((state) => state.requestHelp);
 
   const backToProvince = () => {
+    onLeaveRoute?.();
     select(null);
     requestCameraReset();
     setDetailMapCamera(DEFAULT_DETAIL_MAP_CAMERA);
   };
+
+  // Chỉ hiện khi nút có việc để làm: đang ở trang con, ở bản đồ 2D/3D (đặt lại camera) hoặc đang chọn một xã.
+  const showBack = routeOpen || viewMode !== 'overview' || selectedCode !== null;
 
   return (
     <header className="dashboard-header">
@@ -67,15 +78,19 @@ export function DashboardHeader({
         </nav>
       )}
       <div className="topbar-actions">
-        <button
-          type="button"
-          className="topbar-button"
-          onClick={backToProvince}
-          aria-label={t('header.resetCamera.ariaLabel')}
-        >
-          <HomeIcon />
-          <span>{t('topbar.backToProvince')}</span>
-        </button>
+        {showBack && (
+          <button
+            type="button"
+            className="topbar-button"
+            onClick={backToProvince}
+            aria-label={t(
+              routeOpen ? 'header.backToOverview.ariaLabel' : 'header.resetCamera.ariaLabel',
+            )}
+          >
+            <HomeIcon />
+            <span>{t(routeOpen ? 'topbar.backToOverview' : 'topbar.backToProvince')}</span>
+          </button>
+        )}
         <FontScaleControl />
         <ThemeToggle />
         <button

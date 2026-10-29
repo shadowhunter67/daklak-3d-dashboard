@@ -1390,4 +1390,6 @@ export const en: Partial<Record<MessageKey, string>> = {
   'reports.invest.benchmark.col.projects': 'Projects',
   'reports.invest.benchmark.col.capital': 'Expected capital',
   'reports.invest.benchmark.col.average': 'Average capital per project',
+  'topbar.backToOverview': 'Back to overview',
+  'header.backToOverview.ariaLabel': 'Back to the province overview',
 };

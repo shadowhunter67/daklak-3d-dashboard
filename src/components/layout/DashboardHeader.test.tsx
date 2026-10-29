@@ -49,6 +49,30 @@ describe('DashboardHeader (topbar)', () => {
     expect(useMapStore.getState().resetCameraSignal).toBe(1);
   });
 
+  it('"Về toàn tỉnh" also asks the shell to leave an open page (Du lịch, Quy hoạch…)', () => {
+    const onLeaveRoute = vi.fn();
+    renderHeader({ onLeaveRoute });
+    fireEvent.click(screen.getByRole('button', { name: 'Đưa camera về toàn tỉnh' }));
+    expect(onLeaveRoute).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides the back button on the overview when nothing is selected and no page is open', () => {
+    useMapStore.setState({ viewMode: 'overview', selectedCode: null });
+    renderHeader();
+    expect(screen.queryByText('Về toàn tỉnh')).not.toBeInTheDocument();
+    expect(screen.queryByText('Về Tổng quan')).not.toBeInTheDocument();
+  });
+
+  it('shows "Về Tổng quan" while a page is open and "Về toàn tỉnh" once a ward is selected', () => {
+    useMapStore.setState({ viewMode: 'overview', selectedCode: null });
+    renderHeader({ routeOpen: true });
+    expect(screen.getByText('Về Tổng quan')).toBeInTheDocument();
+    cleanup();
+    useMapStore.setState({ viewMode: 'overview', selectedCode: '24580' });
+    renderHeader();
+    expect(screen.getByText('Về toàn tỉnh')).toBeInTheDocument();
+  });
+
   it('opens the mobile menu via the menu button', () => {
     const onOpenMenu = vi.fn();
     renderHeader({ onOpenMenu });
