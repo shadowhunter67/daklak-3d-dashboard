@@ -42,9 +42,9 @@ export interface ScreenLabelOptions {
 }
 
 const CHAR_WIDTH_EM = 0.6;
-const BOX_PADDING_X = 14;
-const BOX_PADDING_Y = 8;
-const RADII_PX = [20, 36, 54, 74, 96, 120];
+const BOX_PADDING_X = 10;
+const BOX_PADDING_Y = 6;
+const RADII_PX = [20, 36, 54, 74, 96, 120, 150, 185];
 
 /** Size of a label's box including its pill padding, for an overestimate that errs towards space. */
 export function screenLabelBox(
