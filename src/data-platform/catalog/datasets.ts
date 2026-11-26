@@ -301,13 +301,13 @@ export const TERRAIN_IMAGERY_DATASET: DatasetDescriptor = {
 
 /**
  * Documents the detail map's PMTiles roads/buildings/administrative-boundary source as a real
- * catalog entry. Built 2026-09-02 from a Geofabrik Vietnam OSM extract (vietnam-260831.osm.pbf,
+ * catalog entry. Rebuilt 2026-11-25 from a Geofabrik Vietnam OSM extract (vietnam-261124.osm.pbf,
  * see scripts/osm-pbf-source.json), clipped to Đắk Lắk via osmium, filtered/tiled via tippecanoe,
  * packaged with go-pmtiles — full pipeline and every command in
  * docs/detail-map-integration.md. Committed to `public/maps/daklak.pmtiles` (same-origin,
  * VITE_DETAIL_MAP_SOURCE_URL=/maps/daklak.pmtiles in .env.production) rather than hosted
  * externally — see check_build_budget.mjs's totalBuildBytes comment for why that was the simpler
- * choice once the real file size (13.4MB) turned out far smaller than first estimated.
+ * choice once the real file size (10.6MB) turned out far smaller than first estimated.
  */
 export const DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET: DatasetDescriptor = {
   id: 'road-network-detail-map-pmtiles',
@@ -322,13 +322,13 @@ export const DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET: DatasetDescriptor = {
   temporalResolution: 'static',
   spatialRepresentation: 'vector-tile',
   source: { organization: 'OpenStreetMap contributors', license: 'ODbL 1.0' },
-  version: 'osm-260831_pmtiles-v1',
-  checksum: '5bb48508177f4bb722eec3d33b8574ed65b53cadc8a7d5c0ebdf9ee4ba844da5',
+  version: 'osm-261124_pmtiles-v1',
+  checksum: 'e71712875a73dffb972644f5947a63b142cf1facbafbc27e54020073ee12a15e',
   quality: {
     status: 'partially-verified',
     knownLimitations: [
-      'Độ phủ building footprint không đồng đều: OSM chỉ có ~2.800 building thật cho toàn tỉnh (chủ yếu Buôn Ma Thuột và vài thị trấn) — vùng nông thôn/rẫy hầu như chưa được cộng đồng OSM vẽ chi tiết, dù nhà thực tế có tồn tại.',
-      'Snapshot tĩnh tại một thời điểm (extract 2026-08-31), không có cơ chế tự làm mới — cần chạy lại pipeline thủ công khi muốn cập nhật.',
+      'Độ phủ building footprint không đồng đều: OSM chỉ có ~3.100 building thật cho toàn tỉnh (chủ yếu Buôn Ma Thuột và vài thị trấn) — vùng nông thôn/rẫy hầu như chưa được cộng đồng OSM vẽ chi tiết, dù nhà thực tế có tồn tại.',
+      'Snapshot tĩnh tại một thời điểm (extract 2026-11-24), không có cơ chế tự làm mới — cần chạy lại pipeline thủ công khi muốn cập nhật.',
       'Zoom 5-15; building chỉ hiện từ zoom 13 trở lên.',
     ],
   },
@@ -337,8 +337,8 @@ export const DETAIL_MAP_ROAD_BOUNDARY_PMTILES_DATASET: DatasetDescriptor = {
 
 /**
  * Documents the detail map's public-service POI PMTiles archive (`public/maps/daklak-services.pmtiles`,
- * ~114KB) as a real catalog entry. A SEPARATE archive from `daklak.pmtiles` — see serviceLayers.ts
- * for why. Built from the same pinned Geofabrik Vietnam extract (vietnam-260831.osm.pbf) and the
+ * ~120KB) as a real catalog entry. A SEPARATE archive from `daklak.pmtiles` — see serviceLayers.ts
+ * for why. Built from the same pinned Geofabrik Vietnam extract (vietnam-261124.osm.pbf) and the
  * same Đắk Lắk clip polygon as the roads archive, filtered to OSM `amenity=hospital, clinic,
  * doctors, pharmacy, school, university, college, kindergarten, townhall, police, post_office,
  * courthouse` and `office=government`, nodes only.
@@ -356,13 +356,13 @@ export const DETAIL_MAP_SERVICES_PMTILES_DATASET: DatasetDescriptor = {
   temporalResolution: 'static',
   spatialRepresentation: 'vector-tile',
   source: { organization: 'OpenStreetMap contributors', license: 'ODbL 1.0' },
-  version: 'osm-260831_services-pmtiles-v1',
-  checksum: '8cad51f16632ac3ccd94e69af7e7af67f0515cdd462b02d2d41eaa028a859d64',
+  version: 'osm-261124_services-pmtiles-v1',
+  checksum: 'd8b658041308e120d770cac51de21455daef7059159ef6972765f4c0cb938aee',
   quality: {
     status: 'partially-verified',
     knownLimitations: [
       'Chỉ lấy node (điểm): một số bệnh viện/trường học trong OSM được vẽ dưới dạng đa giác (building way) nên không xuất hiện — số lượng hiển thị thấp hơn thực tế.',
-      'Snapshot tĩnh tại một thời điểm (extract 2026-08-31), không có cơ chế tự làm mới — cần chạy lại pipeline thủ công khi muốn cập nhật.',
+      'Snapshot tĩnh tại một thời điểm (extract 2026-11-24), không có cơ chế tự làm mới — cần chạy lại pipeline thủ công khi muốn cập nhật.',
       'Độ phủ phụ thuộc cộng đồng OSM; vùng nông thôn thường thiếu điểm.',
     ],
   },

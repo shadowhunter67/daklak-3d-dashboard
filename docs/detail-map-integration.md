@@ -127,7 +127,7 @@ python scripts/prepare_osm_pbf.py          # downloads + sha256-verifies the pin
 python scripts/build_detail_map_boundary.py # derives the osmium extract polygon from daklak-outline.geojson
 ```
 
-**Stage B — Docker toolchain + province extract**. Build the pinned image once
+**Stage B — Docker toolchain + build**. Build the pinned image once
 (`scripts/detail-map-tiles/Dockerfile`: osmium-tool + tippecanoe 2.79.0 built from source +
 go-pmtiles 1.31.2). **Use a named Docker volume + `docker cp`, never a bind mount** — this repo's
 path contains a space and non-ASCII characters (`lập trình`), which Docker Desktop's WSL2-backed
@@ -140,45 +140,32 @@ silently corrupting the destination.
 docker build -t daklak-tiles:1 .\scripts\detail-map-tiles
 docker volume create daklak-osm
 docker run -d --name daklak-stage -v daklak-osm:/data daklak-tiles:1 sleep infinity
-docker cp ".\.cache\osm-pbf\vietnam-260831.osm.pbf" daklak-stage:/data/vietnam.osm.pbf
+docker cp ".\.cache\osm-pbf\vietnam-261124.osm.pbf" daklak-stage:/data/vietnam.osm.pbf
 docker cp ".\.cache\osm-pbf\daklak-extract-polygon.geojson" daklak-stage:/data/
 docker cp ".\.cache\osm-pbf\extract-config.json" daklak-stage:/data/
-docker exec daklak-stage mkdir -p /data/out
-docker exec daklak-stage osmium extract --overwrite --strategy=complete_ways `
-  --config /data/extract-config.json /data/vietnam.osm.pbf
+foreach ($f in "build.sh", "roads-filter.json", "export-configs\roads.json", "export-configs\buildings.json",
+    "export-configs\places.json", "export-configs\services.json") {
+  docker cp ".\scripts\detail-map-tiles\$f" daklak-stage:/data/
+}
+docker exec daklak-stage sh /data/build.sh
 ```
 
-Verify: `docker exec daklak-stage osmium fileinfo -e /data/out/daklak.osm.pbf` — bbox should be
-Đắk Lắk's real envelope (≈107.5,11.8 → 109.2,13.4 for the _tight_ data, though `complete_ways` lets
-a handful of very long ways — a coastline, a long river — stretch the raw bbox further; compare
-way/node counts as a percentage of the full Vietnam file instead, which is the reliable check: this
-run measured 1.69% of Vietnam's ways, matching Đắk Lắk's ~4% land area at below-average density).
-
-**Stage C — tag filters + GeoJSON-seq export** (`osmium tags-filter` + `osmium export`, one pass
-per layer — roads, buildings `wr/building`, places):
-
-```powershell
-docker exec daklak-stage osmium tags-filter --overwrite -o /data/out/roads.osm.pbf /data/out/daklak.osm.pbf `
-  "w/highway=motorway,motorway_link,trunk,trunk_link,primary,primary_link,secondary,secondary_link,tertiary,tertiary_link,unclassified,residential,living_street,service,track"
-docker exec daklak-stage osmium tags-filter --overwrite -o /data/out/buildings.osm.pbf /data/out/daklak.osm.pbf "wr/building"
-docker exec daklak-stage osmium tags-filter --overwrite -o /data/out/places.osm.pbf /data/out/daklak.osm.pbf `
-  "n/place=city,town,village,hamlet,suburb,quarter,neighbourhood,isolated_dwelling"
-# then osmium export ... -f geojsonseq for each, with an --include_tags config trimming attributes
-# to what roadLayers.ts/buildingLayers.ts actually read (highway/name/name:vi/ref; building/name;
-# place/name/name:vi/population respectively) — see the export-*.json configs.
-```
-
-**Stage D — tippecanoe → mbtiles → pmtiles**. Explicit `-Z`/`-z` zoom ranges everywhere, never
-`-zg` (auto-guessed zoom would make the tile schema non-deterministic across rebuilds and silently
-invalidate the `source-layer`/zoom assumptions baked into `roadLayers.ts`/`buildingLayers.ts`).
-Roads `-Z5 -z15` with a zoom-tiered `--feature-filter-file` (drops `service`/`track` below z10,
-most residential-tier roads below z8, so low zoom doesn't smear); buildings `-Z13 -z15` (nothing
-below city-block scale is meaningful); `tile-join` merges all three into one archive; `pmtiles
-convert` packages spec v3.
+**Stages C–D — what `build.sh` does** (the script is the source of truth for every flag):
+`osmium extract`, one `osmium tags-filter` + `osmium export` per layer (one geometry type each, so
+tagged nodes such as traffic signals never leak into `roads`), `tippecanoe` with explicit `-Z`/`-z`
+ranges (never `-zg`, which would make the tile schema non-deterministic and silently invalidate the
+`source-layer`/zoom assumptions in `roadLayers.ts`/`buildingLayers.ts`), `tile-join`, and
+`pmtiles convert` to spec v3. `roads-filter.json` admits motorway/trunk/primary at every zoom,
+secondary from z9, tertiary/unclassified/residential/living_street from z11, service/track from z13.
+It was reconstructed on 2026-11-25 from the 2026-09-02 archive: rebuilding `vietnam-260831` with it
+reproduced every per-zoom road-type count and the 13,267-tile total (archive size within 12 bytes). That calibration kept the OSM `@id`
+attribute the 2026-09-02 archive carried; the committed export configs omit it (nothing reads it),
+which takes the 2026-11-25 archive to 10.6MB instead of 13.5MB.
 
 ```powershell
 docker exec daklak-stage pmtiles show /data/out/daklak.pmtiles   # verify: mvt, z5-15, 3 vector_layers
 docker cp daklak-stage:/data/out/daklak.pmtiles ".\public\maps\daklak.pmtiles"
+docker cp daklak-stage:/data/out/services.pmtiles ".\public\maps\daklak-services.pmtiles"
 docker rm -f daklak-stage
 docker volume rm daklak-osm
 ```
@@ -194,42 +181,17 @@ file's own doc comment), `DetailMapViewport.tsx`/`MapLibreProvider.ts` plumbing 
 
 **Stage F — public-service POI archive** (`public/maps/daklak-services.pmtiles`, catalog entry
 `detail-map-services-pmtiles`). A separate, standalone archive (see `serviceLayers.ts` for why it
-is not a fourth `source-layer` of the roads archive). It reuses Stage A/B unchanged: the pinned
-extract and the province `daklak.osm.pbf` already inside the `daklak-stage` container. The
-per-layer `osmium export` attribute configs live in `scripts/detail-map-tiles/export-configs/`
-(`roads|buildings|places|services.json`; copy the one you need into the container's `/data`).
+is not a fourth `source-layer` of the roads archive), built by the same `build.sh` run.
 
-The `tippecanoe` line below is recovered verbatim from the archive's own metadata
-(`generator_options`); the `tags-filter` expression comes from the layer's documented scope in
-`serviceLayers.ts`; the `osmium export` flags are inferred from Stage C's convention and are the
-one part not recorded anywhere. **The whole chain has not been re-run end-to-end since the archive
-was built** — after any rebuild, compare against the reference below rather than trusting the hash
-to match byte-for-byte.
-
-```powershell
-# nodes only (n/), same convention as `places` (no `university` node appeared in the reference build)
-docker exec daklak-stage osmium tags-filter --overwrite -o /data/out/services.osm.pbf /data/out/daklak.osm.pbf `
-  "n/amenity=hospital,clinic,doctors,pharmacy,school,university,college,kindergarten,townhall,police,post_office,courthouse" `
-  "n/office=government"
-docker cp ".\scripts\detail-map-tiles\export-configs\services.json" daklak-stage:/data/services-export.json
-docker exec daklak-stage osmium export --overwrite -c /data/services-export.json -f geojsonseq `
-  -o /data/out/services.geojsonseq /data/out/services.osm.pbf
-docker exec daklak-stage tippecanoe --force -o /data/out/services.mbtiles -l services -Z10 -z15 `
-  --no-feature-limit --no-tile-size-limit /data/out/services.geojsonseq
-docker exec daklak-stage pmtiles convert /data/out/services.mbtiles /data/out/services.pmtiles
-docker exec daklak-stage pmtiles show /data/out/services.pmtiles
-docker cp daklak-stage:/data/out/services.pmtiles ".\public\maps\daklak-services.pmtiles"
-```
-
-Reference for the archive built from `vietnam-260831.osm.pbf` (read from its own header/metadata):
-PMTiles v3, mvt, **z10–z15**, one vector layer **`services`** with fields `amenity`, `office`,
-`name`, `name:vi`, **506 point features** in 781 tiles, bounds ≈ 107.62,12.18 → 109.32,13.50,
-tippecanoe v2.79.0, 116,804 bytes.
+Reference for the archive built from `vietnam-261124.osm.pbf`: PMTiles v3, mvt, **z10–z15**, one
+vector layer **`services`** with fields `amenity`, `office`, `name`, `name:vi`, **570 point
+features** at z15 in 802 tiles, bounds ≈ 107.62,12.16 → 109.32,13.50, tippecanoe v2.79.0,
+119,642 bytes.
 
 Hard contracts to keep: `-l services` must equal `SERVICES_SOURCE_LAYER` in `serviceLayers.ts`
 (MapLibre silently renders nothing on a mismatch), and the `-Z10 -z15` range is the one
-`serviceLayers.ts` assumes. After rebuilding, update the checksum in `config/public-data-files.json`
-and in the `detail-map-services-pmtiles` catalog entry, then run `npm run generate:public-manifest`.
+`serviceLayers.ts` assumes. After rebuilding either archive, update the checksums in
+`config/public-data-files.json` and the catalog entries, then run `npm run generate:public-manifest`.
 
 ## Hosting: same-origin, decided by the build budget rather than the Pages 100MB limit
 
