@@ -119,7 +119,7 @@
       "datasetIds": ["road-network-detail-map-pmtiles"],
       "classification": "public",
       "delivery": "public-static-asset",
-      "checksum": "5bb48508177f4bb722eec3d33b8574ed65b53cadc8a7d5c0ebdf9ee4ba844da5",
+      "checksum": "e71712875a73dffb972644f5947a63b142cf1facbafbc27e54020073ee12a15e",
       "note": "Real OSM roads/buildings/places vector tile archive (PMTiles) for the MapLibre detail map, fetched at runtime via HTTP range requests by MapLibreProvider's pmtiles:// protocol. Vite copies public/ verbatim. Pipeline: docs/detail-map-integration.md."
     },
     {
@@ -127,7 +127,7 @@
       "datasetIds": ["detail-map-services-pmtiles"],
       "classification": "public",
       "delivery": "public-static-asset",
-      "checksum": "8cad51f16632ac3ccd94e69af7e7af67f0515cdd462b02d2d41eaa028a859d64",
+      "checksum": "d8b658041308e120d770cac51de21455daef7059159ef6972765f4c0cb938aee",
       "note": "Real OSM public-service POI (amenity=hospital/school/.../office=government, node-only) vector tile archive (PMTiles) for the MapLibre detail map — SEPARATE archive from daklak.pmtiles, see serviceLayers.ts. Vite copies public/ verbatim. Pipeline: docs/detail-map-integration.md."
     },
     {

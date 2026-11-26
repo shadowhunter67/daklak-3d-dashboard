@@ -1,0 +1,22 @@
+{
+  "roads": [
+    "any",
+    [
+      "in",
+      "highway",
+      "motorway",
+      "motorway_link",
+      "trunk",
+      "trunk_link",
+      "primary",
+      "primary_link"
+    ],
+    ["all", [">=", "$zoom", 9], ["in", "highway", "secondary", "secondary_link"]],
+    [
+      "all",
+      [">=", "$zoom", 11],
+      ["in", "highway", "tertiary", "tertiary_link", "unclassified", "residential", "living_street"]
+    ],
+    [">=", "$zoom", 13]
+  ]
+}

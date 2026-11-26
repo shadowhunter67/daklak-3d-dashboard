@@ -55,7 +55,7 @@ not an independent scale. See that ADR for why objects use the true horizontal s
 keeps its own exaggerated vertical scale, and for the camera-side work (altitude-relative near/far
 and movement speed) needed to make a true-scale building actually read as tall from up close.
 
-## Detail map data (roads, buildings, places) — built 2026-09-02
+## Detail map data (roads, buildings, places) — built 2026-09-02, refreshed 2026-11-25
 
 The detail map (`?view=map`, see [docs/detail-map-integration.md](detail-map-integration.md)) reuses
 this project's own administrative-boundary GeoJSON (`wardBoundaryLayers.ts`, unconditional) plus a
@@ -65,7 +65,7 @@ Overpass-based scripts above, chosen specifically because Overpass query budgets
 whole-province extract the way a bulk OSM PBF + local processing does. Full command-by-command
 pipeline: [docs/detail-map-integration.md](detail-map-integration.md).
 
-**Source**: Geofabrik Vietnam extract `vietnam-260831.osm.pbf` (dated snapshot, not `-latest` —
+**Source**: Geofabrik Vietnam extract `vietnam-261124.osm.pbf` (dated snapshot, not `-latest` —
 Geofabrik only retains dated files ~90 days, so a re-pin is required periodically; see
 `scripts/osm-pbf-source.json` for the pinned URL + sha256). Clipped to Đắk Lắk via `osmium extract
 --strategy=complete_ways` against a polygon derived from this project's own `daklak-outline.geojson`
@@ -73,9 +73,9 @@ Geofabrik only retains dated files ~90 days, so a re-pin is required periodicall
 `osmium tags-filter` (roads: `highway=motorway...track` + `_link` variants; buildings: `wr/building`;
 places: `n/place=city...isolated_dwelling`) and exported to GeoJSON-seq via `osmium export`.
 
-**Verified feature counts** (osmium fileinfo, post-extract): 71,592 road ways, 2,795 building ways +
-13 relations, 2,202 place nodes — 1.69% of Vietnam's total ways, consistent with Đắk Lắk's ~4% land
-area and below-average OSM mapping density. **Building coverage is genuinely sparse outside city
+**Verified feature counts** (osmium fileinfo, post-extract): 71,812 road ways, 3,069 building ways,
+2,203 place nodes. The 2026-09-02 extract measured 1.69% of Vietnam's total ways, consistent with Đắk
+Lắk's ~4% land area and below-average OSM mapping density. **Building coverage is genuinely sparse outside city
 centers**: OSM volunteer mapping in this province, like most of rural/highland Vietnam, has
 concentrated on Buôn Ma Thuột and a handful of towns — vast rural/agricultural areas have real houses
 on the ground with no corresponding `building=*` footprint in OSM yet. This is not a pipeline bug;
@@ -83,15 +83,15 @@ it is the honest state of the underlying open data (see `DETAIL_MAP_ROAD_BOUNDAR
 `knownLimitations` in `src/data-platform/catalog/datasets.ts`).
 
 **Build**: `tippecanoe` per-layer (roads `-Z5 -z15` with a zoom-tiered `--feature-filter-file` that
-drops `service`/`track` at low zoom; buildings `-Z13 -z15`, no height/`building:levels` attribute —
+(`scripts/detail-map-tiles/roads-filter.json`) admits `service`/`track` only from z13; buildings `-Z13 -z15`, no height/`building:levels` attribute —
 this is a flat 2D `fill` layer, not the extruded pilot above), `tile-join`'d into one archive, then
 `pmtiles convert` to spec v3 (matching the `pmtiles@^4.5.0` npm client already in `package.json`).
 Toolchain pinned in a repo-local `Dockerfile` (`scripts/detail-map-tiles/Dockerfile`): osmium-tool
 (Debian bookworm package), tippecanoe 2.79.0 (built from source), go-pmtiles 1.31.2 (release
 tarball) — build-time only, never a runtime dependency, never run in CI.
 
-**Output**: `public/maps/daklak.pmtiles`, 13.4MB, sha256
-`5bb48508177f4bb722eec3d33b8574ed65b53cadc8a7d5c0ebdf9ee4ba844da5` (registered in
+**Output**: `public/maps/daklak.pmtiles`, 10.6MB, sha256
+`e71712875a73dffb972644f5947a63b142cf1facbafbc27e54020073ee12a15e` (registered in
 `config/public-data-files.json`, catalog entry `road-network-detail-map-pmtiles`). Committed to the
 repo and served same-origin from GitHub Pages (`VITE_DETAIL_MAP_SOURCE_URL=maps/daklak.pmtiles` in
 the committed `.env.production`) — the file turned out far smaller than an early 35-90MB estimate
@@ -113,8 +113,8 @@ MapLibre's attribution control (never hidden, per `docs/accessibility.md`) rende
 
 ### Public-service POI (dịch vụ công) — separate archive
 
-`public/maps/daklak-services.pmtiles` (~114KB, sha256
-`8cad51f16632ac3ccd94e69af7e7af67f0515cdd462b02d2d41eaa028a859d64`, registered in
+`public/maps/daklak-services.pmtiles` (~120KB, sha256
+`d8b658041308e120d770cac51de21455daef7059159ef6972765f4c0cb938aee`, registered in
 `config/public-data-files.json`, catalog entry `detail-map-services-pmtiles`) is a **separate** archive from
 `daklak.pmtiles`, built from the same pinned Geofabrik extract and Đắk Lắk clip polygon (see
 `src/components/detail-map/serviceLayers.ts` for why it is not a fourth source-layer of the roads archive).
@@ -123,7 +123,8 @@ townhall, police, post_office, courthouse` and `office=government`, **nodes only
 `VITE_DETAIL_MAP_SERVICES_URL`; empty keeps the "Dịch vụ công" toggle disabled with an explanation.
 
 Known limitations (also in the catalog entry): nodes only, so facilities mapped as polygons in OSM are
-missing and counts are lower than reality; static snapshot (extract 2026-08-31) with no auto-refresh; coverage
+missing and counts are lower than reality; static snapshot (extract 2026-11-24) with no auto-refresh; coverage
 depends on the OSM community and is thinner in rural areas. The build commands are recorded in
 `docs/detail-map-integration.md` ("Stage F"); the tippecanoe options are recovered from the archive's own
-metadata, but the full chain has not been re-run end-to-end since it was built.
+metadata. The whole chain is scripted in `scripts/detail-map-tiles/build.sh` and was re-run end-to-end on
+2026-11-25.

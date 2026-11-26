@@ -10,9 +10,9 @@ import { OPENSTREETMAP_ATTRIBUTION } from './roadLayers';
  * standalone PMTiles archive from `roadLayers.ts`'s `daklak.pmtiles` (roads/buildings/places),
  * NOT a 4th `source-layer` merged into that same file. Deliberate: reproducing the exact
  * tippecanoe flags that archive's 3 existing layers were built with (in particular roads'
- * zoom-tiered `--feature-filter-file`, whose content was never committed — see
+ * zoom-tiered `--feature-filter-file`, not committed when this layer was added — see
  * docs/detail-map-integration.md) risks silently changing already-shipped, documented output.
- * A second small archive (~114KB — see docs/data-provenance.md) avoids that risk entirely for a
+ * A second small archive (~120KB — see docs/data-provenance.md) avoids that risk entirely for a
  * negligible size cost, at the price of one extra HTTP source instead of reusing the existing one.
  *
  * Built from the SAME pinned Geofabrik Vietnam extract + this project's own Đắk Lắk clip polygon
